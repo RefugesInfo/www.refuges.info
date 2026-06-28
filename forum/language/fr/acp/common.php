@@ -1,17 +1,17 @@
 <?php
 /**
-*
-* This file is part of the french language pack for the phpBB Forum Software package.
-* This file is translated by phpBB-fr.com <https://www.phpbb-fr.com>
-*
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
-* @license GNU General Public License, version 2 (GPL-2.0)
-*
-*/
+ *
+ * This file is part of the French language pack for the phpBB Forum Software package.
+ * This file is translated by phpBB-fr.com <https://www.phpbb-fr.com>
+ *
+ * @copyright (c) phpBB Limited <https://www.phpbb.com>
+ * @license GNU General Public License, version 2 (GPL-2.0)
+ *
+ */
 
 /**
-* DO NOT CHANGE
-*/
+ * DO NOT CHANGE
+ */
 if (!defined('IN_PHPBB'))
 {
 	exit;
@@ -76,7 +76,7 @@ $lang = array_merge($lang, array(
 	'ACP_CAT_USERGROUP'			=> 'Membres et groupes',
 	'ACP_CAT_USERS'				=> 'Membres',
 	'ACP_CLIENT_COMMUNICATION'	=> 'Communication',
-	'ACP_COOKIE_SETTINGS'		=> 'Paramètres de cookie',
+	'ACP_COOKIE_SETTINGS'		=> 'Paramètres des cookies',
 	'ACP_CONTACT'				=> 'Page de contact',
 	'ACP_CONTACT_SETTINGS'		=> 'Paramètres de la page de contact',
 	'ACP_CRITICAL_LOGS'			=> 'Journal des erreurs',

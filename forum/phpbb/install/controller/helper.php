@@ -205,6 +205,23 @@ class helper
 	}
 
 	/**
+	 * Handle installer restart
+	 */
+	public function handle_installer_restart(): void
+	{
+		$restart = $this->phpbb_request->variable('install_restart', false);
+		if ($restart)
+		{
+			// Clean up config file to restart installer
+			$this->installer_config->clean_up_config_file();
+		}
+		else if ($this->installer_config->exists())
+		{
+			$this->template->assign_var('SHOW_RESTART_BUTTON', true);
+		}
+	}
+
+	/**
 	 * Process navigation data to reflect active/completed stages
 	 *
 	 * @param \phpbb\install\helper\iohandler\iohandler_interface|null	$iohandler
@@ -339,6 +356,14 @@ class helper
 	protected function render_language_select($selected_language = null)
 	{
 		$langs = $this->lang_helper->get_available_languages();
+
+		// The first language will be selected by default. Unless a user has consciously included
+		// other languages in the installation process, it will be British English anyway.
+		if ($selected_language === null && count($langs))
+		{
+			$selected_language = $langs[0]['iso'];
+		}
+
 		foreach ($langs as $lang)
 		{
 			$this->template->assign_block_vars('language_select_item', array(

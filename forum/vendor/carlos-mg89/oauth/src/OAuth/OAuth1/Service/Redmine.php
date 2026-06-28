@@ -19,7 +19,7 @@ class Redmine extends AbstractService
         ClientInterface $httpClient,
         TokenStorageInterface $storage,
         SignatureInterface $signature,
-        UriInterface $baseApiUri
+        ?UriInterface $baseApiUri = null
     ) {
         parent::__construct($credentials, $httpClient, $storage, $signature, $baseApiUri);
 

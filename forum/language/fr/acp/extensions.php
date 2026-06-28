@@ -1,13 +1,13 @@
 <?php
 /**
-*
-* This file is part of the french language pack for the phpBB Forum Software package.
-* This file is translated by phpBB-fr.com <http://www.phpbb-fr.com>
-*
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
-* @license GNU General Public License, version 2 (GPL-2.0)
-*
-*/
+ *
+ * This file is part of the French language pack for the phpBB Forum Software package.
+ * This file is translated by phpBB-fr.com <https://www.phpbb-fr.com>
+ *
+ * @copyright (c) phpBB Limited <https://www.phpbb.com>
+ * @license GNU General Public License, version 2 (GPL-2.0)
+ *
+ */
 
 if (!defined('IN_PHPBB'))
 {
@@ -15,8 +15,8 @@ if (!defined('IN_PHPBB'))
 }
 
 /**
-* DO NOT CHANGE
-*/
+ * DO NOT CHANGE
+ */
 if (empty($lang) || !is_array($lang))
 {
 	$lang = array();

@@ -1,17 +1,17 @@
 <?php
 /**
-*
-* This file is part of the french language pack for the phpBB Forum Software package.
-* This file is translated by phpBB-fr.com <http://www.phpbb-fr.com>
-*
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
-* @license GNU General Public License, version 2 (GPL-2.0)
-*
-*/
+ *
+ * This file is part of the French language pack for the phpBB Forum Software package.
+ * This file is translated by phpBB-fr.com <https://www.phpbb-fr.com>
+ *
+ * @copyright (c) phpBB Limited <https://www.phpbb.com>
+ * @license GNU General Public License, version 2 (GPL-2.0)
+ *
+ */
 
 /**
-* DO NOT CHANGE
-*/
+ * DO NOT CHANGE
+ */
 if (!defined('IN_PHPBB'))
 {
 	exit;
@@ -97,7 +97,7 @@ $lang = array_merge($lang, array(
 	'USER_ADMIN'					=> 'Administration de l’utilisateur',
 	'USER_ADMIN_ACTIVATE'			=> 'Activer son compte',
 	'USER_ADMIN_ACTIVATED'			=> 'Le compte a été activé.',
-	'USER_ADMIN_AVATAR_REMOVED'		=> 'L’avatar de cet membre a été supprimé.',
+	'USER_ADMIN_AVATAR_REMOVED'		=> 'L’avatar de ce membre a été supprimé.',
 	'USER_ADMIN_BAN_EMAIL'			=> 'Bannir par son adresse courriel',
 	'USER_ADMIN_BAN_EMAIL_REASON'	=> 'L’adresse courriel a été bannie via le module de gestion des membres',
 	'USER_ADMIN_BAN_IP'				=> 'Bannir par son adresse IP',

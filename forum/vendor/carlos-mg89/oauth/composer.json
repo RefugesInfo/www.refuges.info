@@ -1,5 +1,6 @@
 {
     "name": "carlos-mg89/oauth",
+    "type": "library",
     "description": "PHP 7.2 oAuth 1/2 Library",
     "keywords": ["oauth", "authentication", "authorization", "security"],
     "license": "MIT",
@@ -20,6 +21,9 @@
         "fix": [
             "./vendor/bin/php-cs-fixer fix --ansi"
         ]
+    },
+    "replace": {
+        "lusitanian/oauth": "~0.3"
     },
     "require": {
         "php": "^7.2 || ^8.0"

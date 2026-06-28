@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * This file is part of the french language pack for the phpBB Forum Software package.
+ * This file is part of the French language pack for the phpBB Forum Software package.
  * This file is translated by phpBB-fr.com <https://www.phpbb-fr.com>
  *
  * @copyright (c) phpBB Limited <https://www.phpbb.com>
@@ -86,6 +86,7 @@ $lang = array_merge($lang, array(
 
 	'INSTALL_PHPBB_INSTALLED'		=> 'phpBB est déjà installé.',
 	'INSTALL_PHPBB_NOT_INSTALLED'	=> 'phpBB n’est pas encore installé.',
+	'INSTALL_RESTART'				=> 'Recommencer l’installation',
 ));
 
 // Requirements translation

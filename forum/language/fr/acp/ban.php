@@ -1,17 +1,17 @@
 <?php
 /**
-*
-* This file is part of the french language pack for the phpBB Forum Software package.
-* This file is translated by phpBB-fr.com <http://www.phpbb-fr.com>
-*
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
-* @license GNU General Public License, version 2 (GPL-2.0)
-*
-*/
+ *
+ * This file is part of the French language pack for the phpBB Forum Software package.
+ * This file is translated by phpBB-fr.com <https://www.phpbb-fr.com>
+ *
+ * @copyright (c) phpBB Limited <https://www.phpbb.com>
+ * @license GNU General Public License, version 2 (GPL-2.0)
+ *
+ */
 
 /**
-* DO NOT CHANGE
-*/
+ * DO NOT CHANGE
+ */
 if (!defined('IN_PHPBB'))
 {
 	exit;
@@ -44,7 +44,7 @@ $lang = array_merge($lang, array(
 	'30_MINS'		=> '30 minutes',
 	'6_HOURS'		=> '6 heures',
 
-	'ACP_BAN_EXPLAIN'	=> 'Vous pouvez contrôler le bannissement d’utilisateurs par nom, adresse IP ou adresse courriel. Ces méthodes empêchent l’utilisateur d’accéder à toutes les sections de votre forum. Vous pouvez donner si vous le souhaitez une courte raison (3000 caractères maximum) du bannissement. Celle-ci sera affichée dans le journal d’administration.<br>Une durée de bannissement peut également être indiquée. Si vous voulez que le bannissement se termine à une date particulière plutôt qu’après une période de temps définie, sélectionnez <span style="text-decoration: underline;">Jusqu’au -&gt;</span> pour la durée du bannissement et saisissez une date au format <kbd>AAAA-MM-JJ</kbd>.',
+	'ACP_BAN_EXPLAIN'	=> 'Vous pouvez contrôler le bannissement d’utilisateurs par nom, adresse IP ou adresse courriel. Ces méthodes empêchent l’utilisateur d’accéder à toutes les sections de votre forum. Vous pouvez indiquer, si vous le souhaitez, une courte raison (3 000 caractères maximum) du bannissement. Celle-ci sera affichée dans le journal d’administration.<br>Une durée de bannissement peut également être spécifiée. Si vous voulez que le bannissement se termine à une date précise plutôt qu’après une période de temps définie, sélectionnez <span style="text-decoration: underline;">Jusqu’au -&gt;</span> pour la durée du bannissement et saisissez une date au format <kbd>AAAA-MM-JJ</kbd>.',
 
 	'BAN_EXCLUDE'			=> 'Exclure du bannissement',
 	'BAN_LENGTH'			=> 'Durée du bannissement',
@@ -59,7 +59,7 @@ $lang = array_merge($lang, array(
 	'EMAIL_BAN_EXPLAIN'			=> 'Pour indiquer plus d’une adresse courriel, saisissez chacune d’elles sur une nouvelle ligne. Pour bannir sur une partie du nom, utilisez « * » comme caractère joker, par exemple : <samp>*@hotmail.com</samp>, <samp>*@*.domain.tld</samp>, etc.',
 	'EMAIL_NO_BANNED'			=> 'Aucune adresse courriel bannie',
 	'EMAIL_UNBAN'				=> 'Débannir ou ne plus exclure des adresses courriel',
-	'EMAIL_UNBAN_EXPLAIN'		=> 'Vous pouvez débannir (ou ne plus exclure) plusieurs adresses courriel en une seule fois, en utilisant la bonne combinaison du clavier et de la souris en fonction de votre ordinateur ou navigateur.',
+	'EMAIL_UNBAN_EXPLAIN'		=> 'Vous pouvez débannir (ou ne plus exclure) plusieurs adresses courriel en une seule fois, en utilisant la bonne combinaison du clavier et de la souris en fonction de votre ordinateur ou navigateur. Les adresses de courriel exclues sont mises en évidence.',
 
 	'IP_BAN'					=> 'Bannir une ou plusieurs adresses IP',
 	'IP_BAN_EXCLUDE_EXPLAIN'	=> 'Activez cette option pour exclure les adresses IP listées de tous bannissements actuels.',
@@ -67,7 +67,7 @@ $lang = array_merge($lang, array(
 	'IP_HOSTNAME'				=> 'Adresses IP ou noms d’hôtes',
 	'IP_NO_BANNED'				=> 'Aucune adresse IP bannie',
 	'IP_UNBAN'					=> 'Débannir ou ne plus exclure des adresses IP',
-	'IP_UNBAN_EXPLAIN'			=> 'Vous pouvez débannir (ou ne plus exclure) plusieurs adresses IP en une seule fois, en utilisant la bonne combinaison du clavier et de la souris en fonction de votre ordinateur ou navigateur.',
+	'IP_UNBAN_EXPLAIN'			=> 'Vous pouvez débannir (ou ne plus exclure) plusieurs adresses IP en une seule fois, en utilisant la bonne combinaison du clavier et de la souris en fonction de votre ordinateur ou navigateur. Les adresses IP exclues sont mises en évidence.',
 
 	'LENGTH_BAN_INVALID'		=> 'La date indiquée doit être au format <kbd>AAAA-MM-JJ</kbd>.',
 
@@ -82,5 +82,5 @@ $lang = array_merge($lang, array(
 	'USER_BAN_EXPLAIN'			=> 'Vous pouvez bannir plusieurs membres en une fois, en saisissant chaque nom sur une nouvelle ligne. Utilisez la fonction <span style="text-decoration: underline;">Rechercher un membre</span> pour ajouter automatiquement un ou plusieurs membres.',
 	'USER_NO_BANNED'			=> 'Aucun membre banni',
 	'USER_UNBAN'				=> 'Débannir ou ne plus exclure des membres par le nom d’utilisateur',
-	'USER_UNBAN_EXPLAIN'		=> 'Vous pouvez débannir (ou ne plus exclure) plusieurs membres en une seule fois, en utilisant la bonne combinaison du clavier et de la souris en fonction de votre ordinateur ou navigateur.',
+	'USER_UNBAN_EXPLAIN'		=> 'Vous pouvez débannir (ou ne plus exclure) plusieurs membres en une seule fois, en utilisant la bonne combinaison du clavier et de la souris en fonction de votre ordinateur ou navigateur. Les membres exclus sont mis en évidence.',
 ));

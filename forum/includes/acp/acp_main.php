@@ -182,7 +182,7 @@ class acp_main
 						$config->set('num_files', (int) $db->sql_fetchfield('stat'), false);
 						$db->sql_freeresult($result);
 
-						$sql = 'SELECT SUM(filesize) as stat
+						$sql = 'SELECT SUM(' . $db->cast_expr_to_bigint('filesize') . ') as stat
 							FROM ' . ATTACHMENTS_TABLE . '
 							WHERE is_orphan = 0';
 						$result = $db->sql_query($sql);
@@ -467,6 +467,7 @@ class acp_main
 
 		if ($auth->acl_get('a_board'))
 		{
+			/** @var \phpbb\version_helper $version_helper */
 			$version_helper = $phpbb_container->get('version_helper');
 			try
 			{

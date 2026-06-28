@@ -119,6 +119,8 @@ input#add_files.button2, input.button1, input.button2 {
 	content: "\f036"}
 .rtl.row-item[class*=topic_]:before, .rtl.row-item[class*=pm_]:before {
 	content: "\f038"}
+.row-item[class*=_hot]:before {
+	content: "\f06d"}
 .row-item[class*=_locked]:before {
 	content: "\f023"}
 .row-item.forum_link:before {
@@ -281,4 +283,5 @@ li.switch-item {
 	margin: 2px 0 20px;
 	padding-top: 2px;
 }
+
 

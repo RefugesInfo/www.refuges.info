@@ -84,7 +84,8 @@ $lang = array_merge($lang, array(
 	'ACP_LINK'	=> 'Vai al <a href="%1$s">PCA</a>',
 
 	'INSTALL_PHPBB_INSTALLED'		=> 'phpBB è già stato installato.',
-	'INSTALL_PHPBB_NOT_INSTALLED'	=> 'phpBB non è ancora stato installato.'
+	'INSTALL_PHPBB_NOT_INSTALLED'	=> 'phpBB non è ancora stato installato.',
+	'INSTALL_RESTART'				=> 'Riavvia installazione',
 ));
 
 // Requirements translation

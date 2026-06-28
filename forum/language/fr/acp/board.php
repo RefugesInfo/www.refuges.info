@@ -1,17 +1,17 @@
 <?php
 /**
-*
-* This file is part of the french language pack for the phpBB Forum Software package.
-* This file is translated by phpBB-fr.com <https://www.phpbb-fr.com>
-*
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
-* @license GNU General Public License, version 2 (GPL-2.0)
-*
-*/
+ *
+ * This file is part of the French language pack for the phpBB Forum Software package.
+ * This file is translated by phpBB-fr.com <https://www.phpbb-fr.com>
+ *
+ * @copyright (c) phpBB Limited <https://www.phpbb.com>
+ * @license GNU General Public License, version 2 (GPL-2.0)
+ *
+ */
 
 /**
-* DO NOT CHANGE
-*/
+ * DO NOT CHANGE
+ */
 if (!defined('IN_PHPBB'))
 {
 	exit;
@@ -300,7 +300,7 @@ $lang = array_merge($lang, array(
 	'ACP_FEED_OVERALL_FORUMS_EXPLAIN'	=> 'Active le flux de « tous les forums », ce qui affiche une liste des forums.',
 
 	'ACP_FEED_HTTP_AUTH'				=> 'Autoriser l’authentification HTTP',
-	'ACP_FEED_HTTP_AUTH_EXPLAIN'		=> 'Active l’authentification HTTP, ce qui autorise les membres à recevoir le contenu qui est masqué aux invités en ajoutant le paramètre <samp>auth=http</samp> à l’URL du flux. Notez que certaines installations de PHP nécessitent d’effectuer des modifications additionnelles dans le fichier .htaccess. Toutes les instructions sont contenues dans ce fichier.',
+	'ACP_FEED_HTTP_AUTH_EXPLAIN'		=> 'Active l’authentification HTTP, permettant aux membres d’accéder au contenu masqué pour les invités, en ajoutant le paramètre <samp>auth=http</samp> à l’URL du flux. Notez que certaines configurations PHP peuvent nécessiter des modifications supplémentaires dans le fichier .htaccess ; consultez ce fichier pour davantage d’instructions. L’authentification HTTP n’est prise en charge que sur les connexions chiffrées (https).',
 	'ACP_FEED_ITEM_STATISTICS'			=> 'Statistiques de l’article',
 	'ACP_FEED_ITEM_STATISTICS_EXPLAIN'	=> 'Affiche les statistiques individuelles sous les articles de flux.<br>Exemple : posté par, date et heure, réponses, vues.',
 	'ACP_FEED_EXCLUDE_ID'				=> 'Exclure ces forums',
@@ -352,20 +352,20 @@ $lang = array_merge($lang, array(
 
 // Cookie Settings
 $lang = array_merge($lang, array(
-	'ACP_COOKIE_SETTINGS_EXPLAIN'		=> 'Ces informations définissent les données utilisées pour envoyer les cookies aux navigateurs de vos utilisateurs. Dans la majorité des cas, les valeurs par défaut pour les paramètres de cookie suffisent. Si vous avez besoin de les modifier, faites-le avec soin car des paramètres incorrects peuvent empêcher les membres de se connecter. Si vos membres rencontrent des problèmes pour rester connectés sur votre forum, consultez l’article <strong><a href="https://www.phpbb.com/support/go/cookie-settings">phpBB.com Knowledge Base - Fixing incorrect cookie settings</a></strong> (en anglais).',
+	'ACP_COOKIE_SETTINGS_EXPLAIN'		=> 'Ces informations définissent les données utilisées pour envoyer les cookies aux navigateurs de vos utilisateurs. Dans la majorité des cas, les valeurs par défaut pour les paramètres des cookies suffisent. Si vous avez besoin de les modifier, faites-le avec soin car des paramètres incorrects peuvent empêcher les membres de se connecter. Si vos membres rencontrent des problèmes pour rester connectés sur votre forum, consultez l’article <strong><a href="https://www.phpbb.com/support/go/cookie-settings">phpBB.com Knowledge Base - Fixing incorrect cookie settings</a></strong> (en anglais).',
 
-	'COOKIE_DOMAIN'				=> 'Domaine du cookie',
-	'COOKIE_DOMAIN_EXPLAIN'		=> 'Dans la plupart des cas, le domaine du cookie est facultatif. En cas de doute, laissez ce champ vide.<br><br>Dans le cas où vous auriez un forum intégré avec un autre logiciel ou de multiples domaines, alors pour déterminer le domaine du cookie procédez comme suit. Si vous avez quelque chose comme <i>exemple.com</i> et <i>forums.exemple.com</i>, ou <i>forums.exemple.com</i> et <i>blog.exemple.com</i>. Retirez les sous-domaines jusqu’à obtenir le nom de domaine commun, <i>exemple.com</i>. Puis, faites précéder le nom de domaine obtenu avec un point, ce qui donnerait « .exemple.com » (veuillez observer qu’un point se trouve devant le nom de domaine).',
-	'COOKIE_NAME'				=> 'Nom du cookie',
-	'COOKIE_NAME_EXPLAIN'		=> 'Saisissez ce que vous souhaitez, faites original. À chaque modification des paramètres de cookie, le nom du cookie doit être changé.',
+	'COOKIE_DOMAIN'				=> 'Domaine des cookies',
+	'COOKIE_DOMAIN_EXPLAIN'		=> 'Dans la plupart des cas, le domaine des cookies est facultatif. En cas de doute, laissez ce champ vide.<br><br>Dans le cas où vous auriez un forum intégré avec un autre logiciel ou de multiples domaines, procédez comme suit pour déterminer le domaine des cookies si vous avez, par exemple, <i>exemple.com</i> et <i>forums.exemple.com</i>, ou <i>forums.exemple.com</i> et <i>blog.exemple.com</i>. Retirez les sous-domaines jusqu’à obtenir le nom de domaine commun, <i>exemple.com</i>. Puis faites précéder le nom de domaine obtenu par un point, pour obtenir « .exemple.com » (remarquez bien qu’un point se trouve avant le nom de domaine).',
+	'COOKIE_NAME'				=> 'Nom des cookies',
+	'COOKIE_NAME_EXPLAIN'		=> 'Saisissez ce que vous souhaitez, faites original. À chaque modification des paramètres des cookies, le nom des cookies doit être modifié.',
 	'COOKIE_NOTICE'				=> 'Notice d’utilisation des cookies',
-	'COOKIE_NOTICE_EXPLAIN'		=> 'Si activé, une information relative aux cookies sera affichée aux utilisateurs qui visitent votre forum. Cela peut être une obligation légale en fonction du contenu de votre forum ou des extensions activées.',
-	'COOKIE_PATH'				=> 'Chemin du cookie',
-	'COOKIE_PATH_EXPLAIN'		=> 'Il s’agira généralement de la même valeur que le chemin du script ou saisissez simplement une barre oblique « / » pour rendre le cookie accessible via n’importe quelle URL de votre forum.',
-	'COOKIE_SECURE'				=> 'Cookie sécurisé',
-	'COOKIE_SECURE_EXPLAIN'		=> 'Si votre site Internet est accessible par l’intermédiaire du protocole SSL (https://), activez cette option sinon laissez sur « Désactivé ». Si vous activez cette option alors que votre site Internet n’est pas accessible par le protocole SSL, des erreurs se produiront lors des redirections.',
+	'COOKIE_NOTICE_EXPLAIN'		=> 'Si activé, une information relative aux cookies sera affichée aux utilisateurs qui visitent votre forum. Cela peut constituer une obligation légale en fonction du contenu de votre forum ou des extensions activées.',
+	'COOKIE_PATH'				=> 'Chemin des cookies',
+	'COOKIE_PATH_EXPLAIN'		=> 'Il s’agira généralement de la même valeur que le chemin du script, ou bien saisissez simplement une barre oblique « / » pour rendre les cookies accessibles via n’importe quelle URL de votre forum.',
+	'COOKIE_SECURE'				=> 'Cookies sécurisés',
+	'COOKIE_SECURE_EXPLAIN'		=> 'Si votre site Internet est accessible par l’intermédiaire du protocole SSL (https://), activez cette option, sinon laissez-la sur « Désactivé ». Si vous l’activez alors que votre site Internet n’est pas accessible par le protocole SSL, des erreurs se produiront lors des redirections.',
 	'ONLINE_LENGTH'				=> 'Durée d’apparition dans la liste des utilisateurs en ligne',
-	'ONLINE_LENGTH_EXPLAIN'		=> 'Nombre de minutes après lequel les utilisateurs inactifs n’apparaîtront plus dans la liste des utilisateurs en ligne. Plus cette valeur est élevée, plus le traitement requis pour générer la liste sera long.',
+	'ONLINE_LENGTH_EXPLAIN'		=> 'Nombre de minutes avant que les utilisateurs inactifs n’apparaissent plus dans la liste des utilisateurs en ligne. Plus cette valeur est élevée, plus le traitement requis pour générer la liste sera long.',
 	'SESSION_LENGTH'			=> 'Durée de la session',
 	'SESSION_LENGTH_EXPLAIN'	=> 'Les sessions expireront après cette durée, en secondes.',
 ));
@@ -523,9 +523,9 @@ $lang = array_merge($lang, array(
 	'FORM_TIME_MAX'					=> 'Temps maximum lors de l’envoi des formulaires',
 	'FORM_TIME_MAX_EXPLAIN'			=> 'Détermine le temps dont un utilisateur dispose pour envoyer un formulaire. Mettre « -1 » pour désactiver. Notez qu’un formulaire peut devenir invalide si la session expire, et cela indépendamment de ce paramètre.',
 	'FORM_SID_GUESTS'				=> 'Lier les formulaires aux sessions des invités',
-	'FORM_SID_GUESTS_EXPLAIN'		=> 'Si activé, les formulaires émis aux invités seront exclusifs à leur session. Cela peut entraîner quelques problèmes avec certains fournisseurs d’accès.',
+	'FORM_SID_GUESTS_EXPLAIN'		=> 'Si activé, les formulaires fournis aux invités seront exclusifs à leur session. Cela peut entraîner quelques problèmes avec certains fournisseurs d’accès.',
 	'FORWARDED_FOR_VALID'			=> 'En-tête <var>X_FORWARDED_FOR</var> valide',
-	'FORWARDED_FOR_VALID_EXPLAIN'	=> 'Les sessions seront continuées seulement si l’en-tête <var> X_FORWARDED_FOR </var> envoyée est égale à celle envoyée avec la requête précédente. L’en-tête <var>X_FORWARDED_FOR</var> vérifiera également si les adresses IP n’ont pas été bannies.',
+	'FORWARDED_FOR_VALID_EXPLAIN'	=> 'Les sessions seront maintenues uniquement si l’en-tête <var>X_FORWARDED_FOR</var> envoyé est égal à celui de la requête précédente. L’en-tête <var>X_FORWARDED_FOR</var> vérifiera également si les adresses IP n’ont pas été bannies.',
 	'IP_VALID'						=> 'Validation de session IP',
 	'IP_VALID_EXPLAIN'				=> 'Détermine quelle partie de l’adresse IP des utilisateurs sera utilisée pour valider une session : <samp>Tous</samp> compare l’adresse complète, <samp>A.B.C</samp> les premiers x.x.x, <samp>A.B</samp> les premiers x.x, <samp>Aucune</samp> désactive la vérification. Pour les adresses IPv6, <samp>A.B.C</samp> compare les 4 premiers blocs et <samp>A.B</samp> les 3 premiers blocs.',
 	'IP_LOGIN_LIMIT_MAX'			=> 'Nombre maximal de tentatives de connexion par adresse IP',
@@ -602,10 +602,10 @@ $lang = array_merge($lang, array(
 	'SMTP_VERIFY_PEER_EXPLAIN'		=> 'Exige la vérification du certificat SSL utilisé par le server SMTP partenaire.<br><em><strong>Attention :</strong> établir une connexion avec un certificat SSL non vérifié peut induire des problèmes de sécurité.</em>',
 	'SMTP_VERIFY_PEER_NAME'			=> 'Vérifier le nom du partenaire SMTP',
 	'SMTP_VERIFY_PEER_NAME_EXPLAIN'	=> 'Exige la vérification du nom du partenaire pour les serveurs SMTP utilisant une connexion SSL/TLS.<br><em><strong>Attention :</strong> établir une connexion à un partenaire non vérifié peut induire des problèmes de sécurité.</em>',
-	'TEST_EMAIL_SENT'				=> 'Le courriel de test a été envoyé.<br>Si vous ne le recevez pas, veuillez vérifier les paramètres courriels du forum.<br><br>Si vous avez besoin d’assistance, veuillez visiter le <a href="https://www.phpbb.com/community/">forum de support phpBB</a> (en anglais) ou le <a href="https://www.phpbb-fr.com/forums/">forum de support phpBB-fr.com</a> (en français).',
+	'TEST_EMAIL_SENT'				=> 'Le courriel de test a été envoyé.<br>Si vous ne le recevez pas, veuillez vérifier les paramètres courriels du forum.<br><br>Si vous avez besoin d’assistance, visitez le <a href="https://www.phpbb.com/community/">forum de support phpBB</a> (en anglais) ou le <a href="https://www.phpbb-fr.com/forums/">forum de support phpBB-fr.com</a> (en français).',
 
 	'USE_SMTP'						=> 'Utiliser un serveur SMTP pour l’envoi de courriels',
-	'USE_SMTP_EXPLAIN'				=> 'Sélectionnez « Oui » si vous voulez ou devez envoyer les courriels par l’intermédiaire d’un serveur au lieu d’utiliser la fonction courriel locale.',
+	'USE_SMTP_EXPLAIN'				=> 'Sélectionnez « Oui » si vous voulez ou devez envoyer les courriels par l’intermédiaire d’un serveur au lieu d’utiliser la fonction mail() de PHP.',
 ));
 
 // Jabber settings
@@ -616,7 +616,7 @@ $lang = array_merge($lang, array(
 	'JAB_ALLOW_SELF_SIGNED_EXPLAIN'	=> 'Autorise les connexions à un serveur Jabber utilisant un certificat SSL auto-signé.<br><em><strong>Attention :</strong> autoriser des certificats SSL auto-signés peut induire des problèmes de sécurité.</em>',
 	'JAB_ENABLE'					=> 'Activer Jabber',
 	'JAB_ENABLE_EXPLAIN'			=> 'Active l’utilisation de Jabber pour l’envoi de messages et de notifications.',
-	'JAB_GTALK_NOTE'				=> 'Notez que GTalk ne marchera pas car la fonction <samp>dns_get_record</samp> est introuvable. Cette fonction n’est pas disponible dans PHP4 et elle n’est pas implémentée sur les environnements Windows. Cela ne fonctionne pas non plus sur les système basés sous BSD, y compris Mac OS.',
+	'JAB_GTALK_NOTE'				=> 'Notez que GTalk ne fonctionnera pas, car la fonction <samp>dns_get_record</samp> est introuvable. Cette fonction n’est pas disponible dans PHP4 et elle n’est pas implémentée sur les environnements Windows. Cela ne fonctionne pas non plus sur les systèmes sous BSD, y compris macOS.',
 	'JAB_PACKAGE_SIZE'				=> 'Taille des paquets Jabber',
 	'JAB_PACKAGE_SIZE_EXPLAIN'		=> 'Nombre de messages envoyés dans un paquet. Si mis à « 0 », le message est envoyé immédiatement et ne sera pas placé en file d’attente.',
 	'JAB_PASSWORD'					=> 'Mot de passe Jabber',

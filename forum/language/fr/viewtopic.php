@@ -1,17 +1,17 @@
 <?php
 /**
-*
-* This file is part of the french language pack for the phpBB Forum Software package.
-* This file is translated by phpBB-fr.com <http://www.phpbb-fr.com>
-*
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
-* @license GNU General Public License, version 2 (GPL-2.0)
-*
-*/
+ *
+ * This file is part of the French language pack for the phpBB Forum Software package.
+ * This file is translated by phpBB-fr.com <https://www.phpbb-fr.com>
+ *
+ * @copyright (c) phpBB Limited <https://www.phpbb.com>
+ * @license GNU General Public License, version 2 (GPL-2.0)
+ *
+ */
 
 /**
-* DO NOT CHANGE
-*/
+ * DO NOT CHANGE
+ */
 if (!defined('IN_PHPBB'))
 {
 	exit;
@@ -41,7 +41,7 @@ if (empty($lang) || !is_array($lang))
 $lang = array_merge($lang, array(
 	'APPROVE'								=> 'Approuver',
 	'ATTACHMENT'						=> 'Fichier(s) joint(s)',
-	'ATTACHMENT_FUNCTIONALITY_DISABLED'	=> 'Les fichiers joints ont été désactivés.',
+	'ATTACHMENT_FUNCTIONALITY_DISABLED'	=> 'La fonctionnalité des fichiers joints a été désactivée.',
 
 	'BOOKMARK_ADDED'		=> 'Le sujet a été ajouté aux favoris.',
 	'BOOKMARK_ERR'			=> 'Le sujet n’a pas pu être ajouté aux favoris. Essayez à nouveau.',
@@ -67,7 +67,7 @@ $lang = array_merge($lang, array(
 	'FORK_TOPIC'			=> 'Copier le sujet',
 	'FULL_EDITOR'			=> 'Éditeur complet &amp; Aperçu',
 
-	'LINKAGE_FORBIDDEN'		=> 'Vous n’avez pas l’autorisation de consulter, télécharger ou de mettre en lien un fichier joint vers ou depuis de ce site.',
+	'LINKAGE_FORBIDDEN'		=> 'Vous n’avez pas l’autorisation de consulter, télécharger ni de mettre en lien un fichier joint vers ou depuis ce site.',
 	'LOGIN_NOTIFY_TOPIC'	=> 'Vous avez demandé à surveiller ce sujet. Connectez-vous pour le voir.',
 	'LOGIN_VIEWTOPIC'		=> 'Vous devez être enregistré et connecté pour voir ce sujet.',
 

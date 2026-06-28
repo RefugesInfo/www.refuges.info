@@ -54,7 +54,7 @@ class Signature implements SignatureInterface
         parse_str($uri->getQuery(), $queryStringData);
 
         foreach (array_merge($queryStringData, $params) as $key => $value) {
-            $signatureData[rawurlencode($key)] = rawurlencode($value);
+            $signatureData[rawurlencode($key)] = rawurlencode($value ?? '');
         }
 
         ksort($signatureData);

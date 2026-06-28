@@ -298,7 +298,7 @@ $lang = array_merge($lang, array(
 	'ACP_FEED_OVERALL_FORUMS_EXPLAIN' => 'Habilita feed de “Todos los Foros”, el cual muestra una lista de foros.',
 
 	'ACP_FEED_HTTP_AUTH'		=> 'Permitir Autenticación HTTP',
-	'ACP_FEED_HTTP_AUTH_EXPLAIN'	=> 'Habilita Autenticación HTTP, la cual permite a los usuarios recibir contenido que esté oculto a usuarios invitados, al añadir el parámetro <samp>auth=http</samp> a la URL del feed. Por favor tenga en cuenta que algunas configuraciones de PHP requieren cambios adicionales en el archivo .htaccess . En ese archivo se pueden encontrar instrucciones para saber cómo hacerlo.',
+	'ACP_FEED_HTTP_AUTH_EXPLAIN'	=> 'Habilita la autenticación HTTP, lo que permite a los usuarios acceder a contenidos ocultos para los visitantes añadiendo el parámetro <samp>auth=http</samp> a la URL del feed. Ten en cuenta que algunas configuraciones de PHP pueden requerir cambios adicionales en el archivo .htaccess; consulta dicho archivo para obtener más información. La autenticación HTTP solo es compatible con conexiones cifradas (https).',
 	'ACP_FEED_ITEM_STATISTICS'	=> 'Estadísticas de ítem',
 	'ACP_FEED_ITEM_STATISTICS_EXPLAIN' => 'Muestra estadísticas individuales debajo de los ítems de Feed<br />(Por ejemplo: Enviado por, fecha y hora, Respuestas, Vistas)',
 	'ACP_FEED_EXCLUDE_ID'		=> 'Excluir estos foros',

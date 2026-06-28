@@ -1,17 +1,17 @@
 <?php
 /**
-*
-* This file is part of the french language pack for the phpBB Forum Software package.
-* This file is translated by phpBB-fr.com <https://www.phpbb-fr.com>
-*
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
-* @license GNU General Public License, version 2 (GPL-2.0)
-*
-*/
+ *
+ * This file is part of the French language pack for the phpBB Forum Software package.
+ * This file is translated by phpBB-fr.com <https://www.phpbb-fr.com>
+ *
+ * @copyright (c) phpBB Limited <https://www.phpbb.com>
+ * @license GNU General Public License, version 2 (GPL-2.0)
+ *
+ */
 
 /**
-* DO NOT CHANGE
-*/
+ * DO NOT CHANGE
+ */
 if (!defined('IN_PHPBB'))
 {
 	exit;
@@ -352,7 +352,7 @@ $lang = array_merge($lang, array(
 		2	=> '%d invisibles',
 	),
 	'HIDE_GUESTS'					=> 'Masquer les invités',
-	'HIDE_ME'						=> 'Cacher mon statut en ligne pour cette session',
+	'HIDE_ME'						=> 'Masquer ma présence en ligne pour cette session',
 	'HOURS'							=> 'Heures',
 	'HOME'							=> 'Accueil',
 	'HTTP_HANDLER_NOT_FOUND'		=> 'L’opération a échoué car l’extension PHP cURL et le paramètre PHP allow_url_fopen sont désactivés et aucun autre gestionnaire HTTP n’a été trouvé.',

@@ -8,6 +8,7 @@ $baseDir = dirname($vendorDir);
 return array(
     'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
     'FastImageSize\\FastImageSize' => $vendorDir . '/marc1706/fast-image-size/lib/FastImageSize.php',
+    'FastImageSize\\ImageReader' => $vendorDir . '/marc1706/fast-image-size/lib/ImageReader.php',
     'FastImageSize\\Type\\TypeBase' => $vendorDir . '/marc1706/fast-image-size/lib/Type/TypeBase.php',
     'FastImageSize\\Type\\TypeBmp' => $vendorDir . '/marc1706/fast-image-size/lib/Type/TypeBmp.php',
     'FastImageSize\\Type\\TypeGif' => $vendorDir . '/marc1706/fast-image-size/lib/Type/TypeGif.php',
@@ -1072,7 +1073,6 @@ return array(
     'Symfony\\Polyfill\\Intl\\Idn\\Resources\\unidata\\Regex' => $vendorDir . '/symfony/polyfill-intl-idn/Resources/unidata/Regex.php',
     'Symfony\\Polyfill\\Intl\\Normalizer\\Normalizer' => $vendorDir . '/symfony/polyfill-intl-normalizer/Normalizer.php',
     'Symfony\\Polyfill\\Mbstring\\Mbstring' => $vendorDir . '/symfony/polyfill-mbstring/Mbstring.php',
-    'Symfony\\Polyfill\\Php72\\Php72' => $vendorDir . '/symfony/polyfill-php72/Php72.php',
     'Twig\\Cache\\CacheInterface' => $vendorDir . '/twig/twig/src/Cache/CacheInterface.php',
     'Twig\\Cache\\FilesystemCache' => $vendorDir . '/twig/twig/src/Cache/FilesystemCache.php',
     'Twig\\Cache\\NullCache' => $vendorDir . '/twig/twig/src/Cache/NullCache.php',

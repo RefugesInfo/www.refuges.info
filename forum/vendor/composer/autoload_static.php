@@ -4,12 +4,11 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticIniteb658f95a4047347f31406a96a021c80
+class ComposerStaticInitf0cffe69a7d759aef2ca92118e93a3c1
 {
     public static $files = array (
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
-        '25072dd6e2470089de65ae7bf11d3109' => __DIR__ . '/..' . '/symfony/polyfill-php72/bootstrap.php',
         '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
         'e69f7f6ee287b969198c3c9d6777bd38' => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer/bootstrap.php',
         'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
@@ -19,28 +18,27 @@ class ComposerStaticIniteb658f95a4047347f31406a96a021c80
     );
 
     public static $prefixLengthsPsr4 = array (
-        's' => 
+        's' =>
         array (
             's9e\\TextFormatter\\' => 18,
             's9e\\SweetDOM\\' => 13,
             's9e\\RegexpBuilder\\' => 18,
         ),
-        'b' => 
+        'b' =>
         array (
             'bantu\\IniGetWrapper\\' => 20,
         ),
-        'Z' => 
+        'Z' =>
         array (
             'Zend\\EventManager\\' => 18,
             'Zend\\Code\\' => 10,
         ),
-        'T' => 
+        'T' =>
         array (
             'Twig\\' => 5,
         ),
-        'S' => 
+        'S' =>
         array (
-            'Symfony\\Polyfill\\Php72\\' => 23,
             'Symfony\\Polyfill\\Mbstring\\' => 26,
             'Symfony\\Polyfill\\Intl\\Normalizer\\' => 33,
             'Symfony\\Polyfill\\Intl\\Idn\\' => 26,
@@ -60,191 +58,187 @@ class ComposerStaticIniteb658f95a4047347f31406a96a021c80
             'Symfony\\Bridge\\Twig\\' => 20,
             'Symfony\\Bridge\\ProxyManager\\' => 28,
         ),
-        'R' => 
+        'R' =>
         array (
             'ReCaptcha\\' => 10,
         ),
-        'P' => 
+        'P' =>
         array (
             'Psr\\Log\\' => 8,
             'Psr\\Http\\Message\\' => 17,
             'Psr\\Container\\' => 14,
             'PackageVersions\\' => 16,
         ),
-        'O' => 
+        'O' =>
         array (
             'OAuth\\' => 6,
         ),
-        'G' => 
+        'G' =>
         array (
             'GuzzleHttp\\Psr7\\' => 16,
             'GuzzleHttp\\Promise\\' => 19,
             'GuzzleHttp\\' => 11,
         ),
-        'F' => 
+        'F' =>
         array (
             'FastImageSize\\' => 14,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        's9e\\TextFormatter\\' => 
+        's9e\\TextFormatter\\' =>
         array (
             0 => __DIR__ . '/..' . '/s9e/text-formatter/src',
         ),
-        's9e\\SweetDOM\\' => 
+        's9e\\SweetDOM\\' =>
         array (
             0 => __DIR__ . '/..' . '/s9e/sweetdom/src',
         ),
-        's9e\\RegexpBuilder\\' => 
+        's9e\\RegexpBuilder\\' =>
         array (
             0 => __DIR__ . '/..' . '/s9e/regexp-builder/src',
         ),
-        'bantu\\IniGetWrapper\\' => 
+        'bantu\\IniGetWrapper\\' =>
         array (
             0 => __DIR__ . '/..' . '/bantu/ini-get-wrapper/src',
         ),
-        'Zend\\EventManager\\' => 
+        'Zend\\EventManager\\' =>
         array (
             0 => __DIR__ . '/..' . '/zendframework/zend-eventmanager/src',
         ),
-        'Zend\\Code\\' => 
+        'Zend\\Code\\' =>
         array (
             0 => __DIR__ . '/..' . '/zendframework/zend-code/src',
         ),
-        'Twig\\' => 
+        'Twig\\' =>
         array (
             0 => __DIR__ . '/..' . '/twig/twig/src',
         ),
-        'Symfony\\Polyfill\\Php72\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/symfony/polyfill-php72',
-        ),
-        'Symfony\\Polyfill\\Mbstring\\' => 
+        'Symfony\\Polyfill\\Mbstring\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-mbstring',
         ),
-        'Symfony\\Polyfill\\Intl\\Normalizer\\' => 
+        'Symfony\\Polyfill\\Intl\\Normalizer\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer',
         ),
-        'Symfony\\Polyfill\\Intl\\Idn\\' => 
+        'Symfony\\Polyfill\\Intl\\Idn\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-intl-idn',
         ),
-        'Symfony\\Polyfill\\Ctype\\' => 
+        'Symfony\\Polyfill\\Ctype\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-ctype',
         ),
-        'Symfony\\Component\\Yaml\\' => 
+        'Symfony\\Component\\Yaml\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/yaml',
         ),
-        'Symfony\\Component\\Routing\\' => 
+        'Symfony\\Component\\Routing\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/routing',
         ),
-        'Symfony\\Component\\Process\\' => 
+        'Symfony\\Component\\Process\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/process',
         ),
-        'Symfony\\Component\\HttpKernel\\' => 
+        'Symfony\\Component\\HttpKernel\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/http-kernel',
         ),
-        'Symfony\\Component\\HttpFoundation\\' => 
+        'Symfony\\Component\\HttpFoundation\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/http-foundation',
         ),
-        'Symfony\\Component\\Finder\\' => 
+        'Symfony\\Component\\Finder\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/finder',
         ),
-        'Symfony\\Component\\Filesystem\\' => 
+        'Symfony\\Component\\Filesystem\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/filesystem',
         ),
-        'Symfony\\Component\\EventDispatcher\\' => 
+        'Symfony\\Component\\EventDispatcher\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/event-dispatcher',
         ),
-        'Symfony\\Component\\DependencyInjection\\' => 
+        'Symfony\\Component\\DependencyInjection\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/dependency-injection',
         ),
-        'Symfony\\Component\\Debug\\' => 
+        'Symfony\\Component\\Debug\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/debug',
         ),
-        'Symfony\\Component\\Console\\' => 
+        'Symfony\\Component\\Console\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/console',
         ),
-        'Symfony\\Component\\Config\\' => 
+        'Symfony\\Component\\Config\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/config',
         ),
-        'Symfony\\Bridge\\Twig\\' => 
+        'Symfony\\Bridge\\Twig\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/twig-bridge',
         ),
-        'Symfony\\Bridge\\ProxyManager\\' => 
+        'Symfony\\Bridge\\ProxyManager\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/proxy-manager-bridge',
         ),
-        'ReCaptcha\\' => 
+        'ReCaptcha\\' =>
         array (
             0 => __DIR__ . '/..' . '/google/recaptcha/src/ReCaptcha',
         ),
-        'Psr\\Log\\' => 
+        'Psr\\Log\\' =>
         array (
             0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
         ),
-        'Psr\\Http\\Message\\' => 
+        'Psr\\Http\\Message\\' =>
         array (
             0 => __DIR__ . '/..' . '/psr/http-message/src',
         ),
-        'Psr\\Container\\' => 
+        'Psr\\Container\\' =>
         array (
             0 => __DIR__ . '/..' . '/psr/container/src',
         ),
-        'PackageVersions\\' => 
+        'PackageVersions\\' =>
         array (
             0 => __DIR__ . '/..' . '/composer/package-versions-deprecated/src/PackageVersions',
         ),
-        'OAuth\\' => 
+        'OAuth\\' =>
         array (
             0 => __DIR__ . '/..' . '/carlos-mg89/oauth/src/OAuth',
         ),
-        'GuzzleHttp\\Psr7\\' => 
+        'GuzzleHttp\\Psr7\\' =>
         array (
             0 => __DIR__ . '/..' . '/guzzlehttp/psr7/src',
         ),
-        'GuzzleHttp\\Promise\\' => 
+        'GuzzleHttp\\Promise\\' =>
         array (
             0 => __DIR__ . '/..' . '/guzzlehttp/promises/src',
         ),
-        'GuzzleHttp\\' => 
+        'GuzzleHttp\\' =>
         array (
             0 => __DIR__ . '/..' . '/guzzlehttp/guzzle/src',
         ),
-        'FastImageSize\\' => 
+        'FastImageSize\\' =>
         array (
             0 => __DIR__ . '/..' . '/marc1706/fast-image-size/lib',
         ),
     );
 
     public static $prefixesPsr0 = array (
-        'T' => 
+        'T' =>
         array (
-            'Twig_' => 
+            'Twig_' =>
             array (
                 0 => __DIR__ . '/..' . '/twig/twig/lib',
             ),
         ),
-        'P' => 
+        'P' =>
         array (
-            'ProxyManager\\' => 
+            'ProxyManager\\' =>
             array (
                 0 => __DIR__ . '/..' . '/ocramius/proxy-manager/src',
             ),
@@ -254,6 +248,7 @@ class ComposerStaticIniteb658f95a4047347f31406a96a021c80
     public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'FastImageSize\\FastImageSize' => __DIR__ . '/..' . '/marc1706/fast-image-size/lib/FastImageSize.php',
+        'FastImageSize\\ImageReader' => __DIR__ . '/..' . '/marc1706/fast-image-size/lib/ImageReader.php',
         'FastImageSize\\Type\\TypeBase' => __DIR__ . '/..' . '/marc1706/fast-image-size/lib/Type/TypeBase.php',
         'FastImageSize\\Type\\TypeBmp' => __DIR__ . '/..' . '/marc1706/fast-image-size/lib/Type/TypeBmp.php',
         'FastImageSize\\Type\\TypeGif' => __DIR__ . '/..' . '/marc1706/fast-image-size/lib/Type/TypeGif.php',
@@ -1318,7 +1313,6 @@ class ComposerStaticIniteb658f95a4047347f31406a96a021c80
         'Symfony\\Polyfill\\Intl\\Idn\\Resources\\unidata\\Regex' => __DIR__ . '/..' . '/symfony/polyfill-intl-idn/Resources/unidata/Regex.php',
         'Symfony\\Polyfill\\Intl\\Normalizer\\Normalizer' => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer/Normalizer.php',
         'Symfony\\Polyfill\\Mbstring\\Mbstring' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/Mbstring.php',
-        'Symfony\\Polyfill\\Php72\\Php72' => __DIR__ . '/..' . '/symfony/polyfill-php72/Php72.php',
         'Twig\\Cache\\CacheInterface' => __DIR__ . '/..' . '/twig/twig/src/Cache/CacheInterface.php',
         'Twig\\Cache\\FilesystemCache' => __DIR__ . '/..' . '/twig/twig/src/Cache/FilesystemCache.php',
         'Twig\\Cache\\NullCache' => __DIR__ . '/..' . '/twig/twig/src/Cache/NullCache.php',
@@ -2147,10 +2141,10 @@ class ComposerStaticIniteb658f95a4047347f31406a96a021c80
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticIniteb658f95a4047347f31406a96a021c80::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticIniteb658f95a4047347f31406a96a021c80::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticIniteb658f95a4047347f31406a96a021c80::$prefixesPsr0;
-            $loader->classMap = ComposerStaticIniteb658f95a4047347f31406a96a021c80::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitf0cffe69a7d759aef2ca92118e93a3c1::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitf0cffe69a7d759aef2ca92118e93a3c1::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInitf0cffe69a7d759aef2ca92118e93a3c1::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInitf0cffe69a7d759aef2ca92118e93a3c1::$classMap;
 
         }, null, ClassLoader::class);
     }

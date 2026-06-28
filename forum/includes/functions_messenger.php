@@ -1435,6 +1435,11 @@ class smtp_class
 			$local_host = $user->host;
 		}
 
+		// Ensure the hostname does not contain characters that could break the SMTP protocol.
+		// We specifically strip carriage returns and line feeds to prevent SMTP injection.
+		$local_host = str_replace(["\r", "\n"], '', $local_host);
+		$local_host = trim($local_host);
+
 		// If we are authenticating through pop-before-smtp, we
 		// have to login ones before we get authenticated
 		// NOTE: on some configurations the time between an update of the auth database takes so

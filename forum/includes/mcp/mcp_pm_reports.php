@@ -201,7 +201,7 @@ class mcp_pm_reports
 					'POST_SUBJECT'			=> ($pm_info['message_subject']) ? $pm_info['message_subject'] : $user->lang['NO_SUBJECT'],
 					'POST_DATE'				=> $user->format_date($pm_info['message_time']),
 					'POST_IP'				=> $pm_info['author_ip'],
-					'POST_IPADDR'			=> ($auth->acl_getf_global('m_info') && $request->variable('lookup', '')) ? @gethostbyaddr($pm_info['author_ip']) : '',
+					'POST_IPADDR'			=> ($auth->acl_getf_global('m_info') && $request->variable('lookup', '')) ? phpbb_get_host_for_ip($pm_info['author_ip']) : '',
 					'POST_ID'				=> $pm_info['msg_id'],
 
 					'U_LOOKUP_IP'			=> ($auth->acl_getf_global('m_info')) ? $this->u_action . '&amp;r=' . $report_id . '&amp;pm=' . $pm_id . '&amp;lookup=' . $pm_info['author_ip'] . '#ip' : '',

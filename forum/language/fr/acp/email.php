@@ -1,17 +1,17 @@
 <?php
 /**
-*
-* This file is part of the french language pack for the phpBB Forum Software package.
-* This file is translated by phpBB-fr.com <http://www.phpbb-fr.com>
-*
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
-* @license GNU General Public License, version 2 (GPL-2.0)
-*
-*/
+ *
+ * This file is part of the French language pack for the phpBB Forum Software package.
+ * This file is translated by phpBB-fr.com <https://www.phpbb-fr.com>
+ *
+ * @copyright (c) phpBB Limited <https://www.phpbb.com>
+ * @license GNU General Public License, version 2 (GPL-2.0)
+ *
+ */
 
 /**
-* DO NOT CHANGE
-*/
+ * DO NOT CHANGE
+ */
 if (!defined('IN_PHPBB'))
 {
 	exit;
@@ -49,7 +49,7 @@ $lang = array_merge($lang, array(
 	'EMAIL_SENT'			=> 'Votre message a été envoyé.',
 	'EMAIL_SENT_QUEUE'		=> 'Votre message a été mis en attente pour l’envoi.',
 
-	'LOG_SESSION'			=> 'Enregistre la session mail dans le journal des erreurs critiques', // clé non utilisée par phpBB
+	'LOG_SESSION'			=> 'Enregistre la session mail() dans le journal des erreurs critiques', // clé non utilisée par phpBB
 
 	'SEND_IMMEDIATELY'		=> 'Envoyer immédiatement',
 	'SEND_TO_GROUP'			=> 'Envoyer au groupe',

@@ -1,17 +1,17 @@
 <?php
 /**
-*
-* This file is part of the french language pack for the phpBB Forum Software package.
-* This file is translated by phpBB-fr.com <http://www.phpbb-fr.com>
-*
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
-* @license GNU General Public License, version 2 (GPL-2.0)
-*
-*/
+ *
+ * This file is part of the French language pack for the phpBB Forum Software package.
+ * This file is translated by phpBB-fr.com <https://www.phpbb-fr.com>
+ *
+ * @copyright (c) phpBB Limited <https://www.phpbb.com>
+ * @license GNU General Public License, version 2 (GPL-2.0)
+ *
+ */
 
 /**
-* DO NOT CHANGE
-*/
+ * DO NOT CHANGE
+ */
 if (!defined('IN_PHPBB'))
 {
 	exit;
@@ -64,10 +64,10 @@ $lang = array_merge($lang, array(
 	'CUSTOM_FIELDS_NOT_TRANSLATED'	=> 'Au moins un champ de profil personnalisé n’a pas encore été traduit. Veuillez saisir les informations nécessaires en cliquant sur le lien « Traduire ».',
 
 	'DEFAULT_ISO_LANGUAGE'			=> 'Langue par défaut [%s]',
-	'DEFAULT_LANGUAGE_NOT_FILLED'	=> 'L’entrée de langue pour la langue par défaut n’a pas été renseignée pour ce champ de profil.',
+	'DEFAULT_LANGUAGE_NOT_FILLED'	=> 'La clé de langue pour la langue par défaut n’a pas été renseignée pour ce champ de profil.',
 	'DEFAULT_VALUE'					=> 'Valeur par défaut',
 	'DELETE_PROFILE_FIELD'			=> 'Supprimer le champ de profil',
-	'DELETE_PROFILE_FIELD_CONFIRM'	=> 'Êtes-vous sûr de voir supprimer ce champ de profil ?',
+	'DELETE_PROFILE_FIELD_CONFIRM'	=> 'Êtes-vous sûr de supprimer ce champ de profil ?',
 	'DISPLAY_AT_PROFILE'			=> 'Afficher dans le panneau de l’utilisateur',
 	'DISPLAY_AT_PROFILE_EXPLAIN'	=> 'Le membre peut modifier ce champ de profil dans le panneau de l’utilisateur.',
 	'DISPLAY_AT_REGISTER'			=> 'Afficher sur la page d’enregistrement',

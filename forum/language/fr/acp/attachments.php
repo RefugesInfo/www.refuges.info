@@ -1,17 +1,17 @@
 <?php
 /**
-*
-* This file is part of the french language pack for the phpBB Forum Software package.
-* This file is translated by phpBB-fr.com <https://www.phpbb-fr.com>
-*
-* @copyright (c) phpBB Limited <https://www.phpbb.com>
-* @license GNU General Public License, version 2 (GPL-2.0)
-*
-*/
+ *
+ * This file is part of the French language pack for the phpBB Forum Software package.
+ * This file is translated by phpBB-fr.com <https://www.phpbb-fr.com>
+ *
+ * @copyright (c) phpBB Limited <https://www.phpbb.com>
+ * @license GNU General Public License, version 2 (GPL-2.0)
+ *
+ */
 
 /**
-* DO NOT CHANGE
-*/
+ * DO NOT CHANGE
+ */
 if (!defined('IN_PHPBB'))
 {
 	exit;
@@ -120,7 +120,7 @@ $lang = array_merge($lang, array(
 	'MAX_ATTACHMENTS_PM'			=> 'Nombre maximum de fichiers joints par message privé',
 	'MAX_EXTGROUP_FILESIZE'			=> 'Taille maximale du fichier',
 	'MAX_IMAGE_SIZE'				=> 'Dimensions maximales de l’image',
-	'MAX_IMAGE_SIZE_EXPLAIN'		=> 'Taille maximale des images jointes. Réglez les deux valeurs sur 0px par 0px pour désactiver le contrôle des dimensions.',
+	'MAX_IMAGE_SIZE_EXPLAIN'		=> 'Dimensions maximales des images jointes. phpBB peut tenter de les redimensionner automatiquement lors du transfert. Réglez les deux valeurs sur 0px pour désactiver le contrôle et le redimensionnement.',
 	'MAX_THUMB_WIDTH'				=> 'Largeur/hauteur maximale de la miniature générée',
 	'MAX_THUMB_WIDTH_EXPLAIN'		=> 'La miniature générée n’excédera pas la largeur ou la hauteur indiquée.',
 	'MIN_THUMB_FILESIZE'			=> 'Taille minimale de la miniature',

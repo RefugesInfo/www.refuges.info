@@ -11,13 +11,12 @@
 
 namespace FastImageSize;
 
+use FastImageSize\Type\TypeInterface;
+
 class FastImageSize
 {
 	/** @var array Size info that is returned */
 	protected $size = array();
-
-	/** @var string Data retrieved from remote */
-	protected $data = '';
 
 	/** @var array List of supported image types and associated image types */
 	protected $supportedTypes = array(
@@ -74,6 +73,17 @@ class FastImageSize
 	/** @var array An array containing the classes of supported image types */
 	protected $type;
 
+	/** @var ImageReader */
+	protected $imageReader;
+
+	/**
+	 * Constructor
+	 */
+	public function __construct()
+	{
+		$this->imageReader = new ImageReader();
+	}
+
 	/**
 	 * Get image dimensions of supplied image
 	 *
@@ -81,24 +91,59 @@ class FastImageSize
 	 * @param string $type Mimetype of image
 	 * @return array|bool Array with image dimensions if successful, false if not
 	 */
-	public function getImageSize($file, $type = '')
+	public function getImageSize(string $file, string $type = '')
 	{
 		// Reset values
 		$this->resetValues();
 
 		// Treat image type as unknown if extension or mime type is unknown
-		if (!preg_match('/\.([a-z0-9]+)$/i', $file, $match) && empty($type))
+		$fileExtension = $this->getFileExtension($file);
+		if (empty($fileExtension) && empty($type))
 		{
 			$this->getImagesizeUnknownType($file);
 		}
 		else
 		{
-			$extension = (empty($type) && isset($match[1])) ? $match[1] : preg_replace('/.+\/([a-z0-9-.]+)$/i', '$1', $type);
+			$extension = $this->selectImageExtension($fileExtension, $type);
 
 			$this->getImageSizeByExtension($file, $extension);
+			
+			if (count($this->size) < 2)
+			{
+				$this->imageReader->reset();
+				$this->getImagesizeUnknownType($file);
+			}
 		}
 
-		return sizeof($this->size) > 1 ? $this->size : false;
+		return count($this->size) > 1 ? $this->size : false;
+	}
+
+	/**
+	 * Get file extension from supplied file path
+	 *
+	 * @param string $file Path to file
+	 * @return string File extension if found, empty string if not
+	 */
+	protected function getFileExtension(string $file): string
+	{
+		if (preg_match('/\.([a-z0-9]+)$/i', $file, $match))
+		{
+			return $match[1];
+		}
+
+		return '';
+	}
+
+	/**
+	 * Select image extension to use for retrieving dimensions
+	 *
+	 * @param string $fileExtension File extension from file path
+	 * @param string $type Mimetype of image
+	 * @return string Image extension to use for retrieving dimensions
+	 */
+	protected function selectImageExtension(string $fileExtension, string $type): string
+	{
+		return (empty($type) && !empty($fileExtension)) ? $fileExtension : preg_replace('/.+\/([a-z0-9-.]+)$/i', '$1', $type);
 	}
 
 	/**
@@ -106,7 +151,7 @@ class FastImageSize
 	 *
 	 * @param string $filename Path to file
 	 */
-	protected function getImagesizeUnknownType($filename)
+	protected function getImagesizeUnknownType(string $filename)
 	{
 		// Grab the maximum amount of bytes we might need
 		$data = $this->getImage($filename, 0, Type\TypeJpeg::JPEG_MAX_HEADER_SIZE, false);
@@ -116,10 +161,10 @@ class FastImageSize
 			$this->loadAllTypes();
 			foreach ($this->type as $imageType)
 			{
-				$imageType->getSize($filename);
-
-				if (sizeof($this->size) > 1)
+				$result = $imageType->getSize($filename, $this->imageReader);
+				if ($result)
 				{
+					$this->size = $result;
 					break;
 				}
 			}
@@ -132,13 +177,17 @@ class FastImageSize
 	 * @param string $file Path to image that should be checked
 	 * @param string $extension Extension/type of image
 	 */
-	protected function getImageSizeByExtension($file, $extension)
+	protected function getImageSizeByExtension(string $file, string $extension)
 	{
 		$extension = strtolower($extension);
 		$this->loadExtension($extension);
 		if (isset($this->classMap[$extension]))
 		{
-			$this->classMap[$extension]->getSize($file);
+			$result = $this->type[$this->classMap[$extension]]->getSize($file, $this->imageReader);
+			if ($result)
+			{
+				$this->size = $result;
+			}
 		}
 	}
 
@@ -148,27 +197,7 @@ class FastImageSize
 	protected function resetValues()
 	{
 		$this->size = array();
-		$this->data = '';
-	}
-
-	/**
-	 * Set mime type based on supplied image
-	 *
-	 * @param int $type Type of image
-	 */
-	public function setImageType($type)
-	{
-		$this->size['type'] = $type;
-	}
-
-	/**
-	 * Set size info
-	 *
-	 * @param array $size Array containing size info for image
-	 */
-	public function setSize($size)
-	{
-		$this->size = $size;
+		$this->imageReader->reset();
 	}
 
 	/**
@@ -176,37 +205,25 @@ class FastImageSize
 	 *
 	 * @param string $filename Path to image
 	 * @param int $offset Offset at which reading of the image should start
-	 * @param int $length Maximum length that should be read
+	 * @param int $length Maximum length that should be read, must be greater than 0
 	 * @param bool $forceLength True if the length needs to be the specified
 	 *			length, false if not. Default: true
 	 *
 	 * @return false|string Image data or false if result was empty
 	 */
-	public function getImage($filename, $offset, $length, $forceLength = true)
+	public function getImage(string $filename, int $offset, int $length, bool $forceLength = true)
 	{
-		if (empty($this->data))
-		{
-			$this->data = @file_get_contents($filename, null, null, $offset, $length);
-		}
-
-		// Force length to expected one. Return false if data length
-		// is smaller than expected length
-		if ($forceLength === true)
-		{
-			return (strlen($this->data) < $length) ? false : substr($this->data, $offset, $length) ;
-		}
-
-		return empty($this->data) ? false : $this->data;
+		return $this->imageReader->getImage($filename, $offset, $length, $forceLength);
 	}
 
 	/**
-	 * Get return data
+	 * Set stream context options for retrieving remote images
 	 *
-	 * @return array|bool Size array if dimensions could be found, false if not
+	 * @param array $options Stream context options
 	 */
-	protected function getReturnData()
+	public function setStreamContextOptions(array $options)
 	{
-		return sizeof($this->size) > 1 ? $this->size : false;
+		$this->imageReader->setStreamContextOptions($options);
 	}
 
 	/**
@@ -225,7 +242,7 @@ class FastImageSize
 	 *
 	 * @param string $extension Extension of image
 	 */
-	protected function loadExtension($extension)
+	protected function loadExtension(string $extension)
 	{
 		if (isset($this->classMap[$extension]))
 		{
@@ -245,21 +262,50 @@ class FastImageSize
 	 *
 	 * @param string $imageType Mimetype
 	 */
-	protected function loadType($imageType)
+	protected function loadType(string $imageType): void
 	{
 		if (isset($this->type[$imageType]))
 		{
 			return;
 		}
 
-		$className = '\FastImageSize\Type\Type' . mb_convert_case(mb_strtolower($imageType), MB_CASE_TITLE);
-		$this->type[$imageType] = new $className($this);
+		$typeInstance = $this->loadTypeClass($imageType);
+		if (!$typeInstance)
+		{
+			return;
+		}
+
+		$this->type[$imageType] = $typeInstance;
 
 		// Create class map
 		foreach ($this->supportedTypes[$imageType] as $ext)
 		{
-			/** @var Type\TypeInterface */
-			$this->classMap[$ext] = $this->type[$imageType];
+			$this->classMap[$ext] = $imageType;
 		}
+	}
+
+	/**
+	 * Load class for an image type
+	 *
+	 * @param string $imageType Mimetype
+	 * @return TypeInterface|null Instance of type class if successful, null if not
+	 */
+	protected function loadTypeClass(string $imageType): ?TypeInterface
+	{
+		$className = '\FastImageSize\Type\Type' . ucfirst($imageType);
+		$filePath = __DIR__ . '/Type/Type' . ucfirst($imageType) . '.php';
+		if (!class_exists($className, false))
+		{
+			if (is_file($filePath))
+			{
+				require_once $filePath;
+			}
+			else
+			{
+				return null;
+			}
+		}
+
+		return new $className();
 	}
 }

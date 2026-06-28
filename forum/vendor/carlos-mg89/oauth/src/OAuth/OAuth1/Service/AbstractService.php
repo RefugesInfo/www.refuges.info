@@ -222,7 +222,7 @@ abstract class AbstractService extends BaseAbstractService implements ServiceInt
         $delimiter = '';
 
         foreach ($authParameters as $key => $value) {
-            $authorizationHeader .= $delimiter . rawurlencode($key) . '="' . rawurlencode($value) . '"';
+            $authorizationHeader .= $delimiter . rawurlencode($key) . '="' . rawurlencode($value ?? '') . '"';
             $delimiter = ', ';
         }
 

@@ -86,6 +86,7 @@ $lang = array_merge($lang, array(
 
 	'INSTALL_PHPBB_INSTALLED'		=> 'phpBB ist bereits installiert.',
 	'INSTALL_PHPBB_NOT_INSTALLED'	=> 'phpBB ist noch nicht installiert.',
+	'INSTALL_RESTART'				=> 'Installation neu starten',
 ));
 
 // Requirements translation
@@ -231,7 +232,7 @@ $lang = array_merge($lang, array(
 	// Form labels
 	'UPGRADE_INSTRUCTIONS'		=> 'Ein neues Feature-Release <strong>%1$s</strong> ist verfügbar. Bitte lies <a href="%2$s" title="%2$s"><strong>die Release-Bekanntmachung</strong></a>, um die Neuerungen zu erfahren und eine Anleitung zum Upgrade zu erhalten.',
 	'SERVER_CONFIG'				=> 'Server-Konfiguration',
-	'SCRIPT_PATH'				=> 'Scriptpfad',
+	'SCRIPT_PATH'				=> 'Skript-Pfad',
 	'SCRIPT_PATH_EXPLAIN'		=> 'Der Pfad, in dem die phpBB-Dateien abgelegt sind, relativ zum Domainnamen. Z.&nbsp;B. <samp>/phpBB3</samp>.',
 ));
 
@@ -374,7 +375,7 @@ $lang = array_merge($lang, array(
 			<li>Folge den Anweisungen, um deine Datenbank zu aktualisieren und lasse es bis zum Abschluss durchlaufen.</li>
 			<li>Lösche via FTP oder SSH das Verzeichnis <code class="inline">/install</code> vom Hauptverzeichnis deiner Board-Installation.<br><br></li>
 		</ol>
-		
+
 		<p>Du hast nun ein neues, aktuelles Board, das alle deine Benutzer und Beiträge enthält. Folgendes ist noch zu tun:</p>
 		<ul style="margin-left: 20px; font-size: 1.1em;">
 			<li>Aktualisiere deine Sprachpakete (sofern das deutsche Komplettpaket verwendet wird, aktualisiert sich das deutsche Sprachpaket automatisch)</li>

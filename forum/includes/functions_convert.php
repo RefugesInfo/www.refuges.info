@@ -1277,9 +1277,9 @@ function restore_config($schema)
 		{
 			$var = (empty($m[2]) || empty($convert_config[$m[2]])) ? "''" : "'" . addslashes($convert_config[$m[2]]) . "'";
 			$exec = '$config_value = ' . $m[1] . '(' . $var . ');';
-			// @codingStandardsIgnoreStart
+			// phpcs:disable Squiz.PHP.Eval
 			eval($exec);
-			// @codingStandardsIgnoreEnd
+			// phpcs:enable Squiz.PHP.Eval
 		}
 		else
 		{
@@ -1998,7 +1998,7 @@ function update_dynamic_config()
 	$config->set('num_files', (int) $db->sql_fetchfield('stat'), false);
 	$db->sql_freeresult($result);
 
-	$sql = 'SELECT SUM(filesize) as stat
+	$sql = 'SELECT SUM(' . $db->cast_expr_to_bigint('filesize') . ') as stat
 		FROM ' . ATTACHMENTS_TABLE . '
 		WHERE is_orphan = 0';
 	$result = $db->sql_query($sql);

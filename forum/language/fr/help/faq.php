@@ -1,8 +1,8 @@
 <?php
 /**
  *
- * This file is part of the french language pack for the phpBB Forum Software package.
- * This file is translated by phpBB-fr.com <http://www.phpbb-fr.com>
+ * This file is part of the French language pack for the phpBB Forum Software package.
+ * This file is translated by phpBB-fr.com <https://www.phpbb-fr.com>
  *
  * @copyright (c) phpBB Limited <https://www.phpbb.com>
  * @license GNU General Public License, version 2 (GPL-2.0)
@@ -23,7 +23,7 @@ if (empty($lang) || !is_array($lang))
 }
 
 $lang = array_merge($lang, array(
-	'HELP_FAQ_ATTACHMENTS_ALLOWED_ANSWER'	=> 'L’administrateur peut autoriser ou interdire certains types de fichiers joints. Si vous n’êtes pas sûr de ce qui est autorisé à être chargé, contactez l’administrateur pour plus d’informations.',
+	'HELP_FAQ_ATTACHMENTS_ALLOWED_ANSWER'	=> 'L’administrateur peut autoriser ou interdire certains types de fichiers joints. Si vous n’êtes pas sûr de ce qui est autorisé à être transféré, contactez l’administrateur pour plus d’informations.',
 	'HELP_FAQ_ATTACHMENTS_ALLOWED_QUESTION'	=> 'Quels fichiers joints sont autorisés sur ce forum ?',
 	'HELP_FAQ_ATTACHMENTS_OWN_ANSWER'		=> 'Pour accéder à la liste des fichiers que vous avez joints à vos messages et messages privés, allez dans votre panneau de l’utilisateur puis <em>Gestion des fichiers joints</em>.',
 	'HELP_FAQ_ATTACHMENTS_OWN_QUESTION'		=> 'Comment trouver tous mes fichiers joints ?',
@@ -171,9 +171,9 @@ $lang = array_merge($lang, array(
 	'HELP_FAQ_USERSETTINGS_CHANGE_SETTINGS_QUESTION'	=> 'Comment modifier mes paramètres ?',
 	'HELP_FAQ_USERSETTINGS_EMAIL_LOGIN_ANSWER'		=> 'Seuls les membres peuvent s’envoyer des courriels via le formulaire intégré (si la fonction a été activée par l’administrateur). Ceci pour empêcher l’utilisation malveillante de la fonctionnalité par les invités.',
 	'HELP_FAQ_USERSETTINGS_EMAIL_LOGIN_QUESTION'	=> 'Lorsque je clique sur le lien <em>courriel</em> d’un membre, on me demande de me connecter !?',
-	'HELP_FAQ_USERSETTINGS_HIDE_ONLINE_ANSWER'		=> 'Depuis votre panneau de l’utilisateur, onglet « Préférences du forum », vous trouverez l’option <em>Cacher mon statut en ligne</em>. Si vous activez cette option vous ne serez visible que par les administrateurs, les modérateurs et vous-même. Vous serez compté parmi les membres invisibles.',
+	'HELP_FAQ_USERSETTINGS_HIDE_ONLINE_ANSWER'		=> 'Depuis votre panneau de l’utilisateur, onglet « Préférences du forum », vous trouverez l’option <em>Masquer ma présence en ligne</em>. Si vous l’activez, vous ne serez visible que par les administrateurs, les modérateurs et vous-même. Vous serez compté parmi les membres invisibles.',
 	'HELP_FAQ_USERSETTINGS_HIDE_ONLINE_QUESTION'	=> 'Comment empêcher mon nom d’apparaître dans la liste des membres connectés ?',
-	'HELP_FAQ_USERSETTINGS_LANGUAGE_ANSWER'		=> 'La raison la plus probable est que l’administrateur n’ait pas installé votre langue ou bien que personne n’ait encore traduit phpBB dans votre langue. Essayez de demander à un administrateur du forum d’installer la langue désirée. Si elle n’existe pas, n’hésitez pas à créer et partager une nouvelle traduction. Vous trouverez plus d’informations sur le site Internet de <a href="https://www.phpbb.com/">phpBB</a>&reg;.',
+	'HELP_FAQ_USERSETTINGS_LANGUAGE_ANSWER'		=> 'La raison la plus probable est que l’administrateur n’a pas installé votre langue ou bien que personne n’a encore traduit phpBB dans votre langue. Essayez de demander à un administrateur du forum d’installer la langue désirée. Si elle n’existe pas, n’hésitez pas à créer et partager une nouvelle traduction. Vous trouverez davantage d’informations sur le site Internet de <a href="https://www.phpbb.com/">phpBB</a>&reg;.',
 	'HELP_FAQ_USERSETTINGS_LANGUAGE_QUESTION'	=> 'Ma langue n’est pas dans la liste !',
 	'HELP_FAQ_USERSETTINGS_RANK_ANSWER'		=> 'Les rangs, qui peuvent être associés au nom d’utilisateur, indiquent le nombre de messages postés ou identifient certains membres tels que les modérateurs et administrateurs. En général, vous ne pouvez pas directement modifier l’intitulé d’un rang car il est paramétré par l’administrateur du forum. Évitez de poster des messages sur le forum dans le seul but de passer au rang supérieur. Sur la plupart des forums, cette pratique est rarement tolérée et un modérateur (ou un administrateur) peut facilement abaisser votre compteur de messages.',
 	'HELP_FAQ_USERSETTINGS_RANK_QUESTION'	=> 'Qu’est-ce que mon rang et comment le modifier ?',

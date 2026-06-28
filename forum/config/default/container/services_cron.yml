@@ -153,6 +153,17 @@ services:
         tags:
             - { name: cron.task }
 
+    cron.task.core.purge_oauth_states:
+        class: phpbb\cron\task\core\purge_oauth_states
+        arguments:
+            - '@config'
+            - '@dbal.conn'
+            - '%tables.auth_provider_oauth_states%'
+        calls:
+            - [set_name, [cron.task.core.purge_oauth_states]]
+        tags:
+            - { name: cron.task }
+
     cron.task.core.tidy_warnings:
         class: phpbb\cron\task\core\tidy_warnings
         arguments:

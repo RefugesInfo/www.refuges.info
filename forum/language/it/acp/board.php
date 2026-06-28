@@ -302,7 +302,7 @@ $lang = array_merge($lang, array(
 	'ACP_FEED_OVERALL_FORUMS_EXPLAIN'	=> 'Questo Feed visualizza gli ultimi messaggi degli argomenti di tutti i forum.',
 
 	'ACP_FEED_HTTP_AUTH'				=> 'Abilita autenticazione HTTP',
-	'ACP_FEED_HTTP_AUTH_EXPLAIN'		=> 'Abilita l’autenticazione HTTP, che permette agli utenti di ricevere i contenuti nascosti agli ospiti con l’aggiunta del parametro <samp>auth=http</samp> all’URL Feed. Nota che alcune impostazioni del PHP richiedono ulteriori modifiche al file .htaccess. Le istruzioni possono essere trovate in quel file.',
+	'ACP_FEED_HTTP_AUTH_EXPLAIN'		=> 'Abilita l’autenticazione HTTP, consentendo agli utenti di accedere ai contenuti nascosti agli ospiti aggiungendo il parametro <samp>auth=http</samp> all’URL del feed. Si prega di notare che alcune configurazioni PHP potrebbero richiedere ulteriori modifiche al file .htaccess; fare riferimento a tale file per ulteriori informazioni. L’autenticazione HTTP è supportata solo su connessioni crittografate (https).',
 	'ACP_FEED_ITEM_STATISTICS'			=> 'Voci statistiche',
 	'ACP_FEED_ITEM_STATISTICS_EXPLAIN'	=> 'Visualizza le statistiche individuali sotto le voci Feed<br />(Inviato da, Data e ora, Risposte, Visite).',
 	'ACP_FEED_EXCLUDE_ID'				=> 'Escludi questi forum',
