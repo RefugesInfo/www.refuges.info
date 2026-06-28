@@ -83,6 +83,11 @@ switch ($vue->carte??''){
     <?php } ?>
     <meta http-equiv="Content-Type" content="text/html;charset=<?=$config_wri['encodage_des_contenu_web']?>">
 
+    <script>
+      navigator.serviceWorker.register('/service-worker.js')
+      .then(() => console.info('Service worker registred'));
+    </script>
+
     <?php if (isset ($vue->css_lib_head))
       foreach ($vue->css_lib_head as $css_lib) { ?>
         <link type="text/css" rel="stylesheet" href="<?=$css_lib?>">

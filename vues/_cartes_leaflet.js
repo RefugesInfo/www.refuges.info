@@ -124,7 +124,7 @@ function initLeafletMap(mapId, serveurAPI, versionFeatures, keys) {
    * Couches tuilées *
    *******************/
   const tileLayers = tileLayersCollection(keys),
-    baselayer = tileLayers[permalink[3]] || Object.values(tileLayers)[0];
+    baselayer = tileLayers[decodeURI(permalink[3])] || Object.values(tileLayers)[0];
 
   baselayer.addTo(map); // Fond de carte par défaut
 
