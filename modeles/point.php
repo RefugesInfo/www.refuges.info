@@ -895,6 +895,7 @@ function suppression_point($point,$id_utilisateur_qui_supprime=0)
       suppression_commentaire($commentaire_a_supprimer);
 
   // On appelle la fonction du forum qui supprime un topic
+  // FIXME: on pourrait analyser le retour d'erreur et afficher un message du genre "Note: le forum était inexistant, suppression comme demandé de la fiche"
   forum_delete_topic ($point->topic_id);
 
   // supp le point de toute façon, même si le forum n'avait pas de topic par exemple

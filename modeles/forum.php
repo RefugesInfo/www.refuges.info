@@ -116,7 +116,7 @@ function forum_delete_topic ($topic_id) {
   $db->sql_freeresult($result);
 
   if (!isset ($pids))
-    exit ('FORUM : Erreur supression topic inconnu '.$topic_id);
+    return erreur('Erreur de supression sur le forum, le topic est inconnu : '.$topic_id);
 
   delete_posts('post_id', $pids); // On ne sait pas supprimer un topic: il faut supprimer tous ses posts
   sync('forum'); // Et on nettoie un peu tout ça
