@@ -38,11 +38,8 @@
           <span class="nom_fichier_choisi"></span>
         </span>
         <i class="texte-tout-petit">
-          facultatif, format <?=$config_wri['texte_des_formats_photo_autorisee']?> de taille max=<?=getMaximumFileUploadSize()?>
-        </i>
-      </p>
-      <p>
-        La photo doit soit être votre propriété soit être sous une <a href="<?=lien_wiki("licence")?>">licence compatible</a> (pensez alors à citer son auteur si cela est requis).
+          facultatif, format <?=$config_wri['texte_des_formats_photo_autorisee']?> de taille max=<?=getMaximumFileUploadSize()?> La photo doit soit être la votre soit être sous une <a href="<?=lien_wiki("licence")?>">licence compatible</a> (pensez alors à citer son auteur si cela est requis).
+        </i>        
       </p>
       <p>
         <input type="checkbox" id="demande_correction" name="demande_correction" value="1"
@@ -103,7 +100,7 @@
     <p>Le site n'a aucun rapport avec les propriétaires ou gérants de <?=$point->article_demonstratif.' '.$point->nom_type?> (inutile de leur laisser un message ici).</p>
   <?php } ?>
   <p>
-    Le commentaire et/ou la photo que vous ajoutez sera soumis à
+    Le commentaire et la photo que vous ajoutez sera soumis à
     la <a href="<?=$config_wri['base_wiki']?>restriction_licence">licence creative commons by-sa</a>
     et pourra être réutilisé dans ce cadre.
   </p>
