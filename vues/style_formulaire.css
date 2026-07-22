@@ -87,6 +87,7 @@ form#cree_point input[type=submit]:active {
 
 form#form_point .booleen label,
 form#comment label[for=demande_correction],
+form#comment .pilule_fichier,
 form#cree_point .booleen label {
   display: inline-flex;
   align-items: center;
@@ -106,6 +107,7 @@ form#cree_point .booleen label {
 
 form#form_point .booleen label:hover,
 form#comment label[for=demande_correction]:hover,
+form#comment .pilule_fichier:hover,
 form#cree_point .booleen label:hover {
   border-color: var(--couleur_lien);
   background: color-mix(in srgb, var(--couleur_legende) 70%, transparent);
@@ -493,6 +495,70 @@ form#comment input#demande_correction:checked + label[for=demande_correction]:ho
 form#comment input#demande_correction:focus-visible + label[for=demande_correction] {
   outline: 2px solid var(--couleur_lien);
   outline-offset: 2px;
+}
+
+/* --- Sélecteur de photo : pilule + zone de glisser-déposer --- */
+
+/* Masque l'input natif (accessible via la pilule label[for=]) */
+form#comment .entree_fichier_masquee {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+form#comment .zone_depot_fichier {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  flex-wrap: wrap;
+}
+
+/* Pilule pendant un glisser-déposer au-dessus de la zone */
+form#comment .zone_depot_fichier.survol .pilule_fichier {
+  background: var(--couleur_lien);
+  border-color: var(--couleur_lien);
+  color: white;
+}
+
+/* Pilule une fois un fichier choisi */
+form#comment .zone_depot_fichier.a_un_fichier .pilule_fichier {
+  border-color: var(--couleur_lien);
+  background: color-mix(in srgb, var(--couleur_lien) 14%, var(--couleur_titre));
+}
+
+form#comment input#comment_photo:focus-visible + .pilule_fichier {
+  outline: 2px solid var(--couleur_lien);
+  outline-offset: 2px;
+}
+
+form#comment .nom_fichier_choisi {
+  font-size: 0.9em;
+  font-style: italic;
+}
+
+form#comment .nom_fichier_choisi:empty {
+  display: none;
+}
+
+/* Vignette d'aperçu de la photo choisie */
+form#comment .apercu_photo {
+  display: none;
+  height: 4.5em;
+  width: 4.5em;
+  object-fit: cover;
+  border-radius: 7px;
+  border: 1.5px solid var(--couleur_decoration_titres);
+}
+
+form#comment .zone_depot_fichier.a_un_fichier .apercu_photo {
+  display: inline-block;
 }
 
 

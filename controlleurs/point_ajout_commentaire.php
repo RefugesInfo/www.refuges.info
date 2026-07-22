@@ -4,6 +4,7 @@ Pour ajouter un commentaire rattaché à un point
 **********************************************************************************************/
 
 add_lib('style_formulaire.css');
+add_lib('point_ajout_commentaire.js');
 
 require_once ("commentaire.php");
 require_once ("point.php");

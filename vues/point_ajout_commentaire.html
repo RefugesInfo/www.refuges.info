@@ -30,7 +30,14 @@
       <?php } ?>
       <p>
         <label>Une photo ?</label>
-        <input type="file" name="comment_photo" size="15" value="" accept="image/*" />
+        <span class="zone_depot_fichier" id="zone_depot_photo">
+          <input type="file" id="comment_photo" name="comment_photo" accept="image/*" class="entree_fichier_masquee" />
+          <label for="comment_photo" class="pilule_fichier">
+            <span class="pilule_fichier_texte">Choisir ou déposer une photo</span>
+          </label>
+          <img class="apercu_photo" alt="Aperçu de la photo choisie" />
+          <span class="nom_fichier_choisi"></span>
+        </span>
         <i class="texte-tout-petit">
           facultatif, format <?=$config_wri['texte_des_formats_photo_autorisee']?> de taille max=<?=getMaximumFileUploadSize()?>
         </i>
