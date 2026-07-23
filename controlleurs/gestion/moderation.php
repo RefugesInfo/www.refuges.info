@@ -40,6 +40,11 @@ else
       case 'transfert_autre_point':
         $commentaire->id_point=$_REQUEST['id_autre_point'] ?? Null;
         $autre_point=infos_point($commentaire->id_point);
+        if (!empty($autre_point->erreur))
+        {
+          $vue->retour=erreur("Transfert impossible, le point de destination indiqué (id=$commentaire->id_point) n'est pas valide : $autre_point->message");
+          break;
+        }
 
       case 'modification':
       case 'transfert_forum':
