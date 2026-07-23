@@ -42,7 +42,7 @@ else
         $autre_point=infos_point($commentaire->id_point);
         if (!empty($autre_point->erreur))
         {
-          $vue->retour=erreur("Transfert impossible, le point de destination indiqué (id=$commentaire->id_point) n'est pas valide : $autre_point->message");
+          $vue->retour=erreur("Transfert du commentaire impossible, car le point de destination indique : $autre_point->message");
           break;
         }
 
