@@ -356,7 +356,7 @@ function modification_ajout_commentaire($commentaire)
 
   // fait-on un update ou un insert ?
   if ($mode=="modification")
-    $query_finale=requete_modification_ou_ajout_generique('commentaires',$champs_sql,'update',"id_commentaire=$commentaire->id_commentaire");
+    $query_finale=requete_modification_ou_ajout_generique('commentaires',$champs_sql,'update','id_commentaire',$commentaire->id_commentaire);
   else
     $query_finale=requete_modification_ou_ajout_generique('commentaires',$champs_sql,'insert');
 

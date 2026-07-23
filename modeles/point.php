@@ -818,7 +818,7 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
     if (isset($point_avant->erreur) and $point_avant->erreur) // oulla on nous demande une modif mais il n'existe pas ?
       return erreur("Erreur de modification du point : $point_avant->message");
 
-    $query_finale=requete_modification_ou_ajout_generique('points',$champs_sql,'update',"id_point=$point->id_point");
+    $query_finale=requete_modification_ou_ajout_generique('points',$champs_sql,'update','id_point',$point->id_point);
 
     if (!$pdo->exec($query_finale))
       return erreur("La requête SQL est en erreur, mais nous ne savons pas pourquoi, prévenez nous sur le forum, vous avez trouvé un bug !",$query_finale);

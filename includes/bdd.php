@@ -38,13 +38,15 @@ devenu tellement relou que j'ai fais cette fonction pour construire la requête
 $table = le nom de la table dans laquelle on veut mettre à jour un enregistrement ou inserer un enregistrement
 $champs_valeur = un array associatif avec comme cle, le champ à mettre à jour, sa valeur la valeur à mettre à jour
 $update_ou_insert = soit 'update' soit 'insert'
-$condition = la clause, dans le cas d'un update indiquant quel enregistrement à mettre à jour genre 'id_point=5'
+$condition_champ / $condition_valeur = dans le cas d'un update, le champ et la valeur identifiant l'enregistrement à mettre à jour (genre 'id_point', 5) ; la valeur est échappée via PDO::quote, ne jamais reconstruire cette clause par concaténation directe (injection SQL)
 
 2023 TO CHECK : Il parait que PostGresql dispose du mode : INSERT INTO table (id, x) VALUES (2, "x") ON CONFLICT (id) DO UPDATE
 Avec ça, on pourrait se passer de cette fonction (qui n'est utilisée que 2 fois)
 */
-function requete_modification_ou_ajout_generique($table,$champs_valeur,$update_ou_insert,$condition="")
+function requete_modification_ou_ajout_generique($table,$champs_valeur,$update_ou_insert,$condition_champ="",$condition_valeur=null)
 {
+  global $pdo;
+
   // Regroupement : un pas vers l'UPSERT
   foreach ($champs_valeur as $champ_sql => $valeur)
   {
@@ -52,8 +54,8 @@ function requete_modification_ou_ajout_generique($table,$champs_valeur,$update_o
     $liste_valeurs[] = $valeur;
   }
 
-  if( $condition )
-    $query = "UPDATE $table SET (".implode(',',$liste_champs).") = (".implode(',',$liste_valeurs).") WHERE $condition";
+  if( $condition_champ )
+    $query = "UPDATE $table SET (".implode(',',$liste_champs).") = (".implode(',',$liste_valeurs).") WHERE $condition_champ=".$pdo->quote($condition_valeur);
   else
     $query = "INSERT INTO $table (".implode(',',$liste_champs).") VALUES (".implode(',',$liste_valeurs).")";
 
