@@ -95,6 +95,8 @@ function infos_polygones($conditions)
 
   if (!empty($conditions->intersection))
   {
+    if (!est_entier_positif($conditions->intersection))
+      return erreur("Le paramètre donné pour intersection n'est pas valide : $conditions->intersection");
     $table_en_plus.=",polygones AS zones ";
     $conditions_sql.=" AND ST_INTERSECTS(polygones.geom, zones.geom) AND zones.id_polygone = ". $conditions->intersection ;
   }

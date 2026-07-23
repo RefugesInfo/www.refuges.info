@@ -39,6 +39,10 @@ $temp = explode(",", $req->type_polygones);
 foreach ($temp as $type_polygone) {
   if(!is_numeric($type_polygone)) { $req->type_polygones = ""; }
 }
+// On vérifie que l'id de polygone pour l'intersection est correct (un entier, ou vide)
+if($req->intersection != "" && !est_entier_positif($req->intersection)) {
+  exit ("Error : wrong intersection parameter");
+}
 // On vérifie que la bbox est correcte
 $temp = explode(",", $req->bbox);
 if(!((count($temp)==4 &&
