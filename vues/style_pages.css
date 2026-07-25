@@ -388,6 +388,11 @@ a:hover {
   margin: 1px 5px 1px 0px;
 }
 
+a img {
+  vertical-align: bottom;
+}
+
+
 .photos {
   float: left;
   position: relative;
