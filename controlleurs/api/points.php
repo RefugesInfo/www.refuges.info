@@ -81,7 +81,21 @@ if(!is_numeric($req->nb_points) && $req->nb_points!="all") {
 if(!array_key_exists($req->detail,$config_wri['api_format_detail']))
   $req->detail = "simple";
 
-$req->depuis = max(0, min (intval($req->depuis), time()));
+// Conversion en epoch time
+if($req->depuis < 0)
+  // Valeur négative = secondes avant maintenant
+  $req->depuis = time() + $req->depuis;
+else
+  // Date format US
+  $req->depuis = strtotime($req->depuis) ?:
+    // Date au format FR
+    new IntlDateFormatter('fr_FR', IntlDateFormatter::LONG, IntlDateFormatter::NONE)->parse($req->depuis) ?:
+    // Secondes depuis 1/1/1970
+    intval($req->depuis);
+
+// Entre le 1/1/2020 et maintenant
+if($req->depuis < 1577836800 || $req->depuis > time())
+  exit ("Error : wrong depuis parameter");
 
 // On vérifie que les types de points sont ok, sinon on met all comme valeur
 if($req->page!="point") {
