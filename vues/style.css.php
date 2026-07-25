@@ -68,6 +68,7 @@ if ($date_maintenant > $debut_automne and $date_maintenant < $debut_hiver) {
   --couleur_fond_amplifiee: #ccc;
   --couleur_decoration_titres: #<?=$couleur_decoration_titres?>;
   --couleur_legende: #<?=$couleur_legende?>;
+  --couleur_hover: #<?=$couleur_legende?>;
   --image_bandeau: url(../images/bandeau-haut/titrehorizontal_<?=date('m')?>.png);
 }
 
@@ -79,6 +80,7 @@ if ($date_maintenant > $debut_automne and $date_maintenant < $debut_hiver) {
     --couleur_lien: #<?=$couleur_lien_clair?>;
     --couleur_fond: #161210;
     --couleur_fond_amplifiee: #333;
+    --couleur_hover: rgba(255, 255, 255, 0.12);
   }
 }
 
@@ -89,6 +91,7 @@ body.dark {
   --couleur_lien: #<?=$couleur_lien_clair?>;
   --couleur_fond: #161210;
   --couleur_fond_amplifiee: #333;
+  --couleur_hover: rgba(255, 255, 255, 0.12);
 }
 
 /*==================================================================*/

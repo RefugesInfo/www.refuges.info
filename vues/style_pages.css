@@ -304,7 +304,7 @@ a {
 
 a:hover {
   /*met en valeur les liens qd on est dessus */
-  background-color: var(--couleur_legende);
+  background-color: var(--couleur_hover);
 }
 
 /*========= Erreurs ==========*/
