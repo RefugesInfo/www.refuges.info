@@ -32,6 +32,10 @@ RUN printf '<Directory /var/www/html>\n    AllowOverride All\n    Require all gr
         > /etc/apache2/conf-available/wri-override.conf \
     && a2enconf wri-override
 
-# short_open_tag est utilisé par du vieux code du site
-RUN printf 'short_open_tag = On\nupload_max_filesize = 20M\npost_max_size = 25M\n' \
+# Config PHP du site :
+# - short_open_tag : utilisé par du vieux code du site
+# - output_buffering : indispensable car des vues (ex. vues/style.css.php) émettent
+#   du contenu avant leur appel header('content-type: text/css'). Sans buffer, le
+#   Content-Type reste text/html et les CSS ne s'appliquent pas (comportement de prod).
+RUN printf 'short_open_tag = On\noutput_buffering = 4096\nupload_max_filesize = 20M\npost_max_size = 25M\n' \
         > /usr/local/etc/php/conf.d/wri.ini
