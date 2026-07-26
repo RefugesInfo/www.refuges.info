@@ -66,6 +66,8 @@ RewriteRule . ./index.php [L]
   <IfModule mod_filter.c>
     AddOutputFilterByType DEFLATE application/rss+xml application/xml application/json application/vnd.google-earth
     AddOutputFilterByType DEFLATE text/html text/css text/javascript application/javascript image/svg+xml
+    #Les exports : GPX (3 vues), GML (sort en text/xml et pas application/xml) et CSV
+    AddOutputFilterByType DEFLATE application/gpx+xml text/xml text/csv
   </IfModule>
 </IfModule>
 
