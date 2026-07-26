@@ -1,4 +1,6 @@
-FROM php:8.2-apache
+# PHP 8.4 : le code du site utilise des syntaxes 8.4 (ex. new X()->methode()
+# dans controlleurs/api/points.php). L'INSTALL.md mentionne 8.2 mais est obsolète.
+FROM php:8.4-apache
 
 # Dépendances système pour les extensions PHP requises par refuges.info
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -9,13 +11,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libonig-dev \
         libxml2-dev \
         libzip-dev \
+        libicu-dev \
         locales \
     && rm -rf /var/lib/apt/lists/*
 
 # Locale française (utilisée par setlocale/strftime dans includes/config.php)
 RUN sed -i 's/# fr_FR.UTF-8/fr_FR.UTF-8/' /etc/locale.gen && locale-gen
 
-# Extensions PHP : pgsql gd mbstring xml opcache zip
+# Extensions PHP : pgsql gd mbstring xml opcache zip intl
+# (intl est requis par includes/mise_en_forme_texte.php -> IntlDateFormatter)
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j"$(nproc)" \
         pdo_pgsql \
@@ -24,7 +28,8 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
         mbstring \
         xml \
         opcache \
-        zip
+        zip \
+        intl
 
 # Apache : mod_rewrite (routing via .htaccess) + AllowOverride All
 RUN a2enmod rewrite expires deflate
