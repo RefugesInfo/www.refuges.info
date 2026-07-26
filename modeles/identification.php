@@ -8,9 +8,23 @@ $infos_identification = new stdClass;
 // N'est pas applicable à l'API
 if(($controlleur->url_decoupee[0]??'') != 'api')
 {
+  // [DEV LOCAL] Permet de faire tourner le site sans le forum phpBB
+  // (schéma phpBB des dumps publics incompatible avec le code). Activé via
+  // $config_wri['forum_desactive']=true dans config_privee.php (non commité).
+  if (!empty($config_wri['forum_desactive']))
+  {
+    $user = new stdClass;
+    $user->data = [
+      'user_id'        => 1, // ANONYMOUS
+      'username'       => 'Invité',
+      'session_id'     => '',
+      'user_form_salt' => '',
+    ];
+    // $auth reste indéfini -> est_moderateur()/est_administrateur() renvoient null
+  }
   // Initialise comme une page forum
   // Cette séquence ne peut pas être dans une function
-  if (!defined('IN_PHPBB')) // Sauf dans le forum
+  elseif (!defined('IN_PHPBB')) // Sauf dans le forum
   {
     define('IN_PHPBB', true);
     $phpbb_root_path = $config_wri['rep_forum'];
