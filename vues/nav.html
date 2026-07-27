@@ -38,7 +38,11 @@
           <input type="checkbox" id="select-wri" name="select-wri" value="all">
           <span id="select-wri-status"></span>
         </li>
-        <?php foreach ($vue->types_point_affichables AS $type_affichable) { ?>
+        <?php foreach ($vue->types_point_affichables AS $type_affichable) {
+          // Un type absent du mapping produisait un src vide (".svg") : on n'affiche
+          // alors pas d'icône plutôt qu'une image cassée. Même garde que point_ajout.html
+          $icone = $config_wri['correspondance_type_icone'][replace_url($type_affichable->nom_type)] ?? null;
+        ?>
           <li>
             <input type="checkbox"
               id="select-wri-<?=$type_affichable->id_point_type?>"
@@ -46,11 +50,13 @@
               value="<?=$type_affichable->id_point_type?>"
             >
             <label for="select-wri-<?=$type_affichable->id_point_type?>">
-              <img
-                id="icone_<?=$type_affichable->id_point_type?>"
-                src="<?=$config_wri['url_chemin_icones'].$config_wri['correspondance_type_icone'][replace_url($type_affichable->nom_type)]?>.svg"
-                alt="icone de <?=$type_affichable->nom_type?>"
-              >
+              <?php if ($icone) { ?>
+                <img
+                  id="icone_<?=$type_affichable->id_point_type?>"
+                  src="<?=$config_wri['url_chemin_icones'].htmlspecialchars($icone)?>.svg"
+                  alt=""
+                >
+              <?php } ?>
               <?=$type_affichable->nom_type?>
             </label>
           </li>
