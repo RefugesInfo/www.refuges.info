@@ -57,6 +57,12 @@ headers_cors_par_default();
 headers_cache_api($_GET['cache']??10000);
 // Les autres headers, notamment 404 sont générés lors de l'include
 
+// Un nom vide ou sans aucun élément reconnaissable ne remplissait ni $images ni
+// $inconnu : on sortait un SVG tronqué avec un warning au lieu du 404 prévu
+if (!isset ($images)) {
+	$inconnu = $_GET['nom'] === '' ? '(nom vide)' : $_GET['nom'];
+}
+
 if (isset ($inconnu)) {
 	header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
 	$images = ['_404']; // Uniquement l'élément erreur 404
