@@ -60,9 +60,15 @@ RewriteRule . ./index.php [L]
 </ifmodule>
 
 #On demande la compression gzip des contenu suivants, ça gagnent vraiment de la bande passante sur les json (l'api) les xml (parfois) et l'export kml
+#On compresse aussi le html, le css, le js et les svg : ce sont des formats texte très compressibles (-72% mesuré)
+#et ça change tout pour les visiteurs en 3G/Edge depuis la montagne. Le gros morceau est myol.js : 726 Ko -> 206 Ko
 <IfModule mod_deflate.c>
   <IfModule mod_filter.c>
-    AddOutputFilterByType DEFLATE application/rss+xml application/xml application/json application/vnd.google-earth
+    #Le KML sort en "application/vnd.google-earth.kml" : sans le ".kml" la directive ne matchait rien
+    AddOutputFilterByType DEFLATE application/rss+xml application/xml application/json application/vnd.google-earth.kml
+    AddOutputFilterByType DEFLATE text/html text/css text/javascript application/javascript image/svg+xml
+    #Les exports : GPX (3 vues), GML (sort en text/xml et pas application/xml) et CSV
+    AddOutputFilterByType DEFLATE application/gpx+xml text/xml text/csv
   </IfModule>
 </IfModule>
 
