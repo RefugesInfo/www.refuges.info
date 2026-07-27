@@ -109,7 +109,7 @@ if (empty($point->erreur))
       else
       {
         $vue->type = "page_simple";
-        $vue->contenu="Impossible d'ajouter ce commentaire car : ".$commentaire->message;
+        $vue->contenu=$vue->titre="Impossible d'ajouter ce commentaire car : ".$commentaire->message;
         return;
       }
 
@@ -121,6 +121,8 @@ if (empty($point->erreur))
 
   // Qu'on arrive juste ou que l'on vienne déjà de rentrer un premier commentaire, on affiche le formulaire (rappel paramètres si erreur, vide si nouveau commentaire de +)
   $vue->nom_point=protege($point->nom);
+  // Le titre n'était défini que dans les branches d'erreur : la page nominale sortait avec un <title> vide
+  $vue->titre="Ajouter une information ou une photo sur $vue->nom_point";
   $vue->lien_point=lien_point($point);
   $vue->point_existe=True;
   $vue->commentaire=$commentaire;
