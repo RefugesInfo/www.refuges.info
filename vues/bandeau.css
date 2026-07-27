@@ -59,11 +59,17 @@ body {
 }
 
 /* Ligne de menus */
+/* :focus-within => le menu s'ouvre aussi quand on y arrive au clavier.
+   Sans ça, les liens restaient dans l'ordre de tabulation mais en opacity:0,
+   donc invisibles : on traversait 18 éléments fantômes avant le contenu. */
 .menu-touch:not(.menu-liste)>ul,
 .menu-hover:not(.menu-liste)>ul,
+.menu-bouton:focus-within:not(.menu-liste)>ul,
 .menu-touch:not(.menu-liste)>form,
 .menu-hover:not(.menu-liste)>form,
+.menu-bouton:focus-within:not(.menu-liste)>form,
 .menu-hover:not(.menu-liste)>p,
+.menu-bouton:focus-within:not(.menu-liste)>p,
 .menu-hover:not(.menu-liste)>a {
   opacity: 1;
   z-index: 2000;
@@ -83,7 +89,8 @@ body {
 }
 
 .menu-touch:not(.menu-liste) li,
-.menu-hover:not(.menu-liste) li {
+.menu-hover:not(.menu-liste) li,
+.menu-bouton:focus-within:not(.menu-liste) li {
   /* Pour transition */
   max-height: 2.2em;
 }
