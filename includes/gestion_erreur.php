@@ -14,8 +14,8 @@ function fichier_vue($nom_fichier_vue, $chemin = 'chemin_vues', $url = false)
   if (file_exists($config_wri[$chemin].$nom_fichier_vue)) {
     if($url)
       // Calcule la date du fichier pour la mettre en paramètre pour pouvoir l'uploader quand il évolue
-      return $config_wri['url_'.$chemin].$nom_fichier_vue.'?'
-        .filemtime($config_wri[$chemin].$nom_fichier_vue);
+      return $config_wri['url_'.$chemin].$nom_fichier_vue.'?md='
+        .substr(md5_file($config_wri[$chemin].$nom_fichier_vue), 6, 6);
     else
       return $config_wri[$chemin].$nom_fichier_vue;
   }
