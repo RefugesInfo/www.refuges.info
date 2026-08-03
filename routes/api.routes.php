@@ -44,7 +44,8 @@ switch ($cible) {
 }
 
 // Trace des appels API exploitables dans "Menu" -> "Historique des traces"
-if (isset($pdo)) { // Sauf /api/doc
+if (microtime(true) - $__time_start > 1000 &&
+  isset($pdo)) { // Sauf /api/doc
   require_once ($config_wri['rep_forum'].'ext/RefugesInfo/trace/geoip2/geodata.php');
 
   $geodata = geodata();
