@@ -12,10 +12,6 @@
   margin: 0;
 }
 
-.traces > p > a:first-letter {
-  text-transform: capitalize;
-}
-
 .traces #edit-requete input {
   width: 30em !important;
 }

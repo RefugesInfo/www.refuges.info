@@ -26,6 +26,9 @@ class release_2_0_1 extends \phpbb\db\migration\migration
           'uri' => ['TEXT', NULL],
           'host' => ['CHAR:255', NULL],
           'appel' => ['CHAR:128', NULL],
+          'post' => ['TEXT', NULL],
+          'files' => ['TEXT', NULL],
+          'duree' => ['UINT', NULL],
           'user_agent' => ['CHAR:255', NULL],
           'language' => ['CHAR:128', NULL],
           'browser_locale' => ['CHAR:128', NULL],
@@ -54,6 +57,7 @@ class release_2_0_1 extends \phpbb\db\migration\migration
       'add_index' => [
         'trace_requettes' => [
           'trace_id' => ['trace_id'],
+          'appel' => ['appel'],
           'ext_error' => ['ext_error'],
           'to_check' => ['to_check'],
           'uri' => ['uri'],
@@ -63,6 +67,7 @@ class release_2_0_1 extends \phpbb\db\migration\migration
           'user_id' => ['user_id'],
           'id_point' => ['id_point'],
           'id_commentaire' => ['id_commentaire'],
+          'duree' => ['duree'],
           'asn_id' => ['asn_id'],
           'browser_operator' => ['browser_operator'],
         ],

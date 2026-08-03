@@ -43,3 +43,20 @@ switch ($cible) {
     break;
 }
 
+// Trace des appels API exploitables dans "Menu" -> "Historique des traces"
+if (isset($pdo)) { // Sauf /api/doc
+  require_once ($config_wri['rep_forum'].'ext/RefugesInfo/trace/geoip2/geodata.php');
+
+  $geodata = geodata();
+  $geodata['appel'] = 'Requête API';
+  $geodata['browser_operator'] = 'api';
+  $geodata['text'] = $geodata['uri'];
+  $geodata['ext_error'] = null;
+
+  $query = requete_modification_ou_ajout_generique(
+    'trace_requettes',
+     array_map (fn($str) => $pdo->quote($str), $geodata),
+    'insert'
+  );
+  $pdo->query($query);
+}
