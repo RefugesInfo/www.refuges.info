@@ -5,6 +5,18 @@ Cette doc a été remise à jour en 2025 mais c'est pas très complet ! il est m
 Je ne la tiens pas trop à jour car cela me servait surtout à moi en cas de besoin de tout ré-installer. Je dirais que si votre but est d'améliorer le code de www.refuges.info il me semble plus simple que je vous ouvre une zone de développement sur notre serveur, 
 ça vous évitera sans doute des complications.
 
+Juste faire tourner le site en local (Docker)
+=============================================
+
+Si vous voulez seulement une copie du site qui tourne sur votre machine pour bidouiller le code, il y a une stack Docker prête à l'emploi :
+
+```
+make up      # site sur http://localhost:8080
+make seed    # quelques massifs, points et commentaires de démo
+```
+
+Voir docker/README.md pour les détails et les limites (base quasi vide, forum phpBB désactivé). Le reste de ce fichier décrit l'installation sur un vrai serveur.
+
 Installation
 ============
 
