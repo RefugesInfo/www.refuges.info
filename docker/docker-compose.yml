@@ -1,0 +1,35 @@
+# Stack de développement local pour www.refuges.info
+# Piloté par le Makefile à la racine du dépôt (make up / down / logs ...).
+name: refuges-info
+
+services:
+  db:
+    image: postgis/postgis:15-3.4
+    environment:
+      POSTGRES_USER: refuges
+      POSTGRES_PASSWORD: refuges
+      POSTGRES_DB: refuges
+    volumes:
+      - wri_pgdata:/var/lib/postgresql/data
+    ports:
+      - "5434:5432"   # exposé sur 5434 pour ne pas gêner un postgres local sur 5432
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U refuges -d refuges"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ..:/var/www/html   # le dépôt est servi en direct (code live)
+    ports:
+      - "8080:80"
+
+volumes:
+  wri_pgdata:
