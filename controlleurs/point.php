@@ -57,7 +57,8 @@ else // le point est valide
       $vue->localisation_point[$polygone->categorie_polygone_type][] = $polygone; // On sépare en autant de tableaux qu'il y a de catégories
   }
   if ($point->modele!=1)
-    $vue->forum_point = infos_point_forum ($point);
+    // [DEV LOCAL] forum phpBB désactivé : pas de posts à afficher (voir config_privee.php)
+    $vue->forum_point = empty($config_wri['forum_desactive']) ? infos_point_forum ($point) : array();
 
   $vue->lienforum=$config_wri['forum_refuge']."?t=".$point->topic_id;
 
