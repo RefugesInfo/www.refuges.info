@@ -94,7 +94,7 @@ else
     intval($req->depuis);
 
 // On vérifie que les types de points sont ok
-if($req->page!="point") {
+if($req->page!="point" && !empty($req->type_points)) {
   $temp = explode(",", $req->type_points);
   foreach ($temp as $type_point) {
     if (!in_array($type_point,$val->type_points) &&
