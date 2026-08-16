@@ -10,7 +10,7 @@
     <h4><?=$vue->stat->nbpoints?> points, <?=$vue->stat->nbmassifs?> massifs</h4>
     <div id="carte-accueil" class="carte"></div>
 
-    <h5>Et encore...</h5>
+    <h5>Autres zones :</h5>
     <ul class="liste-massifs">
       <?php if (isset($vue->zones_couvertes)) foreach ($vue->zones_couvertes AS $nom_zone => $lien) { ?>
         <li>
