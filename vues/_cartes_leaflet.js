@@ -1,4 +1,4 @@
-/* global L, MarkerCompass, tileLayerIGN, controlPreload, wriPOILayer, wriPolygonLayer */
+/* global L, MarkerCompass, tileLayerIGN, wriPOILayer, wriPolygonLayer */
 
 /***************************
  * Déclaration de la carte *
@@ -238,8 +238,6 @@ function initLeafletMap(mapId, serveurAPI, versionFeatures, layerKeys) {
   });
 
   L.control.layers(tileLayers, vectorLayers).addTo(map);
-
-  controlPreload.addTo(map);
 
   // Lance le chargement de la carte
   map.setView([permalink[1], permalink[2]], permalink[0]);
