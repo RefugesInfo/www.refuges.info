@@ -14,15 +14,20 @@ $config_wri['base_pgsql']="???";
 
 // Les clés des cartes sous contrat gratuit
 $config_wri['mapKeys'] = [
-  'thunderforest' => '???',// Clé à https://manage.thunderforest.com
-  'mapbox' => '???', // Clé à https://www.mapbox.com/
-  'bing' => '???', // Clé à https://www.bingmapsportal.com/
-  'ign' => '???', // Clé gratuite pour TOP25 // Clé à https://geoservices.ign.fr/
+  'isomaps' => '???', // Clé pour https://api.iso-maps.com
+  'thunderforest' => '???', // Clé pour https://manage.thunderforest.com
+  'mapbox' => '???', // Clé pour https://www.mapbox.com/
+  'bing' => '???', // Clé pour https://www.bingmapsportal.com/
+  'ign' => '???', // Clé gratuite pour TOP25 // Clé pour https://geoservices.ign.fr/
   // SwissTopo : You need to register your domain in https://shop.swisstopo.admin.ch/fr/products/geoservice/swisstopo_geoservices/WMTS_info
 ];
 
 // Décommenter pour
-//$config_wri['debug']=true; // afficher un peu plus de debug sur certaines fonctions utilisant la fonction erreur()
+//$config_wri['affichage_bandeau_info'] = true;
+//$config_wri['trace_api_threshold']=2; // Secondes / Soeuil de durée à partir duquel on garde trace des appels API
+//$config_wri['trace_no_edit_check_groups']=[201,202]; // Groupes dont on n'enregistre pas les traces (Admin, modos)
+//$config_wri['trace_block_asn']=['AS209155']; // ASn dont on n'enregistre pas les traces (Onehostplanet)
+//$config_wri['debug']=true; // Afficher un peu plus de debug sur certaines fonctions utilisant la fonction erreur()
 //$config_wri['nom_ol']='myol-debug'; // utiliser myol-debug.js à la place de myol.js
 
 // Ici choisissez les options pour afficher les erreurs php
