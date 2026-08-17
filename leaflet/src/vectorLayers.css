@@ -12,6 +12,10 @@
   opacity: 0 !important;
 }
 
+.leaflet-control-layers-overlays img {
+  width: 16px;
+}
+
 /* Overpass popups */
 .leaflet-popup-content {
   margin: 3px;

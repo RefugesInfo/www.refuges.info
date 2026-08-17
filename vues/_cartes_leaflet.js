@@ -92,13 +92,13 @@ function initLeafletMap(mapId, serveurAPI, versionFeatures, layerKeys) {
    ************************/
   // Couches refuges.info
   const clusteredOverlays = {
-      'Cabane non gardée': 7,
-      'Refuge gardé': 10,
-      'Gîte d\'étape': 9,
-      'Grotte': 29,
-      'Point d\'eau': 23,
-      'Passage délicat': 3,
-      'Bâtiment en montagne': 28,
+      '<img src="/images/icones/cabane.svg"/> Cabane non gardée': 7,
+      '<img src="/images/icones/cabane_red.svg"/> Refuge gardé': 10,
+      '<img src="/images/icones/cabane_green.svg"/> Gîte d\'étape': 9,
+      '<img src="/images/icones/grotte.svg"/> Grotte': 29,
+      '<img src="/images/icones/pointdeau.svg"/> Point d\'eau': 23,
+      '<img src="/images/icones/triangle_a33.10.svg"/> Passage délicat': 3,
+      '<img src="/images/icones/cabane_white_black_a63.svg"/> Bâtiment en montagne': 28,
     },
     // Couches extérieures
     OverpassOverlays = {
@@ -237,7 +237,8 @@ function initLeafletMap(mapId, serveurAPI, versionFeatures, layerKeys) {
     map.setView(evt.latlng, Math.max(15, map.getZoom()));
   });
 
-  L.control.layers(tileLayers, vectorLayers).addTo(map);
+  L.control.layers(tileLayers).addTo(map);
+  L.control.layers(null, vectorLayers).addTo(map);
 
   // Lance le chargement de la carte
   map.setView([permalink[1], permalink[2]], permalink[0]);
