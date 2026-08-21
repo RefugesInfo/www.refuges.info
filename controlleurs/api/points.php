@@ -93,15 +93,17 @@ else
     // Secondes depuis 1/1/1970
     intval($req->depuis);
 
-// On vérifie que les types de points sont ok
+// On vérifie que les types de points sont ok — les types inconnus sont ignorés silencieusement
 if($req->page!="point" && !empty($req->type_points)) {
   $temp = explode(",", $req->type_points);
+  $types_valides = [];
   foreach ($temp as $type_point) {
-    if (!in_array($type_point,$val->type_points) &&
-      !in_array($type_point,$val->type_points_id)) {
-      exit ("Error : no valid type : $type_point");
+    if (in_array($type_point,$val->type_points) ||
+      in_array($type_point,$val->type_points_id)) {
+      $types_valides[] = $type_point;
     }
   }
+  $req->type_points = empty($types_valides) ? "all" : implode(",", $types_valides);
 }
 else {
   $req->type_points = "all";
