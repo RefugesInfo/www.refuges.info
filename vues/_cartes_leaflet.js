@@ -84,14 +84,14 @@ function initLeafletMap(mapId, serveurAPI, versionFeatures, layerKeys) {
           attribution: '<a href="https://www.google.com/maps"> Google</a>',
         }),
     },
-    permalink = localStorage.permalink.split('/'),
+    permalink = (localStorage.permalink || '').split('/'),
     baselayer = tileLayers[decodeURI(permalink[3])] || Object.values(tileLayers)[0];
 
   /************************
    * Couches vectorielles *
    ************************/
   // Couches refuges.info
-  const clusteredOverlays = {
+  const clusteredVectorlayers = {
       '<img src="/images/icones/cabane.svg"/> Cabane non gardée': 7,
       '<img src="/images/icones/cabane_red.svg"/> Refuge gardé': 10,
       '<img src="/images/icones/cabane_green.svg"/> Gîte d\'étape': 9,
@@ -100,8 +100,9 @@ function initLeafletMap(mapId, serveurAPI, versionFeatures, layerKeys) {
       '<img src="/images/icones/triangle_a33.10.svg"/> Passage délicat': 3,
       '<img src="/images/icones/cabane_white_black_a63.svg"/> Bâtiment en montagne': 28,
     },
+    clusteredVectorlayersByName = {},
     // Couches extérieures
-    OverpassOverlays = {
+    OverpassVectorlayers = {
       'hôtel': '["tourism"~"hotel|guest_house|chalet|hostel|apartment"]',
       'camping': '["tourism"="camp_site"]',
       'point d\'eau': '["natural"="spring"]({{bbox}});nwr["amenity"="drinking_water"]',
@@ -109,7 +110,7 @@ function initLeafletMap(mapId, serveurAPI, versionFeatures, layerKeys) {
       'parking': '["amenity"="parking"]["access"!="private"]',
       'bus': '["highway"="bus_stop"]',
     },
-    vectorLayers = {},
+    overlayLayers = {},
     memCheckedLayers = typeof localStorage.checkedLayers === 'string' ?
     localStorage.checkedLayers.split(',') : ['Cabane non gardée', 'Refuge gardé', 'Gîte d\'étape'], // Par défaut
 
@@ -119,24 +120,28 @@ function initLeafletMap(mapId, serveurAPI, versionFeatures, layerKeys) {
       showCoverageOnHover: false, // Optional: hides the cluster bounds polygon
     });
 
-  for (const [titre, typeId] of Object.entries(clusteredOverlays))
-    vectorLayers[titre] =
-    L.featureGroup.subGroup(vectorCluster).addLayer(
-      wriPOILayer(serveurAPI, typeId, versionFeatures)
-    );
+  for (const [titre, typeId] of Object.entries(clusteredVectorlayers)) {
+    const poiLayer = wriPOILayer(serveurAPI, typeId, versionFeatures);
 
-  vectorLayers['Régions'] = wriPolygonLayer(serveurAPI, 11, versionFeatures);
-  vectorLayers.Massifs = wriPolygonLayer(serveurAPI, 1, versionFeatures);
+    // Remove icons from name & get the poi layer (not the cluster)
+    clusteredVectorlayersByName[titre.replace(/<[^>]+> /gu, '')] = poiLayer;
+
+    // Display as overlay
+    overlayLayers[titre] = L.featureGroup.subGroup(vectorCluster).addLayer(poiLayer);
+  }
+
+  overlayLayers['Régions'] = wriPolygonLayer(serveurAPI, 11, versionFeatures);
+  overlayLayers.Massifs = wriPolygonLayer(serveurAPI, 1, versionFeatures);
 
   // Couche externe d'itinéraires
-  vectorLayers['Itinéraires'] = L.tileLayer(
+  overlayLayers['Itinéraires'] = L.tileLayer(
     'https://tile.waymarkedtrails.org/hiking/{z}/{x}/{y}.png', {
       maxZoom: 18,
     });
 
   // Couches OSM OverPass
-  for (const [titre, query] of Object.entries(OverpassOverlays))
-    vectorLayers['OSM ' + titre] = new L.OverPassLayer({
+  for (const [titre, query] of Object.entries(OverpassVectorlayers))
+    overlayLayers['OSM ' + titre] = new L.OverPassLayer({
       query: '(nwr' + query + '({{bbox}}););out center;',
       markerIcon: L.icon({
         iconUrl: serveurAPI + '/images/icones/' + titre.replace('ô', 'o').replace(/[^a-z]/gu, '') + '.svg',
@@ -165,16 +170,14 @@ function initLeafletMap(mapId, serveurAPI, versionFeatures, layerKeys) {
         checkedLayers = [];
 
       for (const lsInputEl of overlaySelectors) {
-        const titre = lsInputEl.parentElement.lastChild.innerText.substring(1);
+        const titre = lsInputEl.parentElement.lastChild.innerText.trim();
 
-        // Restaure les couches précédentes
+        // Restaure les couches overlays précédentes
         if (evt.type === 'load' && memCheckedLayers.includes(titre)) {
-          if (Object.keys(clusteredOverlays).includes(titre))
-            vectorLayers[titre].eachLayer((layer) => {
-              layer.on('adddata', () => lsInputEl.click());
-            });
+          if (clusteredVectorlayersByName[titre])
+            clusteredVectorlayersByName[titre].on('adddata', () => lsInputEl.click()); // Overlays vector
           else
-            lsInputEl.click();
+            lsInputEl.click(); // Overlays tiles
         }
 
         // Mémorise les couches actuelles
@@ -198,7 +201,7 @@ function initLeafletMap(mapId, serveurAPI, versionFeatures, layerKeys) {
 
       for (const lsInputEl of baselayerSelector)
         if (lsInputEl.checked)
-          baseLayerName = lsInputEl.parentElement.lastChild.innerText.substring(1);
+          baseLayerName = lsInputEl.parentElement.lastChild.innerText.trim();
 
       localStorage.permalink = [evt.target.getZoom(), pos.lat, pos.lng]
         .map(f => Math.round(f * 10000) / 10000)
@@ -238,7 +241,7 @@ function initLeafletMap(mapId, serveurAPI, versionFeatures, layerKeys) {
   });
 
   L.control.layers(tileLayers).addTo(map);
-  L.control.layers(null, vectorLayers).addTo(map);
+  L.control.layers(null, overlayLayers).addTo(map);
 
   // Lance le chargement de la carte
   map.setView([permalink[1], permalink[2]], permalink[0]);

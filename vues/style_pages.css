@@ -460,6 +460,20 @@ a img {
   aspect-ratio: 4/3; /* La carte prendra le meilleur des précédents */
 }
 
+/* Sélecteur externe au delà d'une certaine largeur de fenêtre */
+#conteneur-selecteur-points {
+  float: left;
+}
+
+#conteneur-selecteur-points label {
+  display: block;
+}
+
+/* N'affiche pas un layer control qui n'a pas de choix */
+#carte-accueil .leaflet-control-layers:not(:has(label)) {
+  display: none;
+}
+
 .accueil-switcher {
   float: right !important;
   background-color: var(--couleur_titre) !important;
