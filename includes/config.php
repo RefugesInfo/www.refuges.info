@@ -48,6 +48,7 @@ $config_wri['lien_forum']="/forum/";
 // Liste des icône de base pour nos types de point de base, va être utilisé comme case à cocher à gauche de la carte
 $config_wri['correspondance_type_icone'] = [
   'batiment-en-montagne' => 'cabane_white_black_a63',
+  'batiment-a-investiguer' => 'cabane_white_black_a63',
   'cabane-non-gardee' => 'cabane',
   'gite-d-etape' => 'cabane_green',
   'lac' => 'lac',
