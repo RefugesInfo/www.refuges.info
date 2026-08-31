@@ -415,9 +415,15 @@ form#form_point .booleen label:has(input[type=text]) {
   .contenu:has(#conteneur-carte-saisie) {
     display: grid;
     grid-template-columns: 3fr 2fr;
-    grid-template-areas: "form carte";
+    grid-template-areas:
+      "alerte alerte"
+      "form carte";
     gap: 1em;
     align-items: start;
+  }
+
+  .warning {
+    grid-area: alerte;
   }
 
   #form_point {
