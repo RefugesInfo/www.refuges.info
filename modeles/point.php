@@ -941,18 +941,22 @@ function choix_icone($point)
   // conversion de nos types de points vers une icône de base
   $nom_icone=$config_wri['correspondance_type_icone'][replace_url($point->nom_type)] ?? '';
 
-  // Une icone de base spéciale pour les cabanes dont il manque un mur
+  // Une icone de base dédiée pour les cabanes dont il manque un mur
   if ( $point->manque_un_mur and $point->id_point_type==$config_wri['id_cabane_non_gardee'] )
     $nom_icone="cabane_manqueunmur";
 
-   /* options qui s'ajoutent */
+  // Bâtiment à investiguer fermé : icône de base dédiée sans le "?" et on peut lui ajouter les attributs ensuite, dont la croix
+  if ( $point->id_point_type==$config_wri['id_batiment_en_montagne'] and $point->conditions_utilisation=="fermeture" )
+    $nom_icone="cabane_white_black";
+  
+  /* options qui s'ajoutent */
   if ( $point->id_point_type==$config_wri['id_cabane_non_gardee'] and $point->places==0 )
     $nom_icone.="_a48";
 
   if ( ($point->cheminee or $point->poele) and $point->id_point_type==$config_wri['id_cabane_non_gardee'] )
     $nom_icone.="_feu";
 
-  if ( $point->eau_a_proximite and in_array($point->id_point_type,$config_wri['tout_type_refuge']) )
+  if ( $point->eau_a_proximite )
     $nom_icone.="_eau";
 
   // il faut une clé pour rentrer dans cette cabane
@@ -960,7 +964,7 @@ function choix_icone($point)
     $nom_icone.="_cle";
 
   // N'importe quoi d'inutilisable, on ajoute la croix noire
-  if ( $point->conditions_utilisation=="fermeture" or $point->conditions_utilisation=="detruit" )
+  elseif ( $point->conditions_utilisation=="fermeture" or $point->conditions_utilisation=="detruit" )
     $nom_icone.="_x";
 
   // Pour les points d'eau intermittents
