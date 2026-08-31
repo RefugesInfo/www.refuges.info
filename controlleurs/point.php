@@ -37,6 +37,14 @@ if (!empty($point->erreur))
 }
 else // le point est valide
 {
+  // Redirect 301 vers l'URL canonique si l'URL reçue est différente (url courte, tronquée, type changé...)
+  $url_canonique = lien_point($point, true);
+  $url_recue = strtok($controlleur->url_complete, '?');
+  if ($url_recue !== $url_canonique) {
+    header('Location: ' . $url_canonique, true, 301);
+    exit();
+  }
+
   // Les infos du point deviennent des membres de $vue ($vue->point->latitude ...)
   $vue->point=$point;
   $vue->nom_createur = protege($point->nom_createur);
