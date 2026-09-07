@@ -104,8 +104,6 @@ if (empty($point->erreur))
       if (empty($vue->messages->erreur))
       {
         // succes passe en parametre URL
-        // Nettoyage de la photo avant redirect
-        if (isset($file_path) && is_uploaded_file($file_path)) unlink($file_path);
         header("Location: /point_ajout_commentaire/".$commentaire->id_point."?succes=1");
         exit;
       }
