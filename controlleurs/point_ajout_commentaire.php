@@ -100,11 +100,14 @@ if (empty($point->erreur))
       ];
       extract($phpbb_dispatcher->trigger_event('refugesinfo.ajout_commentaire', compact($vars)));
 
-      // ça semble avoir marché, on vide juste son texte qu'il puisse ressaisir un commentaire
+      // PRG : evite les soumissions en double sur refresh
       if (empty($vue->messages->erreur))
       {
-        $commentaire->texte_propre="";
-        $vue->succes_ajout_commentaire=True;
+        // succes passe en parametre URL
+        // Nettoyage de la photo avant redirect
+        if (isset($file_path) && is_uploaded_file($file_path)) unlink($file_path);
+        header("Location: /point_ajout_commentaire/".$commentaire->id_point."?succes=1");
+        exit;
       }
       else
       {
@@ -113,10 +116,12 @@ if (empty($point->erreur))
         return;
       }
 
-      // Nettoyage de la photo envoyée qu'elle fût ou non insérée correctement comme commentaire
-      if (is_uploaded_file ( $file_path))
-        unlink($file_path);
     }
+  }
+
+  // Flash message apres redirect PRG
+  if (!empty($_GET["succes"])) {
+    $vue->succes_ajout_commentaire = true;
   }
 
   // Qu'on arrive juste ou que l'on vienne déjà de rentrer un premier commentaire, on affiche le formulaire (rappel paramètres si erreur, vide si nouveau commentaire de +)
