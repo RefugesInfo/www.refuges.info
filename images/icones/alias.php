@@ -22,6 +22,7 @@ $alias = [
 	'gare' => 'cabane_white_black_loco',
 	'gite' => 'cabane_green',
 	'grotte' => 'arc_lightgrey_black_manqueunmur',
+	'grotte_eau' => 'arc_lightgrey_black_manqueunmur_eau',
 	'hotel' => 'cabane_blue',
 	'ile' => 'lac_orange_a45.8.15',
 	'inconnu' => 'cabane_white_black_a63',
