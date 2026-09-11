@@ -50,11 +50,10 @@ $config_wri['correspondance_type_icone'] = [
   'batiment-a-investiguer' => 'cabane_white_black_a63',
   'cabane-non-gardee' => 'cabane',
   'gite-d-etape' => 'cabane_green',
-  'lac' => 'lac',
   'passage-delicat' => 'triangle_a33.10',
   'point-d-eau' => 'pointdeau',
   'refuge-garde' => 'cabane_red',
-  'grotte' => 'grotte',
+  'grotte' => 'arc_lightgrey_black_manqueunmur',
 ];
 
 // Liste des autres icônes utilisées dans les cartes : n'est utilisée que pour l'export kml dont la liste des icônes doit être définie comme style en en-tête de fichier

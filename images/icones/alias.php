@@ -22,7 +22,6 @@ $alias = [
 	'gare' => 'cabane_white_black_loco',
 	'gite' => 'cabane_green',
 	'grotte' => 'arc_lightgrey_black_manqueunmur',
-	'grotte_eau' => 'arc_lightgrey_black_manqueunmur_eau',
 	'hotel' => 'cabane_blue',
 	'ile' => 'lac_orange_a45.8.15',
 	'inconnu' => 'cabane_white_black_a63',
@@ -56,10 +55,9 @@ $alias = [
 	'ville' => 'cabane_white_black_a86',
 
 	// WRI
-	//'gite-d-etape' => 'blue',
-	//'passage-delicat' => 'triangle_a33',
-	// Favicon
+  // A noter, la correspondance "nom de base dans WRI" et "représentation en icône" n'est pas défini ici mais dans include/config.php $config_wri['correspondance_type_icone']
 	'favicon' => 'feu_cabane_porte_oeuil_t384',
+
 	// PRC
 	'cabane_fermee' => 'cabane_white_black_x',
 	'cabane_mais' => 'cabane_white_black_x',
