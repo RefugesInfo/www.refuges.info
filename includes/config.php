@@ -56,19 +56,6 @@ $config_wri['correspondance_type_icone'] = [
   'grotte' => 'arc_lightgrey_black_manqueunmur',
 ];
 
-// Liste des autres icônes utilisées dans les cartes : n'est utilisée que pour l'export kml dont la liste des icônes doit être définie comme style en en-tête de fichier
-$config_wri['definition_icones'] = array_merge ($config_wri['correspondance_type_icone'], [
-  'ancien-point-d-eau' => 'pointdeau_x',
-  'batiment-inutilisable' => 'cabane_white_black_x',
-  'cabane-avec-eau' => 'cabane_eau',
-  'cabane-avec-moyen-de-chauffage' => 'cabane_feu',
-  'cabane-avec-moyen-de-chauffage-et-eau-a-proximite' => 'cabane_eau_feu',
-  'cabane-cle' => 'cabane_cle',
-  'cabane-eau-a-proximite' => 'cabane_eau',
-  'cabane-manque-un-mur' => 'cabane_manqueunmur',
-  'cabane-sans-places-dormir' => 'cabane_a48',
-  'inutilisable' => 'cabane_white_black_x',
-]);
 
 // On paramètre le numéro du forum qui contient les topics de discussion sur les fiches des points
 $config_wri['forum_refuges']=4;

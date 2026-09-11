@@ -973,14 +973,6 @@ function choix_icone($point)
 
   return $nom_icone;
 }
-// Cette fonction n'est utilisée que pour l'export kml qui a besoin d'une liste des icônes avant d'avoir la liste des points.
-// Mais je me demande s'il n'y aurait pas moyen de s'en passer et ne générer que les icônes vraiment utilisées par l'export demandé ?
-// car $config_wri['definition_icones'] est une liste d'icône qu'il faut maintenir manuellement à jour
-function liste_icones_possibles()
-{
-  global $config_wri;
-  return array_keys($config_wri['definition_icones']);
-}
 
 /********************************************************
 Fonction qui calcul la distance entre deux points gps
