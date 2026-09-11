@@ -1,4 +1,7 @@
 <?php
+
+// A noter, le système d'icône de refuges.info n'utilise pas ce fichier, il n'est utilisé que pour les icônes de site tiers
+
 $colors = ['black','green','lightgreen','blue','red','grey','yellow','white',
 	'maroon','orange','blanchedalmond','lightgrey','violet','purple','turquoise'];
 
@@ -53,10 +56,6 @@ $alias = [
 	'vignoble' => 'cabane_violet_purple_a9753.6',
 	'village' => 'cabane_grey_black_a118',
 	'ville' => 'cabane_white_black_a86',
-
-	// WRI
-  // A noter, la correspondance "nom de base dans WRI" et "représentation en icône" n'est pas défini ici mais dans include/config.php $config_wri['correspondance_type_icone']
-	'favicon' => 'feu_cabane_porte_oeuil_t384',
 
 	// PRC
 	'cabane_fermee' => 'cabane_white_black_x',
