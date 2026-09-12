@@ -488,6 +488,10 @@ class listener implements EventSubscriberInterface
                 $rnot = ' NOT';
                 $vv = substr($vv, 1);
                 break;
+              case '<':
+                $requ = ' < ';
+                $vv = substr($vv, 1);
+                break;
               case '>':
                 $requ = ' > ';
                 $vv = substr($vv, 1);

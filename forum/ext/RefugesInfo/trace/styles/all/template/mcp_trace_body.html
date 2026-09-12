@@ -11,8 +11,9 @@
   <!-- ELSE -->
     <p>{LIMIT} dernières contributions:
       <a href="{U_MCP_ACTION}&ext_error=null&browser_operator=!api">acceptées</a> |
-      <a href="{U_MCP_ACTION}&browser_operator=!serve.!api">acceptées sauf bots & api</a> |
-      <a href="{U_MCP_ACTION}">sans filtre</a>
+      <a href="{U_MCP_ACTION}&browser_operator=!serve.!api">sauf bots & api</a> |
+      <a href="{U_MCP_ACTION}">sans filtre</a> |
+      <a href="{U_MCP_ACTION}&ext_error=null&appel=register">créations de comptes</a>
     </p>
     <p>{LIMIT} dernières contributions rejetées
       <a href="{U_MCP_ACTION}&ext_error=!CleanTalk.!No%20soup&browser_operator=!serve.!api">pour motif interne</a> |
@@ -25,8 +26,10 @@
         éditions de posts par un utilisateur non vérifiées</a>
     </p>
     <p>{LIMIT} dernières traces API:
-      <a href="{U_MCP_ACTION}&browser_operator=api&duree=>1000">&gt; 1 seconde</a> |
-      <a href="{U_MCP_ACTION}&browser_operator=api&duree=>5000">&gt; 5 secondes</a>
+      <a href="{U_MCP_ACTION}&browser_operator=api">toutes</a> |
+      <a href="{U_MCP_ACTION}&browser_operator=api&duree=>2000">&gt; 2 seconde</a> |
+      <a href="{U_MCP_ACTION}&browser_operator=api&duree=>5000">&gt; 5 secondes</a> |
+      <a href="{U_MCP_ACTION}&browser_operator=api&duree=>10000">&gt; 10 secondes</a>
     </p>
     <hr/>
 
@@ -50,11 +53,11 @@
           <tr>
             <td></td>
             <td>
-                <p>nombre (=), !nombre (#), caractères (contient), !caractères (ne contient pas),
-                  null (nul ou 0 ou ''), !null</p>
+                <p>nombre (égal), !nombre (différent),&gt;nombre (plus grand), &lt;nombre (plus petit),</p>
+                <p>caractères (contient), !caractères (ne contient pas), null (nul ou 0 ou ''), !null</p>
                 <p>On peut mettre plusieurs conditions séparées
                   par des ❝.❞ (ET) ou par des ❝|❞ (OU)</p>
-                <p>OU à la précédence sur ET</p>
+                <p>ET à la précédence sur OU</p>
             </td>
           </tr>
           <!-- BEGIN inputs_requete -->

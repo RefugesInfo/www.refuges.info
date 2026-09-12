@@ -22,13 +22,34 @@ $config_wri['mapKeys'] = [
   // SwissTopo : You need to register your domain in https://shop.swisstopo.admin.ch/fr/products/geoservice/swisstopo_geoservices/WMTS_info
 ];
 
-// Décommenter pour
+// Passer cette variable à "true" pour ré-afficher le bandeau dons+cookies
 //$config_wri['affichage_bandeau_info'] = true;
-//$config_wri['trace_api_threshold']=2; // Secondes / Soeuil de durée à partir duquel on garde trace des appels API
-//$config_wri['trace_no_edit_check_groups']=[201,202]; // Groupes dont on n'enregistre pas les traces (Admin, modos)
-//$config_wri['trace_block_asn']=['AS209155']; // ASn dont on n'enregistre pas les traces (Onehostplanet)
-//$config_wri['debug']=true; // Afficher un peu plus de debug sur certaines fonctions utilisant la fonction erreur()
-//$config_wri['nom_ol']='myol-debug'; // utiliser myol-debug.js à la place de myol.js
+
+// Do not add sid to urls if cookies not enabled
+$config_wri['no_sid_urls']=true;
+
+// Censure des messages de réservation, s'en servir pour compléter le "par défaut"
+$config_wri['mots_interdits']="gites-refuges.com|merde";
+
+// Bloquer la création de posts dans le forum si le javascript n'est pas activé
+$config_wri['blockBotPosts']=true;
+
+// TRACES
+// Groupes dont on n'enregistre pas les traces (Admin, modos)
+//$config_wri['trace_no_edit_check_groups']=[201,202];
+
+// Ne pas tracer OneHostPlanet
+//$config_wri['trace_block_asn']=[209155];
+
+// Secondes / Soeuil de durée à partir duquel on garde trace des appels API
+//$config_wri['trace_api_threshold']=2;
+
+// DEBUG
+// Afficher un peu plus de debug sur certaines fonctions utilisant la fonction erreur()
+//$config_wri['debug']=true;
+
+// Décommenter pour utiliser myol-debug.js à la place de myol.js
+//$config_wri['nom_ol']='myol-debug';
 
 // Ici choisissez les options pour afficher les erreurs php
 //ini_set('error_reporting', E_ALL); // toutes les erreurs
