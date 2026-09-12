@@ -321,6 +321,11 @@ a:hover {
   margin-top: 10px;
 }
 
+#export-carte a {
+  border: solid var(--couleur_lien);
+  padding: 0 2px;
+}
+
 @media screen and (min-width: 1200px) {
   .tablo {
     display: table-cell;
@@ -463,6 +468,7 @@ a img {
 /* Sélecteur externe au delà d'une certaine largeur de fenêtre */
 #conteneur-selecteur-points {
   float: left;
+  margin: 5px;
 }
 
 #conteneur-selecteur-points label {
@@ -496,7 +502,7 @@ a img {
 
 .selecteur-carte-edit p {
   margin-top: 0;
-  margin-bottom: 5px;
+  margin-bottom: 3px;
 }
 
 .selecteur-carte-edit span {

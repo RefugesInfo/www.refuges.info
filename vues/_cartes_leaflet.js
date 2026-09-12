@@ -1,5 +1,25 @@
 /* global L, MarkerCompass, tileLayerIGN, wriPOILayer, wriPolygonLayer */
 
+// Couches refuges.info
+const clusteredVectorlayers = {
+    'Cabane non gardée': [7, 'cabane'],
+    'Refuge gardé': [10, 'cabane_red'],
+    'Gîte d\'étape': [9, 'cabane_green'],
+    'Grotte': [29, 'grotte'],
+    'Point d\'eau': [23, 'pointdeau'],
+    'Passage délicat': [3, 'triangle_a33.10'],
+    'Bâtiment en montagne': [28, 'cabane_white_black_a63'],
+  },
+  // Couches OSM overpass
+  OverpassVectorlayers = {
+    'hôtel': '["tourism"~"hotel|guest_house|chalet|hostel|apartment"]',
+    'camping': '["tourism"="camp_site"]',
+    'point d\'eau': '["natural"="spring"]({{bbox}});nwr["amenity"="drinking_water"]',
+    'ravitaillement': '["shop"~"supermarket|convenience"]',
+    'parking': '["amenity"="parking"]["access"!="private"]',
+    'bus': '["highway"="bus_stop"]',
+  };
+
 /***************************
  * Déclaration de la carte *
  ***************************/
@@ -11,10 +31,33 @@ function initLeafletMap(mapId, serveurAPI, versionFeatures, layerKeys) {
    * Couches tuilées *
    *******************/
   const tileLayers = {
+      //DCMM pour développements ultérieurs
+      //TODO https://leaflet-extras.github.io/leaflet-providers/preview/
+      /*OpenCycleMap: L.tileLayer(
+        'https://api.thunderforest.com/cycle/{z}/{x}/{y}{r}.png?apikey=' + layerKeys.thunderforest, {
+          maxZoom: 22,
+          attribution: '<a href="https://www.thunderforest.com/">Thunderforest</a> | ' +
+            '<a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        }),*/
+      /*'IGN photo': tileLayerIGN(
+        'https://data.geopf.fr/wmts?', {
+          layer: 'ORTHOIMAGERY.ORTHOPHOTOS',
+        }),
+      Cadastre: tileLayerIGN(
+        'https://data.geopf.fr/wmts?', {
+          layer: 'CADASTRALPARCELS.PARCELLAIRE_EXPRESS',
+          style: 'PCI vecteur',
+          format: 'image/png',
+        // }),*/
+      //TODO Autriche
+      //DCMM Pour tests, à enlever à la fin
+      'Google': L.tileLayer('https://mt0.google.com/vt/lyrs=r&x={x}&y={y}&z={z}'),
+
       // Cartes libres
       OpenHikingMap: L.tileLayer(
         'https://tile.openmaps.fr/openhikingmap/{z}/{x}/{y}.png', {
           maxZoom: 18,
+          //DCMM edgeBufferTiles: 3,
           attribution: '<a href="https://wiki.openstreetmap.org/wiki/OpenHikingMap"> OpenHikingMap</a> | ' +
             '<a href="https://openmaps.fr/map-legend/openhikingmap-legend.html">Légende</a>',
         }),
@@ -90,44 +133,24 @@ function initLeafletMap(mapId, serveurAPI, versionFeatures, layerKeys) {
   /************************
    * Couches vectorielles *
    ************************/
-  // Couches refuges.info
-  const clusteredVectorlayers = {
-      '<img src="/images/icones/cabane.svg"/> Cabane non gardée': 7,
-      '<img src="/images/icones/cabane_red.svg"/> Refuge gardé': 10,
-      '<img src="/images/icones/cabane_green.svg"/> Gîte d\'étape': 9,
-      '<img src="/images/icones/grotte.svg"/> Grotte': 29,
-      '<img src="/images/icones/pointdeau.svg"/> Point d\'eau': 23,
-      '<img src="/images/icones/triangle_a33.10.svg"/> Passage délicat': 3,
-      '<img src="/images/icones/cabane_white_black_a63.svg"/> Bâtiment en montagne': 28,
-    },
-    clusteredVectorlayersByName = {},
-    // Couches extérieures
-    OverpassVectorlayers = {
-      'hôtel': '["tourism"~"hotel|guest_house|chalet|hostel|apartment"]',
-      'camping': '["tourism"="camp_site"]',
-      'point d\'eau': '["natural"="spring"]({{bbox}});nwr["amenity"="drinking_water"]',
-      'ravitaillement': '["shop"~"supermarket|convenience"]',
-      'parking': '["amenity"="parking"]["access"!="private"]',
-      'bus': '["highway"="bus_stop"]',
-    },
-    overlayLayers = {},
+  // Toutes les couches vectorielles overlays
+  const overlayLayers = {},
     memCheckedLayers = typeof localStorage.checkedLayers === 'string' ?
     localStorage.checkedLayers.split(',') : ['Cabane non gardée', 'Refuge gardé', 'Gîte d\'étape'], // Par défaut
-
     // Groupement des couches qui doivent être clustérisées ensembles
     vectorCluster = L.markerClusterGroup({
       spiderfyOnMaxZoom: true, // Overlapping markers will spiderfy when clicked
       showCoverageOnHover: false, // Optional: hides the cluster bounds polygon
     });
 
-  for (const [titre, typeId] of Object.entries(clusteredVectorlayers)) {
-    const poiLayer = wriPOILayer(serveurAPI, typeId, versionFeatures);
-
-    // Remove icons from name & get the poi layer (not the cluster)
-    clusteredVectorlayersByName[titre.replace(/<[^>]+> /gu, '')] = poiLayer;
+  for (const [nom, args] of Object.entries(clusteredVectorlayers)) {
+    args.push(
+      '<img src="/images/icones/' + args[1] + '.svg"/> ' + nom, // Libellé de la ligne sélecteur
+      wriPOILayer(serveurAPI, args[0], versionFeatures), // Couche affichable
+    );
 
     // Display as overlay
-    overlayLayers[titre] = L.featureGroup.subGroup(vectorCluster).addLayer(poiLayer);
+    overlayLayers[args[2]] = L.featureGroup.subGroup(vectorCluster).addLayer(args[3]);
   }
 
   overlayLayers['Régions'] = wriPolygonLayer(serveurAPI, 11, versionFeatures);
@@ -140,11 +163,11 @@ function initLeafletMap(mapId, serveurAPI, versionFeatures, layerKeys) {
     });
 
   // Couches OSM OverPass
-  for (const [titre, query] of Object.entries(OverpassVectorlayers))
-    overlayLayers['OSM ' + titre] = new L.OverPassLayer({
+  for (const [nom, query] of Object.entries(OverpassVectorlayers))
+    overlayLayers['OSM ' + nom] = new L.OverPassLayer({
       query: '(nwr' + query + '({{bbox}}););out center;',
       markerIcon: L.icon({
-        iconUrl: serveurAPI + '/images/icones/' + titre.replace('ô', 'o').replace(/[^a-z]/gu, '') + '.svg',
+        iconUrl: serveurAPI + '/images/icones/' + nom.replace('ô', 'o').replace(/[^a-z]/gu, '') + '.svg',
         iconSize: [24, 24],
         iconAnchor: [12, 12],
       }),
@@ -170,19 +193,19 @@ function initLeafletMap(mapId, serveurAPI, versionFeatures, layerKeys) {
         checkedLayers = [];
 
       for (const lsInputEl of overlaySelectors) {
-        const titre = lsInputEl.parentElement.lastChild.innerText.trim();
+        const nom = lsInputEl.parentElement.lastChild.innerText.trim();
 
         // Restaure les couches overlays précédentes
-        if (evt.type === 'load' && memCheckedLayers.includes(titre)) {
-          if (clusteredVectorlayersByName[titre])
-            clusteredVectorlayersByName[titre].on('adddata', () => lsInputEl.click()); // Overlays vector
+        if (evt.type === 'load' && memCheckedLayers.includes(nom)) {
+          if (clusteredVectorlayers[nom])
+            clusteredVectorlayers[nom][3].on('adddata', () => lsInputEl.click()); // Overlays vector
           else
             lsInputEl.click(); // Overlays tiles
         }
 
         // Mémorise les couches actuelles
         if (lsInputEl.checked)
-          checkedLayers.push(titre);
+          checkedLayers.push(nom);
       }
 
       // Mémorisé dans la mémoire permanente de l'explorateur localStorage
