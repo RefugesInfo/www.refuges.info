@@ -31,33 +31,10 @@ function initLeafletMap(mapId, serveurAPI, versionFeatures, layerKeys) {
    * Couches tuilées *
    *******************/
   const tileLayers = {
-      //DCMM pour développements ultérieurs
-      //TODO https://leaflet-extras.github.io/leaflet-providers/preview/
-      /*OpenCycleMap: L.tileLayer(
-        'https://api.thunderforest.com/cycle/{z}/{x}/{y}{r}.png?apikey=' + layerKeys.thunderforest, {
-          maxZoom: 22,
-          attribution: '<a href="https://www.thunderforest.com/">Thunderforest</a> | ' +
-            '<a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-        }),*/
-      /*'IGN photo': tileLayerIGN(
-        'https://data.geopf.fr/wmts?', {
-          layer: 'ORTHOIMAGERY.ORTHOPHOTOS',
-        }),
-      Cadastre: tileLayerIGN(
-        'https://data.geopf.fr/wmts?', {
-          layer: 'CADASTRALPARCELS.PARCELLAIRE_EXPRESS',
-          style: 'PCI vecteur',
-          format: 'image/png',
-        // }),*/
-      //TODO Autriche
-      //DCMM Pour tests, à enlever à la fin
-      'Google': L.tileLayer('https://mt0.google.com/vt/lyrs=r&x={x}&y={y}&z={z}'),
-
       // Cartes libres
       OpenHikingMap: L.tileLayer(
         'https://tile.openmaps.fr/openhikingmap/{z}/{x}/{y}.png', {
           maxZoom: 18,
-          //DCMM edgeBufferTiles: 3,
           attribution: '<a href="https://wiki.openstreetmap.org/wiki/OpenHikingMap"> OpenHikingMap</a> | ' +
             '<a href="https://openmaps.fr/map-legend/openhikingmap-legend.html">Légende</a>',
         }),
@@ -134,9 +111,10 @@ function initLeafletMap(mapId, serveurAPI, versionFeatures, layerKeys) {
    * Couches vectorielles *
    ************************/
   // Toutes les couches vectorielles overlays
-  const overlayLayers = {},
+  const defaultWriLalers = ['Cabane non gardée', 'Refuge gardé', 'Gîte d\'étape'],
+    overlayLayers = {},
     memCheckedLayers = typeof localStorage.checkedLayers === 'string' ?
-    localStorage.checkedLayers.split(',') : ['Cabane non gardée', 'Refuge gardé', 'Gîte d\'étape'], // Par défaut
+    localStorage.checkedLayers.split(',') : defaultWriLalers,
     // Groupement des couches qui doivent être clustérisées ensembles
     vectorCluster = L.markerClusterGroup({
       spiderfyOnMaxZoom: true, // Overlapping markers will spiderfy when clicked
@@ -190,7 +168,8 @@ function initLeafletMap(mapId, serveurAPI, versionFeatures, layerKeys) {
   ['load', 'overlayadd', 'overlayremove'].forEach((type) => {
     map.on(type, (evt) => {
       const overlaySelectors = document.querySelectorAll('.leaflet-control-layers-overlays input'),
-        checkedLayers = [];
+        checkedLayersnames = [],
+        checkedLayersTypes = [];
 
       for (const lsInputEl of overlaySelectors) {
         const nom = lsInputEl.parentElement.lastChild.innerText.trim();
@@ -204,12 +183,17 @@ function initLeafletMap(mapId, serveurAPI, versionFeatures, layerKeys) {
         }
 
         // Mémorise les couches actuelles
-        if (lsInputEl.checked)
-          checkedLayers.push(nom);
+        if (lsInputEl.checked) {
+          checkedLayersnames.push(nom);
+
+          if (typeof clusteredVectorlayers[nom] === 'object')
+            checkedLayersTypes.push(clusteredVectorlayers[nom][0]);
+        }
       }
 
       // Mémorisé dans la mémoire permanente de l'explorateur localStorage
-      localStorage.checkedLayers = checkedLayers.join(',');
+      localStorage.checkedLayers = checkedLayersnames.join(',');
+      localStorage.checkedLayersTypes = checkedLayersTypes.join(',');
 
       // Cache les étiquettes pour les grandes échèles
       map.getContainer().classList[map.getZoom() < 8 ? 'add' : 'remove']('hide-tooltips');

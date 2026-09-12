@@ -28,23 +28,26 @@ const conteneurSelecteurExterneEl = document.getElementById('conteneur-selecteur
   }));
 
 // Calcul du lien d'export
+function copyExportLink() {
+  navigator.clipboard.writeText(exportCarteEl.children[1].href)
+    .then(() => alert('Lien d\'exportation copié dans le presse-papier :\n\n' +
+      exportCarteEl.children[1].href));
+}
+
 function setExportLink() {
   const bne = map.getBounds()._northEast,
     bsw = map.getBounds()._southWest,
     fc = (coord) => Math.floor(coord * 10000) / 10000,
     cc = (coord) => Math.ceil(coord * 10000) / 10000;
 
-  exportCarteEl.lastElementChild.href = '/api/bbox' +
-    '?type_points=' + localStorage.checkedLayers
-    .split(',') // Sépare les noms de couches
-    .map((layerName) => // Exécute pour chaque couche mémorisée
-      (clusteredVectorlayers[layerName] ?? [])[0] // Retourne le n° de type de chaque couche
-    )
-    .filter(Boolean) // Filtre les couches n'ayant pas de n° de type
-    .join(',') + // Reconstitue la chaine argument de type_points=
+  exportCarteEl.children[1].href = '/api/bbox' +
+    '?type_points=' + localStorage.checkedLayersTypes +
     '&nb_points=all' +
     '&bbox=' + fc(bsw.lng) + ',' + fc(bsw.lat) + ',' + cc(bne.lng) + ',' + cc(bne.lat) +
     '&format=' + exportCarteEl.firstElementChild.value;
+
+  // Affiche seulement quand il y a quelque chose à exporter
+  exportCarteEl.style.display = localStorage.checkedLayersTypes ? 'block' : 'none';
 }
 
 map.on('overlayadd', () => setExportLink()); // Also for init

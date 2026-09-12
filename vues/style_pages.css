@@ -321,9 +321,14 @@ a:hover {
   margin-top: 10px;
 }
 
+#export-carte {
+  display: none; /* Par défaut */
+}
+
 #export-carte a {
   border: solid var(--couleur_lien);
   padding: 0 2px;
+  cursor: pointer;
 }
 
 @media screen and (min-width: 1200px) {
