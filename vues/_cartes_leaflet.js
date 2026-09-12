@@ -2,13 +2,14 @@
 
 // Couches refuges.info
 const clusteredVectorlayers = {
+    //TODO gérer dans la table point_type ?
     'Cabane non gardée': [7, 'cabane'],
     'Refuge gardé': [10, 'cabane_red'],
     'Gîte d\'étape': [9, 'cabane_green'],
     'Grotte': [29, 'grotte'],
     'Point d\'eau': [23, 'pointdeau'],
     'Passage délicat': [3, 'triangle_a33.10'],
-    'Bâtiment en montagne': [28, 'cabane_white_black_a63'],
+    'Bâtiment à investiguer': [28, 'cabane_white_black_a63'],
   },
   // Couches OSM overpass
   OverpassVectorlayers = {

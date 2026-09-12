@@ -119,7 +119,7 @@ $config_wri['id_cabane_non_gardee']=7;
 $config_wri['id_gite_etape']=9;
 $config_wri['id_refuge_garde']=10;
 $config_wri['id_point_d_eau']=23;
-$config_wri['id_batiment_en_montagne']=28;
+$config_wri['id_batiment_a_investiguer']=28;
 $config_wri['id_grotte']=29;
 
 // Catégorie "tout type de refuges" ( ce sont les ids des refuges gardés, non gardés, gîtes)

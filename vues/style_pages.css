@@ -327,7 +327,8 @@ a:hover {
 
 #export-carte a {
   border: solid var(--couleur_lien);
-  padding: 0 2px;
+  padding: 0 3px;
+  border-radius: 8px;
   cursor: pointer;
 }
 

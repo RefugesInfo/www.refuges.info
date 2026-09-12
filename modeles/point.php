@@ -732,7 +732,7 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
   $champs_sql['date_modification_fiche'] = 'NOW()';
 
   /********* On ne peut plus créer de cabane autour d'une cabane cachée *************/
-  if (in_array($point->id_point_type,array($config_wri['id_cabane_non_gardee'],$config_wri['id_batiment_en_montagne'])))
+  if (in_array($point->id_point_type,array($config_wri['id_cabane_non_gardee'],$config_wri['id_batiment_a_investiguer'])))
   {
     $distance = $config_wri['defaut_max_distance_cabane_cachee'] * 3;
     $q="SELECT id_point, nom
@@ -946,7 +946,7 @@ function choix_icone($point)
     $nom_icone="cabane_manqueunmur";
 
   // Bâtiment à investiguer fermé : icône de base dédiée sans le "?" et on peut lui ajouter les attributs ensuite, dont la croix
-  if ( $point->id_point_type==$config_wri['id_batiment_en_montagne'] and $point->conditions_utilisation=="fermeture" )
+  if ( $point->id_point_type==$config_wri['id_batiment_a_investiguer'] and $point->conditions_utilisation=="fermeture" )
     $nom_icone="cabane_white_black";
   
   /* options qui s'ajoutent */
