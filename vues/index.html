@@ -9,6 +9,7 @@
   <div class="tablo">
     <h4><?=$vue->stat->nbpoints?> points, <?=$vue->stat->nbmassifs?> massifs</h4>
 
+    <div id="conteneur-selecteur-points"></div>
     <div id="carte-accueil" class="carte"></div>
 
     <p id="export-carte">
@@ -27,7 +28,6 @@
       <a title="Télécharger le fichier">Télécharger</a>
       ou <a onclick="copyExportLink()" title="Copier le lien dans le clipboard">🔗</a>
     </p>
-    <div id="conteneur-selecteur-points"></div>
 
     <h5>Autres zones :</h5>
     <ul class="liste-massifs">
