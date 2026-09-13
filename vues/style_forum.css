@@ -4,6 +4,11 @@
 /*====================================================*/
 /* #phpbb permet de prioriser par rapport au style de base */
 
+/* Sinon, double l'ascenseur scrool vertical */
+html {
+  height: 100%;
+}
+
 /* Forum de la largeur de la page */
 .wrap {
   max-width: 100%;
