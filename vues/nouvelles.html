@@ -23,7 +23,7 @@
         <?php if (!empty($nouvelle['localisation'])) { // pour les nouvelles sur un point dans aucun polygone ?>
           <?=$nouvelle['localisation']?> :
         <?php } ?>
-          <b><?=bbcode2html($nouvelle['nom_point'])?></b>&nbsp;
+          <?php if (!empty($nouvelle["lien_fiche"])) { ?><a href="<?=$nouvelle["lien_fiche"]?>"><?=bbcode2html($nouvelle["nom_point"])?></a><?php } else { ?><b><?=bbcode2html($nouvelle["nom_point"])?></b><?php } ?>&nbsp;
           </span>
         </div>
         <div class="td">

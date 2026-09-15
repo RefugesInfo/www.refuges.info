@@ -174,7 +174,7 @@ form#form_point fieldset {
 select,
 input,
 textarea {
-  color: var(--couleur_texte);
+  color: var(--couleur_lien);
   background-color: var(--couleur_titre);
 }
 

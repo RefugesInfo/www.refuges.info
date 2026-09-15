@@ -134,6 +134,7 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
           {
             $news_array[$i]['categorie']="Point";
             $news_array[$i]['lien']=lien_point($point,$lien_locaux);
+            $news_array[$i]['lien_fiche']=lien_point($point,$lien_locaux);
             $news_array[$i]['nom_point']=ucfirst($point->nom);
             $news_array[$i]['id_point']=$point->id_point;
             $news_array[$i]['partitif_point']=$point->article_partitif_point_type;
@@ -210,6 +211,7 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
         $lien_forum=$url_complete.$config_wri['lien_forum']."viewtopic.php?p=".$nouvelle['post_id']."#p".$nouvelle['post_id'];
         $nouvelle['texte']="<b><a href=\"$lien_forum\">Message forum</a></b>";
         $nouvelle['lien']=$lien_forum;
+        $nouvelle['lien_fiche']=lien_point($point,$lien_locaux);
         $par_ou_de="de";
       }
     }
@@ -225,6 +227,7 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
       $nouvelle['localisation']=chaine_de_localisation($point->polygones);
       $nouvelle['texte'] = "<b><a href=\"$lien\">Commentaire</a></b>";
       $nouvelle['lien']=$lien;
+      $nouvelle['lien_fiche']=lien_point($point,$lien_locaux);
       $par_ou_de="de";
     }
 
