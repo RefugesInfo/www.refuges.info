@@ -538,7 +538,7 @@ a img {
     /* vh plutôt que % : le % ne se résout pas de façon fiable ici (chaîne de
        hauteurs des parents non toutes définies), ce qui laissait la carte
        déborder en bas de page sur desktop */
-    max-height: calc(100vh - 126px);
+    max-height: calc(100vh - 84px);
   }
 }
 
@@ -566,10 +566,12 @@ a img {
 
   /* Sans largeur propre, les encadrés qui dépassent la hauteur de la carte
      (ex. Modifications, Massifs, Zones pour les modérateurs) cessaient de
-     longer le flottant et reprenaient toute la largeur de la page */
+     longer le flottant et reprenaient toute la largeur de la page.
+     flow-root : le bloc occupe la largeur restante à côté de la carte. Ne pas
+     utiliser de largeur en vw : elle ignore la barre de défilement de Chrome
+     et la somme avec la carte (75vw) dépasse alors la page, le menu passe dessous */
   #select-carte-nav {
-    float: left;
-    width: 24vw;
+    display: flow-root;
   }
 
   .selecteur-carte-edit {
