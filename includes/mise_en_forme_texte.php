@@ -251,7 +251,7 @@ On peut lui passer soit bbcode (le lien sera au format bbcode), soit txt et il n
 
 function lien_inter_fiches($texte,$format_sortie="bbcode")
 {
-  $occurences_trouvees=preg_match_all("/\[\-\>([0-9]*)\]/",$texte,$occurence);
+  $occurences_trouvees=preg_match_all("/\[\-\>([^\[\]\r\n]*)\]/",$texte,$occurence);
 
   if ($occurences_trouvees!=0)
     for ($x=0;$x<$occurences_trouvees;$x++)
@@ -259,11 +259,11 @@ function lien_inter_fiches($texte,$format_sortie="bbcode")
       // Ici il y a une grosse bricole pour ne pas transformer les liens internes si l'on exporte en JSON
       // Mais comme le '>' est transformé en '$gt;' par la suite, nous l'enlevons et les liens internes deviennent [--XXXX]
       // Ensuite dans la vue JSON, on transforme ce lien interne en utilisant la bonne méthode
-      // Un lien sans numéro "[->]" est une erreur de syntaxe : on ne l interroge surtout pas en base
+      // Tout ce qui ressemble à un lien interne [->...] sans être un entier > 0 est une erreur de syntaxe : on ne l interroge surtout pas en base
       // (infos_point() sans id renverrait tous les points et épuiserait la mémoire PHP)
-      if ($occurence[1][$x]==="")
+      if (!est_entier_positif($occurence[1][$x]))
       {
-        $texte=str_replace($occurence[0][$x],"(Lien impossible car le numéro de la fiche est manquant)",$texte);
+        $texte=str_replace($occurence[0][$x],"(Lien impossible car le numéro de la fiche est invalide)",$texte);
         continue;
       }
       $point=infos_point($occurence[1][$x]);
