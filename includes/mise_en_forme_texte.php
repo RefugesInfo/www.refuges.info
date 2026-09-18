@@ -259,6 +259,13 @@ function lien_inter_fiches($texte,$format_sortie="bbcode")
       // Ici il y a une grosse bricole pour ne pas transformer les liens internes si l'on exporte en JSON
       // Mais comme le '>' est transformé en '$gt;' par la suite, nous l'enlevons et les liens internes deviennent [--XXXX]
       // Ensuite dans la vue JSON, on transforme ce lien interne en utilisant la bonne méthode
+      // Un lien sans numéro "[->]" est une erreur de syntaxe : on ne l interroge surtout pas en base
+      // (infos_point() sans id renverrait tous les points et épuiserait la mémoire PHP)
+      if ($occurence[1][$x]==="")
+      {
+        $texte=str_replace($occurence[0][$x],"(Lien impossible car le numéro de la fiche est manquant)",$texte);
+        continue;
+      }
       $point=infos_point($occurence[1][$x]);
       if (empty($point->erreur)) // C'est bon, un point avec ce numéro a bien été trouvé
       {

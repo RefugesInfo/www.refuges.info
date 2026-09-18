@@ -577,6 +577,10 @@ function infos_point($id_point,$meme_si_cache=False,$avec_polygones=True, $meme_
   // inutile de faire tout deux fois, j'utilise la fonction plus haut pour n'en récupérer qu'un
   global $config_wri,$pdo;
 
+  // Sans id, infos_points() ne filtrerait rien et renverrait tous les points
+  if (!est_entier_positif($id_point))
+    return erreur("Identifiant de point invalide");
+
   $conditions = new stdClass;
   $conditions->ids_points=$id_point;
 
