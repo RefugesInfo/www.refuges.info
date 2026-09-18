@@ -4,7 +4,7 @@
  * This package adds many features to Openlayer https://openlayers.org/
  * https://github.com/Dominique92/myol#readme
  * Based on https://openlayers.org
- * Built 01/04/2026 20:36:06 using npm run build from the src/... sources
+ * Built 13/09/2026 18:45:41 using npm run build from the src/... sources
  * Please don't modify this file : best is to modify src/... & npm run build !
  */
 (function (global, factory) {
@@ -32,6 +32,142 @@
   /**
    * @typedef {'propertychange'} Types
    */
+
+  /**
+   * @module ol/obj
+   */
+
+  /**
+   * Removes all properties from an object.
+   * @param {Object<string, unknown>} object The object to clear.
+   */
+  function clear$2(object) {
+    for (const property in object) {
+      delete object[property];
+    }
+  }
+
+  /**
+   * Determine if an object has any properties.
+   * @param {Object} object The object to check.
+   * @return {boolean} The object is empty.
+   */
+  function isEmpty$1(object) {
+    let property;
+    for (property in object) {
+      return false;
+    }
+    return !property;
+  }
+
+  /**
+   * @module ol/events
+   */
+
+  /**
+   * Key to use with {@link module:ol/Observable.unByKey}.
+   * @typedef {Object} EventsKey
+   * @property {ListenerFunction} listener Listener.
+   * @property {import("./events/Target.js").EventTargetLike} target Target.
+   * @property {string} type Type.
+   * @api
+   */
+
+  /**
+   * Listener function. This function is called with an event object as argument.
+   * When the function returns `false`, event propagation will stop.
+   *
+   * @typedef {function((Event|import("./events/Event.js").default)): (void|boolean)} ListenerFunction
+   * @api
+   */
+
+  /**
+   * @typedef {Object} ListenerObject
+   * @property {ListenerFunction} handleEvent HandleEvent listener function.
+   */
+
+  /**
+   * @typedef {ListenerFunction|ListenerObject} Listener
+   */
+
+  /**
+   * Registers an event listener on an event target. Inspired by
+   * https://google.github.io/closure-library/api/source/closure/goog/events/events.js.src.html
+   *
+   * This function efficiently binds a `listener` to a `this` object, and returns
+   * a key for use with {@link module:ol/events.unlistenByKey}.
+   *
+   * @param {import("./events/Target.js").EventTargetLike} target Event target.
+   * @param {string} type Event type.
+   * @param {ListenerFunction} listener Listener.
+   * @param {Object} [thisArg] Object referenced by the `this` keyword in the
+   *     listener. Default is the `target`.
+   * @param {boolean} [once] If true, add the listener as one-off listener.
+   * @return {EventsKey} Unique key for the listener.
+   */
+  function listen(target, type, listener, thisArg, once) {
+    if (once) {
+      const originalListener = listener;
+      /**
+       * @param {Event|import('./events/Event.js').default} event The event
+       * @return {void|boolean} When the function returns `false`, event propagation will stop.
+       * @this {typeof target}
+       */
+      listener = function (event) {
+        target.removeEventListener(type, listener);
+        return originalListener.call(thisArg ?? this, event);
+      };
+    } else if (thisArg && thisArg !== target) {
+      listener = listener.bind(thisArg);
+    }
+    const eventsKey = {
+      target: target,
+      type: type,
+      listener: listener,
+    };
+    target.addEventListener(type, listener);
+    return eventsKey;
+  }
+
+  /**
+   * Registers a one-off event listener on an event target. Inspired by
+   * https://google.github.io/closure-library/api/source/closure/goog/events/events.js.src.html
+   *
+   * This function efficiently binds a `listener` as self-unregistering listener
+   * to a `this` object, and returns a key for use with
+   * {@link module:ol/events.unlistenByKey} in case the listener needs to be
+   * unregistered before it is called.
+   *
+   * When {@link module:ol/events.listen} is called with the same arguments after this
+   * function, the self-unregistering listener will be turned into a permanent
+   * listener.
+   *
+   * @param {import("./events/Target.js").EventTargetLike} target Event target.
+   * @param {string} type Event type.
+   * @param {ListenerFunction} listener Listener.
+   * @param {Object} [thisArg] Object referenced by the `this` keyword in the
+   *     listener. Default is the `target`.
+   * @return {EventsKey} Key for unlistenByKey.
+   */
+  function listenOnce(target, type, listener, thisArg) {
+    return listen(target, type, listener, thisArg, true);
+  }
+
+  /**
+   * Unregisters event listeners on an event target. Inspired by
+   * https://google.github.io/closure-library/api/source/closure/goog/events/events.js.src.html
+   *
+   * The argument passed to this function is the key returned from
+   * {@link module:ol/events.listen} or {@link module:ol/events.listenOnce}.
+   *
+   * @param {EventsKey} key The key.
+   */
+  function unlistenByKey(key) {
+    if (key && key.target) {
+      key.target.removeEventListener(key.type, key.listener);
+      clear$2(key);
+    }
+  }
 
   /**
    * @module ol/events/EventType
@@ -390,33 +526,6 @@
   }
 
   /**
-   * @module ol/obj
-   */
-
-  /**
-   * Removes all properties from an object.
-   * @param {Object<string, unknown>} object The object to clear.
-   */
-  function clear$2(object) {
-    for (const property in object) {
-      delete object[property];
-    }
-  }
-
-  /**
-   * Determine if an object has any properties.
-   * @param {Object} object The object to check.
-   * @return {boolean} The object is empty.
-   */
-  function isEmpty$1(object) {
-    let property;
-    for (property in object) {
-      return false;
-    }
-    return !property;
-  }
-
-  /**
    * @module ol/events/Event
    */
 
@@ -674,115 +783,6 @@
   }
 
   /**
-   * @module ol/events
-   */
-
-  /**
-   * Key to use with {@link module:ol/Observable.unByKey}.
-   * @typedef {Object} EventsKey
-   * @property {ListenerFunction} listener Listener.
-   * @property {import("./events/Target.js").EventTargetLike} target Target.
-   * @property {string} type Type.
-   * @api
-   */
-
-  /**
-   * Listener function. This function is called with an event object as argument.
-   * When the function returns `false`, event propagation will stop.
-   *
-   * @typedef {function((Event|import("./events/Event.js").default)): (void|boolean)} ListenerFunction
-   * @api
-   */
-
-  /**
-   * @typedef {Object} ListenerObject
-   * @property {ListenerFunction} handleEvent HandleEvent listener function.
-   */
-
-  /**
-   * @typedef {ListenerFunction|ListenerObject} Listener
-   */
-
-  /**
-   * Registers an event listener on an event target. Inspired by
-   * https://google.github.io/closure-library/api/source/closure/goog/events/events.js.src.html
-   *
-   * This function efficiently binds a `listener` to a `this` object, and returns
-   * a key for use with {@link module:ol/events.unlistenByKey}.
-   *
-   * @param {import("./events/Target.js").EventTargetLike} target Event target.
-   * @param {string} type Event type.
-   * @param {ListenerFunction} listener Listener.
-   * @param {Object} [thisArg] Object referenced by the `this` keyword in the
-   *     listener. Default is the `target`.
-   * @param {boolean} [once] If true, add the listener as one-off listener.
-   * @return {EventsKey} Unique key for the listener.
-   */
-  function listen(target, type, listener, thisArg, once) {
-    if (once) {
-      const originalListener = listener;
-      /**
-       * @param {Event|import('./events/Event.js').default} event The event
-       * @return {void|boolean} When the function returns `false`, event propagation will stop.
-       * @this {typeof target}
-       */
-      listener = function (event) {
-        target.removeEventListener(type, listener);
-        return originalListener.call(thisArg ?? this, event);
-      };
-    } else if (thisArg && thisArg !== target) {
-      listener = listener.bind(thisArg);
-    }
-    const eventsKey = {
-      target: target,
-      type: type,
-      listener: listener,
-    };
-    target.addEventListener(type, listener);
-    return eventsKey;
-  }
-
-  /**
-   * Registers a one-off event listener on an event target. Inspired by
-   * https://google.github.io/closure-library/api/source/closure/goog/events/events.js.src.html
-   *
-   * This function efficiently binds a `listener` as self-unregistering listener
-   * to a `this` object, and returns a key for use with
-   * {@link module:ol/events.unlistenByKey} in case the listener needs to be
-   * unregistered before it is called.
-   *
-   * When {@link module:ol/events.listen} is called with the same arguments after this
-   * function, the self-unregistering listener will be turned into a permanent
-   * listener.
-   *
-   * @param {import("./events/Target.js").EventTargetLike} target Event target.
-   * @param {string} type Event type.
-   * @param {ListenerFunction} listener Listener.
-   * @param {Object} [thisArg] Object referenced by the `this` keyword in the
-   *     listener. Default is the `target`.
-   * @return {EventsKey} Key for unlistenByKey.
-   */
-  function listenOnce(target, type, listener, thisArg) {
-    return listen(target, type, listener, thisArg, true);
-  }
-
-  /**
-   * Unregisters event listeners on an event target. Inspired by
-   * https://google.github.io/closure-library/api/source/closure/goog/events/events.js.src.html
-   *
-   * The argument passed to this function is the key returned from
-   * {@link module:ol/events.listen} or {@link module:ol/events.listenOnce}.
-   *
-   * @param {EventsKey} key The key.
-   */
-  function unlistenByKey(key) {
-    if (key && key.target) {
-      key.target.removeEventListener(key.type, key.listener);
-      clear$2(key);
-    }
-  }
-
-  /**
    * @module ol/Observable
    */
 
@@ -796,7 +796,7 @@
   /***
    * @template {string} Type
    * @template Return
-   * @typedef {(type: Type[], listener: (event: Event|import("./events/Event").default) => ?) => Return extends void ? void : Return[]} CombinedOnSignature
+   * @typedef {(type: Type[], listener: (event: Event|import("./events/Event.js").default) => ?) => Return extends void ? void : Return[]} CombinedOnSignature
    */
 
   /**
@@ -824,12 +824,12 @@
       super();
 
       this.on =
-        /** @type {ObservableOnSignature<import("./events").EventsKey>} */ (
+        /** @type {ObservableOnSignature<import("./events.js").EventsKey>} */ (
           this.onInternal
         );
 
       this.once =
-        /** @type {ObservableOnSignature<import("./events").EventsKey>} */ (
+        /** @type {ObservableOnSignature<import("./events.js").EventsKey>} */ (
           this.onceInternal
         );
 
@@ -863,7 +863,7 @@
 
     /**
      * @param {string|Array<string>} type Type.
-     * @param {function((Event|import("./events/Event").default)): ?} listener Listener.
+     * @param {function((Event|import("./events/Event.js").default)): ?} listener Listener.
      * @return {import("./events.js").EventsKey|Array<import("./events.js").EventsKey>} Event key.
      * @protected
      */
@@ -881,7 +881,7 @@
 
     /**
      * @param {string|Array<string>} type Type.
-     * @param {function((Event|import("./events/Event").default)): ?} listener Listener.
+     * @param {function((Event|import("./events/Event.js").default)): ?} listener Listener.
      * @return {import("./events.js").EventsKey|Array<import("./events.js").EventsKey>} Event key.
      * @protected
      */
@@ -903,7 +903,7 @@
     /**
      * Unlisten for a certain type of event.
      * @param {string|Array<string>} type Type.
-     * @param {function((Event|import("./events/Event").default)): ?} listener Listener.
+     * @param {function((Event|import("./events/Event.js").default)): ?} listener Listener.
      * @protected
      */
     unInternal(type, listener) {
@@ -924,7 +924,7 @@
    * Listen for a certain type of event.
    * @function
    * @param {string|Array<string>} type The event type or array of event types.
-   * @param {function((Event|import("./events/Event").default)): ?} listener The listener function.
+   * @param {function((Event|import("./events/Event.js").default)): ?} listener The listener function.
    * @return {import("./events.js").EventsKey|Array<import("./events.js").EventsKey>} Unique key for the listener. If
    *     called with an array of event types as the first argument, the return
    *     will be an array of keys.
@@ -936,7 +936,7 @@
    * Listen once for a certain type of event.
    * @function
    * @param {string|Array<string>} type The event type or array of event types.
-   * @param {function((Event|import("./events/Event").default)): ?} listener The listener function.
+   * @param {function((Event|import("./events/Event.js").default)): ?} listener The listener function.
    * @return {import("./events.js").EventsKey|Array<import("./events.js").EventsKey>} Unique key for the listener. If
    *     called with an array of event types as the first argument, the return
    *     will be an array of keys.
@@ -948,7 +948,7 @@
    * Unlisten for a certain type of event.
    * @function
    * @param {string|Array<string>} type The event type or array of event types.
-   * @param {function((Event|import("./events/Event").default)): ?} listener The listener function.
+   * @param {function((Event|import("./events/Event.js").default)): ?} listener The listener function.
    * @api
    */
   Observable.prototype.un;
@@ -1004,7 +1004,7 @@
    * OpenLayers version.
    * @type {string}
    */
-  const VERSION$1 = '10.7.0';
+  const VERSION$1 = '10.10.0';
 
   /**
    * @module ol/Object
@@ -1042,9 +1042,9 @@
 
   /***
    * @template Return
-   * @typedef {import("./Observable").OnSignature<import("./Observable").EventTypes, import("./events/Event.js").default, Return> &
-   *    import("./Observable").OnSignature<import("./ObjectEventType").Types, ObjectEvent, Return> &
-   *    import("./Observable").CombinedOnSignature<import("./Observable").EventTypes|import("./ObjectEventType").Types, Return>} ObjectOnSignature
+   * @typedef {import("./Observable.js").OnSignature<import("./Observable.js").EventTypes, import("./events/Event.js").default, Return> &
+   *    import("./Observable.js").OnSignature<import("./ObjectEventType.js").Types, ObjectEvent, Return> &
+   *    import("./Observable.js").CombinedOnSignature<import("./Observable.js").EventTypes|import("./ObjectEventType.js").Types, Return>} ObjectOnSignature
    */
 
   /**
@@ -1088,22 +1088,23 @@
    * object.unset('foo').
    *
    * @fires ObjectEvent
+   * @template {Object<string, *>} [Properties=Object<string, *>]
    * @api
    */
   class BaseObject extends Observable {
     /**
-     * @param {Object<string, *>} [values] An object with key-value pairs.
+     * @param {NoInfer<Properties>} [values] An object with key-value pairs.
      */
     constructor(values) {
       super();
 
       /***
-       * @type {ObjectOnSignature<import("./events").EventsKey>}
+       * @type {ObjectOnSignature<import("./events.js").EventsKey>}
        */
       this.on;
 
       /***
-       * @type {ObjectOnSignature<import("./events").EventsKey>}
+       * @type {ObjectOnSignature<import("./events.js").EventsKey>}
        */
       this.once;
 
@@ -1120,7 +1121,7 @@
 
       /**
        * @private
-       * @type {Object<string, *>|null}
+       * @type {Partial<NoInfer<Properties>>|null}
        */
       this.values_ = null;
 
@@ -1154,16 +1155,18 @@
 
     /**
      * Get an object of all property names and values.
-     * @return {Object<string, *>} Object.
+     * @return {NoInfer<Properties>} Object.
      * @api
      */
     getProperties() {
-      return (this.values_ && Object.assign({}, this.values_)) || {};
+      return /** @type {NoInfer<Properties>} */ (
+        (this.values_ && Object.assign({}, this.values_)) || {}
+      );
     }
 
     /**
      * Get an object of all property names and values.
-     * @return {Object<string, *>?} Object.
+     * @return {Partial<NoInfer<Properties>>?} Object.
      */
     getPropertiesInternal() {
       return this.values_;
@@ -1231,7 +1234,7 @@
     /**
      * Sets a collection of key-value pairs.  Note that this changes any existing
      * properties and adds new ones (it does not remove any existing properties).
-     * @param {Object<string, *>} values Values.
+     * @param {Partial<NoInfer<Properties>>} values Values.
      * @param {boolean} [silent] Update without triggering an event.
      * @api
      */
@@ -1301,15 +1304,16 @@
 
   /***
    * @template Return
-   * @typedef {import("./Observable").OnSignature<import("./Observable").EventTypes, import("./events/Event.js").default, Return> &
-   *   import("./Observable").OnSignature<import("./ObjectEventType").Types|'change:geometry', import("./Object").ObjectEvent, Return> &
-   *   import("./Observable").CombinedOnSignature<import("./Observable").EventTypes|import("./ObjectEventType").Types
+   * @typedef {import("./Observable.js").OnSignature<import("./Observable.js").EventTypes, import("./events/Event.js").default, Return> &
+   *   import("./Observable.js").OnSignature<import("./ObjectEventType.js").Types|'change:geometry', import("./Object.js").ObjectEvent, Return> &
+   *   import("./Observable.js").CombinedOnSignature<import("./Observable.js").EventTypes|import("./ObjectEventType.js").Types
    *     |'change:geometry', Return>} FeatureOnSignature
    */
 
   /***
    * @template {import("./geom/Geometry.js").default} [Geometry=import("./geom/Geometry.js").default]
-   * @typedef {Object<string, *> & { geometry?: Geometry }} ObjectWithGeometry
+   * @template {Object<string, *>} [Properties=Object<string, *>]
+   * @typedef {Properties & { geometry?: Geometry }} ObjectWithGeometry
    */
 
   /**
@@ -1356,10 +1360,12 @@
    *
    * @api
    * @template {import("./geom/Geometry.js").default} [Geometry=import("./geom/Geometry.js").default]
+   * @template {Object<string, *>} [Properties=Object<string, *>]
+   * @extends {BaseObject<NoInfer<Properties>>}
    */
   class Feature extends BaseObject {
     /**
-     * @param {Geometry|ObjectWithGeometry<Geometry>} [geometryOrProperties]
+     * @param {Geometry|ObjectWithGeometry<Geometry, NoInfer<Properties>>} [geometryOrProperties]
      *     You may pass a Geometry object directly, or an object literal containing
      *     properties. If you pass an object literal, you may include a Geometry
      *     associated with a `geometry` key.
@@ -1368,12 +1374,12 @@
       super();
 
       /***
-       * @type {FeatureOnSignature<import("./events").EventsKey>}
+       * @type {FeatureOnSignature<import("./events.js").EventsKey>}
        */
       this.on;
 
       /***
-       * @type {FeatureOnSignature<import("./events").EventsKey>}
+       * @type {FeatureOnSignature<import("./events.js").EventsKey>}
        */
       this.once;
 
@@ -1424,7 +1430,7 @@
           const geometry = /** @type {Geometry} */ (geometryOrProperties);
           this.setGeometry(geometry);
         } else {
-          /** @type {Object<string, *>} */
+          /** @type {?} */
           const properties = geometryOrProperties;
           this.setProperties(properties);
         }
@@ -1438,14 +1444,22 @@
      * @api
      */
     clone() {
-      const clone = /** @type {Feature<Geometry>} */ (
-        new Feature(this.hasProperties() ? this.getProperties() : null)
-      );
-      clone.setGeometryName(this.getGeometryName());
-      const geometry = this.getGeometry();
-      if (geometry) {
-        clone.setGeometry(/** @type {Geometry} */ (geometry.clone()));
+      const clone = /** @type {Feature<Geometry>} */ (new Feature());
+      const geometryName = this.geometryName_;
+      clone.setGeometryName(geometryName);
+
+      const properties = this.getPropertiesInternal();
+      if (properties) {
+        const geometry = this.getGeometry();
+        for (const key in properties) {
+          if (key === geometryName && geometry) {
+            clone.set(key, geometry.clone());
+          } else {
+            clone.set(key, properties[key], true);
+          }
+        }
       }
+
       const style = this.getStyle();
       if (style) {
         clone.setStyle(style);
@@ -1582,6 +1596,9 @@
      * @api
      */
     setGeometryName(name) {
+      if (name === this.geometryName_) {
+        return;
+      }
       this.removeChangeListener(this.geometryName_, this.handleGeometryChanged_);
       this.geometryName_ = name;
       this.addChangeListener(this.geometryName_, this.handleGeometryChanged_);
@@ -2268,6 +2285,73 @@
   }
 
   /**
+   * Get the difference between two extents, i.e. the area(s) of `extent1` that
+   * are not covered by `extent2`.  Returns an array of between 0 and 4 extents.
+   *
+   * When the extents do not intersect the returned array contains `extent1` as
+   * its only element.  When `extent2` completely contains `extent1` the returned
+   * array is empty.  Otherwise up to four non-overlapping extents are returned
+   * that together cover exactly the parts of `extent1` outside `extent2`.
+   *
+   * The decomposition used is:
+   *
+   * ```
+   * ┌────┬─────────┬────┐  ← y2
+   * │    │   top   │    │
+   * │    ├─────────┤    │  ← iy2
+   * │left│ (gone)  │right│
+   * │    ├─────────┤    │  ← iy1
+   * │    │ bottom  │    │
+   * └────┴─────────┴────┘  ← y1
+   * x1  ix1       ix2   x2
+   * ```
+   *
+   * The left and right strips span the full height of `extent1` while the top
+   * and bottom strips are clamped horizontally to the intersection, so the four
+   * rectangles tile perfectly without overlap or gaps.
+   *
+   * @param {Extent} extent1 Extent to subtract from.
+   * @param {Extent} extent2 Extent to subtract.
+   * @return {Array<Extent>} Remaining extents (0–4 elements).
+   * @api
+   */
+  function getDifference(extent1, extent2) {
+    if (!intersects$1(extent1, extent2)) {
+      return [extent1.slice()];
+    }
+    if (containsExtent(extent2, extent1)) {
+      return [];
+    }
+
+    const [x1, y1, x2, y2] = extent1;
+    const ix1 = Math.max(x1, extent2[0]);
+    const iy1 = Math.max(y1, extent2[1]);
+    const ix2 = Math.min(x2, extent2[2]);
+    const iy2 = Math.min(y2, extent2[3]);
+
+    const result = [];
+
+    // Left strip  (full height of extent1)
+    if (ix1 > x1) {
+      result.push([x1, y1, ix1, y2]);
+    }
+    // Right strip (full height of extent1)
+    if (ix2 < x2) {
+      result.push([ix2, y1, x2, y2]);
+    }
+    // Bottom strip (between the left and right strips)
+    if (iy1 > y1) {
+      result.push([ix1, y1, ix2, iy1]);
+    }
+    // Top strip (between the left and right strips)
+    if (iy2 < y2) {
+      result.push([ix1, iy2, ix2, y2]);
+    }
+
+    return result;
+  }
+
+  /**
    * @param {Extent} extent Extent.
    * @return {number} Margin.
    */
@@ -2560,6 +2644,27 @@
     return [extent];
   }
 
+  /**
+   * Subtract several rectangles from a base rectangle. Returns a set of disjoint
+   * rectangles that together cover the base rectangle minus the union of the
+   * subtracted rectangles, by repeatedly applying {@link module:ol/extent.getDifference}.
+   * @param {Extent} base Base rectangle.
+   * @param {Array<Extent>} subtract Rectangles to subtract.
+   * @return {Array<Extent>} Remainder rectangles.
+   */
+  function subtractExtents(base, subtract) {
+    let remainder = [base];
+    for (let i = 0, ii = subtract.length; i < ii && remainder.length > 0; ++i) {
+      /** @type {Array<Extent>} */
+      const next = [];
+      for (let j = 0, jj = remainder.length; j < jj; ++j) {
+        next.push(...getDifference(remainder[j], subtract[i]));
+      }
+      remainder = next;
+    }
+    return remainder;
+  }
+
   var extent = /*#__PURE__*/Object.freeze({
     __proto__: null,
     applyTransform: applyTransform,
@@ -2592,6 +2697,7 @@
     getBottomRight: getBottomRight,
     getCenter: getCenter,
     getCorner: getCorner,
+    getDifference: getDifference,
     getEnlargedArea: getEnlargedArea,
     getForViewAndSize: getForViewAndSize,
     getHeight: getHeight,
@@ -2608,6 +2714,7 @@
     isEmpty: isEmpty,
     returnOrUpdate: returnOrUpdate,
     scaleFromCenter: scaleFromCenter,
+    subtractExtents: subtractExtents,
     wrapAndSliceX: wrapAndSliceX,
     wrapX: wrapX$2
   });
@@ -2777,17 +2884,6 @@
   function toFixed(n, decimals) {
     const factor = Math.pow(10, decimals);
     return Math.round(n * factor) / factor;
-  }
-
-  /**
-   * Rounds a number to the nearest integer value considering only the given number
-   * of decimal digits (with rounding on the final digit).
-   * @param {number} n The input number.
-   * @param {number} decimals The maximum number of decimal digits.
-   * @return {number} The nearest integer.
-   */
-  function round(n, decimals) {
-    return Math.round(toFixed(n, decimals));
   }
 
   /**
@@ -3593,9 +3689,40 @@
     return worldsAway;
   }
 
+  /**
+   * Compute the angle between p0pA and p0pB
+   * @param {Coordinate} p0 Point 0
+   * @param {Coordinate} pA Point A
+   * @param {Coordinate} pB Point B
+   * @return {number} a value in [0, 2PI]
+   */
+  function angleBetween(p0, pA, pB) {
+    const lenA = Math.sqrt(
+      (pA[0] - p0[0]) * (pA[0] - p0[0]) + (pA[1] - p0[1]) * (pA[1] - p0[1]),
+    );
+    const tangentA = [(pA[0] - p0[0]) / lenA, (pA[1] - p0[1]) / lenA];
+    const orthoA = [-tangentA[1], tangentA[0]];
+    const lenB = Math.sqrt(
+      (pB[0] - p0[0]) * (pB[0] - p0[0]) + (pB[1] - p0[1]) * (pB[1] - p0[1]),
+    );
+    const tangentB = [(pB[0] - p0[0]) / lenB, (pB[1] - p0[1]) / lenB];
+
+    // this angle can be clockwise or anticlockwise; hence the computation afterwards
+    let angle =
+      lenA === 0 || lenB === 0
+        ? 0
+        : Math.acos(
+            clamp(tangentB[0] * tangentA[0] + tangentB[1] * tangentA[1], -1, 1),
+          );
+    angle = Math.max(angle, 0.00001); // avoid a zero angle otherwise this is detected as a line cap
+    const isClockwise = tangentB[0] * orthoA[0] + tangentB[1] * orthoA[1] > 0;
+    return !isClockwise ? Math.PI * 2 - angle : angle;
+  }
+
   var coordinate = /*#__PURE__*/Object.freeze({
     __proto__: null,
     add: add$3,
+    angleBetween: angleBetween,
     closestOnCircle: closestOnCircle,
     closestOnSegment: closestOnSegment,
     createStringXY: createStringXY,
@@ -5320,6 +5447,9 @@
    * ```
    */
 
+  /** @type {Transform} */
+  const IDENTITY_TRANSFORM = [1, 0, 0, 1, 0, 0];
+
   /**
    * @private
    * @type {Transform}
@@ -5331,7 +5461,7 @@
    * @return {!Transform} Identity transform.
    */
   function create() {
-    return [1, 0, 0, 1, 0, 0];
+    return IDENTITY_TRANSFORM.slice(0);
   }
 
   /**
@@ -6915,6 +7045,426 @@
   }
 
   /**
+   * @module ol/geom/flat/contains
+   */
+
+  /**
+   * @param {Array<number>} flatCoordinates Flat coordinates.
+   * @param {number} offset Offset.
+   * @param {number} end End.
+   * @param {number} stride Stride.
+   * @param {import("../../extent.js").Extent} extent Extent.
+   * @return {boolean} Contains extent.
+   */
+  function linearRingContainsExtent(
+    flatCoordinates,
+    offset,
+    end,
+    stride,
+    extent,
+  ) {
+    const outside = forEachCorner(
+      extent,
+      /**
+       * @param {import("../../coordinate.js").Coordinate} coordinate Coordinate.
+       * @return {boolean} Contains (x, y).
+       */
+      function (coordinate) {
+        return !linearRingContainsXY(
+          flatCoordinates,
+          offset,
+          end,
+          stride,
+          coordinate[0],
+          coordinate[1],
+        );
+      },
+    );
+    return !outside;
+  }
+
+  /**
+   * @param {Array<number>} flatCoordinates Flat coordinates.
+   * @param {number} offset Offset.
+   * @param {number} end End.
+   * @param {number} stride Stride.
+   * @param {number} x X.
+   * @param {number} y Y.
+   * @return {boolean} Contains (x, y).
+   */
+  function linearRingContainsXY(
+    flatCoordinates,
+    offset,
+    end,
+    stride,
+    x,
+    y,
+  ) {
+    // https://web.archive.org/web/20210504233957/http://geomalgorithms.com/a03-_inclusion.html
+    // Copyright 2000 softSurfer, 2012 Dan Sunday
+    // This code may be freely used and modified for any purpose
+    // providing that this copyright notice is included with it.
+    // SoftSurfer makes no warranty for this code, and cannot be held
+    // liable for any real or imagined damage resulting from its use.
+    // Users of this code must verify correctness for their application.
+    let wn = 0;
+    let x1 = flatCoordinates[end - stride];
+    let y1 = flatCoordinates[end - stride + 1];
+    for (; offset < end; offset += stride) {
+      const x2 = flatCoordinates[offset];
+      const y2 = flatCoordinates[offset + 1];
+      if (y1 <= y) {
+        if (y2 > y && (x2 - x1) * (y - y1) - (x - x1) * (y2 - y1) > 0) {
+          wn++;
+        }
+      } else if (y2 <= y && (x2 - x1) * (y - y1) - (x - x1) * (y2 - y1) < 0) {
+        wn--;
+      }
+      x1 = x2;
+      y1 = y2;
+    }
+    return wn !== 0;
+  }
+
+  /**
+   * @param {Array<number>} flatCoordinates Flat coordinates.
+   * @param {number} offset Offset.
+   * @param {Array<number>} ends Ends.
+   * @param {number} stride Stride.
+   * @param {number} x X.
+   * @param {number} y Y.
+   * @return {boolean} Contains (x, y).
+   */
+  function linearRingsContainsXY(
+    flatCoordinates,
+    offset,
+    ends,
+    stride,
+    x,
+    y,
+  ) {
+    if (ends.length === 0) {
+      return false;
+    }
+    if (!linearRingContainsXY(flatCoordinates, offset, ends[0], stride, x, y)) {
+      return false;
+    }
+    for (let i = 1, ii = ends.length; i < ii; ++i) {
+      if (
+        linearRingContainsXY(flatCoordinates, ends[i - 1], ends[i], stride, x, y)
+      ) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  /**
+   * @param {Array<number>} flatCoordinates Flat coordinates.
+   * @param {number} offset Offset.
+   * @param {Array<Array<number>>} endss Endss.
+   * @param {number} stride Stride.
+   * @param {number} x X.
+   * @param {number} y Y.
+   * @return {boolean} Contains (x, y).
+   */
+  function linearRingssContainsXY(
+    flatCoordinates,
+    offset,
+    endss,
+    stride,
+    x,
+    y,
+  ) {
+    if (endss.length === 0) {
+      return false;
+    }
+    for (let i = 0, ii = endss.length; i < ii; ++i) {
+      const ends = endss[i];
+      if (linearRingsContainsXY(flatCoordinates, offset, ends, stride, x, y)) {
+        return true;
+      }
+      offset = ends[ends.length - 1];
+    }
+    return false;
+  }
+
+  /**
+   * @module ol/geom/flat/segments
+   */
+
+  /**
+   * This function calls `callback` for each segment of the flat coordinates
+   * array. If the callback returns a truthy value the function returns that
+   * value immediately. Otherwise the function returns `false`.
+   * @param {Array<number>} flatCoordinates Flat coordinates.
+   * @param {number} offset Offset.
+   * @param {number} end End.
+   * @param {number} stride Stride.
+   * @param {function(import("../../coordinate.js").Coordinate, import("../../coordinate.js").Coordinate): T} callback Function
+   *     called for each segment.
+   * @return {T|boolean} Value.
+   * @template T
+   */
+  function forEach(flatCoordinates, offset, end, stride, callback) {
+    let ret;
+    offset += stride;
+    for (; offset < end; offset += stride) {
+      ret = callback(
+        flatCoordinates.slice(offset - stride, offset),
+        flatCoordinates.slice(offset, offset + stride),
+      );
+      if (ret) {
+        return ret;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Calculate the intersection point of two line segments.
+   * Reference: https://stackoverflow.com/a/72474223/2389327
+   * @param {Array<import("../../coordinate.js").Coordinate>} segment1 The first line segment as an array of two points.
+   * @param {Array<import("../../coordinate.js").Coordinate>} segment2 The second line segment as an array of two points.
+   * @return {import("../../coordinate.js").Coordinate|undefined} The intersection point or `undefined` if no intersection.
+   */
+  function getIntersectionPoint(segment1, segment2) {
+    const [a, b] = segment1;
+    const [c, d] = segment2;
+    const t =
+      ((a[0] - c[0]) * (c[1] - d[1]) - (a[1] - c[1]) * (c[0] - d[0])) /
+      ((a[0] - b[0]) * (c[1] - d[1]) - (a[1] - b[1]) * (c[0] - d[0]));
+    const u =
+      ((a[0] - c[0]) * (a[1] - b[1]) - (a[1] - c[1]) * (a[0] - b[0])) /
+      ((a[0] - b[0]) * (c[1] - d[1]) - (a[1] - b[1]) * (c[0] - d[0]));
+
+    // Check if lines actually intersect
+    if (0 <= t && t <= 1 && 0 <= u && u <= 1) {
+      return [a[0] + t * (b[0] - a[0]), a[1] + t * (b[1] - a[1])];
+    }
+    return undefined;
+  }
+
+  /**
+   * @module ol/geom/flat/intersectsextent
+   */
+
+  /**
+   * @param {Array<number>} flatCoordinates Flat coordinates.
+   * @param {number} offset Offset.
+   * @param {number} end End.
+   * @param {number} stride Stride.
+   * @param {import("../../extent.js").Extent} extent Extent.
+   * @param {import('../../extent.js').Extent} [coordinatesExtent] Coordinates extent
+   * @return {boolean} True if the geometry and the extent intersect.
+   */
+  function intersectsLineString(
+    flatCoordinates,
+    offset,
+    end,
+    stride,
+    extent,
+    coordinatesExtent,
+  ) {
+    coordinatesExtent =
+      coordinatesExtent ??
+      extendFlatCoordinates(createEmpty(), flatCoordinates, offset, end, stride);
+    if (!intersects$1(extent, coordinatesExtent)) {
+      return false;
+    }
+    if (
+      (coordinatesExtent[0] >= extent[0] && coordinatesExtent[2] <= extent[2]) ||
+      (coordinatesExtent[1] >= extent[1] && coordinatesExtent[3] <= extent[3])
+    ) {
+      return true;
+    }
+    return forEach(
+      flatCoordinates,
+      offset,
+      end,
+      stride,
+      /**
+       * @param {import("../../coordinate.js").Coordinate} point1 Start point.
+       * @param {import("../../coordinate.js").Coordinate} point2 End point.
+       * @return {boolean} `true` if the segment and the extent intersect,
+       *     `false` otherwise.
+       */
+      function (point1, point2) {
+        return intersectsSegment(extent, point1, point2);
+      },
+    );
+  }
+
+  /**
+   * @param {Array<number>} flatCoordinates Flat coordinates.
+   * @param {number} offset Offset.
+   * @param {Array<number>} ends Ends.
+   * @param {number} stride Stride.
+   * @param {import("../../extent.js").Extent} extent Extent.
+   * @return {boolean} True if the geometry and the extent intersect.
+   */
+  function intersectsLineStringArray(
+    flatCoordinates,
+    offset,
+    ends,
+    stride,
+    extent,
+  ) {
+    for (let i = 0, ii = ends.length; i < ii; ++i) {
+      if (
+        intersectsLineString(flatCoordinates, offset, ends[i], stride, extent)
+      ) {
+        return true;
+      }
+      offset = ends[i];
+    }
+    return false;
+  }
+
+  /**
+   * @param {Array<number>} flatCoordinates Flat coordinates.
+   * @param {number} offset Offset.
+   * @param {number} end End.
+   * @param {number} stride Stride.
+   * @param {import("../../extent.js").Extent} extent Extent.
+   * @return {boolean} True if the geometry and the extent intersect.
+   */
+  function intersectsLinearRing(
+    flatCoordinates,
+    offset,
+    end,
+    stride,
+    extent,
+  ) {
+    if (intersectsLineString(flatCoordinates, offset, end, stride, extent)) {
+      return true;
+    }
+    if (
+      linearRingContainsXY(
+        flatCoordinates,
+        offset,
+        end,
+        stride,
+        extent[0],
+        extent[1],
+      )
+    ) {
+      return true;
+    }
+    if (
+      linearRingContainsXY(
+        flatCoordinates,
+        offset,
+        end,
+        stride,
+        extent[0],
+        extent[3],
+      )
+    ) {
+      return true;
+    }
+    if (
+      linearRingContainsXY(
+        flatCoordinates,
+        offset,
+        end,
+        stride,
+        extent[2],
+        extent[1],
+      )
+    ) {
+      return true;
+    }
+    if (
+      linearRingContainsXY(
+        flatCoordinates,
+        offset,
+        end,
+        stride,
+        extent[2],
+        extent[3],
+      )
+    ) {
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * @param {Array<number>} flatCoordinates Flat coordinates.
+   * @param {number} offset Offset.
+   * @param {Array<number>} ends Ends.
+   * @param {number} stride Stride.
+   * @param {import("../../extent.js").Extent} extent Extent.
+   * @return {boolean} True if the geometry and the extent intersect.
+   */
+  function intersectsLinearRingArray(
+    flatCoordinates,
+    offset,
+    ends,
+    stride,
+    extent,
+  ) {
+    if (!intersectsLinearRing(flatCoordinates, offset, ends[0], stride, extent)) {
+      return false;
+    }
+    if (ends.length === 1) {
+      return true;
+    }
+    for (let i = 1, ii = ends.length; i < ii; ++i) {
+      if (
+        linearRingContainsExtent(
+          flatCoordinates,
+          ends[i - 1],
+          ends[i],
+          stride,
+          extent,
+        )
+      ) {
+        if (
+          !intersectsLineString(
+            flatCoordinates,
+            ends[i - 1],
+            ends[i],
+            stride,
+            extent,
+          )
+        ) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  /**
+   * @param {Array<number>} flatCoordinates Flat coordinates.
+   * @param {number} offset Offset.
+   * @param {Array<Array<number>>} endss Endss.
+   * @param {number} stride Stride.
+   * @param {import("../../extent.js").Extent} extent Extent.
+   * @return {boolean} True if the geometry and the extent intersect.
+   */
+  function intersectsLinearRingMultiArray(
+    flatCoordinates,
+    offset,
+    endss,
+    stride,
+    extent,
+  ) {
+    for (let i = 0, ii = endss.length; i < ii; ++i) {
+      const ends = endss[i];
+      if (
+        intersectsLinearRingArray(flatCoordinates, offset, ends, stride, extent)
+      ) {
+        return true;
+      }
+      offset = ends[ends.length - 1];
+    }
+    return false;
+  }
+
+  /**
    * @module ol/geom/flat/simplify
    */
   // Based on simplify-js https://github.com/mourner/simplify-js
@@ -7403,14 +7953,21 @@
     }
 
     /**
-     * Test if the geometry and the passed extent intersect.
+     * Test if the geometry and the passed extent intersect. A linear ring is
+     * treated as a line string for this test.
      * @param {import("../extent.js").Extent} extent Extent.
      * @return {boolean} `true` if the geometry and the extent intersect.
      * @api
      * @override
      */
     intersectsExtent(extent) {
-      return false;
+      return intersectsLineString(
+        this.flatCoordinates,
+        0,
+        this.flatCoordinates.length,
+        this.stride,
+        extent,
+      );
     }
 
     /**
@@ -7557,151 +8114,6 @@
   };
 
   /**
-   * @module ol/geom/flat/contains
-   */
-
-  /**
-   * @param {Array<number>} flatCoordinates Flat coordinates.
-   * @param {number} offset Offset.
-   * @param {number} end End.
-   * @param {number} stride Stride.
-   * @param {import("../../extent.js").Extent} extent Extent.
-   * @return {boolean} Contains extent.
-   */
-  function linearRingContainsExtent(
-    flatCoordinates,
-    offset,
-    end,
-    stride,
-    extent,
-  ) {
-    const outside = forEachCorner(
-      extent,
-      /**
-       * @param {import("../../coordinate.js").Coordinate} coordinate Coordinate.
-       * @return {boolean} Contains (x, y).
-       */
-      function (coordinate) {
-        return !linearRingContainsXY(
-          flatCoordinates,
-          offset,
-          end,
-          stride,
-          coordinate[0],
-          coordinate[1],
-        );
-      },
-    );
-    return !outside;
-  }
-
-  /**
-   * @param {Array<number>} flatCoordinates Flat coordinates.
-   * @param {number} offset Offset.
-   * @param {number} end End.
-   * @param {number} stride Stride.
-   * @param {number} x X.
-   * @param {number} y Y.
-   * @return {boolean} Contains (x, y).
-   */
-  function linearRingContainsXY(
-    flatCoordinates,
-    offset,
-    end,
-    stride,
-    x,
-    y,
-  ) {
-    // https://web.archive.org/web/20210504233957/http://geomalgorithms.com/a03-_inclusion.html
-    // Copyright 2000 softSurfer, 2012 Dan Sunday
-    // This code may be freely used and modified for any purpose
-    // providing that this copyright notice is included with it.
-    // SoftSurfer makes no warranty for this code, and cannot be held
-    // liable for any real or imagined damage resulting from its use.
-    // Users of this code must verify correctness for their application.
-    let wn = 0;
-    let x1 = flatCoordinates[end - stride];
-    let y1 = flatCoordinates[end - stride + 1];
-    for (; offset < end; offset += stride) {
-      const x2 = flatCoordinates[offset];
-      const y2 = flatCoordinates[offset + 1];
-      if (y1 <= y) {
-        if (y2 > y && (x2 - x1) * (y - y1) - (x - x1) * (y2 - y1) > 0) {
-          wn++;
-        }
-      } else if (y2 <= y && (x2 - x1) * (y - y1) - (x - x1) * (y2 - y1) < 0) {
-        wn--;
-      }
-      x1 = x2;
-      y1 = y2;
-    }
-    return wn !== 0;
-  }
-
-  /**
-   * @param {Array<number>} flatCoordinates Flat coordinates.
-   * @param {number} offset Offset.
-   * @param {Array<number>} ends Ends.
-   * @param {number} stride Stride.
-   * @param {number} x X.
-   * @param {number} y Y.
-   * @return {boolean} Contains (x, y).
-   */
-  function linearRingsContainsXY(
-    flatCoordinates,
-    offset,
-    ends,
-    stride,
-    x,
-    y,
-  ) {
-    if (ends.length === 0) {
-      return false;
-    }
-    if (!linearRingContainsXY(flatCoordinates, offset, ends[0], stride, x, y)) {
-      return false;
-    }
-    for (let i = 1, ii = ends.length; i < ii; ++i) {
-      if (
-        linearRingContainsXY(flatCoordinates, ends[i - 1], ends[i], stride, x, y)
-      ) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  /**
-   * @param {Array<number>} flatCoordinates Flat coordinates.
-   * @param {number} offset Offset.
-   * @param {Array<Array<number>>} endss Endss.
-   * @param {number} stride Stride.
-   * @param {number} x X.
-   * @param {number} y Y.
-   * @return {boolean} Contains (x, y).
-   */
-  function linearRingssContainsXY(
-    flatCoordinates,
-    offset,
-    endss,
-    stride,
-    x,
-    y,
-  ) {
-    if (endss.length === 0) {
-      return false;
-    }
-    for (let i = 0, ii = endss.length; i < ii; ++i) {
-      const ends = endss[i];
-      if (linearRingsContainsXY(flatCoordinates, offset, ends, stride, x, y)) {
-        return true;
-      }
-      offset = ends[ends.length - 1];
-    }
-    return false;
-  }
-
-  /**
    * @module ol/geom/flat/interiorpoint
    */
 
@@ -7809,281 +8221,6 @@
       offset = ends[ends.length - 1];
     }
     return interiorPoints;
-  }
-
-  /**
-   * @module ol/geom/flat/segments
-   */
-
-  /**
-   * This function calls `callback` for each segment of the flat coordinates
-   * array. If the callback returns a truthy value the function returns that
-   * value immediately. Otherwise the function returns `false`.
-   * @param {Array<number>} flatCoordinates Flat coordinates.
-   * @param {number} offset Offset.
-   * @param {number} end End.
-   * @param {number} stride Stride.
-   * @param {function(import("../../coordinate.js").Coordinate, import("../../coordinate.js").Coordinate): T} callback Function
-   *     called for each segment.
-   * @return {T|boolean} Value.
-   * @template T
-   */
-  function forEach(flatCoordinates, offset, end, stride, callback) {
-    let ret;
-    offset += stride;
-    for (; offset < end; offset += stride) {
-      ret = callback(
-        flatCoordinates.slice(offset - stride, offset),
-        flatCoordinates.slice(offset, offset + stride),
-      );
-      if (ret) {
-        return ret;
-      }
-    }
-    return false;
-  }
-
-  /**
-   * Calculate the intersection point of two line segments.
-   * Reference: https://stackoverflow.com/a/72474223/2389327
-   * @param {Array<import("../../coordinate.js").Coordinate>} segment1 The first line segment as an array of two points.
-   * @param {Array<import("../../coordinate.js").Coordinate>} segment2 The second line segment as an array of two points.
-   * @return {import("../../coordinate.js").Coordinate|undefined} The intersection point or `undefined` if no intersection.
-   */
-  function getIntersectionPoint(segment1, segment2) {
-    const [a, b] = segment1;
-    const [c, d] = segment2;
-    const t =
-      ((a[0] - c[0]) * (c[1] - d[1]) - (a[1] - c[1]) * (c[0] - d[0])) /
-      ((a[0] - b[0]) * (c[1] - d[1]) - (a[1] - b[1]) * (c[0] - d[0]));
-    const u =
-      ((a[0] - c[0]) * (a[1] - b[1]) - (a[1] - c[1]) * (a[0] - b[0])) /
-      ((a[0] - b[0]) * (c[1] - d[1]) - (a[1] - b[1]) * (c[0] - d[0]));
-
-    // Check if lines actually intersect
-    if (0 <= t && t <= 1 && 0 <= u && u <= 1) {
-      return [a[0] + t * (b[0] - a[0]), a[1] + t * (b[1] - a[1])];
-    }
-    return undefined;
-  }
-
-  /**
-   * @module ol/geom/flat/intersectsextent
-   */
-
-  /**
-   * @param {Array<number>} flatCoordinates Flat coordinates.
-   * @param {number} offset Offset.
-   * @param {number} end End.
-   * @param {number} stride Stride.
-   * @param {import("../../extent.js").Extent} extent Extent.
-   * @param {import('../../extent.js').Extent} [coordinatesExtent] Coordinates extent
-   * @return {boolean} True if the geometry and the extent intersect.
-   */
-  function intersectsLineString(
-    flatCoordinates,
-    offset,
-    end,
-    stride,
-    extent,
-    coordinatesExtent,
-  ) {
-    coordinatesExtent =
-      coordinatesExtent ??
-      extendFlatCoordinates(createEmpty(), flatCoordinates, offset, end, stride);
-    if (!intersects$1(extent, coordinatesExtent)) {
-      return false;
-    }
-    if (
-      (coordinatesExtent[0] >= extent[0] && coordinatesExtent[2] <= extent[2]) ||
-      (coordinatesExtent[1] >= extent[1] && coordinatesExtent[3] <= extent[3])
-    ) {
-      return true;
-    }
-    return forEach(
-      flatCoordinates,
-      offset,
-      end,
-      stride,
-      /**
-       * @param {import("../../coordinate.js").Coordinate} point1 Start point.
-       * @param {import("../../coordinate.js").Coordinate} point2 End point.
-       * @return {boolean} `true` if the segment and the extent intersect,
-       *     `false` otherwise.
-       */
-      function (point1, point2) {
-        return intersectsSegment(extent, point1, point2);
-      },
-    );
-  }
-
-  /**
-   * @param {Array<number>} flatCoordinates Flat coordinates.
-   * @param {number} offset Offset.
-   * @param {Array<number>} ends Ends.
-   * @param {number} stride Stride.
-   * @param {import("../../extent.js").Extent} extent Extent.
-   * @return {boolean} True if the geometry and the extent intersect.
-   */
-  function intersectsLineStringArray(
-    flatCoordinates,
-    offset,
-    ends,
-    stride,
-    extent,
-  ) {
-    for (let i = 0, ii = ends.length; i < ii; ++i) {
-      if (
-        intersectsLineString(flatCoordinates, offset, ends[i], stride, extent)
-      ) {
-        return true;
-      }
-      offset = ends[i];
-    }
-    return false;
-  }
-
-  /**
-   * @param {Array<number>} flatCoordinates Flat coordinates.
-   * @param {number} offset Offset.
-   * @param {number} end End.
-   * @param {number} stride Stride.
-   * @param {import("../../extent.js").Extent} extent Extent.
-   * @return {boolean} True if the geometry and the extent intersect.
-   */
-  function intersectsLinearRing(
-    flatCoordinates,
-    offset,
-    end,
-    stride,
-    extent,
-  ) {
-    if (intersectsLineString(flatCoordinates, offset, end, stride, extent)) {
-      return true;
-    }
-    if (
-      linearRingContainsXY(
-        flatCoordinates,
-        offset,
-        end,
-        stride,
-        extent[0],
-        extent[1],
-      )
-    ) {
-      return true;
-    }
-    if (
-      linearRingContainsXY(
-        flatCoordinates,
-        offset,
-        end,
-        stride,
-        extent[0],
-        extent[3],
-      )
-    ) {
-      return true;
-    }
-    if (
-      linearRingContainsXY(
-        flatCoordinates,
-        offset,
-        end,
-        stride,
-        extent[2],
-        extent[1],
-      )
-    ) {
-      return true;
-    }
-    if (
-      linearRingContainsXY(
-        flatCoordinates,
-        offset,
-        end,
-        stride,
-        extent[2],
-        extent[3],
-      )
-    ) {
-      return true;
-    }
-    return false;
-  }
-
-  /**
-   * @param {Array<number>} flatCoordinates Flat coordinates.
-   * @param {number} offset Offset.
-   * @param {Array<number>} ends Ends.
-   * @param {number} stride Stride.
-   * @param {import("../../extent.js").Extent} extent Extent.
-   * @return {boolean} True if the geometry and the extent intersect.
-   */
-  function intersectsLinearRingArray(
-    flatCoordinates,
-    offset,
-    ends,
-    stride,
-    extent,
-  ) {
-    if (!intersectsLinearRing(flatCoordinates, offset, ends[0], stride, extent)) {
-      return false;
-    }
-    if (ends.length === 1) {
-      return true;
-    }
-    for (let i = 1, ii = ends.length; i < ii; ++i) {
-      if (
-        linearRingContainsExtent(
-          flatCoordinates,
-          ends[i - 1],
-          ends[i],
-          stride,
-          extent,
-        )
-      ) {
-        if (
-          !intersectsLineString(
-            flatCoordinates,
-            ends[i - 1],
-            ends[i],
-            stride,
-            extent,
-          )
-        ) {
-          return false;
-        }
-      }
-    }
-    return true;
-  }
-
-  /**
-   * @param {Array<number>} flatCoordinates Flat coordinates.
-   * @param {number} offset Offset.
-   * @param {Array<Array<number>>} endss Endss.
-   * @param {number} stride Stride.
-   * @param {import("../../extent.js").Extent} extent Extent.
-   * @return {boolean} True if the geometry and the extent intersect.
-   */
-  function intersectsLinearRingMultiArray(
-    flatCoordinates,
-    offset,
-    endss,
-    stride,
-    extent,
-  ) {
-    for (let i = 0, ii = endss.length; i < ii; ++i) {
-      const ends = endss[i];
-      if (
-        intersectsLinearRingArray(flatCoordinates, offset, ends, stride, extent)
-      ) {
-        return true;
-      }
-      offset = ends[ends.length - 1];
-    }
-    return false;
   }
 
   /**
@@ -8896,17 +9033,17 @@
    */
 
   /**
-   * @typedef {import("./ObjectEventType").Types|'change:accuracy'|'change:accuracyGeometry'|'change:altitude'|
+   * @typedef {import("./ObjectEventType.js").Types|'change:accuracy'|'change:accuracyGeometry'|'change:altitude'|
    *    'change:altitudeAccuracy'|'change:heading'|'change:position'|'change:projection'|'change:speed'|'change:tracking'|
    *    'change:trackingOptions'} GeolocationObjectEventTypes
    */
 
   /***
    * @template Return
-   * @typedef {import("./Observable").OnSignature<GeolocationObjectEventTypes, import("./Object").ObjectEvent, Return> &
-   *   import("./Observable").OnSignature<'error', GeolocationError, Return> &
-   *   import("./Observable").CombinedOnSignature<import("./Observable").EventTypes|GeolocationObjectEventTypes, Return> &
-   *   import("./Observable").OnSignature<import("./Observable").EventTypes, import("./events/Event.js").default, Return>} GeolocationOnSignature
+   * @typedef {import("./Observable.js").OnSignature<GeolocationObjectEventTypes, import("./Object.js").ObjectEvent, Return> &
+   *   import("./Observable.js").OnSignature<'error', GeolocationError, Return> &
+   *   import("./Observable.js").CombinedOnSignature<import("./Observable.js").EventTypes|GeolocationObjectEventTypes, Return> &
+   *   import("./Observable.js").OnSignature<import("./Observable.js").EventTypes, import("./events/Event.js").default, Return>} GeolocationOnSignature
    */
 
   /**
@@ -8944,12 +9081,12 @@
       super();
 
       /***
-       * @type {GeolocationOnSignature<import("./events").EventsKey>}
+       * @type {GeolocationOnSignature<import("./events.js").EventsKey>}
        */
       this.on;
 
       /***
-       * @type {GeolocationOnSignature<import("./events").EventsKey>}
+       * @type {GeolocationOnSignature<import("./events.js").EventsKey>}
        */
       this.once;
 
@@ -9302,10 +9439,10 @@
   /***
    * @template T
    * @template Return
-   * @typedef {import("./Observable").OnSignature<import("./Observable").EventTypes, import("./events/Event.js").default, Return> &
-   *   import("./Observable").OnSignature<import("./ObjectEventType").Types|'change:length', import("./Object").ObjectEvent, Return> &
-   *   import("./Observable").OnSignature<'add'|'remove', CollectionEvent<T>, Return> &
-   *   import("./Observable").CombinedOnSignature<import("./Observable").EventTypes|import("./ObjectEventType").Types|
+   * @typedef {import("./Observable.js").OnSignature<import("./Observable.js").EventTypes, import("./events/Event.js").default, Return> &
+   *   import("./Observable.js").OnSignature<import("./ObjectEventType.js").Types|'change:length', import("./Object.js").ObjectEvent, Return> &
+   *   import("./Observable.js").OnSignature<'add'|'remove', CollectionEvent<T>, Return> &
+   *   import("./Observable.js").CombinedOnSignature<import("./Observable.js").EventTypes|import("./ObjectEventType.js").Types|
    *     'change:length'|'add'|'remove',Return>} CollectionOnSignature
    */
 
@@ -9337,12 +9474,12 @@
       super();
 
       /***
-       * @type {CollectionOnSignature<T, import("./events").EventsKey>}
+       * @type {CollectionOnSignature<T, import("./events.js").EventsKey>}
        */
       this.on;
 
       /***
-       * @type {CollectionOnSignature<T, import("./events").EventsKey>}
+       * @type {CollectionOnSignature<T, import("./events.js").EventsKey>}
        */
       this.once;
 
@@ -11464,14 +11601,14 @@
   const DEFAULT_MIN_ZOOM = 0;
 
   /**
-   * @typedef {import("./ObjectEventType").Types|'change:center'|'change:resolution'|'change:rotation'} ViewObjectEventTypes
+   * @typedef {import("./ObjectEventType.js").Types|'change:center'|'change:resolution'|'change:rotation'} ViewObjectEventTypes
    */
 
   /***
    * @template Return
-   * @typedef {import("./Observable").OnSignature<import("./Observable").EventTypes, import("./events/Event.js").default, Return> &
-   *   import("./Observable").OnSignature<ViewObjectEventTypes, import("./Object").ObjectEvent, Return> &
-   *   import("./Observable").CombinedOnSignature<import("./Observable").EventTypes|ViewObjectEventTypes, Return>} ViewOnSignature
+   * @typedef {import("./Observable.js").OnSignature<import("./Observable.js").EventTypes, import("./events/Event.js").default, Return> &
+   *   import("./Observable.js").OnSignature<ViewObjectEventTypes, import("./Object.js").ObjectEvent, Return> &
+   *   import("./Observable.js").CombinedOnSignature<import("./Observable.js").EventTypes|ViewObjectEventTypes, Return>} ViewOnSignature
    */
 
   /**
@@ -11545,6 +11682,7 @@
    * put back the view to a stable state;
    *
    * @api
+   * @extends {BaseObject<ViewOptions>}
    */
   class View extends BaseObject {
     /**
@@ -11554,12 +11692,12 @@
       super();
 
       /***
-       * @type {ViewOnSignature<import("./events").EventsKey>}
+       * @type {ViewOnSignature<import("./events.js").EventsKey>}
        */
       this.on;
 
       /***
-       * @type {ViewOnSignature<import("./events").EventsKey>}
+       * @type {ViewOnSignature<import("./events.js").EventsKey>}
        */
       this.once;
 
@@ -12619,7 +12757,7 @@
     /**
      * Calculate rotated extent
      * @param {import("./geom/SimpleGeometry.js").default} geometry The geometry.
-     * @return {import("./extent").Extent} The rotated extent for the geometry.
+     * @return {import("./extent.js").Extent} The rotated extent for the geometry.
      */
     rotatedExtentForGeometry(geometry) {
       const rotation = this.getRotation();
@@ -13525,6 +13663,12 @@
 
   /**
    * @module ol/dom
+   */
+
+  /**
+   * @typedef {Object} ImageAttributes
+   * @property {string|null} [crossOrigin] Cross origin.
+   * @property {ReferrerPolicy} [referrerPolicy]  Referrer policy.
    */
 
   //FIXME Move this function to the canvas module
@@ -14787,10 +14931,10 @@
 
   /***
    * @template Return
-   * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
-   *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
-   *     'change:active', import("../Object").ObjectEvent, Return> &
-   *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
+   * @typedef {import("../Observable.js").OnSignature<import("../Observable.js").EventTypes, import("../events/Event.js").default, Return> &
+   *   import("../Observable.js").OnSignature<import("../ObjectEventType.js").Types|
+   *     'change:active', import("../Object.js").ObjectEvent, Return> &
+   *   import("../Observable.js").CombinedOnSignature<import("../Observable.js").EventTypes|import("../ObjectEventType.js").Types|
    *     'change:active', Return>} InteractionOnSignature
    */
 
@@ -14826,12 +14970,12 @@
       super();
 
       /***
-       * @type {InteractionOnSignature<import("../events").EventsKey>}
+       * @type {InteractionOnSignature<import("../events.js").EventsKey>}
        */
       this.on;
 
       /***
-       * @type {InteractionOnSignature<import("../events").EventsKey>}
+       * @type {InteractionOnSignature<import("../events.js").EventsKey>}
        */
       this.once;
 
@@ -16089,11 +16233,11 @@
 
   /***
    * @template Return
-   * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
-   *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
-   *     'change:active', import("../Object").ObjectEvent, Return> &
-   *   import("../Observable").OnSignature<'boxcancel'|'boxdrag'|'boxend'|'boxstart', DragBoxEvent, Return> &
-   *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
+   * @typedef {import("../Observable.js").OnSignature<import("../Observable.js").EventTypes, import("../events/Event.js").default, Return> &
+   *   import("../Observable.js").OnSignature<import("../ObjectEventType.js").Types|
+   *     'change:active', import("../Object.js").ObjectEvent, Return> &
+   *   import("../Observable.js").OnSignature<'boxcancel'|'boxdrag'|'boxend'|'boxstart', DragBoxEvent, Return> &
+   *   import("../Observable.js").CombinedOnSignature<import("../Observable.js").EventTypes|import("../ObjectEventType.js").Types|
    *     'change:active'|'boxcancel'|'boxdrag'|'boxend', Return>} DragBoxOnSignature
    */
 
@@ -16117,12 +16261,12 @@
       super();
 
       /***
-       * @type {DragBoxOnSignature<import("../events").EventsKey>}
+       * @type {DragBoxOnSignature<import("../events.js").EventsKey>}
        */
       this.on;
 
       /***
-       * @type {DragBoxOnSignature<import("../events").EventsKey>}
+       * @type {DragBoxOnSignature<import("../events.js").EventsKey>}
        */
       this.once;
 
@@ -16669,6 +16813,11 @@
   const DELTA_PAGE_MULTIPLIER = 300;
 
   /**
+   * Mutliplier for the delta value when using pinch-to-zoom
+   * @type {number}
+   */
+  const DELTA_TRACKPAD_PINCH_TO_ZOOM_MULTIPLIER = 3; // 5 = google maps. 3 = apple maps, MapLibre.
+  /**
    * @classdesc
    * Allows the user to zoom the map by scrolling the mouse wheel.
    * @api
@@ -16784,6 +16933,46 @@
        * @type {number}
        */
       this.deltaPerZoom_ = 300;
+
+      /**
+       * Tracks whether the Ctrl key is physically held down (as opposed to the
+       * browser synthesizing ctrlKey=true for pinch-to-zoom trackpad gestures).
+       * @private
+       * @type {boolean}
+       */
+      this.ctrlKeyPressed_ = false;
+
+      /**
+       * @private
+       * @type {Array<import('../events.js').EventsKey>}
+       */
+      this.ctrlKeyListenerKeys_ = [];
+    }
+
+    /**
+     * @param {import('../Map.js').default|null} map Map.
+     * @override
+     */
+    setMap(map) {
+      this.ctrlKeyListenerKeys_.forEach(unlistenByKey);
+      this.ctrlKeyListenerKeys_.length = 0;
+      this.ctrlKeyPressed_ = false;
+      super.setMap(map);
+      if (map) {
+        const doc = map.getOwnerDocument();
+        this.ctrlKeyListenerKeys_.push(
+          listen(doc, 'keydown', (/** @type {KeyboardEvent} */ e) => {
+            if (e.key === 'Control') {
+              this.ctrlKeyPressed_ = true;
+            }
+          }),
+          listen(doc, 'keyup', (/** @type {KeyboardEvent} */ e) => {
+            if (e.key === 'Control') {
+              this.ctrlKeyPressed_ = false;
+            }
+          }),
+        );
+      }
     }
 
     /**
@@ -16796,9 +16985,12 @@
         return;
       }
       const view = map.getView();
+      const direction = this.lastDelta_ ? (this.lastDelta_ > 0 ? 1 : -1) : 0;
       view.endInteraction(
-        undefined,
-        this.lastDelta_ ? (this.lastDelta_ > 0 ? 1 : -1) : 0,
+        this.constrainResolution_ || view.getConstrainResolution()
+          ? 100
+          : undefined,
+        direction,
         this.lastAnchor_ ? map.getCoordinateFromPixel(this.lastAnchor_) : null,
       );
     }
@@ -16824,6 +17016,11 @@
         mapBrowserEvent.originalEvent
       );
       wheelEvent.preventDefault();
+
+      const isPinchToZoom = wheelEvent.ctrlKey && !this.ctrlKeyPressed_;
+      if (!wheelEvent.ctrlKey) {
+        this.ctrlKeyPressed_ = false;
+      }
 
       if (this.useAnchor_) {
         this.lastAnchor_ = mapBrowserEvent.pixel;
@@ -16859,10 +17056,7 @@
       }
 
       const view = map.getView();
-      if (
-        this.mode_ === 'trackpad' &&
-        !(view.getConstrainResolution() || this.constrainResolution_)
-      ) {
+      if (this.mode_ === 'trackpad') {
         if (this.trackpadTimeoutId_) {
           clearTimeout(this.trackpadTimeoutId_);
         } else {
@@ -16875,6 +17069,9 @@
           this.endInteraction_.bind(this),
           this.timeout_,
         );
+        if (isPinchToZoom) {
+          delta = delta * DELTA_TRACKPAD_PINCH_TO_ZOOM_MULTIPLIER;
+        }
         view.adjustZoom(
           -delta / this.deltaPerZoom_,
           this.lastAnchor_ ? map.getCoordinateFromPixel(this.lastAnchor_) : null,
@@ -17402,18 +17599,19 @@
    */
 
   /**
-   * @typedef {import("../ObjectEventType").Types|'change:extent'|'change:maxResolution'|'change:maxZoom'|
+   * @typedef {import("../ObjectEventType.js").Types|'change:extent'|'change:maxResolution'|'change:maxZoom'|
    *    'change:minResolution'|'change:minZoom'|'change:opacity'|'change:visible'|'change:zIndex'} BaseLayerObjectEventTypes
    */
 
   /***
    * @template Return
-   * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
-   *   import("../Observable").OnSignature<BaseLayerObjectEventTypes, import("../Object").ObjectEvent, Return> &
-   *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|BaseLayerObjectEventTypes, Return>} BaseLayerOnSignature
+   * @typedef {import("../Observable.js").OnSignature<import("../Observable.js").EventTypes, import("../events/Event.js").default, Return> &
+   *   import("../Observable.js").OnSignature<BaseLayerObjectEventTypes, import("../Object.js").ObjectEvent, Return> &
+   *   import("../Observable.js").CombinedOnSignature<import("../Observable.js").EventTypes|BaseLayerObjectEventTypes, Return>} BaseLayerOnSignature
    */
 
   /**
+   * @template {Object<string, *>} [Properties=Object<string, *>]
    * @typedef {Object} Options
    * @property {string} [className='ol-layer'] A CSS class name to set to the layer element.
    * @property {number} [opacity=1] Opacity (0, 1).
@@ -17434,7 +17632,7 @@
    * be visible.
    * @property {BackgroundColor} [background] Background color for the layer. If not specified, no background
    * will be rendered.
-   * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
+   * @property {Properties} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
    */
 
   /**
@@ -17446,21 +17644,23 @@
    * is observable, and has get/set accessors.
    *
    * @api
+   * @template {Object<string, *>} [Properties=Object<string, *>]
+   * @extends {BaseObject<NoInfer<Properties> & Object<string, *>>}
    */
   class BaseLayer extends BaseObject {
     /**
-     * @param {Options} options Layer options.
+     * @param {Options<NoInfer<Properties>>} options Layer options.
      */
     constructor(options) {
       super();
 
       /***
-       * @type {BaseLayerOnSignature<import("../events").EventsKey>}
+       * @type {BaseLayerOnSignature<import("../events.js").EventsKey>}
        */
       this.on;
 
       /***
-       * @type {BaseLayerOnSignature<import("../events").EventsKey>}
+       * @type {BaseLayerOnSignature<import("../events.js").EventsKey>}
        */
       this.once;
 
@@ -17476,7 +17676,7 @@
       this.background_ = options.background;
 
       /**
-       * @type {Object<string, *>}
+       * @type {?}
        */
       const properties = Object.assign({}, options);
       if (typeof options.properties === 'object') {
@@ -17837,11 +18037,11 @@
 
   /***
    * @template Return
-   * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
-   *   import("../Observable").OnSignature<import("./Base").BaseLayerObjectEventTypes|
-   *     'change:layers', import("../Object").ObjectEvent, Return> &
-   *   import("../Observable").OnSignature<'addlayer'|'removelayer', GroupEvent, Return> &
-   *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("./Base").BaseLayerObjectEventTypes|'addlayer'|'removelayer'|'change:layers', Return>} GroupOnSignature
+   * @typedef {import("../Observable.js").OnSignature<import("../Observable.js").EventTypes, import("../events/Event.js").default, Return> &
+   *   import("../Observable.js").OnSignature<import("./Base.js").BaseLayerObjectEventTypes|
+   *     'change:layers', import("../Object.js").ObjectEvent, Return> &
+   *   import("../Observable.js").OnSignature<'addlayer'|'removelayer', GroupEvent, Return> &
+   *   import("../Observable.js").CombinedOnSignature<import("../Observable.js").EventTypes|import("./Base.js").BaseLayerObjectEventTypes|'addlayer'|'removelayer'|'change:layers', Return>} GroupOnSignature
    */
 
   /**
@@ -17897,12 +18097,12 @@
       super(baseOptions);
 
       /***
-       * @type {GroupOnSignature<import("../events").EventsKey>}
+       * @type {GroupOnSignature<import("../events.js").EventsKey>}
        */
       this.on;
 
       /***
-       * @type {GroupOnSignature<import("../events").EventsKey>}
+       * @type {GroupOnSignature<import("../events.js").EventsKey>}
        */
       this.once;
 
@@ -18232,16 +18432,17 @@
 
   /***
    * @template Return
-   * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
-   *   import("../Observable").OnSignature<import("./Base").BaseLayerObjectEventTypes|
-   *     LayerEventType, import("../Object").ObjectEvent, Return> &
-   *   import("../Observable").OnSignature<import("../render/EventType").LayerRenderEventTypes, import("../render/Event").default, Return> &
-   *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("./Base").BaseLayerObjectEventTypes|LayerEventType|
-   *     import("../render/EventType").LayerRenderEventTypes, Return>} LayerOnSignature
+   * @typedef {import("../Observable.js").OnSignature<import("../Observable.js").EventTypes, import("../events/Event.js").default, Return> &
+   *   import("../Observable.js").OnSignature<import("./Base.js").BaseLayerObjectEventTypes|
+   *     LayerEventType, import("../Object.js").ObjectEvent, Return> &
+   *   import("../Observable.js").OnSignature<import("../render/EventType.js").LayerRenderEventTypes, import("../render/Event.js").default, Return> &
+   *   import("../Observable.js").CombinedOnSignature<import("../Observable.js").EventTypes|import("./Base.js").BaseLayerObjectEventTypes|LayerEventType|
+   *     import("../render/EventType.js").LayerRenderEventTypes, Return>} LayerOnSignature
    */
 
   /**
    * @template {import("../source/Source.js").default} [SourceType=import("../source/Source.js").default]
+   * @template {Object<string, *>} [Properties=Object<string, *>]
    * @typedef {Object} Options
    * @property {string} [className='ol-layer'] A CSS class name to set to the layer element.
    * @property {number} [opacity=1] Opacity (0, 1).
@@ -18266,7 +18467,9 @@
    * @property {import("../Map.js").default|null} [map] Map.
    * @property {RenderFunction} [render] Render function. Takes the frame state as input and is expected to return an
    * HTML element. Will overwrite the default rendering for the layer.
-   * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
+   * @property {import("./Base.js").BackgroundColor} [background] Background color for the layer. If not specified, no background
+   * will be rendered.
+   * @property {Properties} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
    */
 
   /**
@@ -18307,11 +18510,13 @@
    *
    * @template {import("../source/Source.js").default} [SourceType=import("../source/Source.js").default]
    * @template {import("../renderer/Layer.js").default} [RendererType=import("../renderer/Layer.js").default]
+   * @template {Object<string, *>} [Properties=Object<string, *>]
+   * @extends {BaseLayer<NoInfer<Properties>>}
    * @api
    */
   class Layer extends BaseLayer {
     /**
-     * @param {Options<SourceType>} options Layer options.
+     * @param {Options<SourceType, NoInfer<Properties>>} options Layer options.
      */
     constructor(options) {
       const baseOptions = Object.assign({}, options);
@@ -18320,12 +18525,12 @@
       super(baseOptions);
 
       /***
-       * @type {LayerOnSignature<import("../events").EventsKey>}
+       * @type {LayerOnSignature<import("../events.js").EventsKey>}
        */
       this.on;
 
       /***
-       * @type {LayerOnSignature<import("../events").EventsKey>}
+       * @type {LayerOnSignature<import("../events.js").EventsKey>}
        */
       this.once;
 
@@ -18478,8 +18683,8 @@
     }
 
     /**
-     * @param {import("../pixel").Pixel} pixel Pixel.
-     * @return {Promise<Array<import("../Feature").FeatureLike>>} Promise that resolves with
+     * @param {import("../pixel.js").Pixel} pixel Pixel.
+     * @return {Promise<Array<import("../Feature.js").FeatureLike>>} Promise that resolves with
      * an array of features.
      */
     getFeatures(pixel) {
@@ -18490,7 +18695,7 @@
     }
 
     /**
-     * @param {import("../pixel").Pixel} pixel Pixel.
+     * @param {import("../pixel.js").Pixel} pixel Pixel.
      * @return {Uint8ClampedArray|Uint8Array|Float32Array|DataView|null} Pixel data.
      */
     getData(pixel) {
@@ -19831,6 +20036,7 @@
    *     * Only literal arrays are supported as `haystack` for now; this means that `haystack` cannot be the result of an
    *     expression. If `haystack` is an array of strings, use the `literal` operator to disambiguate from an expression:
    *     `['literal', ['abc', 'def', 'ghi']]`
+   *     This works as well for number arrays although it is not required. Mixing types (numbers and strings) will produce undefined results.
    *
    * * Conversion operators:
    *   * `['array', value1, ...valueN]` creates a numerical array from `number` values; please note that the amount of
@@ -19859,7 +20065,12 @@
    * @api
    */
 
+  /**
+   * @typedef {number} ValueType
+   */
+
   let numTypes = 0;
+  const NoneType = 0;
   const BooleanType = 1 << numTypes++;
   const NumberType = 1 << numTypes++;
   const StringType = 1 << numTypes++;
@@ -19880,7 +20091,7 @@
   const namedTypes = Object.keys(typeNames).map(Number).sort(ascending);
 
   /**
-   * @param {number} type The type.
+   * @param {ValueType} type The type.
    * @return {boolean} The type is one of the specific types (not any or a union type).
    */
   function isSpecific(type) {
@@ -19889,7 +20100,7 @@
 
   /**
    * Get a string representation for a type.
-   * @param {number} type The type.
+   * @param {ValueType} type The type.
    * @return {string} The type name.
    */
   function typeName(type) {
@@ -19909,8 +20120,8 @@
   }
 
   /**
-   * @param {number} broad The broad type.
-   * @param {number} specific The specific type.
+   * @param {ValueType} broad The broad type.
+   * @param {ValueType} specific The specific type.
    * @return {boolean} The broad type includes the specific type.
    */
   function includesType(broad, specific) {
@@ -19918,8 +20129,17 @@
   }
 
   /**
-   * @param {number} type The type.
-   * @param {number} expected The expected type.
+   * @param {ValueType} oneType One type.
+   * @param {ValueType} otherType Another type.
+   * @return {boolean} The set of types overlap (share a common specific type)
+   */
+  function overlapsType(oneType, otherType) {
+    return !!(oneType & otherType);
+  }
+
+  /**
+   * @param {ValueType} type The type.
+   * @param {ValueType} expected The expected type.
    * @return {boolean} The given type is exactly the expected type.
    */
   function isType(type, expected) {
@@ -19932,7 +20152,7 @@
 
   class LiteralExpression {
     /**
-     * @param {number} type The value type.
+     * @param {ValueType} type The value type.
      * @param {LiteralValue} value The literal value.
      */
     constructor(type, value) {
@@ -19948,7 +20168,7 @@
 
   class CallExpression {
     /**
-     * @param {number} type The return type.
+     * @param {ValueType} type The return type.
      * @param {string} operator The operator.
      * @param {...Expression} args The arguments.
      */
@@ -19965,23 +20185,28 @@
 
   /**
    * @typedef {Object} ParsingContext
-   * @property {Set<string>} variables Variables referenced with the 'var' operator.
-   * @property {Set<string>} properties Properties referenced with the 'get' operator.
+   * @property {Map<string, ValueType>} variables Variables referenced with the 'var' operator; key is name, value is type.
+   * @property {Map<string, ValueType>} properties Properties referenced with the 'get' operator; key is name, value is type.
    * @property {boolean} featureId The style uses the feature id.
    * @property {boolean} geometryType The style uses the feature geometry type.
+   * @property {boolean} mCoordinate The style uses the M coordinate of geometries
    * @property {boolean} mapState The style uses the map state (view state or time elapsed).
+   * @property {import('../style/flat.js').StyleVariables} [inputVariables] Variable values (i.e. style variables) given as input during parsing to help with type narrowing
    */
 
   /**
+   * @param {import('../style/flat.js').StyleVariables} [inputVariables] Variable values (i.e. style variables) given as input during parsing to help with type narrowing
    * @return {ParsingContext} A new parsing context.
    */
-  function newParsingContext() {
+  function newParsingContext(inputVariables) {
     return {
-      variables: new Set(),
-      properties: new Set(),
+      variables: new Map(),
+      properties: new Map(),
       featureId: false,
       geometryType: false,
+      mCoordinate: false,
       mapState: false,
+      inputVariables,
     };
   }
 
@@ -19991,7 +20216,7 @@
 
   /**
    * @param {EncodedExpression} encoded The encoded expression.
-   * @param {number} expectedType The expected type.
+   * @param {ValueType} expectedType The expected type.
    * @param {ParsingContext} context The parsing context.
    * @return {Expression} The parsed expression result.
    */
@@ -20149,7 +20374,7 @@
    */
   const parsers = {
     [Ops.Get]: createCallExpressionParser(hasArgsCount(1, Infinity), withGetArgs),
-    [Ops.Var]: createCallExpressionParser(hasArgsCount(1, 1), withVarArgs),
+    [Ops.Var]: createVarExpressionParser(),
     [Ops.Has]: createCallExpressionParser(hasArgsCount(1, Infinity), withGetArgs),
     [Ops.Id]: createCallExpressionParser(usesFeatureId, withNoArgs),
     [Ops.Concat]: createCallExpressionParser(
@@ -20157,7 +20382,7 @@
       withArgsOfType(StringType),
     ),
     [Ops.GeometryType]: createCallExpressionParser(usesGeometryType, withNoArgs),
-    [Ops.LineMetric]: createCallExpressionParser(withNoArgs),
+    [Ops.LineMetric]: createCallExpressionParser(usesMCoordinate, withNoArgs),
     [Ops.Resolution]: createCallExpressionParser(usesMapState, withNoArgs),
     [Ops.Zoom]: createCallExpressionParser(usesMapState, withNoArgs),
     [Ops.Time]: createCallExpressionParser(usesMapState, withNoArgs),
@@ -20175,11 +20400,11 @@
     ),
     [Ops.Equal]: createCallExpressionParser(
       hasArgsCount(2, 2),
-      withArgsOfType(AnyType),
+      withArgsOfIdenticalType(),
     ),
     [Ops.NotEqual]: createCallExpressionParser(
       hasArgsCount(2, 2),
-      withArgsOfType(AnyType),
+      withArgsOfIdenticalType(),
     ),
     [Ops.GreaterThan]: createCallExpressionParser(
       hasArgsCount(2, 2),
@@ -20312,7 +20537,7 @@
   };
 
   /**
-   * @typedef {function(Array<EncodedExpression>, number, ParsingContext):Array<Expression>|void} ArgValidator
+   * @typedef {function(Array<EncodedExpression>, ValueType, ParsingContext):Array<Expression>|void} ArgValidator
    *
    * An argument validator applies various checks to an encoded expression arguments and
    * returns the parsed arguments if any.  The second argument is the return type of the call expression.
@@ -20342,23 +20567,81 @@
         }
       }
       if (i === 0) {
-        context.properties.add(String(key));
+        context.properties.set(String(key), returnType);
       }
     }
     return args;
   }
 
   /**
-   * @type {ArgValidator}
+   * This special expression parser reads style variables present in the context to narrow down
+   * the expected return type of the 'var' operator
+   * @return {Parser} The parser.
    */
-  function withVarArgs(encoded, returnType, context) {
-    const name = encoded[1];
-    if (typeof name !== 'string') {
-      throw new Error('expected a string argument for var operation');
-    }
-    context.variables.add(name);
+  function createVarExpressionParser() {
+    return function (encoded, returnType, context) {
+      const name = encoded[1];
+      if (typeof name !== 'string') {
+        throw new Error('expected a string argument for var operation');
+      }
+      let type = returnType;
 
-    return [new LiteralExpression(StringType, name)];
+      const variableValue = context.inputVariables?.[name];
+      if (variableValue !== undefined) {
+        const parsedInput = parse$2(variableValue, AnyType, context);
+        if (!(parsedInput instanceof LiteralExpression)) {
+          throw new Error(
+            `style variables should only be literal values (no expressions!), variable name: ${name}`,
+          );
+        }
+        let parsedType = parsedInput.type;
+
+        // special cases (because variables are not embedded in expressions and as such are harder to figure out their types)
+        // * if the variable is a string (e.g. 'blue') and we know that the expected type is not
+        //   StringType but ColorType, assume that the variable is indeed a color and not a string
+        // * if the variable is 2-elements a number array and we know that the expected type is SizeType
+        //   and not NumberArrayType, assume that the variable is indeed a size
+        if (
+          typeof variableValue === 'string' &&
+          overlapsType(type, ColorType) &&
+          !overlapsType(type, StringType)
+        ) {
+          parsedType = ColorType;
+        } else if (
+          Array.isArray(variableValue) &&
+          variableValue.length === 2 &&
+          overlapsType(type, SizeType) &&
+          !overlapsType(type, NumberArrayType)
+        ) {
+          parsedType = SizeType;
+        }
+
+        type &= parsedType;
+        if (type === NoneType) {
+          throw new Error(
+            `the type expected from the var operator (${typeName(returnType)}) did not have any overlap with the type of the corresponding style variables (${typeName(parsedType)}), variable name: ${name}`,
+          );
+        }
+      }
+
+      if (context.variables.has(name)) {
+        const existingType = context.variables.get(name);
+        type &= existingType;
+        if (type === NoneType) {
+          throw new Error(
+            `a new type expected from the var operator (${typeName(returnType)}) did not have any overlap with the previous type expected for it (${typeName(existingType)}), variable name: ${name}`,
+          );
+        }
+      }
+
+      context.variables.set(name, type);
+
+      return new CallExpression(
+        type,
+        'var',
+        new LiteralExpression(StringType, name),
+      );
+    };
   }
 
   /**
@@ -20373,6 +20656,13 @@
    */
   function usesGeometryType(encoded, returnType, context) {
     context.geometryType = true;
+  }
+
+  /**
+   * @type {ArgValidator}
+   */
+  function usesMCoordinate(encoded, returnType, context) {
+    context.mCoordinate = true;
   }
 
   /**
@@ -20438,7 +20728,7 @@
   }
 
   /**
-   * @param {number} argType The argument type.
+   * @param {ValueType} argType The argument type.
    * @return {ArgValidator} The argument validator
    */
   function withArgsOfType(argType) {
@@ -20450,6 +20740,36 @@
       const args = new Array(argCount);
       for (let i = 0; i < argCount; ++i) {
         const expression = parse$2(encoded[i + 1], argType, context);
+        args[i] = expression;
+      }
+      return args;
+    };
+  }
+
+  /**
+   * @return {ArgValidator} The argument validator
+   */
+  function withArgsOfIdenticalType() {
+    return function (encoded, returnType, context) {
+      const operation = encoded[0];
+      const argCount = encoded.length - 1;
+      /**
+       * @type {Array<Expression>}
+       */
+      const args = new Array(argCount);
+      let commonType = AnyType;
+      for (let i = 0; i < argCount; ++i) {
+        const expression = parse$2(encoded[i + 1], commonType, context);
+        commonType &= expression.type;
+      }
+      if (commonType === NoneType) {
+        throw new Error(
+          `no common type was found among the arguments of ${operation}`,
+        );
+      }
+      // second loop to compile actual args
+      for (let i = 0; i < argCount; ++i) {
+        const expression = parse$2(encoded[i + 1], commonType, context);
         args[i] = expression;
       }
       return args;
@@ -20488,16 +20808,31 @@
   function withMatchArgs(encoded, returnType, context) {
     const argsCount = encoded.length - 1;
 
-    const inputType = StringType | NumberType | BooleanType;
-
-    const input = parse$2(encoded[1], inputType, context);
-
     const fallback = parse$2(encoded[encoded.length - 1], returnType, context);
 
+    let inputType = StringType | NumberType | BooleanType;
     const args = new Array(argsCount - 2);
+
+    // first round to determine input type
     for (let i = 0; i < argsCount - 2; i += 2) {
       try {
-        const match = parse$2(encoded[i + 2], input.type, context);
+        const match = parse$2(encoded[i + 2], inputType, context);
+        inputType &= match.type;
+      } catch (err) {
+        throw new Error(
+          `failed to parse argument ${i + 1} of match expression: ${err.message}`,
+        );
+      }
+      if (inputType === NoneType) {
+        throw new Error(
+          `no common type was found among the arguments of match expression`,
+        );
+      }
+    }
+
+    for (let i = 0; i < argsCount - 2; i += 2) {
+      try {
+        const match = parse$2(encoded[i + 2], inputType, context);
         args[i] = match;
       } catch (err) {
         throw new Error(
@@ -20513,6 +20848,8 @@
         );
       }
     }
+
+    const input = parse$2(encoded[1], inputType, context);
 
     return [input, ...args, fallback];
   }
@@ -20621,21 +20958,25 @@
       );
     }
     /**
-     * @type {number}
+     * @type {ValueType}
      */
     let needleType;
-    if (typeof haystack[0] === 'string') {
-      if (haystack[0] !== 'literal') {
-        throw new Error(
-          `for the "in" operator, a string array should be wrapped in a "literal" operator to disambiguate from expressions`,
-        );
-      }
-      if (!Array.isArray(haystack[1])) {
+
+    // check if we're using the 'literal' operator for the haystack
+    if (haystack[0] === 'literal') {
+      haystack = haystack[1];
+      if (!Array.isArray(haystack)) {
         throw new Error(
           `failed to parse "in" expression: the literal operator must be followed by an array`,
         );
       }
-      haystack = haystack[1];
+    } else if (typeof haystack[0] === 'string') {
+      throw new Error(
+        `for the "in" operator, a string array should be wrapped in a "literal" operator to disambiguate from expressions`,
+      );
+    }
+
+    if (typeof haystack[0] === 'string') {
       needleType = StringType;
     } else {
       needleType = NumberType;
@@ -20723,7 +21064,7 @@
 
   /**
    * @param {Array} encoded The encoded expression.
-   * @param {number} returnType The expected return type of the call expression.
+   * @param {ValueType} returnType The expected return type of the call expression.
    * @param {ParsingContext} context The parsing context.
    * @return {Expression} The parsed expression.
    */
@@ -20773,6 +21114,10 @@
    * @module ol/expr/cpu
    */
 
+
+  /**
+   * @typedef {import('./expression.js').ValueType} ValueType
+   */
 
   /**
    * @fileoverview This module includes functions to build expressions for evaluation on the CPU.
@@ -20842,7 +21187,7 @@
 
   /**
    * @param {import('./expression.js').EncodedExpression} encoded The encoded expression.
-   * @param {number} type The expected type.
+   * @param {ValueType} type The expected type.
    * @param {import('./expression.js').ParsingContext} context The parsing context.
    * @return {ExpressionEvaluator} The expression evaluator.
    */
@@ -21594,35 +21939,34 @@
 
     /**
      * @param {string} src Src.
-     * @param {?string} crossOrigin Cross origin.
      * @param {import("../color.js").Color|string|null} color Color.
      * @return {import("./IconImage.js").default} Icon image.
      */
-    get(src, crossOrigin, color) {
-      const key = getCacheKey$1(src, crossOrigin, color);
-      return key in this.cache_ ? this.cache_[key] : null;
+    get(src, color) {
+      const key = getCacheKey$1(src, color);
+
+      const icon = key in this.cache_ ? this.cache_[key] : null;
+      return icon;
     }
 
     /**
      * @param {string} src Src.
-     * @param {?string} crossOrigin Cross origin.
      * @param {import("../color.js").Color|string|null} color Color.
      * @return {CanvasPattern} Icon image.
      */
-    getPattern(src, crossOrigin, color) {
-      const key = getCacheKey$1(src, crossOrigin, color);
+    getPattern(src, color) {
+      const key = getCacheKey$1(src, color);
       return key in this.patternCache_ ? this.patternCache_[key] : null;
     }
 
     /**
      * @param {string} src Src.
-     * @param {?string} crossOrigin Cross origin.
      * @param {import("../color.js").Color|string|null} color Color.
      * @param {import("./IconImage.js").default|null} iconImage Icon image.
      * @param {boolean} [pattern] Also cache a `'repeat'` pattern with this `iconImage`.
      */
-    set(src, crossOrigin, color, iconImage, pattern) {
-      const key = getCacheKey$1(src, crossOrigin, color);
+    set(src, color, iconImage, pattern) {
+      const key = getCacheKey$1(src, color);
       const update = key in this.cache_;
       this.cache_[key] = iconImage;
       if (pattern) {
@@ -21663,13 +22007,12 @@
 
   /**
    * @param {string} src Src.
-   * @param {?string} crossOrigin Cross origin.
    * @param {import("../color.js").Color|string|null} color Color.
    * @return {string} Cache key.
    */
-  function getCacheKey$1(src, crossOrigin, color) {
+  function getCacheKey$1(src, color) {
     const colorString = color ? asArray(color) : 'null';
-    return crossOrigin + ':' + src + ':' + colorString;
+    return src + ':' + colorString;
   }
 
   /**
@@ -21693,11 +22036,11 @@
     /**
      * @param {HTMLImageElement|HTMLCanvasElement|OffscreenCanvas|ImageBitmap|null} image Image.
      * @param {string|undefined} src Src.
-     * @param {?string} crossOrigin Cross origin.
+     * @param {import('../dom.js').ImageAttributes} imageAttributes Image attributes options.
      * @param {import("../ImageState.js").default|undefined} imageState Image state.
      * @param {import("../color.js").Color|string|null} color Color.
      */
-    constructor(image, src, crossOrigin, imageState, color) {
+    constructor(image, src, imageAttributes, imageState, color) {
       super();
 
       /**
@@ -21716,7 +22059,13 @@
        * @private
        * @type {string|null}
        */
-      this.crossOrigin_ = crossOrigin;
+      this.crossOrigin_ = imageAttributes?.crossOrigin;
+
+      /**
+       * @private
+       * @type {ReferrerPolicy}
+       */
+      this.referrerPolicy_ = imageAttributes?.referrerPolicy;
 
       /**
        * @private
@@ -21768,6 +22117,9 @@
       this.image_ = new Image();
       if (this.crossOrigin_ !== null) {
         this.image_.crossOrigin = this.crossOrigin_;
+      }
+      if (this.referrerPolicy_ !== undefined) {
+        this.image_.referrerPolicy = this.referrerPolicy_;
       }
     }
 
@@ -21828,6 +22180,13 @@
       }
       this.replaceColor_(pixelRatio);
       return this.canvas_[pixelRatio] ? this.canvas_[pixelRatio] : this.image_;
+    }
+
+    /**
+     * @param {HTMLImageElement|HTMLCanvasElement|OffscreenCanvas|ImageBitmap} image Image.
+     */
+    setImage(image) {
+      this.image_ = image;
     }
 
     /**
@@ -21975,34 +22334,28 @@
 
   /**
    * @param {HTMLImageElement|HTMLCanvasElement|OffscreenCanvas|ImageBitmap|null} image Image.
-   * @param {string|undefined} cacheKey Src.
-   * @param {?string} crossOrigin Cross origin.
+   * @param {string|undefined} src Src.
+   * @param {import('../dom.js').ImageAttributes} imageAttributes Image attributes options.
    * @param {import("../ImageState.js").default|undefined} imageState Image state.
    * @param {import("../color.js").Color|string|null} color Color.
    * @param {boolean} [pattern] Also cache a `repeat` pattern with the icon image.
    * @return {IconImage} Icon image.
    */
-  function get$1(image, cacheKey, crossOrigin, imageState, color, pattern) {
+  function get$1(image, src, imageAttributes, imageState, color, pattern) {
     let iconImage =
-      cacheKey === undefined
-        ? undefined
-        : shared.get(cacheKey, crossOrigin, color);
+      src === undefined ? undefined : shared.get(src, color);
     if (!iconImage) {
       iconImage = new IconImage(
         image,
-        image && 'src' in image ? image.src || undefined : cacheKey,
-        crossOrigin,
+        image && 'src' in image ? image.src || undefined : src,
+        imageAttributes,
         imageState,
         color,
       );
-      shared.set(cacheKey, crossOrigin, color, iconImage, pattern);
+      shared.set(src, color, iconImage, pattern);
     }
-    if (
-      pattern &&
-      iconImage &&
-      !shared.getPattern(cacheKey, crossOrigin, color)
-    ) {
-      shared.set(cacheKey, crossOrigin, color, iconImage, pattern);
+    if (pattern && iconImage && !shared.getPattern(src, color)) {
+      shared.set(src, color, iconImage, pattern);
     }
     return iconImage;
   }
@@ -22059,21 +22412,17 @@
    */
   function asCanvasPattern(pattern) {
     if (!pattern.offset || !pattern.size) {
-      return shared.getPattern(pattern.src, 'anonymous', pattern.color);
+      return shared.getPattern(pattern.src, pattern.color);
     }
 
     const cacheKey = pattern.src + ':' + pattern.offset;
 
-    const canvasPattern = shared.getPattern(
-      cacheKey,
-      undefined,
-      pattern.color,
-    );
+    const canvasPattern = shared.getPattern(cacheKey, pattern.color);
     if (canvasPattern) {
       return canvasPattern;
     }
 
-    const iconImage = shared.get(pattern.src, 'anonymous', null);
+    const iconImage = shared.get(pattern.src, null);
     if (iconImage.getImageState() !== ImageState.LOADED) {
       return null;
     }
@@ -22100,7 +22449,7 @@
       pattern.color,
       true,
     );
-    return shared.getPattern(cacheKey, undefined, pattern.color);
+    return shared.getPattern(cacheKey, pattern.color);
   }
 
   /**
@@ -22133,6 +22482,7 @@
    * @property {CanvasLineJoin} [currentLineJoin] Current LineJoin.
    * @property {number} [currentLineWidth] Current LineWidth.
    * @property {number} [currentMiterLimit] Current MiterLimit.
+   * @property {number} [currentStrokeOffset] Current StrokeOffset.
    * @property {number} [lastStroke] Last stroke.
    * @property {import("../colorlike.js").ColorLike} [fillStyle] FillStyle.
    * @property {import("../colorlike.js").ColorLike} [strokeStyle] StrokeStyle.
@@ -22142,6 +22492,7 @@
    * @property {CanvasLineJoin} [lineJoin] LineJoin.
    * @property {number} [lineWidth] LineWidth.
    * @property {number} [miterLimit] MiterLimit.
+   * @property {number} [strokeOffset] StrokeOffset.
    * @property {number} [fillPatternScale] Fill pattern scale.
    */
 
@@ -22153,6 +22504,7 @@
    * @property {CanvasLineJoin} lineJoin LineJoin.
    * @property {number} lineWidth LineWidth.
    * @property {number} miterLimit MiterLimit.
+   * @property {number} [strokeOffset] StrokeOffset.
    * @property {import("../colorlike.js").ColorLike} strokeStyle StrokeStyle.
    */
 
@@ -22227,6 +22579,12 @@
    * @type {number}
    */
   const defaultMiterLimit = 10;
+
+  /**
+   * @const
+   * @type {number}
+   */
+  const defaultStrokeOffset = 0;
 
   /**
    * @const
@@ -22318,28 +22676,43 @@
      */
     async function isAvailable(fontSpec) {
       await fontFaceSet.ready;
-      const fontFaces = await fontFaceSet.load(fontSpec);
-      if (fontFaces.length === 0) {
-        return false;
-      }
       const font = getFontParameters(fontSpec);
       const checkFamily = font.families[0].toLowerCase();
       const checkWeight = font.weight;
-      return fontFaces.some(
+      /** @type {Array<FontFace>} */
+      const matching = [];
+      fontFaceSet.forEach(
         /**
-         * @param {import('../css.js').FontParameters} f Font.
-         * @return {boolean} Font matches.
+         * @param {FontFace} f Font face.
          */
         (f) => {
           const family = f.family.replace(/^['"]|['"]$/g, '').toLowerCase();
           const weight = fontWeights[f.weight] || f.weight;
-          return (
+          if (
             family === checkFamily &&
             f.style === font.style &&
             weight == checkWeight
-          );
+          ) {
+            matching.push(f);
+          }
         },
       );
+      if (matching.length === 0) {
+        return false;
+      }
+      // Load each matching face with `FontFace.load()` instead of querying the
+      // set with `FontFaceSet.load()`. The latter only resolves faces whose
+      // `unicode-range` covers its (default) test string, so subset fonts -
+      // e.g. those served by Google Fonts - would never be detected.
+      const loaded = await Promise.all(
+        matching.map((f) =>
+          f.load().then(
+            () => true, // available
+            () => false, // not available
+          ),
+        ),
+      );
+      return loaded.some((available) => available);
     }
 
     async function check() {
@@ -23153,7 +23526,7 @@
         `${pixelRatio},${this.angle_},${this.radius},${this.radius2_},${this.points_},${fillKey}` +
         Object.values(this.renderOptions_).join(',');
       let image = /** @type {HTMLCanvasElement|OffscreenCanvas} */ (
-        shared.get(cacheKey, null, null)?.getImage(1)
+        shared.get(cacheKey, null)?.getImage(1)
       );
       if (!image) {
         const renderOptions = this.renderOptions_;
@@ -23162,12 +23535,18 @@
         this.draw_(renderOptions, context, pixelRatio);
 
         image = context.canvas;
-        shared.set(
-          cacheKey,
+        const iconImage = new IconImage(
+          image,
+          undefined,
           null,
+          ImageState.LOADED,
           null,
-          new IconImage(image, undefined, null, ImageState.LOADED, null),
         );
+        shared.set(cacheKey, null, iconImage);
+        // Update the image in place to an ImageBitmap for better performance and lower memory usage
+        createImageBitmap(image).then((imageBitmap) => {
+          iconImage.setImage(imageBitmap);
+        });
       }
       return image;
     }
@@ -23227,12 +23606,38 @@
     }
 
     /**
+     * Set the (primary) radius for the shape.
+     * @param {number} radius Radius.
+     * @api
+     */
+    setRadius(radius) {
+      if (this.radius === radius) {
+        return;
+      }
+      this.radius = radius;
+      this.render();
+    }
+
+    /**
      * Get the secondary radius for the shape.
      * @return {number|undefined} Radius2.
      * @api
      */
     getRadius2() {
       return this.radius2_;
+    }
+
+    /**
+     * Set the secondary radius for the shape.
+     * @param {number|undefined} radius2 Radius2.
+     * @api
+     */
+    setRadius2(radius2) {
+      if (this.radius2_ === radius2) {
+        return;
+      }
+      this.radius2_ = radius2;
+      this.render();
     }
 
     /**
@@ -23613,17 +24018,6 @@
       style.setOpacity(this.getOpacity());
       return style;
     }
-
-    /**
-     * Set the circle radius.
-     *
-     * @param {number} radius Circle radius.
-     * @api
-     */
-    setRadius(radius) {
-      this.radius = radius;
-      this.render();
-    }
   }
 
   /**
@@ -23700,7 +24094,7 @@
         const patternImage = get$1(
           null,
           color.src,
-          'anonymous',
+          {crossOrigin: 'anonymous'},
           undefined,
           color.offset ? null : color.color ? color.color : null,
           !(color.offset && color.size),
@@ -23778,6 +24172,7 @@
    * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images. Note that you must provide a
    * `crossOrigin` value if you want to access pixel data with the Canvas renderer.
    * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
+   * @property {ReferrerPolicy} [referrerPolicy] The `referrerPolicy` property for loaded images.
    * @property {HTMLImageElement|HTMLCanvasElement|OffscreenCanvas|ImageBitmap} [img] Image object for the icon.
    * @property {Array<number>} [displacement=[0, 0]] Displacement of the icon in pixels.
    * Positive values will shift the icon right and up.
@@ -23900,6 +24295,12 @@
       this.crossOrigin_ =
         options.crossOrigin !== undefined ? options.crossOrigin : null;
 
+      /**
+       * @private
+       * @type {ReferrerPolicy}
+       */
+      this.referrerPolicy_ = options.referrerPolicy;
+
       const image = options.img !== undefined ? options.img : null;
 
       let cacheKey = options.src;
@@ -23953,7 +24354,10 @@
       this.iconImage_ = get$1(
         image,
         /** @type {string} */ (cacheKey),
-        this.crossOrigin_,
+        {
+          crossOrigin: this.crossOrigin_,
+          referrerPolicy: this.referrerPolicy_,
+        },
         imageState,
         this.color_,
       );
@@ -24053,6 +24457,7 @@
             ? this.color_.slice()
             : this.color_ || undefined,
         crossOrigin: this.crossOrigin_,
+        referrerPolicy: this.referrerPolicy_,
         offset: this.offset_.slice(),
         offsetOrigin: this.offsetOrigin_,
         opacity: this.getOpacity(),
@@ -24147,6 +24552,45 @@
      */
     getColor() {
       return this.color_;
+    }
+
+    /**
+     * Set the icon color.
+     *
+     * Warning: Repeatedly setting the color on an icon style
+     * causes the icon image to be re-created each time. This can have a
+     * severe performance impact.
+     *
+     * @param {import("../color.js").Color|string|null|undefined} color Color.
+     */
+    setColor(color) {
+      const nextColor = color ? asArray(color) : null;
+      if (
+        this.color_ === nextColor ||
+        (this.color_ &&
+          nextColor &&
+          this.color_.length === nextColor.length &&
+          this.color_.every((value, index) => value === nextColor[index]))
+      ) {
+        // Discard if the color hasn't changed.
+        return;
+      }
+
+      this.color_ = nextColor;
+      const src = this.getSrc();
+      const image = src !== undefined ? null : this.getHitDetectionImage();
+      const imageState =
+        src !== undefined ? ImageState.IDLE : this.iconImage_.getImageState();
+      this.iconImage_ = get$1(
+        image,
+        src,
+        {
+          crossOrigin: this.crossOrigin_,
+          referrerPolicy: this.referrerPolicy_,
+        },
+        imageState,
+        this.color_,
+      );
     }
 
     /**
@@ -24250,7 +24694,10 @@
       this.iconImage_ = get$1(
         null,
         src,
-        this.crossOrigin_,
+        {
+          crossOrigin: this.crossOrigin_,
+          referrerPolicy: this.referrerPolicy_,
+        },
         ImageState.IDLE,
         this.color_,
       );
@@ -24360,6 +24807,8 @@
    * @property {Array<number>} [lineDash] Line dash pattern. Default is `null` (no dash).
    * @property {number} [lineDashOffset=0] Line dash offset.
    * @property {number} [miterLimit=10] Miter limit.
+   * @property {number} [offset] Line offset in pixels along the normal. A positive value offsets the line to the right,
+   * relative to the direction of the line. Default is `undefined` (no offset).
    * @property {number} [width] Width.
    */
 
@@ -24418,6 +24867,12 @@
        * @private
        * @type {number|undefined}
        */
+      this.offset_ = options.offset;
+
+      /**
+       * @private
+       * @type {number|undefined}
+       */
       this.width_ = options.width;
     }
 
@@ -24435,6 +24890,7 @@
         lineDashOffset: this.getLineDashOffset(),
         lineJoin: this.getLineJoin(),
         miterLimit: this.getMiterLimit(),
+        offset: this.getOffset(),
         width: this.getWidth(),
       });
     }
@@ -24491,6 +24947,15 @@
      */
     getMiterLimit() {
       return this.miterLimit_;
+    }
+
+    /**
+     * Get the line offset in pixels.
+     * @return {number|undefined} Offset.
+     * @api
+     */
+    getOffset() {
+      return this.offset_;
     }
 
     /**
@@ -24560,6 +25025,16 @@
      */
     setMiterLimit(miterLimit) {
       this.miterLimit_ = miterLimit;
+    }
+
+    /**
+     * Set the line offset in pixels.
+     *
+     * @param {number|undefined} offset Offset.
+     * @api
+     */
+    setOffset(offset) {
+      this.offset_ = offset;
     }
 
     /**
@@ -25855,10 +26330,11 @@
    * and pass a more complete evaluation context (variables, zoom, time, etc.).
    *
    * @param {Array<import('../../style/flat.js').Rule>} rules The rules.
+   * @param {ParsingContext} [parsingContext] Optional parsing context; will create a new one if not provided
    * @return {import('../../style/Style.js').StyleFunction} A style function.
    */
-  function rulesToStyleFunction(rules) {
-    const parsingContext = newParsingContext();
+  function rulesToStyleFunction(rules, parsingContext) {
+    parsingContext = parsingContext ?? newParsingContext();
     const evaluator = buildRuleSet(rules, parsingContext);
     const evaluationContext = newEvaluationContext();
     return function (feature, resolution) {
@@ -25887,10 +26363,11 @@
    * and pass a more complete evaluation context (variables, zoom, time, etc.).
    *
    * @param {Array<import('../../style/flat.js').FlatStyle>} flatStyles The flat styles.
+   * @param {ParsingContext} [parsingContext] Optional parsing context; will create a new one if not provided
    * @return {import('../../style/Style.js').StyleFunction} A style function.
    */
-  function flatStylesToStyleFunction(flatStyles) {
-    const parsingContext = newParsingContext();
+  function flatStylesToStyleFunction(flatStyles, parsingContext) {
+    parsingContext = parsingContext ?? newParsingContext();
     const length = flatStyles.length;
 
     /**
@@ -25918,6 +26395,11 @@
           evaluationContext.featureId = null;
         }
       }
+      if (parsingContext.geometryType) {
+        evaluationContext.geometryType = computeGeometryType(
+          feature.getGeometry(),
+        );
+      }
       let nonNullCount = 0;
       for (let i = 0; i < length; ++i) {
         const style = evaluators[i](evaluationContext);
@@ -25929,6 +26411,48 @@
       styles.length = nonNullCount;
       return styles;
     };
+  }
+
+  /**
+   * This function handles any kind of style that matches the FlatStyleLike type.
+   *
+   * @param {import('../../style/flat.js').FlatStyleLike} flatStyleLike The flat style.
+   * @param {ParsingContext} [parsingContext] Optional parsing context; will create a new one if not provided
+   * @return {import('../../style/Style.js').StyleFunction} A style function.
+   */
+  function flatStyleLikeToStyleFunction(flatStyleLike, parsingContext) {
+    parsingContext = parsingContext ?? newParsingContext();
+
+    // single FlatStyle
+    if (!Array.isArray(flatStyleLike)) {
+      return flatStylesToStyleFunction([flatStyleLike], parsingContext);
+    }
+
+    const length = flatStyleLike.length;
+    const first = flatStyleLike[0];
+
+    // array of Rule
+    if ('style' in first) {
+      /**
+       * @type {Array<import("../../style/flat.js").Rule>}
+       */
+      const rules = new Array(length);
+      for (let i = 0; i < length; ++i) {
+        const candidate = flatStyleLike[i];
+        if (!('style' in candidate)) {
+          throw new Error('Expected a list of rules with a style property');
+        }
+        rules[i] = candidate;
+      }
+      return rulesToStyleFunction(rules, parsingContext);
+    }
+
+    // array of FlatStyle
+    const flatStyles =
+      /** @type {Array<import("../../style/flat.js").FlatStyle>} */ (
+        flatStyleLike
+      );
+    return flatStylesToStyleFunction(flatStyles, parsingContext);
   }
 
   /**
@@ -26178,6 +26702,12 @@
       context,
     );
 
+    const evaluateOffset = numberEvaluator(
+      flatStyle,
+      prefix + 'stroke-offset',
+      context,
+    );
+
     const stroke = new Stroke();
     return function (context) {
       if (evaluateColor) {
@@ -26222,6 +26752,10 @@
 
       if (evaluateMiterLimit) {
         stroke.setMiterLimit(evaluateMiterLimit(context));
+      }
+
+      if (evaluateOffset) {
+        stroke.setOffset(evaluateOffset(context));
       }
 
       return stroke;
@@ -26542,7 +27076,20 @@
       flatStyle,
       prefix + 'anchor-y-units',
     );
-    const color = optionalColorLike(flatStyle, prefix + 'color');
+    const colorValue = getExpressionValue(flatStyle, prefix + 'color');
+    let color;
+    let evaluateColor = null;
+    if (colorValue !== undefined) {
+      const isColorExpression =
+        Array.isArray(colorValue) &&
+        colorValue.length > 0 &&
+        typeof colorValue[0] === 'string';
+      if (isColorExpression) {
+        evaluateColor = colorLikeEvaluator(flatStyle, prefix + 'color', context);
+      } else {
+        color = requireColorLike(colorValue, prefix + 'color');
+      }
+    }
     const crossOrigin = optionalString(flatStyle, prefix + 'cross-origin');
     const offset = optionalNumberArray(flatStyle, prefix + 'offset');
     const offsetOrigin = optionalIconOrigin(flatStyle, prefix + 'offset-origin');
@@ -26554,12 +27101,11 @@
       prefix + 'declutter-mode',
     );
 
-    const icon = new Icon({
+    const iconOptions = {
       src,
       anchorOrigin,
       anchorXUnits,
       anchorYUnits,
-      color,
       crossOrigin,
       offset,
       offsetOrigin,
@@ -26567,9 +27113,22 @@
       width,
       size,
       declutterMode,
-    });
+    };
+
+    let icon = null;
 
     return function (context) {
+      if (!icon) {
+        // lazily create the icon to allow for expression evaluation
+        const initialColor = evaluateColor ? evaluateColor(context) : color;
+        icon = new Icon(
+          initialColor !== undefined
+            ? Object.assign({}, iconOptions, {color: initialColor})
+            : Object.assign({}, iconOptions),
+        );
+      } else if (evaluateColor) {
+        icon.setColor(evaluateColor(context));
+      }
       if (evaluateOpacity) {
         icon.setOpacity(evaluateOpacity(context));
       }
@@ -26609,7 +27168,18 @@
     const pointsName = prefix + 'points';
     const radiusName = prefix + 'radius';
     const points = requireNumber(flatStyle[pointsName], pointsName);
-    const radius = requireNumber(flatStyle[radiusName], radiusName);
+    if (!(radiusName in flatStyle)) {
+      throw new Error(`Expected a number for ${radiusName}`);
+    }
+    const evaluateRadius = numberEvaluator(flatStyle, radiusName, context);
+    const initialRadius =
+      typeof flatStyle[radiusName] === 'number' ? flatStyle[radiusName] : 5;
+    const radius2Name = prefix + 'radius2';
+    const evaluateRadius2 = numberEvaluator(flatStyle, radius2Name, context);
+    const initialRadius2 =
+      typeof flatStyle[radius2Name] === 'number'
+        ? flatStyle[radius2Name]
+        : undefined;
 
     // settable properties
     const evaluateFill = buildFill(flatStyle, prefix, context);
@@ -26632,7 +27202,6 @@
     );
 
     // the remaining properties are not currently settable
-    const radius2 = optionalNumber(flatStyle, prefix + 'radius2');
     const angle = optionalNumber(flatStyle, prefix + 'angle');
     const declutterMode = optionalDeclutterMode(
       flatStyle,
@@ -26641,13 +27210,19 @@
 
     const shape = new RegularShape({
       points,
-      radius,
-      radius2,
+      radius: initialRadius,
+      radius2: initialRadius2,
       angle,
       declutterMode,
     });
 
     return function (context) {
+      if (evaluateRadius) {
+        shape.setRadius(evaluateRadius(context));
+      }
+      if (evaluateRadius2) {
+        shape.setRadius2(evaluateRadius2(context));
+      }
       if (evaluateFill) {
         shape.setFill(evaluateFill(context));
       }
@@ -26741,14 +27316,28 @@
   /**
    * @param {FlatStyle} flatStyle The flat style.
    * @param {string} name The property name.
+   * @return {any|undefined} The encoded value, or undefined if not provided.
+   */
+  function getExpressionValue(flatStyle, name) {
+    if (!(name in flatStyle)) {
+      return undefined;
+    }
+    const value = flatStyle[name];
+    return value === undefined ? undefined : value;
+  }
+
+  /**
+   * @param {FlatStyle} flatStyle The flat style.
+   * @param {string} name The property name.
    * @param {ParsingContext} context The parsing context.
    * @return {import('../../expr/cpu.js').NumberEvaluator|undefined} The expression evaluator or undefined.
    */
   function numberEvaluator(flatStyle, name, context) {
-    if (!(name in flatStyle)) {
+    const encoded = getExpressionValue(flatStyle, name);
+    if (encoded === undefined) {
       return undefined;
     }
-    const evaluator = buildExpression(flatStyle[name], NumberType, context);
+    const evaluator = buildExpression(encoded, NumberType, context);
     return function (context) {
       return requireNumber(evaluator(context), name);
     };
@@ -26761,10 +27350,11 @@
    * @return {import('../../expr/cpu.js').StringEvaluator?} The expression evaluator.
    */
   function stringEvaluator(flatStyle, name, context) {
-    if (!(name in flatStyle)) {
+    const encoded = getExpressionValue(flatStyle, name);
+    if (encoded === undefined) {
       return null;
     }
-    const evaluator = buildExpression(flatStyle[name], StringType, context);
+    const evaluator = buildExpression(encoded, StringType, context);
     return function (context) {
       return requireString(evaluator(context), name);
     };
@@ -26808,10 +27398,11 @@
    * @return {import('../../expr/cpu.js').BooleanEvaluator?} The expression evaluator.
    */
   function booleanEvaluator(flatStyle, name, context) {
-    if (!(name in flatStyle)) {
+    const encoded = getExpressionValue(flatStyle, name);
+    if (encoded === undefined) {
       return null;
     }
-    const evaluator = buildExpression(flatStyle[name], BooleanType, context);
+    const evaluator = buildExpression(encoded, BooleanType, context);
     return function (context) {
       const value = evaluator(context);
       if (typeof value !== 'boolean') {
@@ -26828,10 +27419,11 @@
    * @return {import('../../expr/cpu.js').ColorLikeEvaluator?} The expression evaluator.
    */
   function colorLikeEvaluator(flatStyle, name, context) {
-    if (!(name in flatStyle)) {
+    const encoded = getExpressionValue(flatStyle, name);
+    if (encoded === undefined) {
       return null;
     }
-    const evaluator = buildExpression(flatStyle[name], ColorType, context);
+    const evaluator = buildExpression(encoded, ColorType, context);
     return function (context) {
       return requireColorLike(evaluator(context), name);
     };
@@ -26844,10 +27436,33 @@
    * @return {import('../../expr/cpu.js').NumberArrayEvaluator?} The expression evaluator.
    */
   function numberArrayEvaluator(flatStyle, name, context) {
-    if (!(name in flatStyle)) {
+    const encoded = getExpressionValue(flatStyle, name);
+    if (encoded === undefined) {
       return null;
     }
-    const evaluator = buildExpression(flatStyle[name], NumberArrayType, context);
+    if (
+      Array.isArray(encoded) &&
+      (encoded.length === 0 || typeof encoded[0] !== 'string')
+    ) {
+      /** @type {Array<import('../../expr/cpu.js').NumberEvaluator>} */
+      const evaluators = encoded.map((value, index) => {
+        if (typeof value === 'number') {
+          return () => value;
+        }
+        const evaluator = buildExpression(value, NumberType, context);
+        return function (context) {
+          return requireNumber(evaluator(context), `${name}[${index}]`);
+        };
+      });
+      return function (context) {
+        const array = new Array(evaluators.length);
+        for (let i = 0; i < evaluators.length; ++i) {
+          array[i] = evaluators[i](context);
+        }
+        return array;
+      };
+    }
+    const evaluator = buildExpression(encoded, NumberArrayType, context);
     return function (context) {
       return requireNumberArray(evaluator(context), name);
     };
@@ -26860,10 +27475,11 @@
    * @return {import('../../expr/cpu.js').CoordinateEvaluator?} The expression evaluator.
    */
   function coordinateEvaluator(flatStyle, name, context) {
-    if (!(name in flatStyle)) {
+    const encoded = getExpressionValue(flatStyle, name);
+    if (encoded === undefined) {
       return null;
     }
-    const evaluator = buildExpression(flatStyle[name], NumberArrayType, context);
+    const evaluator = buildExpression(encoded, NumberArrayType, context);
     return function (context) {
       const array = requireNumberArray(evaluator(context), name);
       if (array.length !== 2) {
@@ -26880,10 +27496,11 @@
    * @return {import('../../expr/cpu.js').SizeEvaluator?} The expression evaluator.
    */
   function sizeEvaluator(flatStyle, name, context) {
-    if (!(name in flatStyle)) {
+    const encoded = getExpressionValue(flatStyle, name);
+    if (encoded === undefined) {
       return null;
     }
-    const evaluator = buildExpression(flatStyle[name], NumberArrayType, context);
+    const evaluator = buildExpression(encoded, NumberArrayType, context);
     return function (context) {
       return requireSize(evaluator(context), name);
     };
@@ -26896,11 +27513,12 @@
    * @return {import('../../expr/cpu.js').SizeLikeEvaluator?} The expression evaluator.
    */
   function sizeLikeEvaluator(flatStyle, name, context) {
-    if (!(name in flatStyle)) {
+    const encoded = getExpressionValue(flatStyle, name);
+    if (encoded === undefined) {
       return null;
     }
     const evaluator = buildExpression(
-      flatStyle[name],
+      encoded,
       NumberArrayType | NumberType,
       context,
     );
@@ -27039,19 +27657,6 @@
   }
 
   /**
-   * @param {FlatStyle} flatStyle The flat style.
-   * @param {string} property The symbolizer property.
-   * @return {string|Array<number>|undefined} A string or an array of color values or undefined.
-   */
-  function optionalColorLike(flatStyle, property) {
-    const encoded = flatStyle[property];
-    if (encoded === undefined) {
-      return undefined;
-    }
-    return requireColorLike(encoded, property);
-  }
-
-  /**
    * @param {any} value The value.
    * @param {string} property The property.
    * @return {Array<number>} An array of numbers.
@@ -27145,7 +27750,7 @@
    */
 
   /**
-   * @template {import('../Feature').FeatureLike} FeatureType
+   * @template {import('../Feature.js').FeatureLike} FeatureType
    * @template {import("../source/Vector.js").default<FeatureType>|import("../source/VectorTile.js").default<FeatureType>} VectorSourceType<FeatureType>
    * @typedef {Object} Options
    * @property {string} [className='ol-layer'] A CSS class name to set to the layer element.
@@ -27210,7 +27815,7 @@
    * property on the layer object; for example, setting `title: 'My Title'` in the
    * options means that `title` is observable, and has get/set accessors.
    *
-   * @template {import('../Feature').FeatureLike} FeatureType
+   * @template {import('../Feature.js').FeatureLike} FeatureType
    * @template {import("../source/Vector.js").default<FeatureType>|import("../source/VectorTile.js").default<FeatureType>} VectorSourceType<FeatureType>
    * @extends {Layer<VectorSourceType, RendererType>}
    * @template {import("../renderer/canvas/VectorLayer.js").default|import("../renderer/canvas/VectorTileLayer.js").default|import("../renderer/canvas/VectorImageLayer.js").default|import("../renderer/webgl/VectorLayer.js").default|import("../renderer/webgl/PointsLayer.js").default} RendererType
@@ -27298,7 +27903,7 @@
      * image.
      *
      * @param {import("../pixel.js").Pixel} pixel Pixel.
-     * @return {Promise<Array<import("../Feature").FeatureLike>>} Promise that resolves with an array of features.
+     * @return {Promise<Array<import("../Feature.js").FeatureLike>>} Promise that resolves with an array of features.
      * @api
      * @override
      */
@@ -27438,20 +28043,11 @@
     if (style instanceof Style) {
       return style;
     }
-    if (!Array.isArray(style)) {
-      return flatStylesToStyleFunction([style]);
-    }
-    if (style.length === 0) {
+    if (Array.isArray(style) && style.length === 0) {
       return [];
     }
-
-    const length = style.length;
-    const first = style[0];
-
-    if (first instanceof Style) {
-      /**
-       * @type {Array<Style>}
-       */
+    if (Array.isArray(style) && style[0] instanceof Style) {
+      const length = style.length;
       const styles = new Array(length);
       for (let i = 0; i < length; ++i) {
         const candidate = style[i];
@@ -27463,24 +28059,9 @@
       return styles;
     }
 
-    if ('style' in first) {
-      /**
-       * @type {Array<import("../style/flat.js").Rule>}
-       */
-      const rules = new Array(length);
-      for (let i = 0; i < length; ++i) {
-        const candidate = style[i];
-        if (!('style' in candidate)) {
-          throw new Error('Expected a list of rules with a style property');
-        }
-        rules[i] = candidate;
-      }
-      return rulesToStyleFunction(rules);
-    }
-
-    const flatStyles =
-      /** @type {Array<import("../style/flat.js").FlatStyle>} */ (style);
-    return flatStylesToStyleFunction(flatStyles);
+    const flatStyleLike =
+      /** @type {import("../style/flat.js").FlatStyleLike} */ (style);
+    return flatStyleLikeToStyleFunction(flatStyleLike);
   }
 
   /**
@@ -27875,8 +28456,20 @@
 
       this.children_.length = 0;
 
+      const map = this.getMap();
+      const mapCanvas = map.getTargetElement();
+      /** @type {CanvasRenderingContext2D|undefined} */
+      let mapContext;
+      if (isCanvas(mapCanvas)) {
+        mapContext = /** @type {CanvasRenderingContext2D} */ (
+          mapCanvas.getContext('2d')
+        );
+        mapContext.setTransform(1, 0, 0, 1, 0, 0);
+        mapContext.clearRect(0, 0, mapCanvas.width, mapCanvas.height);
+      }
+
       const renderedLayerStates = [];
-      let previousElement = null;
+      let previousElement = mapContext ? mapCanvas : null;
       for (let i = 0, ii = layerStatesArray.length; i < ii; ++i) {
         const layerState = layerStatesArray[i];
         frameState.layerIndex = i;
@@ -27907,39 +28500,39 @@
 
       replaceChildren(this.element_, this.children_);
 
-      const map = this.getMap();
-      const mapCanvas = map.getTargetElement();
-      if (isCanvas(mapCanvas)) {
-        // Canvas composition when container is a canvas
-        const mapContext = mapCanvas.getContext('2d');
-        for (const container of this.children_) {
-          const canvas = container.firstElementChild || container;
-          const backgroundColor = container.style.backgroundColor;
-          if (backgroundColor && (!isCanvas(canvas) || canvas.width > 0)) {
-            mapContext.fillStyle = backgroundColor;
-            mapContext.fillRect(0, 0, mapCanvas.width, mapCanvas.height);
-          }
-          if (isCanvas(canvas) && canvas.width > 0) {
-            const opacity = container.style.opacity || canvas.style.opacity;
-            mapContext.globalAlpha = opacity === '' ? 1 : Number(opacity);
-            const transform = canvas.style.transform;
-            if (transform) {
-              // Get the transform parameters from the style's transform matrix
-              mapContext.setTransform(
-                .../** @type {[number, number, number, number, number, number]} */ (
-                  fromString$1(transform)
-                ),
-              );
-            } else {
-              const w = parseFloat(canvas.style.width) / canvas.width;
-              const h = parseFloat(canvas.style.height) / canvas.height;
-              mapContext.setTransform(w, 0, 0, h, 0, 0);
-            }
-            mapContext.drawImage(canvas, 0, 0);
-          }
+      for (const container of mapContext ? this.children_ : []) {
+        const canvas = container.firstElementChild || container;
+        const backgroundColor = container.style.backgroundColor;
+        if (backgroundColor && (!isCanvas(canvas) || canvas.width > 0)) {
+          mapContext.fillStyle = backgroundColor;
+          mapContext.fillRect(
+            0,
+            0,
+            mapContext.canvas.width,
+            mapContext.canvas.height,
+          );
         }
-        mapContext.globalAlpha = 1;
-        mapContext.setTransform(1, 0, 0, 1, 0, 0);
+        if (!isCanvas(canvas) || canvas.width === 0) {
+          continue;
+        }
+        mapContext.save();
+        const opacity = container.style.opacity || canvas.style.opacity;
+        mapContext.globalAlpha = opacity === '' ? 1 : Number(opacity);
+        const transform = canvas.style.transform;
+        if (transform) {
+          // Get the transform parameters from the style's transform matrix
+          mapContext.transform(
+            .../** @type {[number, number, number, number, number, number]} */ (
+              fromString$1(transform)
+            ),
+          );
+        } else {
+          const w = parseFloat(canvas.style.width) / canvas.width;
+          const h = parseFloat(canvas.style.height) / canvas.height;
+          mapContext.transform(w, 0, 0, h, 0, 0);
+        }
+        mapContext.drawImage(canvas, 0, 0);
+        mapContext.restore();
       }
 
       this.dispatchRenderEvent(RenderEventType.POSTCOMPOSE, frameState);
@@ -28011,7 +28604,7 @@
 
   /**
    * @typedef {Object} AtPixelOptions
-   * @property {undefined|function(import("./layer/Layer.js").default<import("./source/Source").default>): boolean} [layerFilter] Layer filter
+   * @property {undefined|function(import("./layer/Layer.js").default<import("./source/Source.js").default>): boolean} [layerFilter] Layer filter
    * function. The filter function will receive one argument, the
    * {@link module:ol/layer/Layer~Layer layer-candidate} and it should return a boolean value.
    * Only layers which are visible and for which this function returns `true`
@@ -28032,19 +28625,19 @@
    */
 
   /**
-   * @typedef {import("./ObjectEventType").Types|'change:layergroup'|'change:size'|'change:target'|'change:view'} MapObjectEventTypes
+   * @typedef {import("./ObjectEventType.js").Types|'change:layergroup'|'change:size'|'change:target'|'change:view'} MapObjectEventTypes
    */
 
   /***
    * @template Return
-   * @typedef {import("./Observable").OnSignature<import("./Observable").EventTypes, import("./events/Event.js").default, Return> &
-   *    import("./Observable").OnSignature<MapObjectEventTypes, import("./Object").ObjectEvent, Return> &
-   *    import("./Observable").OnSignature<import("./MapBrowserEventType").Types, import("./MapBrowserEvent").default, Return> &
-   *    import("./Observable").OnSignature<import("./MapEventType").Types, import("./MapEvent").default, Return> &
-   *    import("./Observable").OnSignature<import("./render/EventType").MapRenderEventTypes, import("./render/Event").default, Return> &
-   *    import("./Observable").CombinedOnSignature<import("./Observable").EventTypes|MapObjectEventTypes|
-   *      import("./MapBrowserEventType").Types|import("./MapEventType").Types|
-   *      import("./render/EventType").MapRenderEventTypes, Return>} MapEventHandler
+   * @typedef {import("./Observable.js").OnSignature<import("./Observable.js").EventTypes, import("./events/Event.js").default, Return> &
+   *    import("./Observable.js").OnSignature<MapObjectEventTypes, import("./Object.js").ObjectEvent, Return> &
+   *    import("./Observable.js").OnSignature<import("./MapBrowserEventType.js").Types, import("./MapBrowserEvent.js").default, Return> &
+   *    import("./Observable.js").OnSignature<import("./MapEventType.js").Types, import("./MapEvent.js").default, Return> &
+   *    import("./Observable.js").OnSignature<import("./render/EventType.js").MapRenderEventTypes, import("./render/Event.js").default, Return> &
+   *    import("./Observable.js").CombinedOnSignature<import("./Observable.js").EventTypes|MapObjectEventTypes|
+   *      import("./MapBrowserEventType.js").Types|import("./MapEventType.js").Types|
+   *      import("./render/EventType.js").MapRenderEventTypes, Return>} MapEventHandler
    */
 
   /**
@@ -28082,7 +28675,9 @@
    * element itself or the `id` of the element. If not specified at construction
    * time, {@link module:ol/Map~Map#setTarget} must be called for the map to be
    * rendered. If passed by element, the container can be in a secondary document.
-   * For use in workers or when exporting a map, use an `OffscreenCanvas` or `HTMLCanvasElement` as target.
+   * For use in workers or when exporting a map, use an `OffscreenCanvas` or `HTMLCanvasElement` as target,
+   * with a width and height in physical pixels, optionally multiplied by and a scale transform matching
+   * the map's pixel ratio.
    * For accessibility (focus and keyboard events for map navigation), the `target` element must have a
    *  properly configured `tabindex` attribute. If the `target` element is inside a Shadow DOM, the
    *  `tabindex` atribute must be set on the custom element's host element.
@@ -28174,7 +28769,7 @@
    * @fires import("./render/Event.js").default#rendercomplete
    * @api
    */
-  class Map extends BaseObject {
+  let Map$1 = class Map extends BaseObject {
     /**
      * @param {MapOptions} [options] Map options.
      */
@@ -28184,12 +28779,12 @@
       options = options || {};
 
       /***
-       * @type {MapEventHandler<import("./events").EventsKey>}
+       * @type {MapEventHandler<import("./events.js").EventsKey>}
        */
       this.on;
 
       /***
-       * @type {MapEventHandler<import("./events").EventsKey>}
+       * @type {MapEventHandler<import("./events.js").EventsKey>}
        */
       this.once;
 
@@ -28620,7 +29215,7 @@
      * Polygons must have a fill style applied to ensure that pixels inside a polygon are detected.
      * The fill can be transparent.
      * @param {import("./pixel.js").Pixel} pixel Pixel.
-     * @param {function(import("./Feature.js").FeatureLike, import("./layer/Layer.js").default<import("./source/Source").default>, import("./geom/SimpleGeometry.js").default): T} callback Feature callback. The callback will be
+     * @param {function(import("./Feature.js").FeatureLike, import("./layer/Layer.js").default<import("./source/Source.js").default>, import("./geom/SimpleGeometry.js").default): T} callback Feature callback. The callback will be
      *     called with two arguments. The first argument is one
      *     {@link module:ol/Feature~Feature feature} or
      *     {@link module:ol/render/Feature~RenderFeature render feature} at the pixel, the second is
@@ -28965,6 +29560,28 @@
     }
 
     /**
+     * Get the pixel ratio of the rendered map.
+     * @return {number} Pixel ratio.
+     * @api
+     */
+    getPixelRatio() {
+      return this.pixelRatio_;
+    }
+
+    /**
+     * Set the pixel ratio of the rendered map.
+     * @param {number} pixelRatio Pixel ratio.
+     * @api
+     */
+    setPixelRatio(pixelRatio) {
+      if (this.pixelRatio_ === pixelRatio) {
+        return;
+      }
+      this.pixelRatio_ = pixelRatio;
+      this.render();
+    }
+
+    /**
      * Get the map renderer.
      * @return {import("./renderer/Map.js").default|null} Renderer
      */
@@ -29143,16 +29760,19 @@
       if (!tileQueue.isEmpty()) {
         let maxTotalLoading = this.maxTilesLoading_;
         let maxNewLoads = maxTotalLoading;
-        if (frameState) {
-          const hints = frameState.viewHints;
-          if (hints[ViewHint.ANIMATING] || hints[ViewHint.INTERACTING]) {
-            const lowOnFrameBudget = Date.now() - frameState.time > 8;
-            maxTotalLoading = lowOnFrameBudget ? 0 : 8;
-            maxNewLoads = lowOnFrameBudget ? 0 : 2;
-          }
+        const hints = frameState ? frameState.viewHints : undefined;
+        const animatingOrInteracting = hints
+          ? hints[ViewHint.ANIMATING] || hints[ViewHint.INTERACTING]
+          : false;
+        if (animatingOrInteracting) {
+          const lowOnFrameBudget = Date.now() - frameState.time > 8;
+          maxTotalLoading = lowOnFrameBudget ? 0 : 8;
+          maxNewLoads = lowOnFrameBudget ? 0 : 2;
         }
         if (tileQueue.getTilesLoading() < maxTotalLoading) {
-          tileQueue.reprioritize(); // FIXME only call if view has changed
+          if (animatingOrInteracting) {
+            tileQueue.reprioritize();
+          }
           tileQueue.loadMoreTiles(maxTotalLoading, maxNewLoads);
         }
       }
@@ -29306,7 +29926,7 @@
               this,
             ),
           ];
-          if (targetElement instanceof HTMLElement) {
+          if (!isCanvas(targetElement)) {
             const rootNode = targetElement.getRootNode();
             if (rootNode instanceof ShadowRoot) {
               this.resizeObserver_.observe(rootNode.host);
@@ -29679,8 +30299,10 @@
       if (targetElement) {
         let width, height;
         if (isCanvas(targetElement)) {
-          width = targetElement.width;
-          height = targetElement.height;
+          const transform = targetElement.getContext('2d').getTransform();
+          // Use scale components of the transform to calculate the size in CSS pixels
+          width = targetElement.width / transform.a;
+          height = targetElement.height / transform.d;
         } else {
           const computedStyle = getComputedStyle(targetElement);
           width =
@@ -29715,8 +30337,8 @@
 
       const oldSize = this.getSize();
       if (size && (!oldSize || !equals$2(size, oldSize))) {
-        this.setSize(size);
         this.updateViewportSize_(size);
+        this.setSize(size);
       }
     }
 
@@ -29731,7 +30353,7 @@
         view.setViewportSize(size);
       }
     }
-  }
+  };
 
   /**
    * @param {MapOptions} options Map options.
@@ -29785,7 +30407,7 @@
       }
     }
 
-    /** @type {Collection<import("./interaction/Interaction").default>} */
+    /** @type {Collection<import("./interaction/Interaction.js").default>} */
     let interactions;
     if (options.interactions !== undefined) {
       if (Array.isArray(options.interactions)) {
@@ -30899,280 +31521,6 @@
     }
     return document_;
   }
-
-  /**
-   * @module ol/geom/Circle
-   */
-
-  /**
-   * @classdesc
-   * Circle geometry.
-   *
-   * @api
-   */
-  class Circle extends SimpleGeometry {
-    /**
-     * @param {!import("../coordinate.js").Coordinate} center Center.
-     *     For internal use, flat coordinates in combination with `layout` and no
-     *     `radius` are also accepted.
-     * @param {number} [radius] Radius in units of the projection.
-     * @param {import("./Geometry.js").GeometryLayout} [layout] Layout.
-     */
-    constructor(center, radius, layout) {
-      super();
-      if (layout !== undefined && radius === undefined) {
-        this.setFlatCoordinates(layout, center);
-      } else {
-        radius = radius ? radius : 0;
-        this.setCenterAndRadius(center, radius, layout);
-      }
-    }
-
-    /**
-     * Make a complete copy of the geometry.
-     * @return {!Circle} Clone.
-     * @api
-     * @override
-     */
-    clone() {
-      const circle = new Circle(
-        this.flatCoordinates.slice(),
-        undefined,
-        this.layout,
-      );
-      circle.applyProperties(this);
-      return circle;
-    }
-
-    /**
-     * @param {number} x X.
-     * @param {number} y Y.
-     * @param {import("../coordinate.js").Coordinate} closestPoint Closest point.
-     * @param {number} minSquaredDistance Minimum squared distance.
-     * @return {number} Minimum squared distance.
-     * @override
-     */
-    closestPointXY(x, y, closestPoint, minSquaredDistance) {
-      const flatCoordinates = this.flatCoordinates;
-      const dx = x - flatCoordinates[0];
-      const dy = y - flatCoordinates[1];
-      const squaredDistance = dx * dx + dy * dy;
-      if (squaredDistance < minSquaredDistance) {
-        if (squaredDistance === 0) {
-          for (let i = 0; i < this.stride; ++i) {
-            closestPoint[i] = flatCoordinates[i];
-          }
-        } else {
-          const delta = this.getRadius() / Math.sqrt(squaredDistance);
-          closestPoint[0] = flatCoordinates[0] + delta * dx;
-          closestPoint[1] = flatCoordinates[1] + delta * dy;
-          for (let i = 2; i < this.stride; ++i) {
-            closestPoint[i] = flatCoordinates[i];
-          }
-        }
-        closestPoint.length = this.stride;
-        return squaredDistance;
-      }
-      return minSquaredDistance;
-    }
-
-    /**
-     * @param {number} x X.
-     * @param {number} y Y.
-     * @return {boolean} Contains (x, y).
-     * @override
-     */
-    containsXY(x, y) {
-      const flatCoordinates = this.flatCoordinates;
-      const dx = x - flatCoordinates[0];
-      const dy = y - flatCoordinates[1];
-      return dx * dx + dy * dy <= this.getRadiusSquared_();
-    }
-
-    /**
-     * Return the center of the circle as {@link module:ol/coordinate~Coordinate coordinate}.
-     * @return {import("../coordinate.js").Coordinate} Center.
-     * @api
-     */
-    getCenter() {
-      return this.flatCoordinates.slice(0, this.stride);
-    }
-
-    /**
-     * @param {import("../extent.js").Extent} extent Extent.
-     * @protected
-     * @return {import("../extent.js").Extent} extent Extent.
-     * @override
-     */
-    computeExtent(extent) {
-      const flatCoordinates = this.flatCoordinates;
-      const radius = flatCoordinates[this.stride] - flatCoordinates[0];
-      return createOrUpdate$2(
-        flatCoordinates[0] - radius,
-        flatCoordinates[1] - radius,
-        flatCoordinates[0] + radius,
-        flatCoordinates[1] + radius,
-        extent,
-      );
-    }
-
-    /**
-     * Return the radius of the circle.
-     * @return {number} Radius.
-     * @api
-     */
-    getRadius() {
-      return Math.sqrt(this.getRadiusSquared_());
-    }
-
-    /**
-     * @private
-     * @return {number} Radius squared.
-     */
-    getRadiusSquared_() {
-      const dx = this.flatCoordinates[this.stride] - this.flatCoordinates[0];
-      const dy = this.flatCoordinates[this.stride + 1] - this.flatCoordinates[1];
-      return dx * dx + dy * dy;
-    }
-
-    /**
-     * Get the type of this geometry.
-     * @return {import("./Geometry.js").Type} Geometry type.
-     * @api
-     * @override
-     */
-    getType() {
-      return 'Circle';
-    }
-
-    /**
-     * Test if the geometry and the passed extent intersect.
-     * @param {import("../extent.js").Extent} extent Extent.
-     * @return {boolean} `true` if the geometry and the extent intersect.
-     * @api
-     * @override
-     */
-    intersectsExtent(extent) {
-      const circleExtent = this.getExtent();
-      if (intersects$1(extent, circleExtent)) {
-        const center = this.getCenter();
-
-        if (extent[0] <= center[0] && extent[2] >= center[0]) {
-          return true;
-        }
-        if (extent[1] <= center[1] && extent[3] >= center[1]) {
-          return true;
-        }
-
-        return forEachCorner(extent, this.intersectsCoordinate.bind(this));
-      }
-      return false;
-    }
-
-    /**
-     * Set the center of the circle as {@link module:ol/coordinate~Coordinate coordinate}.
-     * @param {import("../coordinate.js").Coordinate} center Center.
-     * @api
-     */
-    setCenter(center) {
-      const stride = this.stride;
-      const radius = this.flatCoordinates[stride] - this.flatCoordinates[0];
-      const flatCoordinates = center.slice();
-      flatCoordinates[stride] = flatCoordinates[0] + radius;
-      for (let i = 1; i < stride; ++i) {
-        flatCoordinates[stride + i] = center[i];
-      }
-      this.setFlatCoordinates(this.layout, flatCoordinates);
-      this.changed();
-    }
-
-    /**
-     * Set the center (as {@link module:ol/coordinate~Coordinate coordinate}) and the radius (as
-     * number) of the circle.
-     * @param {!import("../coordinate.js").Coordinate} center Center.
-     * @param {number} radius Radius.
-     * @param {import("./Geometry.js").GeometryLayout} [layout] Layout.
-     * @api
-     */
-    setCenterAndRadius(center, radius, layout) {
-      this.setLayout(layout, center, 0);
-      if (!this.flatCoordinates) {
-        this.flatCoordinates = [];
-      }
-      /** @type {Array<number>} */
-      const flatCoordinates = this.flatCoordinates;
-      let offset = deflateCoordinate(flatCoordinates, 0, center, this.stride);
-      flatCoordinates[offset++] = flatCoordinates[0] + radius;
-      for (let i = 1, ii = this.stride; i < ii; ++i) {
-        flatCoordinates[offset++] = flatCoordinates[i];
-      }
-      flatCoordinates.length = offset;
-      this.changed();
-    }
-
-    /**
-     * @override
-     */
-    getCoordinates() {
-      return null;
-    }
-
-    /**
-     * @override
-     */
-    setCoordinates(coordinates, layout) {}
-
-    /**
-     * Set the radius of the circle. The radius is in the units of the projection.
-     * @param {number} radius Radius.
-     * @api
-     */
-    setRadius(radius) {
-      this.flatCoordinates[this.stride] = this.flatCoordinates[0] + radius;
-      this.changed();
-    }
-
-    /**
-     * Rotate the geometry around a given coordinate. This modifies the geometry
-     * coordinates in place.
-     * @param {number} angle Rotation angle in counter-clockwise radians.
-     * @param {import("../coordinate.js").Coordinate} anchor The rotation center.
-     * @api
-     * @override
-     */
-    rotate(angle, anchor) {
-      const center = this.getCenter();
-      const stride = this.getStride();
-      this.setCenter(
-        rotate(center, 0, center.length, stride, angle, anchor, center),
-      );
-      this.changed();
-    }
-  }
-
-  /**
-   * Transform each coordinate of the circle from one coordinate reference system
-   * to another. The geometry is modified in place.
-   * If you do not want the geometry modified in place, first clone() it and
-   * then use this function on the clone.
-   *
-   * Internally a circle is currently represented by two points: the center of
-   * the circle `[cx, cy]`, and the point to the right of the circle
-   * `[cx + r, cy]`. This `transform` function just transforms these two points.
-   * So the resulting geometry is also a circle, and that circle does not
-   * correspond to the shape that would be obtained by transforming every point
-   * of the original circle.
-   *
-   * @param {import("../proj.js").ProjectionLike} source The current projection.  Can be a
-   *     string identifier or a {@link module:ol/proj/Projection~Projection} object.
-   * @param {import("../proj.js").ProjectionLike} destination The desired projection.  Can be a
-   *     string identifier or a {@link module:ol/proj/Projection~Projection} object.
-   * @return {Circle} This geometry.  Note that original geometry is
-   *     modified in place.
-   * @function
-   * @api
-   */
-  Circle.prototype.transform;
 
   /**
    * @module ol/geom/GeometryCollection
@@ -32561,25 +32909,6 @@
   }
 
   /**
-   * @module ol/geom
-   */
-
-  var geom = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    Circle: Circle,
-    Geometry: Geometry,
-    GeometryCollection: GeometryCollection,
-    LineString: LineString,
-    LinearRing: LinearRing,
-    MultiLineString: MultiLineString,
-    MultiPoint: MultiPoint,
-    MultiPolygon: MultiPolygon,
-    Point: Point$1,
-    Polygon: Polygon,
-    SimpleGeometry: SimpleGeometry
-  });
-
-  /**
    * @module ol/render/Feature
    */
 
@@ -32706,7 +33035,7 @@
                 this.flatCoordinates_,
                 0,
                 this.flatCoordinates_.length,
-                2,
+                this.stride_,
               );
       }
       return this.extent_;
@@ -32722,7 +33051,7 @@
           this.flatCoordinates_,
           0,
           this.ends_,
-          2,
+          this.stride_,
           flatCenter,
           0,
         );
@@ -32736,12 +33065,17 @@
     getFlatInteriorPoints() {
       if (!this.flatInteriorPoints_) {
         const ends = inflateEnds(this.flatCoordinates_, this.ends_);
-        const flatCenters = linearRingss(this.flatCoordinates_, 0, ends, 2);
+        const flatCenters = linearRingss(
+          this.flatCoordinates_,
+          0,
+          ends,
+          this.stride_,
+        );
         this.flatInteriorPoints_ = getInteriorPointsOfMultiArray(
           this.flatCoordinates_,
           0,
           ends,
-          2,
+          this.stride_,
           flatCenters,
         );
       }
@@ -32757,7 +33091,7 @@
           this.flatCoordinates_,
           0,
           this.flatCoordinates_.length,
-          2,
+          this.stride_,
           0.5,
         );
       }
@@ -32775,7 +33109,13 @@
         const ends = /** @type {Array<number>} */ (this.ends_);
         for (let i = 0, ii = ends.length; i < ii; ++i) {
           const end = ends[i];
-          const midpoint = interpolatePoint(flatCoordinates, offset, end, 2, 0.5);
+          const midpoint = interpolatePoint(
+            flatCoordinates,
+            offset,
+            end,
+            this.stride_,
+            0.5,
+          );
           extend$3(this.flatMidpoints_, midpoint);
           offset = end;
         }
@@ -32894,7 +33234,7 @@
           this.flatCoordinates_,
           0,
           this.flatCoordinates_.length,
-          2,
+          this.stride_,
           tmpTransform,
           this.flatCoordinates_,
         );
@@ -32994,7 +33334,7 @@
             this.type_,
             simplifiedFlatCoordinates,
             simplifiedEnds,
-            2,
+            this.stride_,
             this.properties_,
             this.id_,
           );
@@ -34177,7 +34517,7 @@
    * Number of decimal digits to consider in integer values when rounding.
    * @type {number}
    */
-  const DECIMALS$1 = 5;
+  const DECIMALS = 5;
 
   /**
    * @typedef {Object} Options
@@ -34203,6 +34543,9 @@
    * for which tile requests are made by sources. If the bottom-left corner of
    * an extent is used as `origin` or `origins`, then the `y` value must be
    * negative because OpenLayers tile coordinates use the top left as the origin.
+   * @property {Array<import("../TileRange.js").default>} [tileRanges] Pre-built tile ranges for each
+   * zoom level. When provided, these are used directly as the full tile ranges instead of computing
+   * them from `sizes`. Useful for setting per-level tile index bounds (e.g. from WMTS `TileMatrixSetLimits`).
    * @property {number|import("../size.js").Size} [tileSize] Tile size.
    * Default is `[256, 256]`.
    * @property {Array<number|import("../size.js").Size>} [tileSizes] Tile sizes. If given, the array length
@@ -34221,17 +34564,22 @@
      * @param {Options} options Tile grid options.
      */
     constructor(options) {
+      let minZoom = options.minZoom;
+      const resolutions = options.resolutions;
+      if (minZoom === undefined && resolutions) {
+        minZoom = resolutions.findIndex((resolution) => resolution !== undefined);
+      }
       /**
        * @protected
        * @type {number}
        */
-      this.minZoom = options.minZoom !== undefined ? options.minZoom : 0;
+      this.minZoom = minZoom !== undefined ? minZoom : 0;
 
       /**
        * @private
        * @type {!Array<number>}
        */
-      this.resolutions_ = options.resolutions;
+      this.resolutions_ = resolutions;
       assert$1(
         isSorted(
           this.resolutions_,
@@ -34354,7 +34702,9 @@
        */
       this.tmpExtent_ = [0, 0, 0, 0];
 
-      if (options.sizes !== undefined) {
+      if (options.tileRanges !== undefined) {
+        this.fullTileRanges_ = options.tileRanges;
+      } else if (options.sizes !== undefined) {
         this.fullTileRanges_ = options.sizes.map((size, z) => {
           const tileRange = new TileRange(
             Math.min(0, size[0]),
@@ -34473,6 +34823,14 @@
         return this.origin_;
       }
       return this.origins_[z];
+    }
+
+    /**
+     * Get the list of origins for the grid.
+     * @return {Array<import("../coordinate.js").Coordinate>|null} Origin.
+     */
+    getOrigins() {
+      return this.origins_;
     }
 
     /**
@@ -34668,11 +35026,11 @@
       let tileCoordY = (scale * (origin[1] - y)) / resolution / tileSize[1];
 
       if (reverseIntersectionPolicy) {
-        tileCoordX = ceil(tileCoordX, DECIMALS$1) - 1;
-        tileCoordY = ceil(tileCoordY, DECIMALS$1) - 1;
+        tileCoordX = ceil(tileCoordX, DECIMALS) - 1;
+        tileCoordY = ceil(tileCoordY, DECIMALS) - 1;
       } else {
-        tileCoordX = floor(tileCoordX, DECIMALS$1);
-        tileCoordY = floor(tileCoordY, DECIMALS$1);
+        tileCoordX = floor(tileCoordX, DECIMALS);
+        tileCoordY = floor(tileCoordY, DECIMALS);
       }
 
       return createOrUpdate(z, tileCoordX, tileCoordY, opt_tileCoord);
@@ -34702,11 +35060,11 @@
       let tileCoordY = (origin[1] - y) / resolution / tileSize[1];
 
       if (reverseIntersectionPolicy) {
-        tileCoordX = ceil(tileCoordX, DECIMALS$1) - 1;
-        tileCoordY = ceil(tileCoordY, DECIMALS$1) - 1;
+        tileCoordX = ceil(tileCoordX, DECIMALS) - 1;
+        tileCoordY = ceil(tileCoordY, DECIMALS) - 1;
       } else {
-        tileCoordX = floor(tileCoordX, DECIMALS$1);
-        tileCoordY = floor(tileCoordY, DECIMALS$1);
+        tileCoordX = floor(tileCoordX, DECIMALS);
+        tileCoordY = floor(tileCoordY, DECIMALS);
       }
 
       return createOrUpdate(z, tileCoordX, tileCoordY, opt_tileCoord);
@@ -34833,6 +35191,7 @@
    * outside this extent will be requested by {@link module:ol/source/Tile~TileSource} sources.
    * When no `origin` or `origins` are configured, the `origin` will be set to the
    * top-left corner of the extent.
+   * @property {number} [minZoom=0] Minimum zoom.
    * @property {import("../coordinate.js").Coordinate} [origin] The tile grid origin, i.e.
    * where the `x` and `y` axes meet (`[z, 0, 0]`). Tile coordinates increase left
    * to right and downwards. If not specified, `extent` or `origins` must be provided.
@@ -34854,6 +35213,8 @@
    * which tile requests are made by sources. If the bottom-left corner of
    * an extent is used as `origin` or `origins`, then the `y` value must be
    * negative because OpenLayers tile coordinates use the top left as the origin.
+   * @property {Array<import("../TileRange.js").default>} [tileRanges] Pre-built tile ranges for each
+   * zoom level. When provided, used instead of `sizes` to set per-level tile index bounds.
    * @property {number|import("../size.js").Size} [tileSize] Tile size.
    * @property {Array<number|import("../size.js").Size>} [tileSizes] Tile sizes. The length of
    * this array needs to match the length of the `resolutions` array.
@@ -34877,6 +35238,8 @@
         tileSize: options.tileSize,
         tileSizes: options.tileSizes,
         sizes: options.sizes,
+        tileRanges: options.tileRanges,
+        minZoom: options.minZoom,
       });
 
       /**
@@ -34931,11 +35294,11 @@
 
   /***
    * @template Return
-   * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes|
+   * @typedef {import("../Observable.js").OnSignature<import("../Observable.js").EventTypes|
    *     'enterfullscreen'|'leavefullscreen', import("../events/Event.js").default, Return> &
-   *   import("../Observable").OnSignature<import("../ObjectEventType").Types, import("../Object").ObjectEvent, Return> &
-   *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|
-   *     'enterfullscreen'|'leavefullscreen'|import("../ObjectEventType").Types, Return>} FullScreenOnSignature
+   *   import("../Observable.js").OnSignature<import("../ObjectEventType.js").Types, import("../Object.js").ObjectEvent, Return> &
+   *   import("../Observable.js").CombinedOnSignature<import("../Observable.js").EventTypes|
+   *     'enterfullscreen'|'leavefullscreen'|import("../ObjectEventType.js").Types, Return>} FullScreenOnSignature
    */
 
   /**
@@ -34987,12 +35350,12 @@
       });
 
       /***
-       * @type {FullScreenOnSignature<import("../events").EventsKey>}
+       * @type {FullScreenOnSignature<import("../events.js").EventsKey>}
        */
       this.on;
 
       /***
-       * @type {FullScreenOnSignature<import("../events").EventsKey>}
+       * @type {FullScreenOnSignature<import("../events.js").EventsKey>}
        */
       this.once;
 
@@ -35307,10 +35670,10 @@
 
   /***
    * @template Return
-   * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
-   *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
-   *     'change:coordinateFormat'|'change:projection', import("../Object").ObjectEvent, Return> &
-   *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
+   * @typedef {import("../Observable.js").OnSignature<import("../Observable.js").EventTypes, import("../events/Event.js").default, Return> &
+   *   import("../Observable.js").OnSignature<import("../ObjectEventType.js").Types|
+   *     'change:coordinateFormat'|'change:projection', import("../Object.js").ObjectEvent, Return> &
+   *   import("../Observable.js").CombinedOnSignature<import("../Observable.js").EventTypes|import("../ObjectEventType.js").Types|
    *     'change:coordinateFormat'|'change:projection', Return>} MousePositionOnSignature
    */
 
@@ -35363,12 +35726,12 @@
       });
 
       /***
-       * @type {MousePositionOnSignature<import("../events").EventsKey>}
+       * @type {MousePositionOnSignature<import("../events.js").EventsKey>}
        */
       this.on;
 
       /***
-       * @type {MousePositionOnSignature<import("../events").EventsKey>}
+       * @type {MousePositionOnSignature<import("../events.js").EventsKey>}
        */
       this.once;
 
@@ -35661,15 +36024,15 @@
   };
 
   /**
-   * @typedef {import("./ObjectEventType").Types|'change:element'|'change:map'|'change:offset'|'change:position'|
+   * @typedef {import("./ObjectEventType.js").Types|'change:element'|'change:map'|'change:offset'|'change:position'|
    *   'change:positioning'} OverlayObjectEventTypes
    */
 
   /***
    * @template Return
-   * @typedef {import("./Observable").OnSignature<import("./Observable").EventTypes, import("./events/Event.js").default, Return> &
-   *   import("./Observable").OnSignature<OverlayObjectEventTypes, import("./Object").ObjectEvent, Return> &
-   *   import("./Observable").CombinedOnSignature<import("./Observable").EventTypes|OverlayObjectEventTypes, Return>} OverlayOnSignature
+   * @typedef {import("./Observable.js").OnSignature<import("./Observable.js").EventTypes, import("./events/Event.js").default, Return> &
+   *   import("./Observable.js").OnSignature<OverlayObjectEventTypes, import("./Object.js").ObjectEvent, Return> &
+   *   import("./Observable.js").CombinedOnSignature<import("./Observable.js").EventTypes|OverlayObjectEventTypes, Return>} OverlayOnSignature
    */
 
   /**
@@ -35701,12 +36064,12 @@
       super();
 
       /***
-       * @type {OverlayOnSignature<import("./events").EventsKey>}
+       * @type {OverlayOnSignature<import("./events.js").EventsKey>}
        */
       this.on;
 
       /***
-       * @type {OverlayOnSignature<import("./events").EventsKey>}
+       * @type {OverlayOnSignature<import("./events.js").EventsKey>}
        */
       this.once;
 
@@ -36317,7 +36680,7 @@
        */
       this.view_ = options.view;
 
-      const ovmap = new Map({
+      const ovmap = new Map$1({
         view: options.view,
         controls: new Collection(),
         interactions: new Collection(),
@@ -36850,10 +37213,10 @@
 
   /***
    * @template Return
-   * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
-   *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
-   *     'change:units', import("../Object").ObjectEvent, Return> &
-   *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types
+   * @typedef {import("../Observable.js").OnSignature<import("../Observable.js").EventTypes, import("../events/Event.js").default, Return> &
+   *   import("../Observable.js").OnSignature<import("../ObjectEventType.js").Types|
+   *     'change:units', import("../Object.js").ObjectEvent, Return> &
+   *   import("../Observable.js").CombinedOnSignature<import("../Observable.js").EventTypes|import("../ObjectEventType.js").Types
    *     |'change:units', Return>} ScaleLineOnSignature
    */
 
@@ -36913,12 +37276,12 @@
       });
 
       /***
-       * @type {ScaleLineOnSignature<import("../events").EventsKey>}
+       * @type {ScaleLineOnSignature<import("../events.js").EventsKey>}
        */
       this.on;
 
       /***
-       * @type {ScaleLineOnSignature<import("../events").EventsKey>}
+       * @type {ScaleLineOnSignature<import("../events.js").EventsKey>}
        */
       this.once;
 
@@ -38712,7 +39075,10 @@
         );
       }
 
-      const feature = new Feature();
+      const FeatureClass = /** @type {typeof import("../Feature.js").default} */ (
+        this.featureClass
+      );
+      const feature = new FeatureClass();
       if (this.geometryName_) {
         feature.setGeometryName(this.geometryName_);
       } else if (this.extractGeometryName_ && geoJSONFeature['geometry_name']) {
@@ -39361,7 +39727,7 @@
         const prefix = 'p';
         const defaultPrefix = 'p0';
         if (!featureType && node.childNodes) {
-          (featureType = []), (featureNS = {});
+          ((featureType = []), (featureNS = {}));
           for (let i = 0, ii = node.childNodes.length; i < ii; ++i) {
             const child = /** @type {Element} */ (node.childNodes[i]);
             if (child.nodeType === 1) {
@@ -42368,7 +42734,8 @@
           NAMESPACE_URIS$4.includes(n.namespaceURI) &&
           n.localName === 'metadata'
         ) {
-          return pushParseAndPop({}, METADATA_PARSERS, n, []);
+          const metadata = pushParseAndPop({}, METADATA_PARSERS, n, []);
+          return Object.keys(metadata).length > 0 ? metadata : null;
         }
       }
       return null;
@@ -44482,6 +44849,7 @@
    * @property {boolean} [writeStyles=true] Write styles into KML.
    * @property {null|string} [crossOrigin='anonymous'] The `crossOrigin` attribute for loaded images. Note that you must provide a
    * `crossOrigin` value if you want to access pixel data with the Canvas renderer.
+   * @property {ReferrerPolicy} [referrerPolicy] The `referrerPolicy` property for loaded images.
    * @property {IconUrlFunction} [iconUrlFunction] Function that takes a url string and returns a url string.
    * Might be used to change an icon path or to substitute a data url obtained from a KMZ array buffer.
    */
@@ -44556,6 +44924,11 @@
        */
       this.crossOrigin_ =
         options.crossOrigin !== undefined ? options.crossOrigin : 'anonymous';
+
+      /**
+       * @type {ReferrerPolicy}
+       */
+      this.referrerPolicy_ = options.referrerPolicy;
 
       /**
        * @type {IconUrlFunction}
@@ -45475,6 +45848,7 @@
         anchorXUnits: anchorXUnits,
         anchorYUnits: anchorYUnits,
         crossOrigin: this.crossOrigin_,
+        referrerPolicy: this.referrerPolicy_,
         offset: offset,
         offsetOrigin: 'bottom-left',
         rotation: rotation,
@@ -45491,12 +45865,9 @@
         if (imageState === ImageState.IDLE || imageState === ImageState.LOADING) {
           const listener = function () {
             const imageState = imageStyle.getImageState();
-            if (
-              !(
-                imageState === ImageState.IDLE ||
-                imageState === ImageState.LOADING
-              )
-            ) {
+            if (!(
+              imageState === ImageState.IDLE || imageState === ImageState.LOADING
+            )) {
               const imageSize = imageStyle.getSize();
               if (imageSize && imageSize.length == 2) {
                 const resizeScale = scaleForSize(imageSize);
@@ -46062,7 +46433,7 @@
             const type = geometry.getType();
             if (type === 'GeometryCollection') {
               const collection =
-                /** @type {import("../geom/GeometryCollection").default} */ (
+                /** @type {import("../geom/GeometryCollection.js").default} */ (
                   geometry
                 );
               return new GeometryCollection(
@@ -46090,7 +46461,7 @@
             const type = geometry.getType();
             if (type === 'GeometryCollection') {
               const collection =
-                /** @type {import("../geom/GeometryCollection").default} */ (
+                /** @type {import("../geom/GeometryCollection.js").default} */ (
                   geometry
                 );
               return new GeometryCollection(
@@ -47514,7 +47885,6 @@
   }
 
   const SHIFT_LEFT_32 = (1 << 16) * (1 << 16);
-  const SHIFT_RIGHT_32 = 1 / SHIFT_LEFT_32;
 
   // Threshold chosen based on both benchmarking and knowledge about browser string
   // data structures (which currently switch structure types at 12 bytes or more)
@@ -47526,43 +47896,36 @@
   const PBF_BYTES   = 2; // length-delimited: string, bytes, embedded messages, packed repeated fields
   const PBF_FIXED32 = 5; // 32-bit: float, fixed32, sfixed32
 
-  class Pbf {
+  class PbfReader {
       /**
-       * @param {Uint8Array | ArrayBuffer} [buf]
+       * @param {Uint8Array | ArrayBuffer} buf
        */
-      constructor(buf = new Uint8Array(16)) {
+      constructor(buf) {
           this.buf = ArrayBuffer.isView(buf) ? buf : new Uint8Array(buf);
-          this.dataView = new DataView(this.buf.buffer);
+          this.dataView = new DataView(this.buf.buffer, this.buf.byteOffset, this.buf.byteLength);
           this.pos = 0;
           this.type = 0;
+          this._valueStart = -1;
           this.length = this.buf.length;
       }
 
-      // === READING =================================================================
-
       /**
        * @template T
-       * @param {(tag: number, result: T, pbf: Pbf) => void} readField
+       * @param {(tag: number, result: T, pbf: PbfReader) => void} readField
        * @param {T} result
        * @param {number} [end]
        */
       readFields(readField, result, end = this.length) {
-          while (this.pos < end) {
-              const val = this.readVarint(),
-                  tag = val >> 3,
-                  startPos = this.pos;
-
-              this.type = val & 0x7;
-              readField(tag, result, this);
-
-              if (this.pos === startPos) this.skip(val);
+          let field;
+          while ((field = this.nextField(end))) {
+              readField(field, result, this);
           }
           return result;
       }
 
       /**
        * @template T
-       * @param {(tag: number, result: T, pbf: Pbf) => void} readField
+       * @param {(tag: number, result: T, pbf: PbfReader) => void} readField
        * @param {T} result
        */
       readMessage(readField, result) {
@@ -47612,19 +47975,16 @@
        */
       readVarint(isSigned) {
           const buf = this.buf;
-          let val, b;
+          const b0 = buf[this.pos++];
+          if (b0 < 0x80) return b0;
 
-          b = buf[this.pos++]; val  =  b & 0x7f;        if (b < 0x80) return val;
+          let val = b0 & 0x7f, b;
           b = buf[this.pos++]; val |= (b & 0x7f) << 7;  if (b < 0x80) return val;
           b = buf[this.pos++]; val |= (b & 0x7f) << 14; if (b < 0x80) return val;
           b = buf[this.pos++]; val |= (b & 0x7f) << 21; if (b < 0x80) return val;
           b = buf[this.pos];   val |= (b & 0x0f) << 28;
 
           return readVarintRemainder(val, isSigned, this);
-      }
-
-      readVarint64() { // for compatibility with v2.0.1
-          return this.readVarint(true);
       }
 
       readSVarint() {
@@ -47719,6 +48079,19 @@
           return this.type === PBF_BYTES ? this.readVarint() + this.pos : this.pos + 1;
       }
 
+      /**
+       * Advance to the next field. Returns the field number, or 0 at end-of-message.
+       * @param {number} [end]
+       */
+      nextField(end = this.length) {
+          if (this.pos === this._valueStart) this.skip(this.type);
+          if (this.pos >= end) return 0;
+          const tag = this.readVarint();
+          this.type = tag & 0x7;
+          this._valueStart = this.pos;
+          return tag >>> 3;
+      }
+
       /** @param {number} val */
       skip(val) {
           const type = val & 0x7;
@@ -47728,325 +48101,12 @@
           else if (type === PBF_FIXED64) this.pos += 8;
           else throw new Error(`Unimplemented type: ${type}`);
       }
-
-      // === WRITING =================================================================
-
-      /**
-       * @param {number} tag
-       * @param {number} type
-       */
-      writeTag(tag, type) {
-          this.writeVarint((tag << 3) | type);
-      }
-
-      /** @param {number} min */
-      realloc(min) {
-          let length = this.length || 16;
-
-          while (length < this.pos + min) length *= 2;
-
-          if (length !== this.length) {
-              const buf = new Uint8Array(length);
-              buf.set(this.buf);
-              this.buf = buf;
-              this.dataView = new DataView(buf.buffer);
-              this.length = length;
-          }
-      }
-
-      finish() {
-          this.length = this.pos;
-          this.pos = 0;
-          return this.buf.subarray(0, this.length);
-      }
-
-      /** @param {number} val */
-      writeFixed32(val) {
-          this.realloc(4);
-          this.dataView.setInt32(this.pos, val, true);
-          this.pos += 4;
-      }
-
-      /** @param {number} val */
-      writeSFixed32(val) {
-          this.realloc(4);
-          this.dataView.setInt32(this.pos, val, true);
-          this.pos += 4;
-      }
-
-      /** @param {number} val */
-      writeFixed64(val) {
-          this.realloc(8);
-          this.dataView.setInt32(this.pos, val & -1, true);
-          this.dataView.setInt32(this.pos + 4, Math.floor(val * SHIFT_RIGHT_32), true);
-          this.pos += 8;
-      }
-
-      /** @param {number} val */
-      writeSFixed64(val) {
-          this.realloc(8);
-          this.dataView.setInt32(this.pos, val & -1, true);
-          this.dataView.setInt32(this.pos + 4, Math.floor(val * SHIFT_RIGHT_32), true);
-          this.pos += 8;
-      }
-
-      /** @param {number} val */
-      writeVarint(val) {
-          val = +val || 0;
-
-          if (val > 0xfffffff || val < 0) {
-              writeBigVarint(val, this);
-              return;
-          }
-
-          this.realloc(4);
-
-          this.buf[this.pos++] =           val & 0x7f  | (val > 0x7f ? 0x80 : 0); if (val <= 0x7f) return;
-          this.buf[this.pos++] = ((val >>>= 7) & 0x7f) | (val > 0x7f ? 0x80 : 0); if (val <= 0x7f) return;
-          this.buf[this.pos++] = ((val >>>= 7) & 0x7f) | (val > 0x7f ? 0x80 : 0); if (val <= 0x7f) return;
-          this.buf[this.pos++] =   (val >>> 7) & 0x7f;
-      }
-
-      /** @param {number} val */
-      writeSVarint(val) {
-          this.writeVarint(val < 0 ? -val * 2 - 1 : val * 2);
-      }
-
-      /** @param {boolean} val */
-      writeBoolean(val) {
-          this.writeVarint(+val);
-      }
-
-      /** @param {string} str */
-      writeString(str) {
-          str = String(str);
-          this.realloc(str.length * 4);
-
-          this.pos++; // reserve 1 byte for short string length
-
-          const startPos = this.pos;
-          // write the string directly to the buffer and see how much was written
-          this.pos = writeUtf8(this.buf, str, this.pos);
-          const len = this.pos - startPos;
-
-          if (len >= 0x80) makeRoomForExtraLength(startPos, len, this);
-
-          // finally, write the message length in the reserved place and restore the position
-          this.pos = startPos - 1;
-          this.writeVarint(len);
-          this.pos += len;
-      }
-
-      /** @param {number} val */
-      writeFloat(val) {
-          this.realloc(4);
-          this.dataView.setFloat32(this.pos, val, true);
-          this.pos += 4;
-      }
-
-      /** @param {number} val */
-      writeDouble(val) {
-          this.realloc(8);
-          this.dataView.setFloat64(this.pos, val, true);
-          this.pos += 8;
-      }
-
-      /** @param {Uint8Array} buffer */
-      writeBytes(buffer) {
-          const len = buffer.length;
-          this.writeVarint(len);
-          this.realloc(len);
-          for (let i = 0; i < len; i++) this.buf[this.pos++] = buffer[i];
-      }
-
-      /**
-       * @template T
-       * @param {(obj: T, pbf: Pbf) => void} fn
-       * @param {T} obj
-       */
-      writeRawMessage(fn, obj) {
-          this.pos++; // reserve 1 byte for short message length
-
-          // write the message directly to the buffer and see how much was written
-          const startPos = this.pos;
-          fn(obj, this);
-          const len = this.pos - startPos;
-
-          if (len >= 0x80) makeRoomForExtraLength(startPos, len, this);
-
-          // finally, write the message length in the reserved place and restore the position
-          this.pos = startPos - 1;
-          this.writeVarint(len);
-          this.pos += len;
-      }
-
-      /**
-       * @template T
-       * @param {number} tag
-       * @param {(obj: T, pbf: Pbf) => void} fn
-       * @param {T} obj
-       */
-      writeMessage(tag, fn, obj) {
-          this.writeTag(tag, PBF_BYTES);
-          this.writeRawMessage(fn, obj);
-      }
-
-      /**
-       * @param {number} tag
-       * @param {number[]} arr
-       */
-      writePackedVarint(tag, arr) {
-          if (arr.length) this.writeMessage(tag, writePackedVarint, arr);
-      }
-      /**
-       * @param {number} tag
-       * @param {number[]} arr
-       */
-      writePackedSVarint(tag, arr) {
-          if (arr.length) this.writeMessage(tag, writePackedSVarint, arr);
-      }
-      /**
-       * @param {number} tag
-       * @param {boolean[]} arr
-       */
-      writePackedBoolean(tag, arr) {
-          if (arr.length) this.writeMessage(tag, writePackedBoolean, arr);
-      }
-      /**
-       * @param {number} tag
-       * @param {number[]} arr
-       */
-      writePackedFloat(tag, arr) {
-          if (arr.length) this.writeMessage(tag, writePackedFloat, arr);
-      }
-      /**
-       * @param {number} tag
-       * @param {number[]} arr
-       */
-      writePackedDouble(tag, arr) {
-          if (arr.length) this.writeMessage(tag, writePackedDouble, arr);
-      }
-      /**
-       * @param {number} tag
-       * @param {number[]} arr
-       */
-      writePackedFixed32(tag, arr) {
-          if (arr.length) this.writeMessage(tag, writePackedFixed32, arr);
-      }
-      /**
-       * @param {number} tag
-       * @param {number[]} arr
-       */
-      writePackedSFixed32(tag, arr) {
-          if (arr.length) this.writeMessage(tag, writePackedSFixed32, arr);
-      }
-      /**
-       * @param {number} tag
-       * @param {number[]} arr
-       */
-      writePackedFixed64(tag, arr) {
-          if (arr.length) this.writeMessage(tag, writePackedFixed64, arr);
-      }
-      /**
-       * @param {number} tag
-       * @param {number[]} arr
-       */
-      writePackedSFixed64(tag, arr) {
-          if (arr.length) this.writeMessage(tag, writePackedSFixed64, arr);
-      }
-
-      /**
-       * @param {number} tag
-       * @param {Uint8Array} buffer
-       */
-      writeBytesField(tag, buffer) {
-          this.writeTag(tag, PBF_BYTES);
-          this.writeBytes(buffer);
-      }
-      /**
-       * @param {number} tag
-       * @param {number} val
-       */
-      writeFixed32Field(tag, val) {
-          this.writeTag(tag, PBF_FIXED32);
-          this.writeFixed32(val);
-      }
-      /**
-       * @param {number} tag
-       * @param {number} val
-       */
-      writeSFixed32Field(tag, val) {
-          this.writeTag(tag, PBF_FIXED32);
-          this.writeSFixed32(val);
-      }
-      /**
-       * @param {number} tag
-       * @param {number} val
-       */
-      writeFixed64Field(tag, val) {
-          this.writeTag(tag, PBF_FIXED64);
-          this.writeFixed64(val);
-      }
-      /**
-       * @param {number} tag
-       * @param {number} val
-       */
-      writeSFixed64Field(tag, val) {
-          this.writeTag(tag, PBF_FIXED64);
-          this.writeSFixed64(val);
-      }
-      /**
-       * @param {number} tag
-       * @param {number} val
-       */
-      writeVarintField(tag, val) {
-          this.writeTag(tag, PBF_VARINT);
-          this.writeVarint(val);
-      }
-      /**
-       * @param {number} tag
-       * @param {number} val
-       */
-      writeSVarintField(tag, val) {
-          this.writeTag(tag, PBF_VARINT);
-          this.writeSVarint(val);
-      }
-      /**
-       * @param {number} tag
-       * @param {string} str
-       */
-      writeStringField(tag, str) {
-          this.writeTag(tag, PBF_BYTES);
-          this.writeString(str);
-      }
-      /**
-       * @param {number} tag
-       * @param {number} val
-       */
-      writeFloatField(tag, val) {
-          this.writeTag(tag, PBF_FIXED32);
-          this.writeFloat(val);
-      }
-      /**
-       * @param {number} tag
-       * @param {number} val
-       */
-      writeDoubleField(tag, val) {
-          this.writeTag(tag, PBF_FIXED64);
-          this.writeDouble(val);
-      }
-      /**
-       * @param {number} tag
-       * @param {boolean} val
-       */
-      writeBooleanField(tag, val) {
-          this.writeVarintField(tag, +val);
-      }
   }
+
   /**
    * @param {number} l
    * @param {boolean | undefined} s
-   * @param {Pbf} p
+   * @param {PbfReader} p
    */
   function readVarintRemainder(l, s, p) {
       const buf = p.buf;
@@ -48069,146 +48129,6 @@
    */
   function toNum(low, high, isSigned) {
       return isSigned ? high * 0x100000000 + (low >>> 0) : ((high >>> 0) * 0x100000000) + (low >>> 0);
-  }
-
-  /**
-   * @param {number} val
-   * @param {Pbf} pbf
-   */
-  function writeBigVarint(val, pbf) {
-      let low, high;
-
-      if (val >= 0) {
-          low  = (val % 0x100000000) | 0;
-          high = (val / 0x100000000) | 0;
-      } else {
-          low  = ~(-val % 0x100000000);
-          high = ~(-val / 0x100000000);
-
-          if (low ^ 0xffffffff) {
-              low = (low + 1) | 0;
-          } else {
-              low = 0;
-              high = (high + 1) | 0;
-          }
-      }
-
-      if (val >= 0x10000000000000000 || val < -18446744073709552e3) {
-          throw new Error('Given varint doesn\'t fit into 10 bytes');
-      }
-
-      pbf.realloc(10);
-
-      writeBigVarintLow(low, high, pbf);
-      writeBigVarintHigh(high, pbf);
-  }
-
-  /**
-   * @param {number} high
-   * @param {number} low
-   * @param {Pbf} pbf
-   */
-  function writeBigVarintLow(low, high, pbf) {
-      pbf.buf[pbf.pos++] = low & 0x7f | 0x80; low >>>= 7;
-      pbf.buf[pbf.pos++] = low & 0x7f | 0x80; low >>>= 7;
-      pbf.buf[pbf.pos++] = low & 0x7f | 0x80; low >>>= 7;
-      pbf.buf[pbf.pos++] = low & 0x7f | 0x80; low >>>= 7;
-      pbf.buf[pbf.pos]   = low & 0x7f;
-  }
-
-  /**
-   * @param {number} high
-   * @param {Pbf} pbf
-   */
-  function writeBigVarintHigh(high, pbf) {
-      const lsb = (high & 0x07) << 4;
-
-      pbf.buf[pbf.pos++] |= lsb         | ((high >>>= 3) ? 0x80 : 0); if (!high) return;
-      pbf.buf[pbf.pos++]  = high & 0x7f | ((high >>>= 7) ? 0x80 : 0); if (!high) return;
-      pbf.buf[pbf.pos++]  = high & 0x7f | ((high >>>= 7) ? 0x80 : 0); if (!high) return;
-      pbf.buf[pbf.pos++]  = high & 0x7f | ((high >>>= 7) ? 0x80 : 0); if (!high) return;
-      pbf.buf[pbf.pos++]  = high & 0x7f | ((high >>>= 7) ? 0x80 : 0); if (!high) return;
-      pbf.buf[pbf.pos++]  = high & 0x7f;
-  }
-
-  /**
-   * @param {number} startPos
-   * @param {number} len
-   * @param {Pbf} pbf
-   */
-  function makeRoomForExtraLength(startPos, len, pbf) {
-      const extraLen =
-          len <= 0x3fff ? 1 :
-          len <= 0x1fffff ? 2 :
-          len <= 0xfffffff ? 3 : Math.floor(Math.log(len) / (Math.LN2 * 7));
-
-      // if 1 byte isn't enough for encoding message length, shift the data to the right
-      pbf.realloc(extraLen);
-      for (let i = pbf.pos - 1; i >= startPos; i--) pbf.buf[i + extraLen] = pbf.buf[i];
-  }
-
-  /**
-   * @param {number[]} arr
-   * @param {Pbf} pbf
-   */
-  function writePackedVarint(arr, pbf) {
-      for (let i = 0; i < arr.length; i++) pbf.writeVarint(arr[i]);
-  }
-  /**
-   * @param {number[]} arr
-   * @param {Pbf} pbf
-   */
-  function writePackedSVarint(arr, pbf) {
-      for (let i = 0; i < arr.length; i++) pbf.writeSVarint(arr[i]);
-  }
-  /**
-   * @param {number[]} arr
-   * @param {Pbf} pbf
-   */
-  function writePackedFloat(arr, pbf) {
-      for (let i = 0; i < arr.length; i++) pbf.writeFloat(arr[i]);
-  }
-  /**
-   * @param {number[]} arr
-   * @param {Pbf} pbf
-   */
-  function writePackedDouble(arr, pbf) {
-      for (let i = 0; i < arr.length; i++) pbf.writeDouble(arr[i]);
-  }
-  /**
-   * @param {boolean[]} arr
-   * @param {Pbf} pbf
-   */
-  function writePackedBoolean(arr, pbf) {
-      for (let i = 0; i < arr.length; i++) pbf.writeBoolean(arr[i]);
-  }
-  /**
-   * @param {number[]} arr
-   * @param {Pbf} pbf
-   */
-  function writePackedFixed32(arr, pbf) {
-      for (let i = 0; i < arr.length; i++) pbf.writeFixed32(arr[i]);
-  }
-  /**
-   * @param {number[]} arr
-   * @param {Pbf} pbf
-   */
-  function writePackedSFixed32(arr, pbf) {
-      for (let i = 0; i < arr.length; i++) pbf.writeSFixed32(arr[i]);
-  }
-  /**
-   * @param {number[]} arr
-   * @param {Pbf} pbf
-   */
-  function writePackedFixed64(arr, pbf) {
-      for (let i = 0; i < arr.length; i++) pbf.writeFixed64(arr[i]);
-  }
-  /**
-   * @param {number[]} arr
-   * @param {Pbf} pbf
-   */
-  function writePackedSFixed64(arr, pbf) {
-      for (let i = 0; i < arr.length; i++) pbf.writeSFixed64(arr[i]);
   }
 
   // Buffer code below from https://github.com/feross/buffer, MIT-licensed
@@ -48282,64 +48202,6 @@
       }
 
       return str;
-  }
-
-  /**
-   * @param {Uint8Array} buf
-   * @param {string} str
-   * @param {number} pos
-   */
-  function writeUtf8(buf, str, pos) {
-      for (let i = 0, c, lead; i < str.length; i++) {
-          c = str.charCodeAt(i); // code point
-
-          if (c > 0xD7FF && c < 0xE000) {
-              if (lead) {
-                  if (c < 0xDC00) {
-                      buf[pos++] = 0xEF;
-                      buf[pos++] = 0xBF;
-                      buf[pos++] = 0xBD;
-                      lead = c;
-                      continue;
-                  } else {
-                      c = lead - 0xD800 << 10 | c - 0xDC00 | 0x10000;
-                      lead = null;
-                  }
-              } else {
-                  if (c > 0xDBFF || (i + 1 === str.length)) {
-                      buf[pos++] = 0xEF;
-                      buf[pos++] = 0xBF;
-                      buf[pos++] = 0xBD;
-                  } else {
-                      lead = c;
-                  }
-                  continue;
-              }
-          } else if (lead) {
-              buf[pos++] = 0xEF;
-              buf[pos++] = 0xBF;
-              buf[pos++] = 0xBD;
-              lead = null;
-          }
-
-          if (c < 0x80) {
-              buf[pos++] = c;
-          } else {
-              if (c < 0x800) {
-                  buf[pos++] = c >> 0x6 | 0xC0;
-              } else {
-                  if (c < 0x10000) {
-                      buf[pos++] = c >> 0xC | 0xE0;
-                  } else {
-                      buf[pos++] = c >> 0x12 | 0xF0;
-                      buf[pos++] = c >> 0xC & 0x3F | 0x80;
-                  }
-                  buf[pos++] = c >> 0x6 & 0x3F | 0x80;
-              }
-              buf[pos++] = c & 0x3F | 0x80;
-          }
-      }
-      return pos;
   }
 
   /**
@@ -48426,7 +48288,7 @@
     /**
      * Read the raw geometry from the pbf offset stored in a raw feature's geometry
      * property.
-     * @param {PBF} pbf PBF.
+     * @param {PbfReader} pbf PBF.
      * @param {Object} feature Raw feature.
      * @param {Array<number>} flatCoordinates Array to store flat coordinates in.
      * @param {Array<number>} ends Array to store ends in.
@@ -48488,7 +48350,7 @@
 
     /**
      * @private
-     * @param {PBF} pbf PBF
+     * @param {PbfReader} pbf PBF
      * @param {Object} rawFeature Raw Mapbox feature.
      * @param {import("./Feature.js").ReadOptions} options Read options.
      * @return {FeatureType|null} Feature.
@@ -48586,7 +48448,7 @@
       dataProjection.setWorldExtent(options.extent);
       options.dataProjection = dataProjection;
 
-      const pbf = new Pbf(/** @type {ArrayBuffer} */ (source));
+      const pbf = new PbfReader(/** @type {ArrayBuffer} */ (source));
       const pbfLayers = pbf.readFields(layersPBFReader, {});
       const features = [];
       for (const name in pbfLayers) {
@@ -48636,7 +48498,7 @@
    * Reader callback for parsing layers.
    * @param {number} tag The tag.
    * @param {Object} layers The layers object.
-   * @param {PBF} pbf The PBF.
+   * @param {PbfReader} pbf The PBF.
    */
   function layersPBFReader(tag, layers, pbf) {
     if (tag === 3) {
@@ -48658,7 +48520,7 @@
    * Reader callback for parsing layer.
    * @param {number} tag The tag.
    * @param {Object} layer The layer object.
-   * @param {PBF} pbf The PBF.
+   * @param {PbfReader} pbf The PBF.
    */
   function layerPBFReader(tag, layer, pbf) {
     if (tag === 15) {
@@ -48684,7 +48546,7 @@
               : tag === 3
                 ? pbf.readDouble()
                 : tag === 4
-                  ? pbf.readVarint64()
+                  ? pbf.readVarint(true)
                   : tag === 5
                     ? pbf.readVarint()
                     : tag === 6
@@ -48701,7 +48563,7 @@
    * Reader callback for parsing feature.
    * @param {number} tag The tag.
    * @param {Object} feature The feature object.
-   * @param {PBF} pbf The PBF.
+   * @param {PbfReader} pbf The PBF.
    */
   function featurePBFReader(tag, feature, pbf) {
     if (tag == 1) {
@@ -48722,7 +48584,7 @@
 
   /**
    * Read a raw feature from the pbf offset stored at index `i` in the raw layer.
-   * @param {PBF} pbf PBF.
+   * @param {PbfReader} pbf PBF.
    * @param {Object} layer Raw layer.
    * @param {number} i Index of the feature in the raw layer's `features` array.
    * @return {Object} Raw feature.
@@ -49345,7 +49207,7 @@
 
     const lastNumbers = new Array(stride).fill(0);
 
-    for (let i = 0, ii = numbers.length; i < ii; ) {
+    for (let i = 0, ii = numbers.length; i < ii;) {
       for (let d = 0; d < stride; ++d, ++i) {
         const value = numbers[i] * factor;
         const num = value < 0 ? Math.ceil(value - 0.5) : Math.round(value);
@@ -49378,7 +49240,7 @@
     const lastNumbers = new Array(stride).fill(0);
     const numbers = decodeSignedIntegers(encoded);
 
-    for (let i = 0, ii = numbers.length; i < ii; ) {
+    for (let i = 0, ii = numbers.length; i < ii;) {
       for (let d = 0; d < stride; ++d, ++i) {
         lastNumbers[d] += numbers[i];
         numbers[i] = lastNumbers[d] / factor;
@@ -50644,7 +50506,7 @@
    * @const
    * @type {string}
    */
-  const DEFAULT_VERSION$1 = '1.1.0';
+  const DEFAULT_VERSION = '1.1.0';
 
   /**
    * @classdesc
@@ -50668,7 +50530,7 @@
        * @private
        * @type {string}
        */
-      this.version_ = options.version ? options.version : DEFAULT_VERSION$1;
+      this.version_ = options.version ? options.version : DEFAULT_VERSION;
 
       /**
        * @private
@@ -51052,12 +50914,10 @@
       if (node.firstElementChild && node.firstElementChild.firstElementChild) {
         node = node.firstElementChild.firstElementChild;
         for (let n = node.firstElementChild; n; n = n.nextElementSibling) {
-          if (
-            !(
-              n.childNodes.length === 0 ||
-              (n.childNodes.length === 1 && n.firstChild.nodeType === 3)
-            )
-          ) {
+          if (!(
+            n.childNodes.length === 0 ||
+            (n.childNodes.length === 1 && n.firstChild.nodeType === 3)
+          )) {
             const objectStack = [{}];
             this.gmlFormat_.readGeometryElement(n, objectStack);
             return get$2(objectStack.pop().srsName);
@@ -54845,6 +54705,299 @@
   });
 
   /**
+   * @module ol/geom/Circle
+   */
+
+  /**
+   * @classdesc
+   * Circle geometry.
+   *
+   * @api
+   */
+  class Circle extends SimpleGeometry {
+    /**
+     * @param {!import("../coordinate.js").Coordinate} center Center.
+     *     For internal use, flat coordinates in combination with `layout` and no
+     *     `radius` are also accepted.
+     * @param {number} [radius] Radius in units of the projection.
+     * @param {import("./Geometry.js").GeometryLayout} [layout] Layout.
+     */
+    constructor(center, radius, layout) {
+      super();
+      if (layout !== undefined && radius === undefined) {
+        this.setFlatCoordinates(layout, center);
+      } else {
+        radius = radius ? radius : 0;
+        this.setCenterAndRadius(center, radius, layout);
+      }
+    }
+
+    /**
+     * Make a complete copy of the geometry.
+     * @return {!Circle} Clone.
+     * @api
+     * @override
+     */
+    clone() {
+      const circle = new Circle(
+        this.flatCoordinates.slice(),
+        undefined,
+        this.layout,
+      );
+      circle.applyProperties(this);
+      return circle;
+    }
+
+    /**
+     * @param {number} x X.
+     * @param {number} y Y.
+     * @param {import("../coordinate.js").Coordinate} closestPoint Closest point.
+     * @param {number} minSquaredDistance Minimum squared distance.
+     * @return {number} Minimum squared distance.
+     * @override
+     */
+    closestPointXY(x, y, closestPoint, minSquaredDistance) {
+      const flatCoordinates = this.flatCoordinates;
+      const dx = x - flatCoordinates[0];
+      const dy = y - flatCoordinates[1];
+      const squaredDistance = dx * dx + dy * dy;
+      if (squaredDistance < minSquaredDistance) {
+        if (squaredDistance === 0) {
+          for (let i = 0; i < this.stride; ++i) {
+            closestPoint[i] = flatCoordinates[i];
+          }
+        } else {
+          const delta = this.getRadius() / Math.sqrt(squaredDistance);
+          closestPoint[0] = flatCoordinates[0] + delta * dx;
+          closestPoint[1] = flatCoordinates[1] + delta * dy;
+          for (let i = 2; i < this.stride; ++i) {
+            closestPoint[i] = flatCoordinates[i];
+          }
+        }
+        closestPoint.length = this.stride;
+        return squaredDistance;
+      }
+      return minSquaredDistance;
+    }
+
+    /**
+     * @param {number} x X.
+     * @param {number} y Y.
+     * @return {boolean} Contains (x, y).
+     * @override
+     */
+    containsXY(x, y) {
+      const flatCoordinates = this.flatCoordinates;
+      const dx = x - flatCoordinates[0];
+      const dy = y - flatCoordinates[1];
+      return dx * dx + dy * dy <= this.getRadiusSquared_();
+    }
+
+    /**
+     * Return the center of the circle as {@link module:ol/coordinate~Coordinate coordinate}.
+     * @return {import("../coordinate.js").Coordinate} Center.
+     * @api
+     */
+    getCenter() {
+      return this.flatCoordinates.slice(0, this.stride);
+    }
+
+    /**
+     * @param {import("../extent.js").Extent} extent Extent.
+     * @protected
+     * @return {import("../extent.js").Extent} extent Extent.
+     * @override
+     */
+    computeExtent(extent) {
+      const flatCoordinates = this.flatCoordinates;
+      const radius = flatCoordinates[this.stride] - flatCoordinates[0];
+      return createOrUpdate$2(
+        flatCoordinates[0] - radius,
+        flatCoordinates[1] - radius,
+        flatCoordinates[0] + radius,
+        flatCoordinates[1] + radius,
+        extent,
+      );
+    }
+
+    /**
+     * Return the radius of the circle.
+     * @return {number} Radius.
+     * @api
+     */
+    getRadius() {
+      return Math.sqrt(this.getRadiusSquared_());
+    }
+
+    /**
+     * @private
+     * @return {number} Radius squared.
+     */
+    getRadiusSquared_() {
+      const dx = this.flatCoordinates[this.stride] - this.flatCoordinates[0];
+      const dy = this.flatCoordinates[this.stride + 1] - this.flatCoordinates[1];
+      return dx * dx + dy * dy;
+    }
+
+    /**
+     * Get the type of this geometry.
+     * @return {import("./Geometry.js").Type} Geometry type.
+     * @api
+     * @override
+     */
+    getType() {
+      return 'Circle';
+    }
+
+    /**
+     * Test if the geometry and the passed extent intersect.
+     * @param {import("../extent.js").Extent} extent Extent.
+     * @return {boolean} `true` if the geometry and the extent intersect.
+     * @api
+     * @override
+     */
+    intersectsExtent(extent) {
+      const circleExtent = this.getExtent();
+      if (intersects$1(extent, circleExtent)) {
+        const center = this.getCenter();
+
+        if (extent[0] <= center[0] && extent[2] >= center[0]) {
+          return true;
+        }
+        if (extent[1] <= center[1] && extent[3] >= center[1]) {
+          return true;
+        }
+
+        return forEachCorner(extent, this.intersectsCoordinate.bind(this));
+      }
+      return false;
+    }
+
+    /**
+     * Set the center of the circle as {@link module:ol/coordinate~Coordinate coordinate}.
+     * @param {import("../coordinate.js").Coordinate} center Center.
+     * @api
+     */
+    setCenter(center) {
+      const stride = this.stride;
+      const radius = this.flatCoordinates[stride] - this.flatCoordinates[0];
+      const flatCoordinates = center.slice();
+      flatCoordinates[stride] = flatCoordinates[0] + radius;
+      for (let i = 1; i < stride; ++i) {
+        flatCoordinates[stride + i] = center[i];
+      }
+      this.setFlatCoordinates(this.layout, flatCoordinates);
+      this.changed();
+    }
+
+    /**
+     * Set the center (as {@link module:ol/coordinate~Coordinate coordinate}) and the radius (as
+     * number) of the circle.
+     * @param {!import("../coordinate.js").Coordinate} center Center.
+     * @param {number} radius Radius.
+     * @param {import("./Geometry.js").GeometryLayout} [layout] Layout.
+     * @api
+     */
+    setCenterAndRadius(center, radius, layout) {
+      this.setLayout(layout, center, 0);
+      if (!this.flatCoordinates) {
+        this.flatCoordinates = [];
+      }
+      /** @type {Array<number>} */
+      const flatCoordinates = this.flatCoordinates;
+      let offset = deflateCoordinate(flatCoordinates, 0, center, this.stride);
+      flatCoordinates[offset++] = flatCoordinates[0] + radius;
+      for (let i = 1, ii = this.stride; i < ii; ++i) {
+        flatCoordinates[offset++] = flatCoordinates[i];
+      }
+      flatCoordinates.length = offset;
+      this.changed();
+    }
+
+    /**
+     * @override
+     */
+    getCoordinates() {
+      return null;
+    }
+
+    /**
+     * @override
+     */
+    setCoordinates(coordinates, layout) {}
+
+    /**
+     * Set the radius of the circle. The radius is in the units of the projection.
+     * @param {number} radius Radius.
+     * @api
+     */
+    setRadius(radius) {
+      this.flatCoordinates[this.stride] = this.flatCoordinates[0] + radius;
+      this.changed();
+    }
+
+    /**
+     * Rotate the geometry around a given coordinate. This modifies the geometry
+     * coordinates in place.
+     * @param {number} angle Rotation angle in counter-clockwise radians.
+     * @param {import("../coordinate.js").Coordinate} anchor The rotation center.
+     * @api
+     * @override
+     */
+    rotate(angle, anchor) {
+      const center = this.getCenter();
+      const stride = this.getStride();
+      this.setCenter(
+        rotate(center, 0, center.length, stride, angle, anchor, center),
+      );
+      this.changed();
+    }
+  }
+
+  /**
+   * Transform each coordinate of the circle from one coordinate reference system
+   * to another. The geometry is modified in place.
+   * If you do not want the geometry modified in place, first clone() it and
+   * then use this function on the clone.
+   *
+   * Internally a circle is currently represented by two points: the center of
+   * the circle `[cx, cy]`, and the point to the right of the circle
+   * `[cx + r, cy]`. This `transform` function just transforms these two points.
+   * So the resulting geometry is also a circle, and that circle does not
+   * correspond to the shape that would be obtained by transforming every point
+   * of the original circle.
+   *
+   * @param {import("../proj.js").ProjectionLike} source The current projection.  Can be a
+   *     string identifier or a {@link module:ol/proj/Projection~Projection} object.
+   * @param {import("../proj.js").ProjectionLike} destination The desired projection.  Can be a
+   *     string identifier or a {@link module:ol/proj/Projection~Projection} object.
+   * @return {Circle} This geometry.  Note that original geometry is
+   *     modified in place.
+   * @function
+   * @api
+   */
+  Circle.prototype.transform;
+
+  /**
+   * @module ol/geom
+   */
+
+  var geom = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    Circle: Circle,
+    Geometry: Geometry,
+    GeometryCollection: GeometryCollection,
+    LineString: LineString,
+    LinearRing: LinearRing,
+    MultiLineString: MultiLineString,
+    MultiPoint: MultiPoint,
+    MultiPolygon: MultiPolygon,
+    Point: Point$1,
+    Polygon: Polygon,
+    SimpleGeometry: SimpleGeometry
+  });
+
+  /**
    * @module ol/render/VectorContext
    */
 
@@ -55412,7 +55565,7 @@
 
     /**
      * @protected
-     * @param {import("../../geom/Geometry").default|import("../Feature.js").default} geometry The geometry.
+     * @param {import("../../geom/Geometry.js").default|import("../Feature.js").default} geometry The geometry.
      * @param {import("../../Feature.js").FeatureLike} feature Feature.
      * @param {number} index Render order index
      */
@@ -55489,9 +55642,9 @@
           'src' in fillStyleColor
             ? this.pixelRatio
             : 1;
-        state.fillStyle = asColorLike(
-          fillStyleColor ? fillStyleColor : defaultFillStyle,
-        );
+        state.fillStyle =
+          asColorLike(fillStyleColor ? fillStyleColor : defaultFillStyle) ??
+          undefined;
       } else {
         state.fillStyle = undefined;
       }
@@ -55536,6 +55689,8 @@
           strokeStyleMiterLimit !== undefined
             ? strokeStyleMiterLimit
             : defaultMiterLimit;
+        const strokeStyleOffset = strokeStyle.getOffset();
+        state.strokeOffset = strokeStyleOffset ?? defaultStrokeOffset;
 
         if (state.lineWidth > this.maxLineWidth) {
           this.maxLineWidth = state.lineWidth;
@@ -55550,6 +55705,7 @@
         state.lineJoin = undefined;
         state.lineWidth = undefined;
         state.miterLimit = undefined;
+        state.strokeOffset = undefined;
       }
       return state;
     }
@@ -55610,7 +55766,10 @@
      */
     updateFillStyle(state, createFill) {
       const fillStyle = state.fillStyle;
-      if (typeof fillStyle !== 'string' || state.currentFillStyle != fillStyle) {
+      if (
+        (fillStyle !== undefined && typeof fillStyle !== 'string') ||
+        state.currentFillStyle != fillStyle
+      ) {
         this.instructions.push(createFill.call(this, state));
         state.currentFillStyle = fillStyle;
       }
@@ -55628,6 +55787,7 @@
       const lineJoin = state.lineJoin;
       const lineWidth = state.lineWidth;
       const miterLimit = state.miterLimit;
+      const strokeOffset = state.strokeOffset;
       if (
         state.currentStrokeStyle != strokeStyle ||
         state.currentLineCap != lineCap ||
@@ -55636,7 +55796,8 @@
         state.currentLineDashOffset != lineDashOffset ||
         state.currentLineJoin != lineJoin ||
         state.currentLineWidth != lineWidth ||
-        state.currentMiterLimit != miterLimit
+        state.currentMiterLimit != miterLimit ||
+        state.currentStrokeOffset != strokeOffset
       ) {
         applyStroke.call(this, state);
         state.currentStrokeStyle = strokeStyle;
@@ -55646,6 +55807,7 @@
         state.currentLineJoin = lineJoin;
         state.currentLineWidth = lineWidth;
         state.currentMiterLimit = miterLimit;
+        state.currentStrokeOffset = strokeOffset;
       }
     }
 
@@ -55994,10 +56156,11 @@
      * @param {number} offset Offset.
      * @param {number} end End.
      * @param {number} stride Stride.
+     * @param {number} [strokeOffset] Stroke Offset in pixels.
      * @private
      * @return {number} end.
      */
-    drawFlatCoordinates_(flatCoordinates, offset, end, stride) {
+    drawFlatCoordinates_(flatCoordinates, offset, end, stride, strokeOffset) {
       const myBegin = this.coordinates.length;
       const myEnd = this.appendFlatLineCoordinates(
         flatCoordinates,
@@ -56007,13 +56170,18 @@
         false,
         false,
       );
-      const moveToLineToInstruction = [
+      this.instructions.push([
         Instruction.MOVE_TO_LINE_TO,
         myBegin,
         myEnd,
-      ];
-      this.instructions.push(moveToLineToInstruction);
-      this.hitDetectionInstructions.push(moveToLineToInstruction);
+        strokeOffset * this.pixelRatio,
+      ]);
+      this.hitDetectionInstructions.push([
+        Instruction.MOVE_TO_LINE_TO,
+        myBegin,
+        myEnd,
+        strokeOffset,
+      ]);
       return end;
     }
 
@@ -56027,6 +56195,7 @@
       const state = this.state;
       const strokeStyle = state.strokeStyle;
       const lineWidth = state.lineWidth;
+      const strokeOffset = state.strokeOffset;
       if (strokeStyle === undefined || lineWidth === undefined) {
         return;
       }
@@ -56035,7 +56204,7 @@
       this.hitDetectionInstructions.push(
         [
           Instruction.SET_STROKE_STYLE,
-          state.strokeStyle,
+          defaultStrokeStyle,
           state.lineWidth,
           state.lineCap,
           state.lineJoin,
@@ -56052,6 +56221,7 @@
         0,
         flatCoordinates.length,
         stride,
+        strokeOffset,
       );
       this.hitDetectionInstructions.push(strokeInstruction);
       this.endGeometry(feature);
@@ -56067,6 +56237,7 @@
       const state = this.state;
       const strokeStyle = state.strokeStyle;
       const lineWidth = state.lineWidth;
+      const strokeOffset = state.strokeOffset;
       if (strokeStyle === undefined || lineWidth === undefined) {
         return;
       }
@@ -56075,7 +56246,7 @@
       this.hitDetectionInstructions.push(
         [
           Instruction.SET_STROKE_STYLE,
-          state.strokeStyle,
+          defaultStrokeStyle,
           state.lineWidth,
           state.lineCap,
           state.lineJoin,
@@ -56095,6 +56266,7 @@
           offset,
           /** @type {number} */ (ends[i]),
           stride,
+          strokeOffset,
         );
       }
       this.hitDetectionInstructions.push(strokeInstruction);
@@ -56156,10 +56328,11 @@
      * @param {number} offset Offset.
      * @param {Array<number>} ends Ends.
      * @param {number} stride Stride.
+     * @param {number} [strokeOffset] Stroke Offset in pixels.
      * @private
      * @return {number} End.
      */
-    drawFlatCoordinatess_(flatCoordinates, offset, ends, stride) {
+    drawFlatCoordinatess_(flatCoordinates, offset, ends, stride, strokeOffset) {
       const state = this.state;
       const fill = state.fillStyle !== undefined;
       const stroke = state.strokeStyle !== undefined;
@@ -56177,13 +56350,20 @@
           true,
           !stroke,
         );
-        const moveToLineToInstruction = [
+        this.instructions.push([
           Instruction.MOVE_TO_LINE_TO,
           myBegin,
           myEnd,
-        ];
-        this.instructions.push(moveToLineToInstruction);
-        this.hitDetectionInstructions.push(moveToLineToInstruction);
+          strokeOffset * this.pixelRatio,
+          true,
+        ]);
+        this.hitDetectionInstructions.push([
+          Instruction.MOVE_TO_LINE_TO,
+          myBegin,
+          myEnd,
+          strokeOffset,
+          true,
+        ]);
         if (stroke) {
           // Performance optimization: only call closePath() when we have a stroke.
           // Otherwise the ring is closed already (see appendFlatLineCoordinates above).
@@ -56213,7 +56393,16 @@
       const state = this.state;
       const fillStyle = state.fillStyle;
       const strokeStyle = state.strokeStyle;
+      const strokeOffset = state.strokeOffset;
       if (fillStyle === undefined && strokeStyle === undefined) {
+        return;
+      }
+
+      if (
+        this.handleStrokeOffset_(() =>
+          this.drawCircle(circleGeometry, feature, index),
+        )
+      ) {
         return;
       }
       this.setFillStrokeStyles_();
@@ -56227,7 +56416,7 @@
       if (state.strokeStyle !== undefined) {
         this.hitDetectionInstructions.push([
           Instruction.SET_STROKE_STYLE,
-          state.strokeStyle,
+          defaultStrokeStyle,
           state.lineWidth,
           state.lineCap,
           state.lineJoin,
@@ -56247,7 +56436,7 @@
         false,
         false,
       );
-      const circleInstruction = [Instruction.CIRCLE, myBegin];
+      const circleInstruction = [Instruction.CIRCLE, myBegin, strokeOffset];
       this.instructions.push(beginPathInstruction, circleInstruction);
       this.hitDetectionInstructions.push(beginPathInstruction, circleInstruction);
       if (state.fillStyle !== undefined) {
@@ -56271,9 +56460,18 @@
       const state = this.state;
       const fillStyle = state.fillStyle;
       const strokeStyle = state.strokeStyle;
+      const strokeOffset = state.strokeOffset;
       if (fillStyle === undefined && strokeStyle === undefined) {
         return;
       }
+      if (
+        this.handleStrokeOffset_(() =>
+          this.drawPolygon(polygonGeometry, feature, index),
+        )
+      ) {
+        return;
+      }
+
       this.setFillStrokeStyles_();
       this.beginGeometry(polygonGeometry, feature, index);
       if (state.fillStyle !== undefined) {
@@ -56285,7 +56483,7 @@
       if (state.strokeStyle !== undefined) {
         this.hitDetectionInstructions.push([
           Instruction.SET_STROKE_STYLE,
-          state.strokeStyle,
+          defaultStrokeStyle,
           state.lineWidth,
           state.lineCap,
           state.lineJoin,
@@ -56302,6 +56500,7 @@
         0,
         /** @type {Array<number>} */ (ends),
         stride,
+        strokeOffset,
       );
       this.endGeometry(feature);
     }
@@ -56316,7 +56515,15 @@
       const state = this.state;
       const fillStyle = state.fillStyle;
       const strokeStyle = state.strokeStyle;
+      const strokeOffset = state.strokeOffset;
       if (fillStyle === undefined && strokeStyle === undefined) {
+        return;
+      }
+      if (
+        this.handleStrokeOffset_(() =>
+          this.drawMultiPolygon(multiPolygonGeometry, feature, index),
+        )
+      ) {
         return;
       }
       this.setFillStrokeStyles_();
@@ -56330,7 +56537,7 @@
       if (state.strokeStyle !== undefined) {
         this.hitDetectionInstructions.push([
           Instruction.SET_STROKE_STYLE,
-          state.strokeStyle,
+          defaultStrokeStyle,
           state.lineWidth,
           state.lineCap,
           state.lineJoin,
@@ -56349,6 +56556,7 @@
           offset,
           endss[i],
           stride,
+          strokeOffset,
         );
       }
       this.endGeometry(feature);
@@ -56383,6 +56591,191 @@
       this.updateFillStyle(state, this.createFill);
       this.updateStrokeStyle(state, this.applyStroke);
     }
+
+    handleStrokeOffset_(drawGeometryCallback) {
+      const state = this.state;
+      const fillStyle = state.fillStyle;
+      const strokeStyle = state.strokeStyle;
+      const strokeOffset = state.strokeOffset;
+
+      // In case both fill style and stroke style are defined and the stroke style has an offset,
+      // the stroke and fill should be done in separate steps, because offset stroke shape will
+      // be different from the original shape used for the fill.
+      if (
+        Math.abs(strokeOffset) > 0 &&
+        fillStyle !== undefined &&
+        strokeStyle !== undefined
+      ) {
+        // First do only fill
+        state.strokeStyle = undefined;
+        state.strokeOffset = 0;
+        drawGeometryCallback();
+        // Now separately do the stroke
+        state.fillStyle = undefined;
+        state.strokeStyle = strokeStyle;
+        state.strokeOffset = strokeOffset;
+        drawGeometryCallback();
+        // Reset the state to the original
+        state.fillStyle = fillStyle;
+        return true;
+      }
+      return false;
+    }
+  }
+
+  /**
+   * @module ol/geom/flat/clip
+   */
+
+  /**
+   * Start parameter of the portion of the last clipped segment that is inside the
+   * extent. Set by {@link clipSegment}, read right after a `true` return to avoid
+   * allocating a result array per segment.
+   * @type {number}
+   */
+  let clipSegmentStart = 0;
+
+  /**
+   * End parameter of the portion of the last clipped segment that is inside the
+   * extent. See {@link clipSegmentStart}.
+   * @type {number}
+   */
+  let clipSegmentEnd = 1;
+
+  /**
+   * Clip a segment to a rectangular extent. On a `true` return, the inside
+   * portion is `[clipSegmentStart, clipSegmentEnd]` in segment parameters. No
+   * allocations are made, so the result globals must be read before the next
+   * call.
+   * @param {number} minX Minimum X.
+   * @param {number} minY Minimum Y.
+   * @param {number} maxX Maximum X.
+   * @param {number} maxY Maximum Y.
+   * @param {number} x0 Segment start X.
+   * @param {number} y0 Segment start Y.
+   * @param {number} x1 Segment end X.
+   * @param {number} y1 Segment end Y.
+   * @return {boolean} The segment intersects the extent.
+   */
+  function clipSegment(minX, minY, maxX, maxY, x0, y0, x1, y1) {
+    const dx = x1 - x0;
+    const dy = y1 - y0;
+    let t0 = 0;
+    let t1 = 1;
+
+    // X slab.
+    if (dx === 0) {
+      if (x0 < minX || x0 > maxX) {
+        return false;
+      }
+    } else {
+      let ta = (minX - x0) / dx;
+      let tb = (maxX - x0) / dx;
+      if (ta > tb) {
+        const tmp = ta;
+        ta = tb;
+        tb = tmp;
+      }
+      if (ta > t0) {
+        t0 = ta;
+      }
+      if (tb < t1) {
+        t1 = tb;
+      }
+      if (t0 > t1) {
+        return false;
+      }
+    }
+
+    // Y slab.
+    if (dy === 0) {
+      if (y0 < minY || y0 > maxY) {
+        return false;
+      }
+    } else {
+      let ta = (minY - y0) / dy;
+      let tb = (maxY - y0) / dy;
+      if (ta > tb) {
+        const tmp = ta;
+        ta = tb;
+        tb = tmp;
+      }
+      if (ta > t0) {
+        t0 = ta;
+      }
+      if (tb < t1) {
+        t1 = tb;
+      }
+      if (t0 > t1) {
+        return false;
+      }
+    }
+
+    clipSegmentStart = t0;
+    clipSegmentEnd = t1;
+    return true;
+  }
+
+  /**
+   * Clip flat line strings to the given extent. Parts outside the extent are
+   * dropped and a vertex is inserted where a segment crosses the boundary. A line
+   * that leaves and re-enters the extent is split into separate parts so that
+   * positions derived from the result (e.g. labels placed along the line) stay
+   * within the extent. Output coordinates have a stride of 2.
+   * @param {Array<number>} flatCoordinates Flat coordinates.
+   * @param {Array<number>} ends Ends.
+   * @param {number} stride Stride.
+   * @param {import("../../extent.js").Extent} extent Extent to clip to.
+   * @return {{flatCoordinates: Array<number>, ends: Array<number>}} Clipped flat
+   *     coordinates and ends.
+   */
+  function clipFlatLineStrings(flatCoordinates, ends, stride, extent) {
+    const minX = extent[0];
+    const minY = extent[1];
+    const maxX = extent[2];
+    const maxY = extent[3];
+    const dest = [];
+    const destEnds = [];
+    let open = false;
+    let lastX, lastY;
+    let offset = 0;
+    for (let e = 0, ee = ends.length; e < ee; ++e) {
+      const end = ends[e];
+      let prevX = flatCoordinates[offset];
+      let prevY = flatCoordinates[offset + 1];
+      let lineHasLast = false;
+      for (let i = offset + stride; i < end; i += stride) {
+        const curX = flatCoordinates[i];
+        const curY = flatCoordinates[i + 1];
+        if (clipSegment(minX, minY, maxX, maxY, prevX, prevY, curX, curY)) {
+          const dx = curX - prevX;
+          const dy = curY - prevY;
+          const ax = prevX + clipSegmentStart * dx;
+          const ay = prevY + clipSegmentStart * dy;
+          const bx = prevX + clipSegmentEnd * dx;
+          const by = prevY + clipSegmentEnd * dy;
+          if (open && lineHasLast && ax === lastX && ay === lastY) {
+            dest.push(bx, by);
+          } else {
+            if (open) {
+              destEnds.push(dest.length);
+            }
+            dest.push(ax, ay, bx, by);
+            open = true;
+          }
+          lastX = bx;
+          lastY = by;
+          lineHasLast = true;
+        }
+        prevX = curX;
+        prevY = curY;
+      }
+      offset = end;
+    }
+    if (open) {
+      destEnds.push(dest.length);
+    }
+    return {flatCoordinates: dest, ends: destEnds};
   }
 
   /**
@@ -56669,7 +57062,8 @@
           geometryType == 'Polygon' ||
           geometryType == 'MultiPolygon')
       ) {
-        if (!intersects$1(this.maxExtent, geometry.getExtent())) {
+        const geometryExtent = geometry.getExtent();
+        if (!intersects$1(this.maxExtent, geometryExtent)) {
           return;
         }
         let ends;
@@ -56692,6 +57086,26 @@
           ends = [];
           for (let i = 0, ii = endss.length; i < ii; ++i) {
             ends.push(endss[i][0]);
+          }
+        }
+        if (
+          (geometryType == 'LineString' || geometryType == 'MultiLineString') &&
+          !containsExtent(this.getBufferedMaxExtent(), geometryExtent)
+        ) {
+          // Clip the line to the rendered extent so the label is anchored within
+          // the rendered area instead of along the full geometry, whose center
+          // can lie outside it.
+          const clipped = clipFlatLineStrings(
+            flatCoordinates,
+            ends,
+            stride,
+            this.getBufferedMaxExtent(),
+          );
+          flatCoordinates = clipped.flatCoordinates;
+          ends = clipped.ends;
+          stride = 2;
+          if (ends.length === 0) {
+            return;
           }
         }
         this.beginGeometry(geometry, feature, index);
@@ -56982,6 +57396,7 @@
       const pixelRatio = this.pixelRatio;
       const baseline = TEXT_ALIGN[textState.textBaseline];
 
+      const offsetX = this.textOffsetX_ * pixelRatio;
       const offsetY = this.textOffsetY_ * pixelRatio;
       const text = this.text_;
       const strokeWidth = strokeState
@@ -57005,6 +57420,7 @@
         1,
         this.declutterMode_,
         this.textKeepUpright_,
+        offsetX,
       ]);
       this.hitDetectionInstructions.push([
         Instruction.DRAW_CHARS,
@@ -57023,6 +57439,7 @@
         1 / pixelRatio,
         this.declutterMode_,
         this.textKeepUpright_,
+        offsetX,
       ]);
     }
 
@@ -57244,8 +57661,241 @@
   }
 
   /**
+   * Offsets a line string to the left / right along its segments direction.
+   * Offset is applied to each segment of the line in the direciton of the segment normal (positive offset goes "right" relative to the line direction).
+   * For very sharp angles between segments, the function falls back to offsetting along the segment normal direction to avoid excessively long miters.
+   *
+   * Coordinates and the offset should be in the same units — either pixels or the same spatial reference system as the input line coordinates.
+   *
+   * @param {Array<number>} flatCoordinates Flat coordinates.
+   * @param {number} start Start index.
+   * @param {number} end End index.
+   * @param {number} stride Stride.
+   * @param {number} offset Offset distance along the segment normal direction.
+   *   Positive values offset to the right relative to the direction of the line.
+   *   Negative values offset to the left.
+   * @param {boolean} isClosedRing If coordinates build a closed circle (in this the first and the last coordinate offsets will consider previous / next ring coordinate)
+   * @param {Array<number>} [dest] Destination coordinate array. If not provided a new one will be created
+   * @param {number} [destinationStride] Stride of destination coordinates. If unspecified, assumed to be same as the source coordinates stride.
+   * @return {Array<number>} Result flat coordinates of the offset line.
+   */
+  function offsetLineString(
+    flatCoordinates,
+    start,
+    end,
+    stride,
+    offset,
+    isClosedRing,
+    dest,
+    destinationStride,
+  ) {
+    dest = dest ?? [];
+    destinationStride = destinationStride ?? stride;
+
+    const secondPointX = flatCoordinates[start + stride];
+    const secondPointY = flatCoordinates[start + stride + 1];
+    const secondToLastPointX = flatCoordinates[end - 2 * stride];
+    const secondToLastPointY = flatCoordinates[end - 2 * stride + 1];
+    let x, y, prevX, prevY, nextX, nextY, offsetX, offsetY;
+
+    let i = 0;
+    for (let j = start; j < end; j += stride) {
+      // 1. Detect previous and next coordinates of a current vertex
+      prevX = x;
+      prevY = y;
+      nextX = undefined;
+      nextY = undefined;
+      if (j + stride < end) {
+        nextX = flatCoordinates[j + stride];
+        nextY = flatCoordinates[j + stride + 1];
+      }
+      // First coordinate of a closed ring -> previous coordinate is the second to last one
+      if (isClosedRing && j === start) {
+        prevX = secondToLastPointX;
+        prevY = secondToLastPointY;
+      }
+      // Last coordinate of a closed ring -> next coordinate is the second vertex of a line string (the last one is same as the first one for a closed ring)
+      if (isClosedRing && j === end - stride) {
+        nextX = secondPointX;
+        nextY = secondPointY;
+      }
+
+      // 2. Current vertex to offset
+      x = flatCoordinates[j];
+      y = flatCoordinates[j + 1];
+
+      // 3. Offset the vertex
+      [offsetX, offsetY] = offsetLineVertex(
+        x,
+        y,
+        prevX,
+        prevY,
+        nextX,
+        nextY,
+        offset,
+      );
+      dest[i++] = offsetX;
+      dest[i++] = offsetY;
+
+      // 4. Copy over other dimension values if any
+      for (let k = 2; k < destinationStride; k++) {
+        dest[i++] = flatCoordinates[j + k];
+      }
+    }
+
+    if (dest.length != i) {
+      dest.length = i;
+    }
+    return dest;
+  }
+
+  /**
+   * Computes the offset of a single vertex of a line string.
+   *
+   * The function calculates a new vertex coordinate offset along the normal/miter direction of the line at this vertex.
+   * Offset is applied along the segment normal (positive offset goes "right" relative to the line direction).
+   * It handles first and last vertices (caps) as well as joins between two segments (mitering).
+   * For very sharp angles, the function falls back to offsetting along the segment normal direction to avoid excessively long miters.
+   *
+   * Coordinates and the offset should be in the same units — either pixels or the same spatial reference system as the input line coordinates.
+   *
+   * @param {number} x Vertex x-coordinate.
+   * @param {number} y Vertex y-coordinate.
+   * @param {number|undefined} prevX Previous vertex x-coordinate.
+   *   Pass undefined if computing the offset for the first vertex (no previous vertex).
+   * @param {number|undefined} prevY Previous vertex y-coordinate.
+   *   Pass undefined if computing the offset for the first vertex (no previous vertex).
+   * @param {number|undefined} nextX Next vertex x-coordinate.
+   *   Pass undefined if computing the offset for the last vertex (no next vertex).
+   * @param {number|undefined} nextY Next vertex y-coordinate.
+   *   Pass undefined if computing the offset for the last vertex (no next vertex).
+   * @param {number} offset Offset distance along the segment normal direction.
+   *   Positive values offset to the right relative to the direction from previous to next vertex.
+   *   Negative values offset to the left.
+   * @return {import("../../coordinate.js").Coordinate} Offset vertex coordinate as `[x, y]`.
+   */
+  function offsetLineVertex(x, y, prevX, prevY, nextX, nextY, offset) {
+    // Compute segment direction
+    let nx, ny;
+    if (prevX !== undefined && prevY !== undefined) {
+      nx = x - prevX;
+      ny = y - prevY;
+    } else if (nextX !== undefined && nextY !== undefined) {
+      nx = nextX - x;
+      ny = nextY - y;
+    } else {
+      // no next, no previous point given -> just assume some default (horizontal) direction
+      nx = 1;
+      ny = 0;
+    }
+
+    // Normalize -> tangent
+    const len = Math.hypot(nx, ny);
+    const tx = nx / len;
+    const ty = ny / len;
+
+    // Rotate tangent 90° -> normal
+    nx = -ty;
+    ny = tx;
+
+    // First / last vertex -> offset the point in the direction of the normal vector
+    if (prevX === undefined || prevY === undefined) {
+      return [x + nx * offset, y + ny * offset];
+    }
+    if (nextX === undefined || nextY === undefined) {
+      return [x + nx * offset, y + ny * offset];
+    }
+
+    // Compute join angle - angle between 2 segments of the vertex.
+    const joinAngle = angleBetween([x, y], [prevX, prevY], [nextX, nextY]);
+
+    // Avoid huge or infinite miter joins for very sharp angles, offset in the segment direction in this case.
+    if (Math.cos(joinAngle) > 0.998) {
+      return [x + tx * offset, y + ty * offset];
+    }
+
+    // Compute join offset direction.
+    // We rotate the normal vector by half of the join angle.
+    // This gives the direction of the miter at the vertex.
+    const cos = Math.cos(joinAngle / 2);
+    const sin = Math.sin(joinAngle / 2);
+
+    // Rotate the normal vector (nx, ny) by half of the join angle.
+    // bx/by = bisector direction before normalization
+    const bx = sin * nx + cos * ny;
+    const by = -cos * nx + sin * ny;
+
+    // Scale the bisector so that moving along it preserves the correct offset distance.
+    // Dividing by sin(half of angle) converts the bisector into the true miter vector.
+    // (This expands the miter for sharp angles and shortens it for wide ones.)
+    const dx = bx * (1 / sin);
+    const dy = by * (1 / sin);
+
+    // Offset final vertex along miter direction
+    return [x + dx * offset, y + dy * offset];
+  }
+
+  /**
+   * Removes self-intersection loops (cycles) from an offset line.
+   * When a polyline is offset, sharp turns can create self-intersecting loops.
+   * This function detects those crossings and splices out the looped portions,
+   * replacing them with the intersection point.
+   *
+   * @param {Array<number>} coords Flat offset coordinates (modified in-place).
+   * @param {number} stride Coordinate stride (typically 2).
+   * @param {boolean} [closedLine] Whether the original line is closed (first vertex === last vertex).
+   *   When true, the first and last offset segments are not compared against each other to avoid
+   *   false loop detection at the closure point.
+   * @return {Array<number>} The cleaned coordinate array.
+   */
+  function removeOffsetCycles(coords, stride, closedLine = false) {
+    for (let i = 0, ii = coords.length - 2; i < ii; i += stride) {
+      const jMax =
+        closedLine && i === 0
+          ? coords.length - 3 * stride
+          : coords.length - 2 * stride;
+      for (let j = jMax; j > i + stride; j -= stride) {
+        const p1x = coords[i];
+        const p1y = coords[i + 1];
+        const p2x = coords[i + stride];
+        const p2y = coords[i + stride + 1];
+        const p3x = coords[j];
+        const p3y = coords[j + 1];
+        const p4x = coords[j + stride];
+        const p4y = coords[j + stride + 1];
+        const d = (p4y - p3y) * (p2x - p1x) - (p4x - p3x) * (p2y - p1y);
+        if (d === 0) {
+          continue;
+        }
+        const t = ((p4x - p3x) * (p1y - p3y) - (p4y - p3y) * (p1x - p3x)) / d;
+        const u = ((p2x - p1x) * (p1y - p3y) - (p2y - p1y) * (p1x - p3x)) / d;
+        if (t > 0 && t < 1 && u > 0 && u < 1) {
+          const ix = p1x + t * (p2x - p1x);
+          const iy = p1y + t * (p2y - p1y);
+          coords[i + stride] = ix;
+          coords[i + stride + 1] = iy;
+          coords.splice(i + 2 * stride, j - i - stride);
+          break;
+        }
+      }
+    }
+    return coords;
+  }
+
+  /**
    * @module ol/geom/flat/textpath
    */
+
+  let segmenter;
+  /**
+   * @return {Intl.Segmenter} A grapheme segmenter.
+   */
+  function getSegmenter() {
+    if (!segmenter) {
+      segmenter = new Intl.Segmenter(undefined, {granularity: 'grapheme'});
+    }
+    return segmenter;
+  }
 
   /**
    * @param {Array<number>} flatCoordinates Path to put text on.
@@ -57354,7 +58004,8 @@
     // rendering across line segments
     text = text.replace(/\n/g, ' '); // ensure rendering in single-line as all calculations below don't handle multi-lines
 
-    for (let i = 0, ii = text.length; i < ii; ) {
+    const segments = Array.from(getSegmenter().segment(text), (s) => s.segment);
+    for (let i = 0, ii = segments.length; i < ii;) {
       advance();
       let angle = Math.atan2(y2 - y1, x2 - x1);
       if (reverse) {
@@ -57373,7 +58024,8 @@
       let charLength = 0;
       for (; i < ii; ++i) {
         const index = reverse ? ii - i - 1 : i;
-        const len = scale * measureAndCacheTextWidth(font, text[index], cache);
+        const len =
+          scale * measureAndCacheTextWidth(font, segments[index], cache);
         if (
           offset + stride < end &&
           segmentM + segmentLength < startM + charLength + len / 2
@@ -57385,9 +58037,9 @@
       if (i === iStart) {
         continue;
       }
-      const chars = reverse
-        ? text.substring(ii - iStart, ii - i)
-        : text.substring(iStart, i);
+      const chars = (
+        reverse ? segments.slice(ii - i, ii - iStart) : segments.slice(iStart, i)
+      ).join('');
       interpolate =
         segmentLength === 0
           ? 0
@@ -57428,20 +58080,25 @@
       this.offset_ = 0;
 
       /**
+       * Name of the method last accessed on the proxy, pushed together with its
+       * arguments when the method is actually called.
+       * @private
+       * @type {string|symbol}
+       */
+      this.pendingMethod_;
+
+      /**
        * @private
        * @type {ZIndexContextProxy}
        */
       this.context_ = /** @type {ZIndexContextProxy} */ (
         new Proxy(getSharedCanvasContext2D(), {
           get: (target, property) => {
-            if (
-              typeof (/** @type {*} */ (getSharedCanvasContext2D())[property]) !==
-              'function'
-            ) {
+            if (typeof (/** @type {*} */ (target)[property]) !== 'function') {
               // we only accept calling functions on the proxy, not accessing properties
               return undefined;
             }
-            this.push_(property);
+            this.pendingMethod_ = property;
             return this.pushMethodArgs_;
           },
           set: (target, property, value) => {
@@ -57466,13 +58123,13 @@
     }
 
     /**
-     * @private
+     * Pushes the method name captured at access time together with the arguments
+     * passed at call time. Reused across all proxied method calls.
      * @param {...*} args Args.
-     * @return {ZIndexContext} This.
+     * @private
      */
     pushMethodArgs_ = (...args) => {
-      this.push_(args);
-      return this;
+      this.push_(this.pendingMethod_, args);
     };
 
     /**
@@ -57508,11 +58165,9 @@
           const instructionAtIndex = instructionsAtIndex[++i];
           if (typeof (/** @type {*} */ (context)[property]) === 'function') {
             /** @type {*} */ (context)[property](...instructionAtIndex);
+          } else if (typeof instructionAtIndex === 'function') {
+            /** @type {*} */ (context)[property] = instructionAtIndex(context);
           } else {
-            if (typeof instructionAtIndex === 'function') {
-              /** @type {*} */ (context)[property] = instructionAtIndex(context);
-              continue;
-            }
             /** @type {*} */ (context)[property] = instructionAtIndex;
           }
         }
@@ -58110,7 +58765,6 @@
         if (alignAndScale !== 1) {
           context.scale(alignAndScale, alignAndScale);
         }
-        context.rotate(this.viewRotation_);
       }
       context.fill();
       if (alignAndScale) {
@@ -58221,8 +58875,10 @@
       const ii = instructions.length; // end of instructions
       let d = 0; // data index
       let dd; // end of per-instruction data
+      const offsetCoords = [];
       let anchorX,
         anchorY,
+        lineOffsetPx,
         /** @type {import('../../style/Style.js').DeclutterMode} */
         declutterMode,
         prevX,
@@ -58297,10 +58953,11 @@
             break;
           case Instruction.CIRCLE:
             d = /** @type {number} */ (instruction[1]);
+            lineOffsetPx = /** @type {number} */ instruction[2] ?? 0;
             const x1 = pixelCoordinates[d];
             const y1 = pixelCoordinates[d + 1];
-            const x2 = pixelCoordinates[d + 2];
-            const y2 = pixelCoordinates[d + 3];
+            const x2 = pixelCoordinates[d + 2] - lineOffsetPx;
+            const y2 = pixelCoordinates[d + 3] - lineOffsetPx;
             const dx = x2 - x1;
             const dy = y2 - y1;
             const r = Math.sqrt(dx * dx + dy * dy);
@@ -58537,6 +59194,7 @@
             declutterMode = instruction[14] || 'declutter';
 
             const textKeepUpright = /** @type {boolean} */ (instruction[15]);
+            const offsetX = /** @type {number} */ (instruction[16]);
             const textState = this.textStates[textKey];
             const font = textState.font;
             const textScale = [
@@ -58586,7 +59244,8 @@
                     label = this.createLabel(chars, textKey, '', strokeKey);
                     anchorX =
                       /** @type {number} */ (part[2]) +
-                      (textScale[0] < 0 ? -strokeWidth : strokeWidth);
+                      (textScale[0] < 0 ? -strokeWidth : strokeWidth) -
+                      offsetX;
                     anchorY =
                       baseline * label.height +
                       ((0.5 - baseline) * 2 * strokeWidth * textScale[1]) /
@@ -58633,7 +59292,7 @@
                     part = parts[c]; // x, y, anchorX, rotation, chunk
                     chars = /** @type {string} */ (part[4]);
                     label = this.createLabel(chars, textKey, fillKey, '');
-                    anchorX = /** @type {number} */ (part[2]);
+                    anchorX = /** @type {number} */ (part[2]) - offsetX;
                     anchorY = baseline * label.height - offsetY;
                     const dimensions = this.calculateImageOrLabelDimensions_(
                       label.width,
@@ -58708,17 +59367,47 @@
           case Instruction.MOVE_TO_LINE_TO:
             d = /** @type {number} */ (instruction[1]);
             dd = /** @type {number} */ (instruction[2]);
-            x = pixelCoordinates[d];
-            y = pixelCoordinates[d + 1];
+            lineOffsetPx = /** @type {number|undefined} */ (instruction[3]);
+
+            let lineCoords, lineStart, lineEnd;
+            if (lineOffsetPx) {
+              const isClosedRing =
+                /** @type {boolean|undefined} */ (instruction[4]) ?? false;
+              const isClosedLine =
+                isClosedRing ||
+                (Math.abs(pixelCoordinates[d] - pixelCoordinates[dd - 2]) <
+                  1e-6 &&
+                  Math.abs(pixelCoordinates[d + 1] - pixelCoordinates[dd - 1]) <
+                    1e-6);
+              offsetLineString(
+                pixelCoordinates,
+                d,
+                dd,
+                2,
+                lineOffsetPx,
+                isClosedLine,
+                offsetCoords,
+              );
+              removeOffsetCycles(offsetCoords, 2, isClosedLine);
+              lineCoords = offsetCoords;
+              lineStart = 0;
+              lineEnd = lineCoords.length;
+            } else {
+              lineCoords = pixelCoordinates;
+              lineStart = d;
+              lineEnd = dd;
+            }
+            x = lineCoords[lineStart];
+            y = lineCoords[lineStart + 1];
             context.moveTo(x, y);
             prevX = (x + 0.5) | 0;
             prevY = (y + 0.5) | 0;
-            for (d += 2; d < dd; d += 2) {
-              x = pixelCoordinates[d];
-              y = pixelCoordinates[d + 1];
+            for (let k = lineStart + 2; k < lineEnd; k += 2) {
+              x = lineCoords[k];
+              y = lineCoords[k + 1];
               roundX = (x + 0.5) | 0;
               roundY = (y + 0.5) | 0;
-              if (d == dd - 2 || roundX !== prevX || roundY !== prevY) {
+              if (k == lineEnd - 2 || roundX !== prevX || roundY !== prevY) {
                 context.lineTo(x, y);
                 prevX = roundX;
                 prevY = roundY;
@@ -58736,6 +59425,9 @@
                 context.stroke();
                 pendingStroke = 0;
               }
+            } else if (pendingStroke && instruction[1]) {
+              context.stroke();
+              pendingStroke = 0;
             }
 
             /** @type {import("../../colorlike.js").ColorLike} */
@@ -58743,6 +59435,10 @@
             ++i;
             break;
           case Instruction.SET_STROKE_STYLE:
+            if (pendingFill && instruction[1]) {
+              this.fill_(context);
+              pendingFill = 0;
+            }
             if (pendingStroke) {
               context.stroke();
               pendingStroke = 0;
@@ -58863,6 +59559,41 @@
     (builderType) => !DECLUTTER.includes(builderType),
   );
 
+  /** @type {boolean|undefined} */
+  let willReadFrequently = false;
+
+  /** @type {boolean|undefined} */
+  let canvasReadsBenchmarked = false;
+
+  /** Determine if canvas read operations are faster with willReadFrequently set to true or false */
+  function benchmarkCanvasReads() {
+    let bestResult = 0;
+    /**
+     * @param {boolean} willReadFrequently Will read frequently.
+     * @return {number} Operation count.
+     */
+    const measure = (willReadFrequently) => {
+      const context = createCanvasContext2D(1, 1, null, {willReadFrequently});
+      let count = 0;
+      const start = performance.now();
+      for (; performance.now() - start < 50; ++count) {
+        context.fillStyle = `rgba(255,0,${count % 256},1)`;
+        context.fillRect(0, 0, 1, 1);
+        context.getImageData(0, 0, 1, 1);
+      }
+      bestResult = count > bestResult ? count : bestResult;
+      return count;
+    };
+
+    const measures = {
+      [measure(true)]: true,
+      [measure(false)]: false,
+      [measure(undefined)]: undefined,
+    };
+    willReadFrequently = measures[bestResult];
+    canvasReadsBenchmarked = true;
+  }
+
   class ExecutorGroup {
     /**
      * @param {import("../../extent.js").Extent} maxExtent Max extent for clipping. When a
@@ -58918,7 +59649,7 @@
 
       /**
        * @private
-       * @type {!Object<string, !Object<string, import("./Executor").default>>}
+       * @type {!Object<string, !Object<string, import("./Executor.js").default>>}
        */
       this.executorsByZIndex_ = {};
 
@@ -59024,6 +59755,10 @@
       callback,
       declutteredFeatures,
     ) {
+      if (canvasReadsBenchmarked === false) {
+        benchmarkCanvasReads();
+      }
+
       hitTolerance = Math.round(hitTolerance);
       const contextSize = hitTolerance * 2 + 1;
       const transform = compose(
@@ -59039,14 +59774,11 @@
 
       const newContext = !this.hitDetectionContext_;
       if (newContext) {
-        // Refrain from adding a 'willReadFrequently' hint in the options here.
-        // While it will remove the "Canvas2D: Multiple readback operations using
-        // getImageData are faster with the willReadFrequently attribute set
-        // to true" warnings in the console, it makes hitDetection extremely
-        // slow in Chrome when there are many features on the map
         this.hitDetectionContext_ = createCanvasContext2D(
           contextSize,
           contextSize,
+          null,
+          {willReadFrequently},
         );
       }
       const context = this.hitDetectionContext_;
@@ -59335,23 +60067,6 @@
     circlePixelIndexArrayCache[radius] = pixelIndex;
     return pixelIndex;
   }
-
-  /**
-   * @module ol/style
-   */
-
-  var style = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    Circle: CircleStyle,
-    Fill: Fill,
-    Icon: Icon,
-    IconImage: IconImage,
-    Image: ImageStyle,
-    RegularShape: RegularShape,
-    Stroke: Stroke,
-    Style: Style,
-    Text: Text
-  });
 
   /**
    * @module ol/render/canvas/Immediate
@@ -59762,12 +60477,13 @@
      * @param {number} end End.
      * @param {number} stride Stride.
      * @param {boolean} close Close.
+     * @param {number} [strokeOffset] Stroke Offset.
      * @private
      * @return {number} end End.
      */
-    moveToLineTo_(flatCoordinates, offset, end, stride, close) {
+    moveToLineTo_(flatCoordinates, offset, end, stride, close, strokeOffset) {
       const context = this.context_;
-      const pixelCoordinates = transform2D(
+      let pixelCoordinates = transform2D(
         flatCoordinates,
         offset,
         end,
@@ -59775,6 +60491,23 @@
         this.transform_,
         this.pixelCoordinates_,
       );
+      if (Math.abs(strokeOffset) > 0) {
+        const n = pixelCoordinates.length;
+        const isClosedLine =
+          close ||
+          (Math.abs(pixelCoordinates[0] - pixelCoordinates[n - 2]) < 1e-6 &&
+            Math.abs(pixelCoordinates[1] - pixelCoordinates[n - 1]) < 1e-6);
+        pixelCoordinates = offsetLineString(
+          pixelCoordinates,
+          0,
+          n,
+          2,
+          strokeOffset,
+          isClosedLine,
+          pixelCoordinates,
+        );
+        removeOffsetCycles(pixelCoordinates, 2, isClosedLine);
+      }
       context.moveTo(pixelCoordinates[0], pixelCoordinates[1]);
       let length = pixelCoordinates.length;
       if (close) {
@@ -59794,10 +60527,11 @@
      * @param {number} offset Offset.
      * @param {Array<number>} ends Ends.
      * @param {number} stride Stride.
+     * @param {number} [strokeOffset] Stroke Offset.
      * @private
      * @return {number} End.
      */
-    drawRings_(flatCoordinates, offset, ends, stride) {
+    drawRings_(flatCoordinates, offset, ends, stride, strokeOffset) {
       for (let i = 0, ii = ends.length; i < ii; ++i) {
         offset = this.moveToLineTo_(
           flatCoordinates,
@@ -59805,6 +60539,7 @@
           ends[i],
           stride,
           true,
+          strokeOffset,
         );
       }
       return offset;
@@ -60063,6 +60798,7 @@
           flatCoordinates.length,
           geometry.getStride(),
           false,
+          this.strokeState_.strokeOffset,
         );
         context.stroke();
       }
@@ -60108,6 +60844,7 @@
             ends[i],
             stride,
             false,
+            this.strokeState_.strokeOffset,
           );
         }
         context.stroke();
@@ -60151,6 +60888,7 @@
           0,
           /** @type {Array<number>} */ (geometry.getEnds()),
           geometry.getStride(),
+          this.strokeState_?.strokeOffset,
         );
         if (this.fillState_) {
           context.fill();
@@ -60198,7 +60936,13 @@
         context.beginPath();
         for (let i = 0, ii = endss.length; i < ii; ++i) {
           const ends = endss[i];
-          offset = this.drawRings_(flatCoordinates, offset, ends, stride);
+          offset = this.drawRings_(
+            flatCoordinates,
+            offset,
+            ends,
+            stride,
+            this.strokeState_?.strokeOffset,
+          );
         }
         if (this.fillState_) {
           context.fill();
@@ -60357,6 +61101,7 @@
         const lineDash = strokeStyleLineDash
           ? strokeStyleLineDash
           : defaultLineDash;
+        const strokeOffset = strokeStyle.getOffset();
         this.strokeState_ = {
           lineCap:
             strokeStyleLineCap !== undefined
@@ -60385,6 +61130,7 @@
           strokeStyle: asColorLike(
             strokeStyleColor ? strokeStyleColor : defaultStrokeStyle,
           ),
+          strokeOffset: (strokeOffset ?? 0) * this.pixelRatio_,
         };
       }
     }
@@ -60688,7 +61434,7 @@
   }
 
   /**
-   * @param {import("../../pixel").Pixel} pixel Pixel coordinate on the hit
+   * @param {import("../../pixel.js").Pixel} pixel Pixel coordinate on the hit
    * detection canvas in css pixels.
    * @param {Array<F>} features Features. Has to
    * match the `features` array that was passed to `createHitDetectionImageData()`.
@@ -60733,7 +61479,7 @@
    * unmanaged layers. The third is the {@link module:ol/geom/SimpleGeometry~SimpleGeometry} of the feature. For features
    * with a GeometryCollection geometry, it will be the first detected geometry from the collection.
    * @template T
-   * @typedef {function(import("../Feature.js").FeatureLike, import("../layer/Layer.js").default<import("../source/Source").default>, import("../geom/SimpleGeometry.js").default): T} FeatureCallback
+   * @typedef {function(import("../Feature.js").FeatureLike, import("../layer/Layer.js").default<import("../source/Source.js").default>, import("../geom/SimpleGeometry.js").default): T} FeatureCallback
    */
 
   /**
@@ -60806,7 +61552,7 @@
     if (textStyle && textStyle.getText()) {
       const textReplay = builderGroup.getBuilder(style.getZIndex(), 'Text');
       textReplay.setTextStyle(textStyle);
-      textReplay.drawText(geometry, feature);
+      textReplay.drawText(geometry, feature, index);
     }
   }
 
@@ -61200,6 +61946,12 @@
        * @protected
        */
       this.maxStaleKeys = maxStaleKeys;
+
+      /**
+       * @type {string}
+       * @protected
+       */
+      this.renderedSourceKey_;
     }
 
     /**
@@ -61220,9 +61972,23 @@
     }
 
     /**
+     * Remember the previous source key as stale when the key changes.
+     * @param {string} sourceKey The current source key.
+     * @protected
+     */
+    updateStaleKeys(sourceKey) {
+      if (!this.renderedSourceKey_) {
+        this.renderedSourceKey_ = sourceKey;
+      } else if (this.renderedSourceKey_ !== sourceKey) {
+        this.prependStaleKey(this.renderedSourceKey_);
+        this.renderedSourceKey_ = sourceKey;
+      }
+    }
+
+    /**
      * Asynchronous layer level hit detection.
      * @param {import("../pixel.js").Pixel} pixel Pixel.
-     * @return {Promise<Array<import("../Feature").FeatureLike>>} Promise that resolves with
+     * @return {Promise<Array<import("../Feature.js").FeatureLike>>} Promise that resolves with
      * an array of features.
      */
     getFeatures(pixel) {
@@ -61484,9 +62250,34 @@
      * @param {HTMLElement} target Potential render target.
      * @param {string} transform CSS transform matrix.
      * @param {string} [backgroundColor] Background color.
+     * @param {number} [width] Physical pixel width of the rendering canvas.
+     * @param {number} [height] Physical pixel height of the rendering canvas.
      */
-    useContainer(target, transform, backgroundColor) {
-      // renderer canvas to target canvas
+    useContainer(target, transform, backgroundColor, width, height) {
+      // Render directly into the target canvas when there is no rotation or
+      // offset (no CSS transform needed) and the physical dimensions match.
+      if (
+        isCanvas(target) &&
+        this.pixelTransform[1] === 0 &&
+        this.pixelTransform[2] === 0 &&
+        this.pixelTransform[4] === 0 &&
+        this.pixelTransform[5] === 0 &&
+        target.width === width &&
+        target.height === height
+      ) {
+        const targetCanvas = /** @type {HTMLCanvasElement} */ (target);
+        const context = targetCanvas.getContext('2d');
+        if (context) {
+          this.container = target;
+          this.context = context;
+          this.containerReused = true;
+          if (backgroundColor) {
+            context.fillStyle = backgroundColor;
+            context.fillRect(0, 0, targetCanvas.width, targetCanvas.height);
+          }
+          return;
+        }
+      }
       const layerClassName = this.getLayer().getClassName();
       let container, context;
       if (
@@ -61604,7 +62395,8 @@
       makeInverse(this.inversePixelTransform, this.pixelTransform);
 
       const canvasTransform = toString$1(this.pixelTransform);
-      this.useContainer(target, canvasTransform, this.getBackground(frameState));
+      const backgroundColor = this.getBackground(frameState);
+      this.useContainer(target, canvasTransform, backgroundColor, width, height);
       if (!this.containerReused) {
         const canvas = this.context.canvas;
         if (canvas.width != width || canvas.height != height) {
@@ -61792,9 +62584,17 @@
 
       /**
        * @private
+       * @type {import("../../extent.js").Extent}
+       */
+      this.clipExtent_ = null;
+
+      /**
+       * Do we need to extend the rendered area on the x-axis to handle
+       * features that cross the antimeridian?
+       * @private
        * @type {boolean}
        */
-      this.clipped_ = false;
+      this.extendX_ = false;
 
       /**
        * @private
@@ -61834,13 +62634,13 @@
 
       /**
        * @private
-       * @type {import("../../coordinate").Coordinate}
+       * @type {import("../../coordinate.js").Coordinate}
        */
       this.renderedCenter_ = null;
 
       /**
        * @private
-       * @type {import("../../proj/Projection").default}
+       * @type {import("../../proj/Projection.js").default}
        */
       this.renderedProjection_ = null;
 
@@ -61864,7 +62664,7 @@
 
       /**
        * @private
-       * @type {import("../../render/canvas/ExecutorGroup").default}
+       * @type {import("../../render/canvas/ExecutorGroup.js").default}
        */
       this.replayGroup_ = null;
 
@@ -61921,10 +62721,12 @@
       const multiWorld = vectorSource.getWrapX() && projection.canWrapX();
       const worldWidth = multiWorld ? getWidth(projectionExtent) : null;
       const endWorld = multiWorld
-        ? Math.ceil((extent[2] - projectionExtent[2]) / worldWidth) + 1
+        ? Math.ceil((extent[2] - projectionExtent[2]) / worldWidth) +
+          (this.extendX_ ? 2 : 1)
         : 1;
       let world = multiWorld
-        ? Math.floor((extent[0] - projectionExtent[0]) / worldWidth)
+        ? Math.floor((extent[0] - projectionExtent[0]) / worldWidth) -
+          (this.extendX_ ? 1 : 0)
         : 0;
       do {
         let transform = this.getRenderTransform(
@@ -62007,9 +62809,13 @@
       if (!this.replayGroup_) {
         return;
       }
+      if (this.clipExtent_) {
+        this.clipUnrotated(this.context, frameState, this.clipExtent_);
+      }
       this.replayGroup_.renderDeferred();
-      if (this.clipped_) {
+      if (this.clipExtent_) {
         this.context.restore();
+        this.clipExtent_ = null;
       }
       this.resetDrawContext_();
     }
@@ -62047,13 +62853,22 @@
       const projection = viewState.projection;
 
       // clipped rendering if layer extent is set
-      this.clipped_ = false;
+      this.clipExtent_ = null;
+      let clipped = false;
       if (render && layerState.extent && this.clipping) {
         const layerExtent = fromUserExtent(layerState.extent, projection);
         render = intersects$1(layerExtent, frameState.extent);
-        this.clipped_ = render && !containsExtent(layerExtent, frameState.extent);
-        if (this.clipped_) {
-          this.clipUnrotated(context, frameState, layerExtent);
+        const needsClip =
+          render && !containsExtent(layerExtent, frameState.extent);
+        if (needsClip) {
+          if (frameState.declutter) {
+            // Store extent for deferred clipping
+            this.clipExtent_ = layerExtent;
+          } else {
+            // Apply clipping immediately for non-declutter rendering
+            this.clipUnrotated(context, frameState, layerExtent);
+            clipped = true;
+          }
         }
       }
 
@@ -62065,7 +62880,7 @@
         );
       }
 
-      if (!frameState.declutter && this.clipped_) {
+      if (clipped) {
         context.restore();
       }
 
@@ -62084,7 +62899,7 @@
     /**
      * Asynchronous layer level hit detection.
      * @param {import("../../pixel.js").Pixel} pixel Pixel.
-     * @return {Promise<Array<import("../../Feature").default>>} Promise
+     * @return {Promise<Array<import("../../Feature.js").default>>} Promise
      * that resolves with an array of features.
      * @override
      */
@@ -62325,10 +63140,20 @@
       const loadExtents = [extent.slice()];
       const projectionExtent = projection.getExtent();
 
+      const canWrapX = vectorSource.getWrapX() && projection.canWrapX();
+      this.extendX_ = false;
+      if (canWrapX) {
+        const sourceExtent = vectorSource.getExtent();
+        if (sourceExtent && !isEmpty(sourceExtent)) {
+          this.extendX_ =
+            sourceExtent[0] < projectionExtent[0] ||
+            sourceExtent[2] > projectionExtent[2];
+        }
+      }
+
       if (
-        vectorSource.getWrapX() &&
-        projection.canWrapX() &&
-        !containsExtent(projectionExtent, frameState.extent)
+        canWrapX &&
+        (!containsExtent(projectionExtent, frameState.extent) || this.extendX_)
       ) {
         // For the replay group, we need an extent that intersects the real world
         // (-180° to +180°). To support geometries in a coordinate range from -540°
@@ -62337,8 +63162,14 @@
         // the viewport width to make sure we cover the whole viewport.
         const worldWidth = getWidth(projectionExtent);
         const gutter = Math.max(getWidth(extent) / 2, worldWidth);
-        extent[0] = projectionExtent[0] - gutter;
-        extent[2] = projectionExtent[2] + gutter;
+        let projMinX = projectionExtent[0];
+        let projMaxX = projectionExtent[2];
+        if (this.extendX_) {
+          projMinX -= worldWidth;
+          projMaxX += worldWidth;
+        }
+        extent[0] = projMinX - gutter;
+        extent[2] = projMaxX + gutter;
         wrapX$1(center, projection);
         const loadExtent = wrapX$2(loadExtents[0], projection);
         // If the extent crosses the date line, we load data for both edges of the worlds
@@ -62368,6 +63199,7 @@
       if (
         this.ready &&
         this.renderedResolution_ == resolution &&
+        this.renderedPixelRatio_ === pixelRatio &&
         this.renderedRevision_ == vectorLayerRevision &&
         this.renderedRenderOrder_ == vectorLayerRenderOrder &&
         this.renderedFrameDeclutter_ === !!frameState.declutter &&
@@ -62632,13 +63464,14 @@
    * {@link module:ol/source/Vector~VectorSource} sources use a function of this type to
    * load features.
    *
-   * This function takes up to 5 arguments. These are an {@link module:ol/extent~Extent} representing
-   * the area to be loaded, a `{number}` representing the resolution (map units per pixel), a
-   * {@link module:ol/proj/Projection~Projection} for the projection, an optional success callback that should get
-   * the loaded features passed as an argument and an optional failure callback with no arguments. If
-   * the callbacks are not used, the corresponding vector source will not fire `'featuresloadend'` and
-   * `'featuresloaderror'` events. `this` within the function is bound to the
-   * {@link module:ol/source/Vector~VectorSource} it's called from.
+   * This function takes 3 arguments: an {@link module:ol/extent~Extent} representing
+   * the area to be loaded, a `{number}` representing the resolution (map units per pixel), and a
+   * {@link module:ol/proj/Projection~Projection} for the projection. The function is expeced to return
+   * a promise that resolves to an array of features.
+   *
+   * There are also a deprecated signature, with `void` as
+   * return, and two additional arguments: an optional success callback that should get
+   * the loaded features passed as an argument and an optional failure callback with no arguments.
    *
    * The function is responsible for loading the features and adding them to the
    * source.
@@ -62649,7 +63482,7 @@
    *           resolution: number,
    *           projection: import("./proj/Projection.js").default,
    *           success?: (features: Array<FeatureType>) => void,
-   *           failure?: () => void) => void} FeatureLoader
+   *           failure?: () => void) => void|Promise<Array<FeatureType>>} FeatureLoader
    * @api
    */
 
@@ -63163,8 +63996,8 @@
 
       /**
        * This source is currently loading data. Sources that defer loading to the
-       * map's tile queue never set this to `true`.
-       * @type {boolean}
+       * map's tile queue never set this to a `truthy` value.
+       * @type {boolean|number}
        */
       this.loading = false;
 
@@ -63236,7 +64069,7 @@
     }
 
     /**
-     * @param {import("../proj/Projection").default} [projection] Projection.
+     * @param {import("../proj/Projection.js").default} [projection] Projection.
      * @return {Array<number>|null} Resolutions.
      */
     getResolutions(projection) {
@@ -63248,6 +64081,37 @@
      */
     getView() {
       return this.viewPromise_;
+    }
+
+    /**
+     * Resolve once the source is ready to be used (its state is `ready`), or
+     * reject if it fails to load (its state is `error`). Sources that configure
+     * asynchronously can use this to expose data (e.g. dimensions) through a
+     * promise instead of the `change` event.
+     * @return {Promise<void>} Resolves when the source is ready.
+     * @protected
+     */
+    ready() {
+      const state = this.getState();
+      if (state === 'ready') {
+        return Promise.resolve();
+      }
+      if (state === 'error') {
+        return Promise.reject(new Error('Source failed to load'));
+      }
+      return new Promise((resolve, reject) => {
+        const onChange = () => {
+          const changedState = this.getState();
+          if (changedState === 'ready') {
+            this.un('change', onChange);
+            resolve();
+          } else if (changedState === 'error') {
+            this.un('change', onChange);
+            reject(new Error('Source failed to load'));
+          }
+        };
+        this.on('change', onChange);
+      });
     }
 
     /**
@@ -63437,11 +64301,11 @@
   /***
    * @template Return
    * @template {import("../Feature.js").FeatureLike} [FeatureType=import("../Feature.js").default]
-   * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
-   *   import("../Observable").OnSignature<import("../ObjectEventType").Types, import("../Object").ObjectEvent, Return> &
-   *   import("../Observable").OnSignature<import("./VectorEventType").VectorSourceEventTypes, VectorSourceEvent<FeatureType>, Return> &
-   *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
-   *     import("./VectorEventType").VectorSourceEventTypes, Return>} VectorSourceOnSignature
+   * @typedef {import("../Observable.js").OnSignature<import("../Observable.js").EventTypes, import("../events/Event.js").default, Return> &
+   *   import("../Observable.js").OnSignature<import("../ObjectEventType.js").Types, import("../Object.js").ObjectEvent, Return> &
+   *   import("../Observable.js").OnSignature<import("./VectorEventType.js").VectorSourceEventTypes, VectorSourceEvent<FeatureType>, Return> &
+   *   import("../Observable.js").CombinedOnSignature<import("../Observable.js").EventTypes|import("../ObjectEventType.js").Types|
+   *     import("./VectorEventType.js").VectorSourceEventTypes, Return>} VectorSourceOnSignature
    */
 
   /**
@@ -63467,34 +64331,31 @@
    * import {bbox} from 'ol/loadingstrategy.js';
    *
    * const vectorSource = new Vector({
-   *   format: new GeoJSON(),
-   *   loader: function(extent, resolution, projection, success, failure) {
-   *      const proj = projection.getCode();
+   *   loader: async (extent, resolution, projection) => {
    *      const url = 'https://ahocevar.com/geoserver/wfs?service=WFS&' +
    *          'version=1.1.0&request=GetFeature&typename=osm:water_areas&' +
-   *          'outputFormat=application/json&srsname=' + proj + '&' +
-   *          'bbox=' + extent.join(',') + ',' + proj;
-   *      const xhr = new XMLHttpRequest();
-   *      xhr.open('GET', url);
-   *      const onError = function() {
-   *        vectorSource.removeLoadedExtent(extent);
-   *        failure();
+   *          'outputFormat=application/json' +
+   *          'bbox=' + extent.join(',') + ',' + projection.getCode();
+   *      const response = await fetch(url);
+   *      if (!response.ok) {
+   *        throw new Error('Network response was not ok');
    *      }
-   *      xhr.onerror = onError;
-   *      xhr.onload = function() {
-   *        if (xhr.status == 200) {
-   *          const features = vectorSource.getFormat().readFeatures(xhr.responseText);
-   *          vectorSource.addFeatures(features);
-   *          success(features);
-   *        } else {
-   *          onError();
-   *        }
-   *      }
-   *      xhr.send();
+   *      const json = await response.json();
+   *      const features = new GeoJSON().readFeatures(json, {
+   *        featureProjection: projection,
+   *      });
+   *      return features;
    *    },
    *    strategy: bbox,
    *  });
    * ```
+   *
+   * When you want to retry a failed request, use
+   * ```js
+   * vectorSource.removeLoadedExtent(extent);
+   * vectorSource.changed();
+   * ```
+   *
    * @property {boolean} [overlaps=true] This source may have overlapping geometries.
    * Setting this to `false` (e.g. for sources with polygons that represent administrative
    * boundaries or TopoJSON sources) allows the renderer to optimise fill and
@@ -63563,12 +64424,12 @@
       });
 
       /***
-       * @type {VectorSourceOnSignature<import("../events").EventsKey, FeatureType>}
+       * @type {VectorSourceOnSignature<import("../events.js").EventsKey, FeatureType>}
        */
       this.on;
 
       /***
-       * @type {VectorSourceOnSignature<import("../events").EventsKey, FeatureType>}
+       * @type {VectorSourceOnSignature<import("../events.js").EventsKey, FeatureType>}
        */
       this.once;
 
@@ -63630,12 +64491,6 @@
        * @type {RBush<{extent: import("../extent.js").Extent}>}
        */
       this.loadedExtentsRtree_ = new RBush();
-
-      /**
-       * @type {number}
-       * @private
-       */
-      this.loadingExtentsCount_ = 0;
 
       /**
        * @private
@@ -64209,15 +65064,15 @@
     /**
      * Get the extent of the features currently in the source.
      *
-     * This method is not available when the source is configured with
+     * This will return `null` when the source is configured with
      * `useSpatialIndex` set to `false`.
      * @param {import("../extent.js").Extent} [extent] Destination extent. If provided, no new extent
      *     will be created. Instead, that extent's coordinates will be overwritten.
-     * @return {import("../extent.js").Extent} Extent.
+     * @return {import("../extent.js").Extent | null} Extent.
      * @api
      */
     getExtent(extent) {
-      return this.featuresRtree_.getExtent(extent);
+      return this.featuresRtree_?.getExtent(extent) ?? null;
     }
 
     /**
@@ -64333,7 +65188,11 @@
     hasFeature(feature) {
       const id = feature.getId();
       if (id !== undefined) {
-        return id in this.idIndex_;
+        const indexed = this.idIndex_[String(id)];
+        if (Array.isArray(indexed)) {
+          return indexed.includes(feature);
+        }
+        return indexed === feature;
       }
       return getUid(feature) in this.uidIndex_;
     }
@@ -64374,40 +65233,59 @@
           },
         );
         if (!alreadyLoaded) {
-          ++this.loadingExtentsCount_;
+          this.loading = Number(this.loading) + 1;
           this.dispatchEvent(
             new VectorSourceEvent(VectorEventType.FEATURESLOADSTART),
           );
-          this.loader_.call(
+
+          /**
+           * @param {Array<FeatureType>} features Loaded features
+           */
+          const success = (features) => {
+            this.loading = Number(this.loading) - 1;
+            this.dispatchEvent(
+              new VectorSourceEvent(
+                VectorEventType.FEATURESLOADEND,
+                undefined,
+                features,
+              ),
+            );
+          };
+
+          const failure = () => {
+            this.changed();
+            this.loading = Number(this.loading) - 1;
+            this.dispatchEvent(
+              new VectorSourceEvent(VectorEventType.FEATURESLOADERROR),
+            );
+          };
+
+          //TODO Remove this when the deprecatedsuccess and failure arguments are removed
+          let disableCallbacks = false;
+
+          const loaded = this.loader_.call(
             this,
             extentToLoad,
             resolution,
             projection,
-            /**
-             * @param {Array<FeatureType>} features Loaded features
-             */
-            (features) => {
-              --this.loadingExtentsCount_;
-              this.dispatchEvent(
-                new VectorSourceEvent(
-                  VectorEventType.FEATURESLOADEND,
-                  undefined,
-                  features,
-                ),
-              );
-            },
-            () => {
-              --this.loadingExtentsCount_;
-              this.dispatchEvent(
-                new VectorSourceEvent(VectorEventType.FEATURESLOADERROR),
-              );
-            },
+            (features) => disableCallbacks || success(features),
+            () => disableCallbacks || failure(),
           );
+          if (loaded instanceof Promise) {
+            //TODO Remove this when the deprecatedsuccess and failure arguments are removed
+            disableCallbacks = true;
+            loaded
+              .then((features) => {
+                this.addFeatures(features);
+                success(features);
+              })
+              .catch(failure);
+          } else if (this.loader_.length < 4) {
+            this.loading = false;
+          }
           loadedExtentsRtree.insert(extentToLoad, {extent: extentToLoad.slice()});
         }
       }
-      this.loading =
-        this.loader_.length < 4 ? false : this.loadingExtentsCount_ > 0;
     }
 
     /**
@@ -64420,20 +65298,28 @@
     }
 
     /**
-     * Remove an extent from the list of loaded extents.
-     * @param {import("../extent.js").Extent} extent Extent.
+     * Marks an extent as not loaded, preserving any loaded areas outside it.
+     *
+     * Any previously loaded extent overlapping the given extent is split into its
+     * remaining non-overlapping parts using {@link module:ol/extent~getDifference getDifference()},
+     * which are then re-inserted into the tree.
+     *
+     * @param {import("../extent.js").Extent} extent Extent to mark as not loaded.
      * @api
      */
     removeLoadedExtent(extent) {
       const loadedExtentsRtree = this.loadedExtentsRtree_;
-      const obj = loadedExtentsRtree.forEachInExtent(extent, function (object) {
-        if (equals$1(object.extent, extent)) {
-          return object;
+      const intersectingExtents = [];
+      loadedExtentsRtree.forEachInExtent(extent, function (object) {
+        intersectingExtents.push(object);
+      });
+      intersectingExtents.forEach((intersectingExtent) => {
+        loadedExtentsRtree.remove(intersectingExtent);
+        const remainders = getDifference(intersectingExtent.extent, extent);
+        for (const remainder of remainders) {
+          loadedExtentsRtree.insert(remainder, {extent: remainder});
         }
       });
-      if (obj) {
-        loadedExtentsRtree.remove(obj);
-      }
     }
 
     /**
@@ -65121,11 +66007,11 @@
 
   /***
    * @template Return
-   * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
-   *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
-   *     'change:active', import("../Object").ObjectEvent, Return> &
-   *   import("../Observable").OnSignature<'drawabort'|'drawend'|'drawstart', DrawEvent, Return> &
-   *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
+   * @typedef {import("../Observable.js").OnSignature<import("../Observable.js").EventTypes, import("../events/Event.js").default, Return> &
+   *   import("../Observable.js").OnSignature<import("../ObjectEventType.js").Types|
+   *     'change:active', import("../Object.js").ObjectEvent, Return> &
+   *   import("../Observable.js").OnSignature<'drawabort'|'drawend'|'drawstart', DrawEvent, Return> &
+   *   import("../Observable.js").CombinedOnSignature<import("../Observable.js").EventTypes|import("../ObjectEventType.js").Types|
    *     'change:active'|'drawabort'|'drawend'|'drawstart', Return>} DrawOnSignature
    */
 
@@ -65151,12 +66037,12 @@
       super(pointerOptions);
 
       /***
-       * @type {DrawOnSignature<import("../events").EventsKey>}
+       * @type {DrawOnSignature<import("../events.js").EventsKey>}
        */
       this.on;
 
       /***
-       * @type {DrawOnSignature<import("../events").EventsKey>}
+       * @type {DrawOnSignature<import("../events.js").EventsKey>}
        */
       this.once;
 
@@ -66040,7 +66926,7 @@
     }
 
     /**
-     * @param {import("../coordinate").Coordinate} coordinates Coordinate.
+     * @param {import("../coordinate.js").Coordinate} coordinates Coordinate.
      * @private
      */
     createOrUpdateSketchPoint_(coordinates) {
@@ -66540,6 +67426,12 @@
    */
 
   /**
+   * A function that takes a {@link module:ol/Feature~Feature} and  returns `true` if
+   * the feature may be modified or `false` otherwise.
+   * @typedef {function(Feature):boolean} FilterFunction
+   */
+
+  /**
    * @typedef {[SegmentData, number]} DragSegment
    */
 
@@ -66582,13 +67474,15 @@
    * @property {VectorSource} [source] The vector source with
    * features to modify.  If a vector source is not provided, a feature collection
    * must be provided with the `features` option.
-   * @property {boolean|import("../layer/BaseVector").default} [hitDetection] When configured, point
+   * @property {boolean|import("../layer/BaseVector.js").default} [hitDetection] When configured, point
    * features will be considered for modification based on their visual appearance, instead of being within
    * the `pixelTolerance` from the pointer location. When a {@link module:ol/layer/BaseVector~BaseVectorLayer} is
    * provided, only the rendered representation of the features on that layer will be considered.
    * @property {Collection<Feature>} [features]
    * The features the interaction works on.  If a feature collection is not
    * provided, a vector source must be provided with the `source` option.
+   * @property {FilterFunction} [filter] A function that takes a {@link module:ol/Feature~Feature}
+   * and returns `true` if the feature may be modified or `false` otherwise.
    * @property {boolean|import("../events/condition.js").Condition} [trace=false] Trace a portion of another geometry.
    * Tracing starts when two neighboring vertices are dragged onto a trace target, without any other modification in between..
    * @property {VectorSource} [traceSource] Source for features to trace.  If tracing is active and a `traceSource` is
@@ -66598,6 +67492,12 @@
    * overlay.
    * @property {boolean} [snapToPointer=!hitDetection] The vertex, point or segment being modified snaps to the
    * pointer coordinate when clicked within the `pixelTolerance`.
+   * @property {function(import("../coordinate.js").Coordinate, import("../coordinate.js").Coordinate): boolean} [sharedVerticesEqual]
+   * A function that takes two coordinates and returns whether they should be
+   * considered equal for vertex matching purposes. By default, all coordinate
+   * dimensions are compared. This is useful when features have mixed coordinate
+   * dimensions (e.g., XY and XYZ) but should still be treated as sharing vertices
+   * at the same 2D position.
    */
 
   function getCoordinatesArray(coordinates, geometryType, depth) {
@@ -66652,11 +67552,11 @@
 
   /***
    * @template Return
-   * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
-   *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
-   *     'change:active', import("../Object").ObjectEvent, Return> &
-   *   import("../Observable").OnSignature<'modifyend'|'modifystart', ModifyEvent, Return> &
-   *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
+   * @typedef {import("../Observable.js").OnSignature<import("../Observable.js").EventTypes, import("../events/Event.js").default, Return> &
+   *   import("../Observable.js").OnSignature<import("../ObjectEventType.js").Types|
+   *     'change:active', import("../Object.js").ObjectEvent, Return> &
+   *   import("../Observable.js").OnSignature<'modifyend'|'modifystart', ModifyEvent, Return> &
+   *   import("../Observable.js").CombinedOnSignature<import("../Observable.js").EventTypes|import("../ObjectEventType.js").Types|
    *     'change:active'|'modifyend'|'modifystart', Return>} ModifyOnSignature
    */
 
@@ -66688,13 +67588,31 @@
     constructor(options) {
       super(/** @type {import("./Pointer.js").Options} */ (options));
 
+      //Maintain a ref to event handlers for later unregistering
+      /** @private */
+      this.handleSourceAdd_ = this.handleSourceAdd_.bind(this);
+
+      /** @private */
+      this.handleSourceRemove_ = this.handleSourceRemove_.bind(this);
+
+      /** @private */
+      this.handleExternalCollectionAdd_ =
+        this.handleExternalCollectionAdd_.bind(this);
+
+      /** @private */
+      this.handleExternalCollectionRemove_ =
+        this.handleExternalCollectionRemove_.bind(this);
+
+      /** @private */
+      this.handleFeatureChange_ = this.handleFeatureChange_.bind(this);
+
       /***
-       * @type {ModifyOnSignature<import("../events").EventsKey>}
+       * @type {ModifyOnSignature<import("../events.js").EventsKey>}
        */
       this.on;
 
       /***
-       * @type {ModifyOnSignature<import("../events").EventsKey>}
+       * @type {ModifyOnSignature<import("../events.js").EventsKey>}
        */
       this.once;
 
@@ -66702,9 +67620,6 @@
        * @type {ModifyOnSignature<void>}
        */
       this.un;
-
-      /** @private */
-      this.boundHandleFeatureChange_ = this.handleFeatureChange_.bind(this);
 
       /**
        * @private
@@ -66869,51 +67784,93 @@
       this.traceSegments_ = null;
 
       /**
-       * @type {boolean|import("../layer/BaseVector").default}
+       * @type {boolean|import("../layer/BaseVector.js").default}
        * @private
        */
       this.hitDetection_ = null;
 
-      /** @type {Collection<Feature>} */
+      /**
+       * Useful for performance optimization
+       * @private
+       * @type boolean
+       */
+      this.filterFunctionWasSupplied_ =
+        options.filter != undefined ? true : false;
+
+      /**
+       * @private
+       * @type {FilterFunction}
+       */
+      this.filter_ = options.filter ? options.filter : () => true;
+
+      /**
+       * @private
+       * @type {function(import("../coordinate.js").Coordinate, import("../coordinate.js").Coordinate): boolean}
+       */
+      this.coordinatesEqual_ = options.sharedVerticesEqual
+        ? options.sharedVerticesEqual
+        : equals;
+
+      if (!(options.features || options.source)) {
+        throw new Error(
+          'The modify interaction requires features collection or a source',
+        );
+      }
+      /** @type {Array<Feature>} */
       let features;
       if (options.features) {
-        features = options.features;
+        features = options.features.getArray();
+        //setup listeners on external features collection and features
+        options.features.addEventListener(
+          CollectionEventType.ADD,
+          this.handleExternalCollectionAdd_,
+        );
+        options.features.addEventListener(
+          CollectionEventType.REMOVE,
+          this.handleExternalCollectionRemove_,
+        );
+        //keep ref for unsubscribe on dispose
+        this.featuresCollection_ = options.features;
       } else if (options.source) {
-        this.source_ = options.source;
-        features = new Collection(this.source_.getFeatures());
-        this.source_.addEventListener(
+        features = options.source.getFeatures();
+        //setup listeners on external source and features
+        options.source.addEventListener(
           VectorEventType.ADDFEATURE,
-          this.handleSourceAdd_.bind(this),
+          this.handleSourceAdd_,
         );
-        this.source_.addEventListener(
+        options.source.addEventListener(
           VectorEventType.REMOVEFEATURE,
-          this.handleSourceRemove_.bind(this),
+          this.handleSourceRemove_,
         );
+        //keep ref for unsubscribe on dispose
+        this.source_ = options.source;
       }
-      if (!features) {
-        throw new Error(
-          'The modify interaction requires features, a source or a layer',
-        );
-      }
+      features.forEach((feature) => {
+        //any modification to the feature requires filter to be re-run
+        feature.addEventListener(EventType.CHANGE, this.handleFeatureChange_);
+        //prop change handler is only to re-run the filter
+        if (this.filterFunctionWasSupplied_) {
+          feature.addEventListener(
+            ObjectEventType.PROPERTYCHANGE,
+            this.handleFeatureChange_,
+          );
+        }
+      });
+
       if (options.hitDetection) {
         this.hitDetection_ = options.hitDetection;
       }
 
       /**
-       * @type {Collection<Feature>}
+       * Internal features array.  When adding or removing features, be sure to use
+       * addFeature_()/removeFeature_() so that the the segment index is adjusted.
+       * @type {Array<Feature>}
        * @private
        */
-      this.features_ = features;
-
-      this.features_.forEach(this.addFeature_.bind(this));
-      this.features_.addEventListener(
-        CollectionEventType.ADD,
-        this.handleFeatureAdd_.bind(this),
-      );
-      this.features_.addEventListener(
-        CollectionEventType.REMOVE,
-        this.handleFeatureRemove_.bind(this),
-      );
+      this.features_ = [];
+      features
+        .filter(this.filter_)
+        .forEach((feature) => this.addFeature_(feature));
 
       /**
        * @type {import("../MapBrowserEvent.js").default}
@@ -66956,10 +67913,12 @@
     }
 
     /**
+     * Called when a feature is added to the internal features collection
      * @param {Feature} feature Feature.
      * @private
      */
     addFeature_(feature) {
+      this.features_.push(feature);
       const geometry = feature.getGeometry();
       if (geometry) {
         const writer = this.SEGMENT_WRITERS_[geometry.getType()];
@@ -66971,7 +67930,6 @@
       if (map && map.isRendered() && this.getActive()) {
         this.handlePointerAtPixel_(this.lastCoordinate_);
       }
-      feature.addEventListener(EventType.CHANGE, this.boundHandleFeatureChange_);
     }
 
     /**
@@ -67004,20 +67962,20 @@
     }
 
     /**
+     * Removes a feature from the internal features collection and updates internal state
+     * accordingly.
      * @param {Feature} feature Feature.
      * @private
      */
     removeFeature_(feature) {
+      const itemIndex = this.features_.indexOf(feature);
+      this.features_.splice(itemIndex, 1);
       this.removeFeatureSegmentData_(feature);
       // Remove the vertex feature if the collection of candidate features is empty.
-      if (this.vertexFeature_ && this.features_.getLength() === 0) {
+      if (this.vertexFeature_ && this.features_.length === 0) {
         this.overlay_.getSource().removeFeature(this.vertexFeature_);
         this.vertexFeature_ = null;
       }
-      feature.removeEventListener(
-        EventType.CHANGE,
-        this.boundHandleFeatureChange_,
-      );
     }
 
     /**
@@ -67090,8 +68048,9 @@
      * @private
      */
     handleSourceAdd_(event) {
-      if (event.feature) {
-        this.features_.push(event.feature);
+      const feature = event.feature;
+      if (feature) {
+        this.externalAddFeatureHandler_(feature);
       }
     }
 
@@ -67100,37 +68059,83 @@
      * @private
      */
     handleSourceRemove_(event) {
-      if (event.feature) {
-        this.features_.remove(event.feature);
+      const feature = event.feature;
+      if (feature) {
+        this.externalRemoveFeatureHandler_(feature);
       }
     }
 
     /**
-     * @param {import("../Collection.js").CollectionEvent<Feature>} evt Event.
+     * @param {import("../Collection.js").CollectionEvent} event Event.
      * @private
      */
-    handleFeatureAdd_(evt) {
-      this.addFeature_(evt.element);
+    handleExternalCollectionAdd_(event) {
+      const feature = event.element;
+      if (feature) {
+        this.externalAddFeatureHandler_(feature);
+      }
     }
 
     /**
-     * @param {import("../events/Event.js").default} evt Event.
+     * @param {import("../Collection.js").CollectionEvent} event Event.
+     * @private
+     */
+    handleExternalCollectionRemove_(event) {
+      const feature = event.element;
+      if (feature) {
+        this.externalRemoveFeatureHandler_(feature);
+      }
+    }
+
+    /**
+     * Common handler for event signaling addition of feature to the supplied features source
+     * or collection.
+     * @param {Feature} feature Feature.
+     */
+    externalAddFeatureHandler_(feature) {
+      feature.addEventListener(EventType.CHANGE, this.handleFeatureChange_);
+      //prop change handler is only for reapplying the filter
+      if (this.filterFunctionWasSupplied_) {
+        feature.addEventListener(
+          ObjectEventType.PROPERTYCHANGE,
+          this.handleFeatureChange_,
+        );
+      }
+      if (this.filter_(feature)) {
+        this.addFeature_(feature);
+      }
+    }
+
+    /**
+     * Common handler for event signaling removal of feature from the supplied features source
+     * or collection.
+     * @param {Feature} feature Feature.
+     */
+    externalRemoveFeatureHandler_(feature) {
+      feature.removeEventListener(EventType.CHANGE, this.handleFeatureChange_);
+      if (this.filterFunctionWasSupplied_) {
+        feature.removeEventListener(
+          ObjectEventType.PROPERTYCHANGE,
+          this.handleFeatureChange_,
+        );
+      }
+      this.removeFeature_(feature);
+    }
+
+    /**
+     * Listener for features in external source or features collection.  Ensures the feature filter
+     * is re-run and segment data is updated.
+     * @param {import("../events/Event.js").default | import("../Object.js").ObjectEvent} evt Event.
      * @private
      */
     handleFeatureChange_(evt) {
       if (!this.changingFeature_) {
         const feature = /** @type {Feature} */ (evt.target);
         this.removeFeature_(feature);
-        this.addFeature_(feature);
+        //safe to remove handler on a feature if there isn't one, but need to apply the filter
+        // before adding the feature.
+        this.filter_(feature) && this.addFeature_(feature);
       }
-    }
-
-    /**
-     * @param {import("../Collection.js").CollectionEvent<Feature>} evt Event.
-     * @private
-     */
-    handleFeatureRemove_(evt) {
-      this.removeFeature_(evt.element);
     }
 
     /**
@@ -67447,7 +68452,7 @@
             projection,
           );
           if (
-            equals(closestVertex, vertex) &&
+            this.coordinatesEqual_(closestVertex, vertex) &&
             !componentSegments[uid][0]
           ) {
             this.dragSegments_.push([segmentDataMatch, 0]);
@@ -67456,13 +68461,19 @@
           continue;
         }
 
-        if (equals(segment[0], vertex) && !componentSegments[uid][0]) {
+        if (
+          this.coordinatesEqual_(segment[0], vertex) &&
+          !componentSegments[uid][0]
+        ) {
           this.dragSegments_.push([segmentDataMatch, 0]);
           componentSegments[uid][0] = segmentDataMatch;
           continue;
         }
 
-        if (equals(segment[1], vertex) && !componentSegments[uid][1]) {
+        if (
+          this.coordinatesEqual_(segment[1], vertex) &&
+          !componentSegments[uid][1]
+        ) {
           if (
             componentSegments[uid][0] &&
             componentSegments[uid][0].index === 0
@@ -67512,8 +68523,39 @@
     }
 
     /**
+     * Determine whether a trace from `fromIndex` to `toIndex` passes at least one
+     * vertex of the target (i.e. whether it would add any traced coordinates).
+     * The index math mirrors {@link addTracedCoordinates_}.
+     * @param {number} fromIndex The start index.
+     * @param {number} toIndex The end index.
+     * @return {boolean} At least one target vertex lies between the indices.
+     * @private
+     */
+    tracePassesVertex_(fromIndex, toIndex) {
+      if (fromIndex === toIndex) {
+        return false;
+      }
+      if (fromIndex < toIndex) {
+        const start = Math.ceil(fromIndex);
+        let end = Math.floor(toIndex);
+        if (end === toIndex) {
+          end -= 1;
+        }
+        return start <= end;
+      }
+      const start = Math.floor(fromIndex);
+      let end = Math.ceil(toIndex);
+      if (end === toIndex) {
+        end += 1;
+      }
+      return start >= end;
+    }
+
+    /**
      * Update the trace.
      * @param {import("../MapBrowserEvent.js").default} event Event.
+     * @return {import('../coordinate.js').Coordinate|undefined} The coordinate the
+     * dragged vertex was snapped onto a target edge, if any.
      * @private
      */
     updateTrace_(event) {
@@ -67546,47 +68588,63 @@
         return;
       }
 
-      if (traceState.targetIndex !== updatedTraceTarget.index) {
-        // target changed
-        if (traceState.targetIndex !== -1) {
-          // remove points added during previous trace
-          const oldTarget = traceState.targets[traceState.targetIndex];
-          this.removeTracedCoordinates_(oldTarget.startIndex, oldTarget.endIndex);
-        } else {
-          for (const traceSegment of this.traceSegments_) {
-            const segmentData = traceSegment[0];
-            const geometry = segmentData.geometry;
-            const index = traceSegment[1];
-            const coordinates = geometry.getCoordinates();
-            const coordinatesArray = getCoordinatesArray(
-              coordinates,
-              geometry.getType(),
-              segmentData.depth,
-            );
-            coordinatesArray.splice(segmentData.index + index, 1);
-            geometry.setCoordinates(coordinates);
-            if (index === 0) {
-              segmentData.index -= 1;
-            }
-          }
-        }
-        // add points for the new target
-        const newTarget = traceState.targets[updatedTraceTarget.index];
-        this.addTracedCoordinates_(
-          newTarget,
-          newTarget.startIndex,
+      // Only commit to tracing a target once the drag has passed one of its
+      // vertices.  Before that we still snap the dragged vertex onto the target
+      // edge (below), but we keep `targetIndex` at -1 so that pulling the pointer
+      // beyond the tolerance releases the vertex instead of getting stuck on the
+      // target.
+      let commit = true;
+      if (traceState.targetIndex === -1) {
+        const candidateTarget = traceState.targets[updatedTraceTarget.index];
+        commit = this.tracePassesVertex_(
+          candidateTarget.startIndex,
           updatedTraceTarget.endIndex,
         );
-      } else {
-        // target stayed the same
-        const target = traceState.targets[traceState.targetIndex];
-        this.addOrRemoveTracedCoordinates_(target, updatedTraceTarget.endIndex);
       }
 
-      // modify the state with updated info
-      traceState.targetIndex = updatedTraceTarget.index;
-      const target = traceState.targets[traceState.targetIndex];
-      target.endIndex = updatedTraceTarget.endIndex;
+      if (commit) {
+        if (traceState.targetIndex !== updatedTraceTarget.index) {
+          // target changed
+          if (traceState.targetIndex !== -1) {
+            // remove points added during previous trace
+            const oldTarget = traceState.targets[traceState.targetIndex];
+            this.removeTracedCoordinates_(
+              oldTarget.startIndex,
+              oldTarget.endIndex,
+            );
+          }
+          // add points for the new target
+          const newTarget = traceState.targets[updatedTraceTarget.index];
+          this.addTracedCoordinates_(
+            newTarget,
+            newTarget.startIndex,
+            updatedTraceTarget.endIndex,
+          );
+        } else {
+          // target stayed the same
+          const target = traceState.targets[traceState.targetIndex];
+          this.addOrRemoveTracedCoordinates_(target, updatedTraceTarget.endIndex);
+        }
+
+        // modify the state with updated info
+        traceState.targetIndex = updatedTraceTarget.index;
+        traceState.targets[traceState.targetIndex].endIndex =
+          updatedTraceTarget.endIndex;
+      }
+
+      // Snap the dragged vertex (the moving end of the trace) onto the target
+      // edge so that the trace follows edges, not only vertices, and the geometry
+      // stays consistent with the vertex marker.  Moving all of the dragged
+      // vertex' segments keeps polygon rings closed.
+      const snapTarget = traceState.targets[updatedTraceTarget.index];
+      const snappedVertex = interpolateCoordinate(
+        snapTarget.coordinates,
+        updatedTraceTarget.endIndex,
+      );
+      for (const dragSegment of this.dragSegments_) {
+        this.updateGeometry_(snappedVertex.slice(), dragSegment);
+      }
+      return snappedVertex;
     }
 
     getTraceCandidates_(event) {
@@ -67672,6 +68730,34 @@
     }
 
     /**
+     * Tracing splices coordinates into a ring next to the dragged vertex, but only
+     * adjusts the index of the trace segment itself.  The dragged vertex' other
+     * segments in `dragSegments_` reference the same ring, so their stored index
+     * must be shifted too - otherwise the next {@link updateGeometry_} writes the
+     * dragged vertex to the wrong coordinate and scrambles the ring.
+     * @param {SegmentData} traceSegmentData The trace segment (adjusted by the
+     * caller and skipped here).
+     * @param {number} atIndex Segments at or after this coordinate index shift.
+     * @param {number} delta Coordinates added (positive) or removed (negative).
+     * @private
+     */
+    shiftTracedSegmentIndices_(traceSegmentData, atIndex, delta) {
+      for (const dragSegment of this.dragSegments_) {
+        const segmentData = dragSegment[0];
+        if (
+          segmentData !== traceSegmentData &&
+          segmentData.geometry === traceSegmentData.geometry &&
+          (segmentData.depth === undefined ||
+            traceSegmentData.depth === undefined ||
+            equals$2(segmentData.depth, traceSegmentData.depth)) &&
+          segmentData.index >= atIndex
+        ) {
+          segmentData.index += delta;
+        }
+      }
+    }
+
+    /**
      * @param {number} fromIndex The start index.
      * @param {number} toIndex The end index.
      * @private
@@ -67714,7 +68800,12 @@
             segmentData.depth,
           );
           coordinatesArray.splice(removeIndex, remove);
-          geometry.setCoordinates(coordinates);
+          this.setGeometryCoordinates_(geometry, coordinates);
+          this.shiftTracedSegmentIndices_(
+            segmentData,
+            removeIndex + remove,
+            -remove,
+          );
           if (index === 1) {
             segmentData.index -= remove;
           }
@@ -67773,7 +68864,12 @@
             segmentData.depth,
           );
           coordinatesArray.splice(insertIndex, 0, ...newCoordinates);
-          geometry.setCoordinates(coordinates);
+          this.setGeometryCoordinates_(geometry, coordinates);
+          this.shiftTracedSegmentIndices_(
+            segmentData,
+            insertIndex,
+            newCoordinates.length,
+          );
           if (index === 1) {
             segmentData.index += newCoordinates.length;
           }
@@ -67793,9 +68889,11 @@
       const geometry = segmentData.geometry;
       const index = dragSegment[1];
 
-      while (vertex.length < geometry.getStride()) {
-        vertex.push(segment[index][vertex.length]);
+      const stride = geometry.getStride();
+      for (let i = 2; i < stride; ++i) {
+        vertex[i] = segment[index][i];
       }
+      vertex.length = stride;
       switch (geometry.getType()) {
         case 'Point':
           coordinates = vertex;
@@ -67818,16 +68916,50 @@
           coordinates[depth[0]][segmentData.index + index] = vertex;
           segment[index] = vertex;
           break;
-        case 'Polygon':
+        case 'Polygon': {
           coordinates = geometry.getCoordinates();
-          coordinates[depth[0]][segmentData.index + index] = vertex;
+          const ring = coordinates[depth[0]];
+          const targetIndex = segmentData.index + index;
+
+          // Prevent duplicate change events when vertex already at position
+          if (
+            ring[targetIndex][0] === vertex[0] &&
+            ring[targetIndex][1] === vertex[1]
+          ) {
+            coordinates = null;
+          } else {
+            ring[targetIndex] = vertex;
+            if (targetIndex === 0) {
+              ring[ring.length - 1] = vertex;
+            } else if (targetIndex === ring.length - 1) {
+              ring[0] = vertex;
+            }
+          }
           segment[index] = vertex;
           break;
-        case 'MultiPolygon':
+        }
+        case 'MultiPolygon': {
           coordinates = geometry.getCoordinates();
-          coordinates[depth[1]][depth[0]][segmentData.index + index] = vertex;
+          const mRing = coordinates[depth[1]][depth[0]];
+          const mTargetIndex = segmentData.index + index;
+
+          // Prevent duplicate change events when vertex already at position
+          if (
+            mRing[mTargetIndex][0] === vertex[0] &&
+            mRing[mTargetIndex][1] === vertex[1]
+          ) {
+            coordinates = null;
+          } else {
+            mRing[mTargetIndex] = vertex;
+            if (mTargetIndex === 0) {
+              mRing[mRing.length - 1] = vertex;
+            } else if (mTargetIndex === mRing.length - 1) {
+              mRing[0] = vertex;
+            }
+          }
           segment[index] = vertex;
           break;
+        }
         case 'Circle':
           const circle = /** @type {import("../geom/Circle.js").default} */ (
             geometry
@@ -67904,6 +69036,14 @@
             this.traceSegments_.push(dragSegment);
           }
         }
+        if (this.traceSegments_.length > 1) {
+          // Both segments of the dragged vertex are anchored at the trace start,
+          // i.e. the grabbed vertex is the anchor itself.  Tracing needs a fixed
+          // anchor distinct from the moving vertex, so cancel tracing and let this
+          // drag move the vertex freely.
+          this.deactivateTrace_();
+          this.traceSegments_ = null;
+        }
       }
       for (let i = 0, ii = this.dragSegments_.length; i < ii; ++i) {
         const dragSegment = this.dragSegments_[i];
@@ -67919,8 +69059,15 @@
 
         this.updateGeometry_(vertex, dragSegment);
       }
-      this.updateTrace_(evt);
-      this.createOrUpdateVertexFeature_(vertex, features, geometries, true);
+      // when tracing snaps the dragged vertex onto a target edge, show the vertex
+      // marker at the snapped location rather than at the raw pointer
+      const snappedVertex = this.updateTrace_(evt);
+      this.createOrUpdateVertexFeature_(
+        snappedVertex || vertex,
+        features,
+        geometries,
+        true,
+      );
     }
 
     /**
@@ -67959,8 +69106,17 @@
      * @override
      */
     handleUpEvent(evt) {
+      // Tracing inserts and removes vertices with guarded geometry mutations (so
+      // that dragSegments_ survive the drag). Those guarded mutations skip the
+      // segment rBush rebuild that handleFeatureChange_ would normally do, so the
+      // rBush no longer matches the traced geometry. Collect the affected features
+      // here and rebuild their segment data once the drag is over.
+      const tracedFeatures = this.traceState_.active ? new Set() : null;
       for (let i = this.dragSegments_.length - 1; i >= 0; --i) {
         const segmentData = this.dragSegments_[i][0];
+        if (tracedFeatures) {
+          tracedFeatures.add(segmentData.feature);
+        }
         const geometry = segmentData.geometry;
         if (geometry.getType() === 'Circle') {
           const circle = /** @type {import("../geom/Circle.js").default} */ (
@@ -67994,6 +69150,14 @@
           );
         } else {
           this.rBush_.update(boundingExtent(segmentData.segment), segmentData);
+        }
+      }
+      if (tracedFeatures) {
+        for (const feature of tracedFeatures) {
+          this.removeFeature_(feature);
+          if (this.filter_(feature)) {
+            this.addFeature_(feature);
+          }
         }
       }
       if (this.featuresBeingModified_) {
@@ -68057,7 +69221,7 @@
               geom &&
               geom.getType() === 'Point' &&
               feature instanceof Feature &&
-              this.features_.getArray().includes(feature)
+              this.features_.includes(feature)
             ) {
               hitPointGeometry = /** @type {Point} */ (geom);
               const coordinate = /** @type {Point} */ (feature.getGeometry())
@@ -68150,10 +69314,10 @@
             for (let i = 1, ii = nodes.length; i < ii; ++i) {
               const segment = nodes[i].segment;
               if (
-                (equals(closestSegment[0], segment[0]) &&
-                  equals(closestSegment[1], segment[1])) ||
-                (equals(closestSegment[0], segment[1]) &&
-                  equals(closestSegment[1], segment[0]))
+                (this.coordinatesEqual_(closestSegment[0], segment[0]) &&
+                  this.coordinatesEqual_(closestSegment[1], segment[1])) ||
+                (this.coordinatesEqual_(closestSegment[0], segment[1]) &&
+                  this.coordinatesEqual_(closestSegment[1], segment[0]))
               ) {
                 const geometryUid = getUid(nodes[i].geometry);
                 if (!(geometryUid in geometries)) {
@@ -68298,8 +69462,8 @@
       const segments = this.rBush_.getInExtent(boundingExtent([coordinate]));
       return segments.some(
         ({segment}) =>
-          equals(segment[0], coordinate) ||
-          equals(segment[1], coordinate),
+          this.coordinatesEqual_(segment[0], coordinate) ||
+          this.coordinatesEqual_(segment[1], coordinate),
       );
     }
 
@@ -68490,8 +69654,8 @@
       return segments.some(
         ({segment}) =>
           !(
-            equals(segment[0], coordinate) ||
-            equals(segment[1], coordinate)
+            this.coordinatesEqual_(segment[0], coordinate) ||
+            this.coordinatesEqual_(segment[1], coordinate)
           ),
       );
     }
@@ -68552,6 +69716,60 @@
           }
         },
       );
+    }
+
+    /**
+     * @override
+     */
+    disposeInternal() {
+      super.disposeInternal();
+      if (this.featuresCollection_) {
+        this.featuresCollection_.removeEventListener(
+          CollectionEventType.ADD,
+          this.handleExternalCollectionAdd_,
+        );
+        this.featuresCollection_.removeEventListener(
+          CollectionEventType.REMOVE,
+          this.handleExternalCollectionRemove_,
+        );
+        //change and propertychange event handlers were placed on all features in the external
+        // collection, not just the ones that passed the filter.  Remove these too.
+        for (const feature of this.featuresCollection_.getArray()) {
+          feature.removeEventListener(
+            EventType.CHANGE,
+            this.handleFeatureChange_,
+          );
+          if (this.filterFunctionWasSupplied_) {
+            feature.removeEventListener(
+              ObjectEventType.PROPERTYCHANGE,
+              this.handleFeatureChange_,
+            );
+          }
+        }
+      } else if (this.source_) {
+        this.source_.removeEventListener(
+          VectorEventType.ADDFEATURE,
+          this.handleSourceAdd_,
+        );
+        this.source_.removeEventListener(
+          VectorEventType.REMOVEFEATURE,
+          this.handleSourceRemove_,
+        );
+        //change and propertychange event handlers were placed on all features in the source, not
+        // just the ones that passed the filter.  Remove these too.
+        for (const feature of this.source_.getFeatures()) {
+          feature.removeEventListener(
+            EventType.CHANGE,
+            this.handleFeatureChange_,
+          );
+          if (this.filterFunctionWasSupplied_) {
+            feature.removeEventListener(
+              ObjectEventType.PROPERTYCHANGE,
+              this.handleFeatureChange_,
+            );
+          }
+        }
+      }
     }
   }
 
@@ -68680,7 +69898,7 @@
   /**
    * A function that takes a {@link module:ol/Feature~Feature} and returns `true` if the feature may be
    * selected or `false` otherwise.
-   * @typedef {function(import("../Feature.js").default, import("../layer/Layer.js").default<import("../source/Source").default>):boolean} FilterFunction
+   * @typedef {function(import("../Feature.js").default, import("../layer/Layer.js").default<import("../source/Source.js").default> | undefined):boolean} FilterFunction
    */
 
   /**
@@ -68699,7 +69917,7 @@
    * feature removes all from the selection.
    * See `toggle`, `add`, `remove` options for adding/removing extra features to/
    * from the selection.
-   * @property {Array<import("../layer/Layer.js").default>|function(import("../layer/Layer.js").default<import("../source/Source").default>): boolean} [layers]
+   * @property {Array<import("../layer/Layer.js").default>|function(import("../layer/Layer.js").default<import("../source/Source.js").default>): boolean} [layers]
    * A list of layers from which features should be selected. Alternatively, a
    * filter function can be provided. The function will be called for each layer
    * in the map and should return `true` for layers that you want to be
@@ -68786,11 +70004,11 @@
 
   /***
    * @template Return
-   * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
-   *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
-   *     'change:active', import("../Object").ObjectEvent, Return> &
-   *   import("../Observable").OnSignature<'select', SelectEvent, Return> &
-   *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
+   * @typedef {import("../Observable.js").OnSignature<import("../Observable.js").EventTypes, import("../events/Event.js").default, Return> &
+   *   import("../Observable.js").OnSignature<import("../ObjectEventType.js").Types|
+   *     'change:active', import("../Object.js").ObjectEvent, Return> &
+   *   import("../Observable.js").OnSignature<'select', SelectEvent, Return> &
+   *   import("../Observable.js").CombinedOnSignature<import("../Observable.js").EventTypes|import("../ObjectEventType.js").Types|
    *     'change:active'|'select', Return>} SelectOnSignature
    */
 
@@ -68815,12 +70033,12 @@
       super();
 
       /***
-       * @type {SelectOnSignature<import("../events").EventsKey>}
+       * @type {SelectOnSignature<import("../events.js").EventsKey>}
        */
       this.on;
 
       /***
-       * @type {SelectOnSignature<import("../events").EventsKey>}
+       * @type {SelectOnSignature<import("../events.js").EventsKey>}
        */
       this.once;
 
@@ -68900,7 +70118,7 @@
        */
       this.features_ = options.features || new Collection();
 
-      /** @type {function(import("../layer/Layer.js").default<import("../source/Source").default>): boolean} */
+      /** @type {function(import("../layer/Layer.js").default<import("../source/Source.js").default>): boolean} */
       let layerFilter;
       if (options.layers) {
         if (typeof options.layers === 'function') {
@@ -68917,7 +70135,7 @@
 
       /**
        * @private
-       * @type {function(import("../layer/Layer.js").default<import("../source/Source").default>): boolean}
+       * @type {function(import("../layer/Layer.js").default<import("../source/Source.js").default>): boolean}
        */
       this.layerFilter_ = layerFilter;
 
@@ -69043,6 +70261,7 @@
       if (this.style_) {
         this.restorePreviousStyle_(evt.element);
       }
+      this.removeFeatureLayerAssociation_(evt.element);
     }
 
     /**
@@ -69119,68 +70338,28 @@
     }
 
     /**
-     * @param {import("../Feature.js").FeatureLike} feature The feature to select
-     * @param {import("../layer/Layer.js").default} layer Optional layer containing this feature
-     * @param {Array<Feature>} [selected] optional array to which selected features will be added
-     * @return {Feature|undefined} The feature, if it got selected.
-     * @private
-     */
-    selectFeatureInternal_(feature, layer, selected) {
-      if (!(feature instanceof Feature)) {
-        return;
-      }
-      if (!this.filter_(feature, layer)) {
-        return;
-      }
-      const features = this.getFeatures();
-      if (!features.getArray().includes(feature)) {
-        this.addFeatureLayerAssociation_(feature, layer);
-        features.push(feature);
-        selected?.push(feature);
-      }
-      return feature;
-    }
-
-    /**
      * Try to select a feature as if it was clicked and `addCondition` evaluated to True.
      * Unlike modifying `select.getFeatures()` directly, this respects the `filter` and `layers` options (except `multi`, which is ignored).
      * The {@link module:ol/interaction/Select~SelectEvent} fired by this won't have a mapBrowserEvent property
      * @param {Feature} feature The feature to select
      * @return {boolean} True if the feature was selected
+     * @api
      */
     selectFeature(feature) {
       const layer = this.findLayerOfFeature_(feature);
-      if (!this.layerFilter_(layer)) {
+      if (!this.layerFilter_(layer) || !this.filter_(feature, layer)) {
         return false;
       }
-      const selected = this.selectFeatureInternal_(feature, layer);
-      if (selected) {
-        this.dispatchEvent(
-          new SelectEvent(SelectEventType.SELECT, [selected], [], undefined),
-        );
-      }
-      return !!selected;
-    }
-
-    /**
-     * Deselects a feature if it was previously selected. Also removes layer association.
-     * @param {import("../Feature.js").FeatureLike} feature The feature to deselect
-     * @param {Array<Feature>} [deselected] optional array to which deselected features will be added
-     * @return {Feature|undefined} The feature, if it was previously selected.
-     * @private
-     */
-    removeFeatureInternal_(feature, deselected) {
       const features = this.getFeatures();
-      if (
-        !(feature instanceof Feature) ||
-        !features.getArray().includes(feature)
-      ) {
-        return;
+      if (features.getArray().includes(feature)) {
+        return false;
       }
-      features.remove(feature);
-      this.removeFeatureLayerAssociation_(feature);
-      deselected?.push(feature);
-      return feature;
+      this.addFeatureLayerAssociation_(feature, layer);
+      features.push(feature);
+      this.dispatchEvent(
+        new SelectEvent(SelectEventType.SELECT, [feature], [], undefined),
+      );
+      return true;
     }
 
     /**
@@ -69189,15 +70368,19 @@
      * The {@link module:ol/interaction/Select~SelectEvent} fired by this won't have a mapBrowserEvent property
      * @param {Feature} feature The feature to deselect
      * @return {boolean} True if the feature was deselected
+     * @api
      */
     deselectFeature(feature) {
-      const deselected = this.removeFeatureInternal_(feature);
-      if (deselected) {
-        this.dispatchEvent(
-          new SelectEvent(SelectEventType.SELECT, [], [deselected], undefined),
-        );
+      const features = this.getFeatures();
+      const index = features.getArray().indexOf(feature);
+      if (index === -1) {
+        return false;
       }
-      return !!deselected;
+      features.removeAt(index);
+      this.dispatchEvent(
+        new SelectEvent(SelectEventType.SELECT, [], [feature], undefined),
+      );
+      return true;
     }
 
     /**
@@ -69205,23 +70388,25 @@
      * Unlike modifying `select.getFeatures()` directly, this respects the `filter` and `layers` options (except `multi`, which is ignored).
      * The {@link module:ol/interaction/Select~SelectEvent} fired by this won't have a mapBrowserEvent property
      * @param {Feature} feature The feature to deselect
+     * @api
      */
     toggleFeature(feature) {
       if (!this.deselectFeature(feature)) {
         this.selectFeature(feature);
       }
     }
+
     /**
      * Deselect all features as if a user deselected them.
      * Compared to `select.getFeatures().clear()` this causes a SelectEvent.
      * The {@link module:ol/interaction/Select~SelectEvent} fired by this won't have a mapBrowserEvent property
+     * @api
      */
     clearSelection() {
-      clear$2(this.featureLayerAssociation_);
       const features = this.getFeatures();
-      const deselected = features.getArray().slice(); // shallow copy
-      features.clear();
-      if (deselected.length !== 0) {
+      if (features.getLength() !== 0) {
+        const deselected = features.getArray().slice(); // shallow copy
+        features.clear();
         this.dispatchEvent(
           new SelectEvent(SelectEventType.SELECT, [], deselected, undefined),
         );
@@ -69256,23 +70441,19 @@
        */
       const selected = [];
 
-      // TODO: technically the way i've restructured this logic means that
-      //       instead of first emptying the features list of all extra features and then adding the selected ones back,
-      //       the selected features get added and then the old ones get removed.
-      //       a grow then shrink, instead of a shrink then grow. I can't imagine anyone relying on this, but alas, its worth a mention.
       if (set) {
         // Replace the currently selected feature(s) with the feature(s) at the
         // pixel, or clear the selected feature(s) if there is no feature at
         // the pixel.
-        let foundAtCursor = false;
         map.forEachFeatureAtPixel(
           mapBrowserEvent.pixel,
           (feature, layer) => {
-            foundAtCursor = true;
-            if (!this.selectFeatureInternal_(feature, layer, selected)) {
-              return; // keep going, this one wasn't selected
+            if (!(feature instanceof Feature) || !this.filter_(feature, layer)) {
+              return;
             }
-            return !this.multi_; // stop if not multi
+            this.addFeatureLayerAssociation_(feature, layer);
+            selected.push(feature);
+            return !this.multi_;
           },
           {
             layerFilter: this.layerFilter_,
@@ -69282,33 +70463,32 @@
 
         for (let i = features.getLength() - 1; i >= 0; --i) {
           const feature = features.item(i);
-          if (
-            // remove all but selected, if there were any selected
-            (selected.length > 0 && !selected.includes(feature)) ||
-            // remove all, if click outside of layer
-            !foundAtCursor
-          ) {
-            this.removeFeatureInternal_(feature, deselected);
+          const index = selected.indexOf(feature);
+          if (index === -1) {
+            features.removeAt(i);
+            deselected.push(feature);
+          } else {
+            // feature is already selected
+            selected.splice(index, 1);
           }
+        }
+        if (selected.length !== 0) {
+          features.extend(selected);
         }
       } else {
         // Modify the currently selected feature(s).
         map.forEachFeatureAtPixel(
           mapBrowserEvent.pixel,
           (feature, layer) => {
-            let modifiedFeature;
-            if (remove || toggle) {
-              modifiedFeature = this.removeFeatureInternal_(feature, deselected);
+            if (!(feature instanceof Feature) || !this.filter_(feature, layer)) {
+              return;
             }
-            if ((add || toggle) && !modifiedFeature) {
-              modifiedFeature = this.selectFeatureInternal_(
-                feature,
-                layer,
-                selected,
-              );
-            }
-            if (!modifiedFeature) {
-              return; // keep going, this one wasn't removed/selected
+            const hasFeature = features.getArray().includes(feature);
+            if (hasFeature && (remove || toggle)) {
+              deselected.push(feature);
+            } else if (!hasFeature && (add || toggle)) {
+              this.addFeatureLayerAssociation_(feature, layer);
+              selected.push(feature);
             }
             return !this.multi_; // stop if not multi
           },
@@ -69317,6 +70497,10 @@
             hitTolerance: this.hitTolerance_,
           },
         );
+        for (let j = deselected.length - 1; j >= 0; --j) {
+          features.remove(deselected[j]);
+        }
+        features.extend(selected);
       }
       if (selected.length > 0 || deselected.length > 0) {
         this.dispatchEvent(
@@ -69670,11 +70854,11 @@
 
   /***
    * @template Return
-   * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
-   *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
-   *     'change:active', import("../Object").ObjectEvent, Return> &
-   *   import("../Observable").OnSignature<'snap'|'unsnap', SnapEvent, Return> &
-   *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
+   * @typedef {import("../Observable.js").OnSignature<import("../Observable.js").EventTypes, import("../events/Event.js").default, Return> &
+   *   import("../Observable.js").OnSignature<import("../ObjectEventType.js").Types|
+   *     'change:active', import("../Object.js").ObjectEvent, Return> &
+   *   import("../Observable.js").OnSignature<'snap'|'unsnap', SnapEvent, Return> &
+   *   import("../Observable.js").CombinedOnSignature<import("../Observable.js").EventTypes|import("../ObjectEventType.js").Types|
    *     'change:active'|'snap'|'unsnap', Return>} SnapOnSignature
    */
 
@@ -69715,12 +70899,12 @@
       });
 
       /***
-       * @type {SnapOnSignature<import("../events").EventsKey>}
+       * @type {SnapOnSignature<import("../events.js").EventsKey>}
        */
       this.on;
 
       /***
-       * @type {SnapOnSignature<import("../events").EventsKey>}
+       * @type {SnapOnSignature<import("../events.js").EventsKey>}
        */
       this.once;
 
@@ -69863,7 +71047,10 @@
               // neighbors
               for (let k = 0, kk = j - 1; k < kk; ++k) {
                 const otherSegment = segments[k];
-                if (!intersects$1(extent, tempExtents[k])) {
+                if (
+                  otherSegment.length === 1 ||
+                  !intersects$1(extent, tempExtents[k])
+                ) {
                   continue;
                 }
                 const intersection = getIntersectionPoint(segment, otherSegment);
@@ -70684,18 +71871,31 @@
      * @param {import("./tilecoord.js").TileCoord} tileCoord Tile coordinate.
      * @param {import("./TileState.js").default} state State.
      * @param {string} src Image source URI.
-     * @param {?string} crossOrigin Cross origin.
+     * @param {import('./dom.js').ImageAttributes} imageAttributes Image attributes options.
      * @param {import("./Tile.js").LoadFunction} tileLoadFunction Tile load function.
      * @param {import("./Tile.js").Options} [options] Tile options.
      */
-    constructor(tileCoord, state, src, crossOrigin, tileLoadFunction, options) {
+    constructor(
+      tileCoord,
+      state,
+      src,
+      imageAttributes,
+      tileLoadFunction,
+      options,
+    ) {
       super(tileCoord, state, options);
 
       /**
        * @private
        * @type {?string}
        */
-      this.crossOrigin_ = crossOrigin;
+      this.crossOrigin_ = imageAttributes?.crossOrigin;
+
+      /**
+       * @private
+       * @type {ReferrerPolicy}
+       */
+      this.referrerPolicy_ = imageAttributes?.referrerPolicy;
 
       /**
        * Image URI
@@ -70717,8 +71917,11 @@
         this.image_ = new OffscreenCanvas(1, 1);
       } else {
         this.image_ = new Image();
-        if (crossOrigin !== null) {
-          this.image_.crossOrigin = crossOrigin;
+        if (this.crossOrigin_ !== null) {
+          this.image_.crossOrigin = this.crossOrigin_;
+        }
+        if (this.referrerPolicy_ !== undefined) {
+          this.image_.referrerPolicy = this.referrerPolicy_;
         }
       }
 
@@ -70761,6 +71964,14 @@
      */
     getCrossOrigin() {
       return this.crossOrigin_;
+    }
+
+    /**
+     * Get the referrer policy of the ImageTile.
+     * @return {ReferrerPolicy} Referrer policy.
+     */
+    getReferrerPolicy() {
+      return this.referrerPolicy_;
     }
 
     /**
@@ -70839,6 +72050,9 @@
         this.image_ = new Image();
         if (this.crossOrigin_ !== null) {
           this.image_.crossOrigin = this.crossOrigin_;
+        }
+        if (this.referrerPolicy_ !== undefined) {
+          this.image_.referrerPolicy = this.referrerPolicy_;
         }
       }
       if (this.state == TileState.IDLE) {
@@ -71873,7 +73087,8 @@
 
   /**
    * @typedef {Object} TileOffset
-   * @property {import("../ImageTile.js").default} tile Tile.
+   * @property {import("../ImageTile.js").default} [tile] Tile.
+   * @property {function(): import("../ImageTile.js").default} getTile Tile getter.
    * @property {number} offset Offset.
    */
 
@@ -72094,11 +73309,12 @@
 
           for (let srcX = sourceRange.minX; srcX <= sourceRange.maxX; srcX++) {
             for (let srcY = sourceRange.minY; srcY <= sourceRange.maxY; srcY++) {
-              const tile = getTileFunction(this.sourceZ_, srcX, srcY, pixelRatio);
-              if (tile) {
-                const offset = worldsAway * worldWidth;
-                this.sourceTiles_.push({tile, offset});
-              }
+              const offset = worldsAway * worldWidth;
+              this.sourceTiles_.push({
+                getTile: () =>
+                  getTileFunction(this.sourceZ_, srcX, srcY, pixelRatio),
+                offset,
+              });
             }
           }
           ++worldsAway;
@@ -72184,6 +73400,9 @@
      * @override
      */
     load() {
+      for (const sourceTile of this.sourceTiles_) {
+        sourceTile.tile = sourceTile.getTile();
+      }
       if (this.state == TileState.IDLE) {
         this.state = TileState.LOADING;
         this.changed();
@@ -72250,6 +73469,7 @@
         canvasPool.push(this.canvas_);
         this.canvas_ = null;
       }
+      this.sourceTiles_.length = 0;
       super.release();
     }
   }
@@ -72682,12 +73902,6 @@
 
       /**
        * @private
-       * @type {string}
-       */
-      this.renderedSourceKey_;
-
-      /**
-       * @private
        * @type {number}
        */
       this.renderedSourceRevision_;
@@ -72723,6 +73937,12 @@
        * @private
        */
       this.sourceTileCache_ = null;
+
+      /**
+       * @protected
+       * @type {import("../../extent.js").Extent|null}
+       */
+      this.layerExtent = null;
 
       this.maxStaleKeys = cacheSize * 0.5;
     }
@@ -73126,13 +74346,7 @@
       const z = tileGrid.getZForResolution(viewResolution, tileSource.zDirection);
       const tileResolution = tileGrid.getResolution(z);
 
-      const sourceKey = tileSource.getKey();
-      if (!this.renderedSourceKey_) {
-        this.renderedSourceKey_ = sourceKey;
-      } else if (this.renderedSourceKey_ !== sourceKey) {
-        this.prependStaleKey(this.renderedSourceKey_);
-        this.renderedSourceKey_ = sourceKey;
-      }
+      this.updateStaleKeys(tileSource.getKey());
 
       let frameExtent = frameState.extent;
       const tilePixelRatio = tileSource.getTilePixelRatio(pixelRatio);
@@ -73143,13 +74357,11 @@
       const width = this.context.canvas.width;
       const height = this.context.canvas.height;
 
-      const layerExtent =
-        layerState.extent && fromUserExtent(layerState.extent, projection);
-      if (layerExtent) {
-        frameExtent = getIntersection(
-          frameExtent,
-          fromUserExtent(layerState.extent, projection),
-        );
+      this.layerExtent = layerState.extent
+        ? fromUserExtent(layerState.extent, projection)
+        : null;
+      if (this.layerExtent) {
+        frameExtent = getIntersection(frameExtent, this.layerExtent);
       }
 
       const dx = (tileResolution * width) / 2 / tilePixelRatio;
@@ -73284,8 +74496,8 @@
         -height / 2,
       );
 
-      if (layerState.extent) {
-        this.clipUnrotated(context, frameState, layerExtent);
+      if (this.layerExtent) {
+        this.clipUnrotated(context, frameState, this.layerExtent);
       }
 
       if (!tileSource.getInterpolate()) {
@@ -73294,13 +74506,18 @@
 
       this.preRender(context, frameState);
 
-      /** @type {Array<number>} */
       const zs = Object.keys(tilesByZ).map(Number);
       zs.sort(ascending);
 
-      let currentClip;
+      /** @type {Array<import("../../extent.js").Extent>} */
       const clips = [];
+      /** @type {Array<number>} */
       const clipZs = [];
+      // Tiles at the target zoom that are still fading in. They are drawn in a
+      // second pass on top of the (fully drawn) lower-z fallback, so the fade
+      // reads as a coarse-to-fine sharpen instead of revealing the background.
+      /** @type {Array<{tile: import("../../Tile.js").default, x: number, y: number, w: number, h: number, gutter: number}>} */
+      const fadingTiles = [];
       for (let i = zs.length - 1; i >= 0; --i) {
         const currentZ = zs[i];
         const currentTilePixelSize = tileSource.getTilePixelSize(
@@ -73340,52 +74557,60 @@
           const y = Math.round(origin[1] - yIndex * dy);
           const w = nextX - x;
           const h = nextY - y;
-          const transition = zs.length === 1;
+          // Only the target zoom tiles fade in; lower-z fallback tiles are just
+          // gap fillers and must not animate. `inTransition` is false when
+          // transitions are disabled, so this whole path is skipped then.
+          const transition = currentZ === z;
 
-          let contextSaved = false;
+          if (transition && tile.inTransition(uid)) {
+            // Still fading in - defer to the second pass and keep the fallback
+            // beneath it by not adding it to the clips.
+            fadingTiles.push({tile, x, y, w, h, gutter: tileGutter});
+            this.renderedTiles.unshift(tile);
+            this.updateUsedTiles(frameState.usedTiles, tileSource, tile);
+            continue;
+          }
 
-          // Clip mask for regions in this tile that already filled by a higher z tile
-          currentClip = [x, y, x + w, y, x + w, y + h, x, y + h];
-          for (let i = 0, ii = clips.length; i < ii; ++i) {
-            if (!transition && currentZ < clipZs[i]) {
-              const clip = clips[i];
-              if (
-                intersects$1(
-                  [x, y, x + w, y + h],
-                  [clip[0], clip[3], clip[4], clip[7]],
-                )
-              ) {
-                if (!contextSaved) {
-                  context.save();
-                  contextSaved = true;
-                }
-                context.beginPath();
-                // counter-clockwise (outer ring) for current tile
-                context.moveTo(currentClip[0], currentClip[1]);
-                context.lineTo(currentClip[2], currentClip[3]);
-                context.lineTo(currentClip[4], currentClip[5]);
-                context.lineTo(currentClip[6], currentClip[7]);
-                // clockwise (inner ring) for higher z tile
-                context.moveTo(clip[6], clip[7]);
-                context.lineTo(clip[4], clip[5]);
-                context.lineTo(clip[2], clip[3]);
-                context.lineTo(clip[0], clip[1]);
-                context.clip();
-              }
+          // Draw only the parts of this tile that are not already covered by a
+          // higher-z tile.
+          const currentRect = [x, y, x + w, y + h];
+          /** @type {Array<import("../../extent.js").Extent>} */
+          const covered = [];
+          for (let j = 0, jj = clips.length; j < jj; ++j) {
+            if (currentZ < clipZs[j] && intersects$1(currentRect, clips[j])) {
+              covered.push(clips[j]);
             }
           }
-          clips.push(currentClip);
+          let clipRects;
+          if (covered.length > 0) {
+            clipRects = subtractExtents(currentRect, covered);
+          }
+          clips.push(currentRect);
           clipZs.push(currentZ);
 
-          this.drawTile(tile, frameState, x, y, w, h, tileGutter, transition);
-          if (contextSaved) {
-            context.restore();
-          }
+          this.drawTile(
+            tile,
+            frameState,
+            x,
+            y,
+            w,
+            h,
+            tileGutter,
+            transition,
+            clipRects,
+          );
+
           this.renderedTiles.unshift(tile);
 
           // TODO: decide if this is necessary
           this.updateUsedTiles(frameState.usedTiles, tileSource, tile);
         }
+      }
+
+      // Second pass: draw the fading target zoom tiles on top of the fallback.
+      for (let i = 0, ii = fadingTiles.length; i < ii; ++i) {
+        const {tile, x, y, w, h, gutter} = fadingTiles[i];
+        this.drawTile(tile, frameState, x, y, w, h, gutter, true, undefined);
       }
 
       this.renderedResolution = tileResolution;
@@ -73396,7 +74621,7 @@
 
       this.postRender(this.context, frameState);
 
-      if (layerState.extent) {
+      if (this.layerExtent) {
         context.restore();
       }
       context.imageSmoothingEnabled = true;
@@ -73442,9 +74667,13 @@
      * @param {number} h Height of the tile.
      * @param {number} gutter Tile gutter.
      * @param {boolean} transition Apply an alpha transition.
+     * @param {Array<import("../../extent.js").Extent>} [clipRects] Sub-rectangles
+     *     of the tile to draw. When not provided, the whole tile is drawn; when an
+     *     empty array is provided, nothing is drawn (the tile is fully covered by
+     *     higher-z tiles).
      * @protected
      */
-    drawTile(tile, frameState, x, y, w, h, gutter, transition) {
+    drawTile(tile, frameState, x, y, w, h, gutter, transition, clipRects) {
       let image;
       if (tile instanceof DataTile) {
         image = asImageLike(tile.getData());
@@ -73471,17 +74700,42 @@
         context.save();
         context.globalAlpha = alpha;
       }
-      context.drawImage(
-        image,
-        gutter,
-        gutter,
-        image.width - 2 * gutter,
-        image.height - 2 * gutter,
-        x,
-        y,
-        w,
-        h,
-      );
+      const imageWidth = image.width - 2 * gutter;
+      const imageHeight = image.height - 2 * gutter;
+      if (clipRects) {
+        const scaleX = imageWidth / w;
+        const scaleY = imageHeight / h;
+        for (let i = 0, ii = clipRects.length; i < ii; ++i) {
+          const rect = clipRects[i];
+          const rx = rect[0];
+          const ry = rect[1];
+          const rw = rect[2] - rect[0];
+          const rh = rect[3] - rect[1];
+          context.drawImage(
+            image,
+            gutter + (rx - x) * scaleX,
+            gutter + (ry - y) * scaleY,
+            rw * scaleX,
+            rh * scaleY,
+            rx,
+            ry,
+            rw,
+            rh,
+          );
+        }
+      } else {
+        context.drawImage(
+          image,
+          gutter,
+          gutter,
+          imageWidth,
+          imageHeight,
+          x,
+          y,
+          w,
+          h,
+        );
+      }
 
       if (alphaChanged) {
         context.restore();
@@ -73545,12 +74799,12 @@
 
   /***
    * @template Return
-   * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
-   *   import("../Observable").OnSignature<import("./Base").BaseLayerObjectEventTypes|
-   *     import("./Layer.js").LayerEventType|'change:preload'|'change:useInterimTilesOnError', import("../Object").ObjectEvent, Return> &
-   *   import("../Observable").OnSignature<import("../render/EventType").LayerRenderEventTypes, import("../render/Event").default, Return> &
-   *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("./Base").BaseLayerObjectEventTypes|
-   *   import("./Layer.js").LayerEventType|'change:preload'|'change:useInterimTilesOnError'|import("../render/EventType").LayerRenderEventTypes, Return>} BaseTileLayerOnSignature
+   * @typedef {import("../Observable.js").OnSignature<import("../Observable.js").EventTypes, import("../events/Event.js").default, Return> &
+   *   import("../Observable.js").OnSignature<import("./Base.js").BaseLayerObjectEventTypes|
+   *     import("./Layer.js").LayerEventType|'change:preload'|'change:useInterimTilesOnError', import("../Object.js").ObjectEvent, Return> &
+   *   import("../Observable.js").OnSignature<import("../render/EventType.js").LayerRenderEventTypes, import("../render/Event.js").default, Return> &
+   *   import("../Observable.js").CombinedOnSignature<import("../Observable.js").EventTypes|import("./Base.js").BaseLayerObjectEventTypes|
+   *   import("./Layer.js").LayerEventType|'change:preload'|'change:useInterimTilesOnError'|import("../render/EventType.js").LayerRenderEventTypes, Return>} BaseTileLayerOnSignature
    */
 
   /**
@@ -73618,12 +74872,12 @@
       super(baseOptions);
 
       /***
-       * @type {BaseTileLayerOnSignature<import("../events").EventsKey>}
+       * @type {BaseTileLayerOnSignature<import("../events.js").EventsKey>}
        */
       this.on;
 
       /***
-       * @type {BaseTileLayerOnSignature<import("../events").EventsKey>}
+       * @type {BaseTileLayerOnSignature<import("../events.js").EventsKey>}
        */
       this.once;
 
@@ -73708,7 +74962,7 @@
      *   console.log(layer.getData(event.pixel));
      * });
      * ```
-     * @param {import("../pixel").Pixel} pixel Pixel.
+     * @param {import("../pixel.js").Pixel} pixel Pixel.
      * @return {Uint8ClampedArray|Uint8Array|Float32Array|DataView|null} Pixel data.
      * @api
      * @override
@@ -73834,25 +75088,123 @@
   }
 
   /**
-   * @param {number} code The EPSG code.
-   * @return {Promise<string>} The proj4 definition.
+   * @param {string} code The projection code.
+   * @return {Promise<string>} The WKT definition.
    */
-  let epsgLookup = async function (code) {
-    const response = await fetch(`https://epsg.io/${code}.proj4`);
+  let projLookup = async function (code) {
+    if (typeof code !== 'string' || !code.includes(':')) {
+      throw new Error('Invalid code');
+    }
+    const [authority, num] = code.toLowerCase().split(':', 2);
+    const response = await fetch(
+      `https://spatialreference.org/ref/${authority}/${num}/ogcwkt/`,
+    );
     if (!response.ok) {
-      throw new Error(`Unexpected response from epsg.io: ${response.status}`);
+      throw new Error(
+        `Unexpected response from spatialreference.org: ${response.status}`,
+      );
     }
     return response.text();
   };
 
   /**
-   * Set the lookup function for getting proj4 definitions given an EPSG code.
+   * Set the lookup function for getting proj4 or WKT definitions given an
+   * projection code. By default, the {@link module:ol/proj/proj4.fromProjectionCode}
+   * function uses the spatialreference.org website for WKT definitions.
+   * This can be changed by providing a different lookup function.
+   *
+   * @param {function(string):Promise<string>} func The lookup function.
+   * @api
+   */
+  function setProjectionCodeLookup(func) {
+    projLookup = func;
+  }
+
+  /**
+   * Get the current projection code lookup function.
+   *
+   * @return {function(string):Promise<string>} The projection lookup function.
+   */
+  function getProjectionCodeLookup() {
+    return projLookup;
+  }
+
+  /**
+   * Get a projection from a projection code (i.e., authority:number).
+   * This function fetches the projection definition from the
+   * https://spatialreference.org website, registers this definition for use with
+   * proj4, and returns a configured projection.  You must call import proj4 and
+   * call {@link module:ol/proj/proj4.register} before using this function.
+   *
+   * If the projection definition is already registered with proj4, it will not
+   * be fetched again (so it is ok to call this function multiple times with the
+   * same code).
+   *
+   * @param {string} code The projection code (e.g., 'EPSG:4326' or 'OGC:CRS84').
+   * @return {Promise<Projection>} The projection.
+   * @api
+   */
+  async function fromProjectionCode(code) {
+    const proj4 = registered;
+    if (!proj4) {
+      throw new Error('Proj4 must be registered first with register(proj4)');
+    }
+
+    if (proj4.defs(code)) {
+      return get$4(code);
+    }
+
+    proj4.defs(code, await projLookup(code));
+    register(proj4);
+
+    return get$4(code);
+  }
+
+  /**
+   * @param {*} def Projection definition.
+   * @return {Projection} The projection.
+   */
+  function fromProjectionDefinition(def) {
+    const proj4 = registered;
+    if (!proj4) {
+      throw new Error('Proj4 must be registered first with register(proj4)');
+    }
+    // Fallback code is the whole def...
+    let code = JSON.stringify(def);
+    proj4.defs(code, def);
+    const proj4Def = proj4.defs(code);
+    if (proj4Def.title) {
+      // ...but use authority:code if available
+      proj4.defs(code, null);
+      code = proj4Def.title;
+      const projection = get$4(code);
+      if (projection) {
+        return projection;
+      }
+      proj4.defs(code, def);
+    }
+    register(proj4);
+    return get$4(code);
+  }
+
+  /**
+   * @param {number} code The EPSG code.
+   * @return {Promise<string>} The proj4 or WKT definition.
+   * @deprecated Use {@link module:ol/proj/proj4.projLookup} instead.
+   */
+  let epsgLookup = async function (code) {
+    return await projLookup('EPSG:' + code);
+  };
+
+  /**
+   * Set the lookup function for getting proj4 or WKT definitions given an EPSG code.
    * By default, the {@link module:ol/proj/proj4.fromEPSGCode} function uses the
-   * epsg.io website for proj4 definitions.  This can be changed by providing a
-   * different lookup function.
+   * spatialreference.org website for WKT definitions.
+   * This can be changed by providing a different lookup function.
    *
    * @param {function(number):Promise<string>} func The lookup function.
    * @api
+   * @deprecated Use {@link module:ol/proj/proj4.setProjectionCodeLookup} instead.
    */
   function setEPSGLookup(func) {
     epsgLookup = func;
@@ -73862,6 +75214,7 @@
    * Get the current EPSG lookup function.
    *
    * @return {function(number):Promise<string>} The EPSG lookup function.
+   * @deprecated Use {@link module:ol/proj/proj4.getProjectionCodeLookup} instead.
    */
   function getEPSGLookup() {
     return epsgLookup;
@@ -73869,9 +75222,10 @@
 
   /**
    * Get a projection from an EPSG code.  This function fetches the projection
-   * definition from the epsg.io website, registers this definition for use with
-   * proj4, and returns a configured projection.  You must call import proj4 and
-   * call {@link module:ol/proj/proj4.register} before using this function.
+   * definition from the spatialreference.org website, registers this definition
+   * for use with proj4, and returns a configured projection.  You must call
+   * import proj4 and call {@link module:ol/proj/proj4.register} before using this
+   * function.
    *
    * If the projection definition is already registered with proj4, it will not
    * be fetched again (so it is ok to call this function multiple times with the
@@ -73880,26 +75234,13 @@
    * @param {number|string} code The EPSG code (e.g. 4326 or 'EPSG:4326').
    * @return {Promise<Projection>} The projection.
    * @api
+   * @deprecated Use {@link module:ol/proj/proj4.fromProjectionCode} instead.
    */
   async function fromEPSGCode(code) {
-    if (typeof code === 'string') {
-      code = parseInt(code.split(':').pop(), 10);
+    if (typeof code === 'number') {
+      code = 'EPSG:' + code;
     }
-
-    const proj4 = registered;
-    if (!proj4) {
-      throw new Error('Proj4 must be registered first with register(proj4)');
-    }
-
-    const epsgCode = 'EPSG:' + code;
-    if (proj4.defs(epsgCode)) {
-      return get$4(epsgCode);
-    }
-
-    proj4.defs(epsgCode, await epsgLookup(code));
-    register(proj4);
-
-    return get$4(epsgCode);
+    return await fromProjectionCode(code);
   }
 
   /**
@@ -73911,6 +75252,7 @@
    * @param {string} key MapTiler API key.  Get your own API key at https://www.maptiler.com/cloud/.
    * @return {function(number):Promise<string>} The EPSG lookup function.
    * @api
+   * @deprecated Not needed any more, the default lookup provides this functionality now.
    */
   function epsgLookupMapTiler(key) {
     return async function (code) {
@@ -73973,12 +75315,105 @@
     __proto__: null,
     epsgLookupMapTiler: epsgLookupMapTiler,
     fromEPSGCode: fromEPSGCode,
+    fromProjectionCode: fromProjectionCode,
+    fromProjectionDefinition: fromProjectionDefinition,
     getEPSGLookup: getEPSGLookup,
+    getProjectionCodeLookup: getProjectionCodeLookup,
     isRegistered: isRegistered,
     register: register,
     setEPSGLookup: setEPSGLookup,
+    setProjectionCodeLookup: setProjectionCodeLookup,
     unregister: unregister
   });
+
+  /**
+   * @module ol/uri
+   */
+
+
+  /**
+   * Appends query parameters to a URI.
+   *
+   * @param {string} uri The original URI, which may already have query data.
+   * @param {!Object} params An object where keys are URI-encoded parameter keys,
+   *     and the values are arbitrary types or arrays.
+   * @return {string} The new URI.
+   */
+  function appendParams(uri, params) {
+    /** @type {Array<string>} */
+    const keyParams = [];
+    // Skip any null or undefined parameter values
+    Object.keys(params).forEach(function (k) {
+      if (params[k] !== null && params[k] !== undefined) {
+        keyParams.push(k + '=' + encodeURIComponent(params[k]));
+      }
+    });
+    const qs = keyParams.join('&');
+    // remove any trailing ? or &
+    uri = uri.replace(/[?&]$/, '');
+    // append ? or & depending on whether uri has existing parameters
+    uri += uri.includes('?') ? '&' : '?';
+    return uri + qs;
+  }
+
+  const zRegEx = /\{z\}/g;
+  const xRegEx = /\{x\}/g;
+  const yRegEx = /\{y\}/g;
+  const dashYRegEx = /\{-y\}/g;
+
+  /**
+   * @param {string} template The URL template.  Should have `{x}`, `{y}`, and `{z}` placeholders.  If
+   * the template has a `{-y}` placeholder, the `maxY` parameter must be supplied.
+   * @param {number} z The tile z coordinate.
+   * @param {number} x The tile x coordinate.
+   * @param {number} y The tile y coordinate.
+   * @param {number} [maxY] The maximum y coordinate at the given z level.
+   * @return {string} The URL.
+   */
+  function renderXYZTemplate(template, z, x, y, maxY) {
+    return template
+      .replace(zRegEx, z.toString())
+      .replace(xRegEx, x.toString())
+      .replace(yRegEx, y.toString())
+      .replace(dashYRegEx, function () {
+        if (maxY === undefined) {
+          throw new Error(
+            'If the URL template has a {-y} placeholder, the grid extent must be known',
+          );
+        }
+        return (maxY - y).toString();
+      });
+  }
+
+  /**
+   * @param {string} url URL.
+   * @return {Array<string>} Array of urls.
+   */
+  function expandUrl(url) {
+    const urls = [];
+    let match = /\{([a-z])-([a-z])\}/.exec(url);
+    if (match) {
+      // char range
+      const startCharCode = match[1].charCodeAt(0);
+      const stopCharCode = match[2].charCodeAt(0);
+      let charCode;
+      for (charCode = startCharCode; charCode <= stopCharCode; ++charCode) {
+        urls.push(url.replace(match[0], String.fromCharCode(charCode)));
+      }
+      return urls;
+    }
+    match = /\{(\d+)-(\d+)\}/.exec(url);
+    if (match) {
+      // number range
+      const stop = parseInt(match[2], 10);
+      for (let i = parseInt(match[1], 10); i <= stop; i++) {
+        urls.push(url.replace(match[0], i.toString()));
+      }
+      return urls;
+    }
+    urls.push(url);
+    return urls;
+  }
 
   /**
    * @module ol/tilegrid
@@ -74140,95 +75575,6 @@
   }
 
   /**
-   * @module ol/uri
-   */
-
-
-  /**
-   * Appends query parameters to a URI.
-   *
-   * @param {string} uri The original URI, which may already have query data.
-   * @param {!Object} params An object where keys are URI-encoded parameter keys,
-   *     and the values are arbitrary types or arrays.
-   * @return {string} The new URI.
-   */
-  function appendParams(uri, params) {
-    /** @type {Array<string>} */
-    const keyParams = [];
-    // Skip any null or undefined parameter values
-    Object.keys(params).forEach(function (k) {
-      if (params[k] !== null && params[k] !== undefined) {
-        keyParams.push(k + '=' + encodeURIComponent(params[k]));
-      }
-    });
-    const qs = keyParams.join('&');
-    // remove any trailing ? or &
-    uri = uri.replace(/[?&]$/, '');
-    // append ? or & depending on whether uri has existing parameters
-    uri += uri.includes('?') ? '&' : '?';
-    return uri + qs;
-  }
-
-  const zRegEx = /\{z\}/g;
-  const xRegEx = /\{x\}/g;
-  const yRegEx = /\{y\}/g;
-  const dashYRegEx = /\{-y\}/g;
-
-  /**
-   * @param {string} template The URL template.  Should have `{x}`, `{y}`, and `{z}` placeholders.  If
-   * the template has a `{-y}` placeholder, the `maxY` parameter must be supplied.
-   * @param {number} z The tile z coordinate.
-   * @param {number} x The tile x coordinate.
-   * @param {number} y The tile y coordinate.
-   * @param {number} [maxY] The maximum y coordinate at the given z level.
-   * @return {string} The URL.
-   */
-  function renderXYZTemplate(template, z, x, y, maxY) {
-    return template
-      .replace(zRegEx, z.toString())
-      .replace(xRegEx, x.toString())
-      .replace(yRegEx, y.toString())
-      .replace(dashYRegEx, function () {
-        if (maxY === undefined) {
-          throw new Error(
-            'If the URL template has a {-y} placeholder, the grid extent must be known',
-          );
-        }
-        return (maxY - y).toString();
-      });
-  }
-
-  /**
-   * @param {string} url URL.
-   * @return {Array<string>} Array of urls.
-   */
-  function expandUrl(url) {
-    const urls = [];
-    let match = /\{([a-z])-([a-z])\}/.exec(url);
-    if (match) {
-      // char range
-      const startCharCode = match[1].charCodeAt(0);
-      const stopCharCode = match[2].charCodeAt(0);
-      let charCode;
-      for (charCode = startCharCode; charCode <= stopCharCode; ++charCode) {
-        urls.push(url.replace(match[0], String.fromCharCode(charCode)));
-      }
-      return urls;
-    }
-    match = /\{(\d+)-(\d+)\}/.exec(url);
-    if (match) {
-      // number range
-      const stop = parseInt(match[2], 10);
-      for (let i = parseInt(match[1], 10); i <= stop; i++) {
-        urls.push(url.replace(match[0], i.toString()));
-      }
-      return urls;
-    }
-    urls.push(url);
-    return urls;
-  }
-
-  /**
    * @module ol/tileurlfunction
    */
 
@@ -74309,11 +75655,11 @@
 
   /***
    * @template Return
-   * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
-   *   import("../Observable").OnSignature<import("../ObjectEventType").Types, import("../Object").ObjectEvent, Return> &
-   *   import("../Observable").OnSignature<import("./TileEventType").TileSourceEventTypes, TileSourceEvent, Return> &
-   *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
-   *     import("./TileEventType").TileSourceEventTypes, Return>} TileSourceOnSignature
+   * @typedef {import("../Observable.js").OnSignature<import("../Observable.js").EventTypes, import("../events/Event.js").default, Return> &
+   *   import("../Observable.js").OnSignature<import("../ObjectEventType.js").Types, import("../Object.js").ObjectEvent, Return> &
+   *   import("../Observable.js").OnSignature<import("./TileEventType.js").TileSourceEventTypes, TileSourceEvent, Return> &
+   *   import("../Observable.js").CombinedOnSignature<import("../Observable.js").EventTypes|import("../ObjectEventType.js").Types|
+   *     import("./TileEventType.js").TileSourceEventTypes, Return>} TileSourceOnSignature
    */
 
   /**
@@ -74358,12 +75704,12 @@
       });
 
       /***
-       * @type {TileSourceOnSignature<import("../events").EventsKey>}
+       * @type {TileSourceOnSignature<import("../events.js").EventsKey>}
        */
       this.on;
 
       /***
-       * @type {TileSourceOnSignature<import("../events").EventsKey>}
+       * @type {TileSourceOnSignature<import("../events.js").EventsKey>}
        */
       this.once;
 
@@ -74450,7 +75796,7 @@
     }
 
     /**
-     * @param {import("../proj/Projection").default} [projection] Projection.
+     * @param {import("../proj/Projection.js").default} [projection] Projection.
      * @return {Array<number>|null} Resolutions.
      * @override
      */
@@ -74846,6 +76192,7 @@
    * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
    * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
    * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
+   * @property {ReferrerPolicy} [referrerPolicy] The `referrerPolicy` property for loaded images.
    * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
    * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
    * @property {import("../proj.js").ProjectionLike} [projection] Projection. Default is the view projection.
@@ -74922,6 +76269,12 @@
        */
       this.crossOrigin =
         options.crossOrigin !== undefined ? options.crossOrigin : null;
+
+      /**
+       * @protected
+       * @type {ReferrerPolicy}
+       */
+      this.referrerPolicy = options.referrerPolicy;
 
       /**
        * @protected
@@ -75026,7 +76379,10 @@
         tileCoord,
         tileUrl !== undefined ? TileState.IDLE : TileState.EMPTY,
         tileUrl !== undefined ? tileUrl : '',
-        this.crossOrigin,
+        {
+          crossOrigin: this.crossOrigin,
+          referrerPolicy: this.referrerPolicy,
+        },
         this.tileLoadFunction,
         this.tileOptions,
       );
@@ -75166,10 +76522,13 @@
         credentials = 'include';
       }
 
-      fetch(src, {
+      const options = {
         mode,
         credentials,
-      })
+        referrerPolicy: imageTile.getReferrerPolicy(),
+      };
+
+      fetch(src, options)
         .then((response) => {
           if (!response.ok) {
             throw new Error(`HTTP ${response.status}`);
@@ -75213,6 +76572,7 @@
    * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
    * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
    * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
+   * @property {ReferrerPolicy} [referrerPolicy] The `referrerPolicy` property for loaded images.
    * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
    * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
    * @property {import("../proj.js").ProjectionLike} [projection='EPSG:3857'] Projection.
@@ -75295,6 +76655,7 @@
         attributions: options.attributions,
         cacheSize: options.cacheSize,
         crossOrigin: options.crossOrigin,
+        referrerPolicy: options.referrerPolicy,
         interpolate: options.interpolate,
         projection: projection,
         reprojectionErrorThreshold: options.reprojectionErrorThreshold,
@@ -75654,135 +77015,6 @@
   }
 
   /**
-   * @module ol/source/common
-   */
-
-
-  /**
-   * Number of decimal digits to consider in integer values when rounding.
-   * @type {number}
-   */
-  const DECIMALS = 4;
-
-  /**
-   * @module ol/source/wms
-   */
-
-
-  /**
-   * Default WMS version.
-   * @type {string}
-   */
-  const DEFAULT_VERSION = '1.3.0';
-
-  /**
-   * @api
-   * @typedef {'carmentaserver' | 'geoserver' | 'mapserver' | 'qgis'} ServerType
-   * Set the server type to use implementation-specific parameters beyond the WMS specification.
-   *  - `'carmentaserver'`: HiDPI support for [Carmenta Server](https://www.carmenta.com/en/products/carmenta-server)
-   *  - `'geoserver'`: HiDPI support for [GeoServer](https://geoserver.org/)
-   *  - `'mapserver'`: HiDPI support for [MapServer](https://mapserver.org/)
-   *  - `'qgis'`: HiDPI support for [QGIS](https://qgis.org/)
-   */
-
-  /**
-   * @param {string} baseUrl Base URL.
-   * @param {import("../extent.js").Extent} extent Extent.
-   * @param {import("../size.js").Size} size Size.
-   * @param {import("../proj/Projection.js").default} projection Projection.
-   * @param {Object} params WMS params. Will be modified in place.
-   * @return {string} Request URL.
-   */
-  function getRequestUrl(baseUrl, extent, size, projection, params) {
-    params['WIDTH'] = size[0];
-    params['HEIGHT'] = size[1];
-
-    const axisOrientation = projection.getAxisOrientation();
-    const v13 = compareVersions(params['VERSION'], '1.3') >= 0;
-    params[v13 ? 'CRS' : 'SRS'] = projection.getCode();
-    const bbox =
-      v13 && axisOrientation.startsWith('ne')
-        ? [extent[1], extent[0], extent[3], extent[2]]
-        : extent;
-    params['BBOX'] = bbox.join(',');
-
-    return appendParams(baseUrl, params);
-  }
-
-  /**
-   * @param {import("../extent").Extent} extent Extent.
-   * @param {number} resolution Resolution.
-   * @param {number} pixelRatio pixel ratio.
-   * @param {import("../proj.js").Projection} projection Projection.
-   * @param {string} url WMS service url.
-   * @param {Object} params WMS params.
-   * @param {import("./wms.js").ServerType} serverType The type of the remote WMS server.
-   * @return {string} Image src.
-   */
-  function getImageSrc(
-    extent,
-    resolution,
-    pixelRatio,
-    projection,
-    url,
-    params,
-    serverType,
-  ) {
-    params = Object.assign({REQUEST: 'GetMap'}, params);
-
-    const imageResolution = resolution / pixelRatio;
-
-    const imageSize = [
-      round(getWidth(extent) / imageResolution, DECIMALS),
-      round(getHeight(extent) / imageResolution, DECIMALS),
-    ];
-
-    if (pixelRatio != 1) {
-      switch (serverType) {
-        case 'geoserver':
-          const dpi = (90 * pixelRatio + 0.5) | 0;
-          if ('FORMAT_OPTIONS' in params) {
-            params['FORMAT_OPTIONS'] += ';dpi:' + dpi;
-          } else {
-            params['FORMAT_OPTIONS'] = 'dpi:' + dpi;
-          }
-          break;
-        case 'mapserver':
-          params['MAP_RESOLUTION'] = 90 * pixelRatio;
-          break;
-        case 'carmentaserver':
-        case 'qgis':
-          params['DPI'] = 90 * pixelRatio;
-          break;
-        default:
-          throw new Error('Unknown `serverType` configured');
-      }
-    }
-
-    const src = getRequestUrl(url, extent, imageSize, projection, params);
-    return src;
-  }
-
-  /**
-   * @param {Object} params WMS params.
-   * @param {string} request WMS `REQUEST`.
-   * @return {Object} WMS params with required properties set.
-   */
-  function getRequestParams(params, request) {
-    return Object.assign(
-      {
-        'REQUEST': request,
-        'SERVICE': 'WMS',
-        'VERSION': DEFAULT_VERSION,
-        'FORMAT': 'image/png',
-        'STYLES': '',
-        'TRANSPARENT': 'TRUE',
-      },
-      params,
-    );
-  }
-
-  /**
    * @module ol/source/OSM
    */
 
@@ -75806,6 +77038,7 @@
    * @property {null|string} [crossOrigin='anonymous'] The `crossOrigin` attribute for loaded images.  Note that
    * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
    * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
+   * @property {ReferrerPolicy} [referrerPolicy='origin-when-cross-origin'] The `referrerPolicy` property for loaded images.
    * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
    * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
    * @property {number} [maxZoom=19] Max zoom.
@@ -75846,9 +77079,6 @@
         attributions = [ATTRIBUTION];
       }
 
-      const crossOrigin =
-        options.crossOrigin !== undefined ? options.crossOrigin : 'anonymous';
-
       const url =
         options.url !== undefined
           ? options.url
@@ -75858,442 +77088,18 @@
         attributions: attributions,
         attributionsCollapsible: false,
         cacheSize: options.cacheSize,
-        crossOrigin: crossOrigin,
+        crossOrigin:
+          options.crossOrigin !== undefined ? options.crossOrigin : 'anonymous',
+        referrerPolicy: options.referrerPolicy || 'origin-when-cross-origin',
         interpolate: options.interpolate,
         maxZoom: options.maxZoom !== undefined ? options.maxZoom : 19,
         reprojectionErrorThreshold: options.reprojectionErrorThreshold,
-        tileLoadFunction:
-          /**
-           * @param {import("../ImageTile.js").default} tile Image tile
-           * @param {string} src Image src
-           */
-          (tile, src) => {
-            const image = tile.getImage();
-            // FIXME referrer policy for worker fetch requests
-            if (!WORKER_OFFSCREEN_CANVAS && image instanceof HTMLImageElement) {
-              image.referrerPolicy = 'origin-when-cross-origin';
-            }
-            (options.tileLoadFunction || defaultTileLoadFunction)(tile, src);
-          },
+        tileLoadFunction: options.tileLoadFunction,
         transition: options.transition,
         url: url,
         wrapX: options.wrapX,
         zDirection: options.zDirection,
       });
-    }
-  }
-
-  /**
-   * @module ol/source/TileWMS
-   */
-
-
-  /**
-   * @typedef {Object} Options
-   * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
-   * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
-   * @property {number} [cacheSize] Deprecated.  Use the cacheSize option on the layer instead.
-   * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
-   * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
-   * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
-   * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
-   * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
-   * @property {Object<string,*>} params WMS request parameters.
-   * At least a `LAYERS` param is required. `STYLES` is
-   * `''` by default. `VERSION` is `1.3.0` by default. `WIDTH`, `HEIGHT`, `BBOX`
-   * and `CRS` (`SRS` for WMS version < 1.3.0) will be set dynamically.
-   * @property {number} [gutter=0]
-   * The size in pixels of the gutter around image tiles to ignore. By setting
-   * this property to a non-zero value, images will be requested that are wider
-   * and taller than the tile size by a value of `2 x gutter`.
-   * Using a non-zero value allows artifacts of rendering at tile edges to be
-   * ignored. If you control the WMS service it is recommended to address
-   * "artifacts at tile edges" issues by properly configuring the WMS service. For
-   * example, MapServer has a `tile_map_edge_buffer` configuration parameter for
-   * this. See https://mapserver.org/output/tile_mode.html.
-   * @property {boolean} [hidpi=true] Use the `ol/Map#pixelRatio` value when requesting
-   * the image from the remote server.
-   * @property {import("../proj.js").ProjectionLike} [projection] Projection. Default is the view projection.
-   * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
-   * Higher values can increase reprojection performance, but decrease precision.
-   * @property {typeof import("../ImageTile.js").default} [tileClass] Class used to instantiate image tiles.
-   * Default is {@link module:ol/ImageTile~ImageTile}.
-   * @property {import("../tilegrid/TileGrid.js").default} [tileGrid] Tile grid. Base this on the resolutions,
-   * tilesize and extent supported by the server.
-   * If this is not defined, a default grid will be used: if there is a projection
-   * extent, the grid will be based on that; if not, a grid based on a global
-   * extent with origin at 0,0 will be used.
-   * @property {import("./wms.js").ServerType} [serverType] The type of
-   * the remote WMS server: `mapserver`, `geoserver`, `carmentaserver`, or `qgis`.
-   * Only needed if `hidpi` is `true`.
-   * @property {import("../Tile.js").LoadFunction} [tileLoadFunction] Optional function to load a tile given a URL. The default is
-   * ```js
-   * function(imageTile, src) {
-   *   imageTile.getImage().src = src;
-   * };
-   * ```
-   * @property {string} [url] WMS service URL.
-   * @property {Array<string>} [urls] WMS service urls.
-   * Use this instead of `url` when the WMS supports multiple urls for GetMap requests.
-   * @property {boolean} [wrapX=true] Whether to wrap the world horizontally.
-   * When set to `false`, only one world
-   * will be rendered. When `true`, tiles will be requested for one world only,
-   * but they will be wrapped horizontally to render multiple worlds.
-   * @property {number} [transition] Duration of the opacity transition for rendering.
-   * To disable the opacity transition, pass `transition: 0`.
-   * @property {number|import("../array.js").NearestDirectionFunction} [zDirection=0]
-   * Choose whether to use tiles with a higher or lower zoom level when between integer
-   * zoom levels. See {@link module:ol/tilegrid/TileGrid~TileGrid#getZForResolution}.
-   */
-
-  /**
-   * @classdesc
-   * Layer source for tile data from WMS servers.
-   * @api
-   */
-  class TileWMS extends TileImage {
-    /**
-     * @param {Options} [options] Tile WMS options.
-     */
-    constructor(options) {
-      options = options ? options : /** @type {Options} */ ({});
-
-      const params = Object.assign({}, options.params);
-
-      super({
-        attributions: options.attributions,
-        attributionsCollapsible: options.attributionsCollapsible,
-        cacheSize: options.cacheSize,
-        crossOrigin: options.crossOrigin,
-        interpolate: options.interpolate,
-        projection: options.projection,
-        reprojectionErrorThreshold: options.reprojectionErrorThreshold,
-        tileClass: options.tileClass,
-        tileGrid: options.tileGrid,
-        tileLoadFunction: options.tileLoadFunction,
-        url: options.url,
-        urls: options.urls,
-        wrapX: options.wrapX !== undefined ? options.wrapX : true,
-        transition: options.transition,
-        zDirection: options.zDirection,
-      });
-
-      /**
-       * @private
-       * @type {number}
-       */
-      this.gutter_ = options.gutter !== undefined ? options.gutter : 0;
-
-      /**
-       * @private
-       * @type {!Object}
-       */
-      this.params_ = params;
-
-      /**
-       * @private
-       * @type {boolean}
-       */
-      this.v13_ = true;
-
-      /**
-       * @private
-       * @type {import("./wms.js").ServerType}
-       */
-      this.serverType_ = options.serverType;
-
-      /**
-       * @private
-       * @type {boolean}
-       */
-      this.hidpi_ = options.hidpi !== undefined ? options.hidpi : true;
-
-      /**
-       * @private
-       * @type {import("../extent.js").Extent}
-       */
-      this.tmpExtent_ = createEmpty();
-
-      this.updateV13_();
-      this.setKey(this.getKeyForParams_());
-    }
-
-    /**
-     * Return the GetFeatureInfo URL for the passed coordinate, resolution, and
-     * projection. Return `undefined` if the GetFeatureInfo URL cannot be
-     * constructed.
-     * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
-     * @param {number} resolution Resolution.
-     * @param {import("../proj.js").ProjectionLike} projection Projection.
-     * @param {!Object} params GetFeatureInfo params. `INFO_FORMAT` at least should
-     *     be provided. If `QUERY_LAYERS` is not provided then the layers specified
-     *     in the `LAYERS` parameter will be used. `VERSION` should not be
-     *     specified here.
-     * @return {string|undefined} GetFeatureInfo URL.
-     * @api
-     */
-    getFeatureInfoUrl(coordinate, resolution, projection, params) {
-      const projectionObj = get$2(projection);
-      const sourceProjectionObj = this.getProjection() || projectionObj;
-
-      let tileGrid = this.getTileGrid();
-      if (!tileGrid) {
-        tileGrid = this.getTileGridForProjection(sourceProjectionObj);
-      }
-
-      const sourceProjCoord = transform$1(
-        coordinate,
-        projectionObj,
-        sourceProjectionObj,
-      );
-      const sourceResolution = calculateSourceResolution(
-        sourceProjectionObj,
-        projectionObj,
-        coordinate,
-        resolution,
-      );
-
-      const z = tileGrid.getZForResolution(sourceResolution, this.zDirection);
-      const tileResolution = tileGrid.getResolution(z);
-      const tileCoord = tileGrid.getTileCoordForCoordAndZ(sourceProjCoord, z);
-
-      if (tileGrid.getResolutions().length <= tileCoord[0]) {
-        return undefined;
-      }
-
-      let tileExtent = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent_);
-
-      const gutter = this.gutter_;
-      if (gutter !== 0) {
-        tileExtent = buffer(tileExtent, tileResolution * gutter, tileExtent);
-      }
-
-      const baseParams = {
-        'QUERY_LAYERS': this.params_['LAYERS'],
-      };
-      Object.assign(
-        baseParams,
-        getRequestParams(this.params_, 'GetFeatureInfo'),
-        params,
-      );
-
-      const x = Math.floor((sourceProjCoord[0] - tileExtent[0]) / tileResolution);
-      const y = Math.floor((tileExtent[3] - sourceProjCoord[1]) / tileResolution);
-
-      baseParams[this.v13_ ? 'I' : 'X'] = x;
-      baseParams[this.v13_ ? 'J' : 'Y'] = y;
-
-      return this.getRequestUrl_(
-        tileCoord,
-        tileExtent,
-        1,
-        sourceProjectionObj || projectionObj,
-        baseParams,
-      );
-    }
-
-    /**
-     * Return the GetLegendGraphic URL, optionally optimized for the passed
-     * resolution and possibly including any passed specific parameters. Returns
-     * `undefined` if the GetLegendGraphic URL cannot be constructed.
-     *
-     * @param {number} [resolution] Resolution. If set to undefined, `SCALE`
-     *     will not be calculated and included in URL.
-     * @param {Object} [params] GetLegendGraphic params. If `LAYER` is set, the
-     *     request is generated for this wms layer, else it will try to use the
-     *     configured wms layer. Default `FORMAT` is `image/png`.
-     *     `VERSION` should not be specified here.
-     * @return {string|undefined} GetLegendGraphic URL.
-     * @api
-     */
-    getLegendUrl(resolution, params) {
-      if (this.urls[0] === undefined) {
-        return undefined;
-      }
-
-      const baseParams = {
-        'SERVICE': 'WMS',
-        'VERSION': DEFAULT_VERSION,
-        'REQUEST': 'GetLegendGraphic',
-        'FORMAT': 'image/png',
-      };
-
-      if (params === undefined || params['LAYER'] === undefined) {
-        const layers = this.params_.LAYERS;
-        const isSingleLayer = !Array.isArray(layers) || layers.length === 1;
-        if (!isSingleLayer) {
-          return undefined;
-        }
-        baseParams['LAYER'] = layers;
-      }
-
-      if (resolution !== undefined) {
-        const mpu = this.getProjection()
-          ? this.getProjection().getMetersPerUnit()
-          : 1;
-        const pixelSize = 0.00028;
-        baseParams['SCALE'] = (resolution * mpu) / pixelSize;
-      }
-
-      Object.assign(baseParams, params);
-
-      return appendParams(/** @type {string} */ (this.urls[0]), baseParams);
-    }
-
-    /**
-     * @return {number} Gutter.
-     * @override
-     */
-    getGutter() {
-      return this.gutter_;
-    }
-
-    /**
-     * Get the user-provided params, i.e. those passed to the constructor through
-     * the "params" option, and possibly updated using the updateParams method.
-     * @return {Object} Params.
-     * @api
-     */
-    getParams() {
-      return this.params_;
-    }
-
-    /**
-     * @param {import("../tilecoord.js").TileCoord} tileCoord Tile coordinate.
-     * @param {import("../extent.js").Extent} tileExtent Tile extent.
-     * @param {number} pixelRatio Pixel ratio.
-     * @param {import("../proj/Projection.js").default} projection Projection.
-     * @param {Object} params Params.
-     * @return {string|undefined} Request URL.
-     * @private
-     */
-    getRequestUrl_(tileCoord, tileExtent, pixelRatio, projection, params) {
-      const urls = this.urls;
-      if (!urls) {
-        return undefined;
-      }
-      let url;
-      if (urls.length == 1) {
-        url = urls[0];
-      } else {
-        const index = modulo(hash(tileCoord), urls.length);
-        url = urls[index];
-      }
-
-      return getImageSrc(
-        tileExtent,
-        (
-          this.tileGrid || this.getTileGridForProjection(projection)
-        ).getResolution(tileCoord[0]),
-        pixelRatio,
-        projection,
-        url,
-        params,
-        this.serverType_,
-      );
-    }
-
-    /**
-     * Get the tile pixel ratio for this source.
-     * @param {number} pixelRatio Pixel ratio.
-     * @return {number} Tile pixel ratio.
-     * @override
-     */
-    getTilePixelRatio(pixelRatio) {
-      return !this.hidpi_ || this.serverType_ === undefined ? 1 : pixelRatio;
-    }
-
-    /**
-     * @private
-     * @return {string} The key for the current params.
-     */
-    getKeyForParams_() {
-      let i = 0;
-      const res = [];
-      for (const key in this.params_) {
-        res[i++] = key + '-' + this.params_[key];
-      }
-      return res.join('/');
-    }
-
-    /**
-     * @param {Object} params New URL paremeters.
-     * @private
-     */
-    setParams_(params) {
-      this.params_ = params;
-      this.updateV13_();
-      this.setKey(this.getKeyForParams_());
-    }
-
-    /**
-     * Set the URL parameters passed to the WMS source.
-     * @param {Object} params New URL paremeters.
-     * @api
-     */
-    setParams(params) {
-      this.setParams_(Object.assign({}, params));
-    }
-
-    /**
-     * Update the URL parameters. This method can be used to update a subset of the WMS
-     * parameters. Call `setParams` to set all of the parameters.
-     * @param {Object} params Updated URL parameters.
-     * @api
-     */
-    updateParams(params) {
-      this.setParams_(Object.assign(this.params_, params));
-    }
-
-    /**
-     * @private
-     */
-    updateV13_() {
-      const version = this.params_['VERSION'] || DEFAULT_VERSION;
-      this.v13_ = compareVersions(version, '1.3') >= 0;
-    }
-
-    /**
-     * @param {import("../tilecoord.js").TileCoord} tileCoord The tile coordinate
-     * @param {number} pixelRatio The pixel ratio
-     * @param {import("../proj/Projection.js").default} projection The projection
-     * @return {string|undefined} The tile URL
-     * @override
-     */
-    tileUrlFunction(tileCoord, pixelRatio, projection) {
-      let tileGrid = this.getTileGrid();
-      if (!tileGrid) {
-        tileGrid = this.getTileGridForProjection(projection);
-      }
-
-      if (tileGrid.getResolutions().length <= tileCoord[0]) {
-        return undefined;
-      }
-
-      if (pixelRatio != 1 && (!this.hidpi_ || this.serverType_ === undefined)) {
-        pixelRatio = 1;
-      }
-
-      const tileResolution = tileGrid.getResolution(tileCoord[0]);
-      let tileExtent = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent_);
-
-      const gutter = this.gutter_;
-      if (gutter !== 0) {
-        tileExtent = buffer(tileExtent, tileResolution * gutter, tileExtent);
-      }
-
-      const baseParams = Object.assign(
-        {},
-        getRequestParams(this.params_, 'GetMap'),
-      );
-
-      return this.getRequestUrl_(
-        tileCoord,
-        tileExtent,
-        pixelRatio,
-        projection,
-        baseParams,
-      );
     }
   }
 
@@ -76315,6 +77121,7 @@
    * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
    * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
    * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
+   * @property {ReferrerPolicy} [referrerPolicy] The `referrerPolicy` property for loaded images.
    * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
    * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
    * @property {import("../tilegrid/WMTS.js").default} tileGrid Tile grid.
@@ -76384,6 +77191,7 @@
         attributionsCollapsible: options.attributionsCollapsible,
         cacheSize: options.cacheSize,
         crossOrigin: options.crossOrigin,
+        referrerPolicy: options.referrerPolicy,
         interpolate: options.interpolate,
         projection: options.projection,
         reprojectionErrorThreshold: options.reprojectionErrorThreshold,
@@ -76627,6 +77435,23 @@
     }
   }
 
+  /**
+   * @module ol/style
+   */
+
+  var style = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    Circle: CircleStyle,
+    Fill: Fill,
+    Icon: Icon,
+    IconImage: IconImage,
+    Image: ImageStyle,
+    RegularShape: RegularShape,
+    Stroke: Stroke,
+    Style: Style,
+    Text: Text
+  });
+
   // Openlayers imports used in this package
   // Will be used both in the sources & the build
 
@@ -76659,7 +77484,7 @@
       Tile: TileLayer,
       Vector: VectorLayer,
     },
-    Map: Map,
+    Map: Map$1,
     loadingstrategy: loadingstrategy,
     proj: {
       ...proj,
@@ -76669,7 +77494,6 @@
       //BingMaps: source.BingMaps,
       Cluster: Cluster,
       OSM: OSM,
-      TileWMS: TileWMS,
       Vector: VectorSource,
       WMTS: WMTS,
       XYZ: XYZ,
@@ -77134,47 +77958,6 @@
   }
 
   /**
-   * Italy IGM
-   * Doc : https://gn.mase.gov.it/
-   * Map : http://www.pcn.minambiente.it/viewer/
-   */
-  class IGM extends TileLayer {
-    constructor() {
-      super({
-        source: new TileWMS({
-          url: 'https://chemineur.fr/assets/proxy/?s=minambiente.it', // Not available via https
-          attributions: '&copy <a href="https://gn.mase.gov.it/">IGM</a>',
-        }),
-        maxResolution: 120,
-        extent: [720000, 4380000, 2070000, 5970000],
-      });
-    }
-
-    setMapInternal(map) {
-      const view = map.getView();
-
-      view.on('change:resolution', () => this.updateResolution(view));
-      this.updateResolution(view);
-
-      return super.setMapInternal(map);
-    }
-
-    updateResolution(view) {
-      const mapResolution = view.getResolutionForZoom(view.getZoom());
-      let layerResolution = 25000; // mapResolution < 10
-
-      if (mapResolution > 10) layerResolution = 100000;
-      if (mapResolution > 30) layerResolution = 250000;
-
-      this.getSource().updateParams({
-        type: 'png',
-        map: '/ms_ogc/WMS_v1.3/raster/IGM_' + layerResolution + '.map',
-        layers: (layerResolution === 100000 ? 'MB.IGM' : 'CB.IGM') + layerResolution,
-      });
-    }
-  }
-
-  /**
    * Ordnance Survey : Great Britain
    * API & key : https://osdatahub.os.uk/
    */
@@ -77466,7 +78249,6 @@
         key: options.os, // For simplified options
         ...options.os, // Include key
       }),
-      'Italie': new IGM(),
 
       'Google': new Google(),
       /*'Photo Bing': new Bing({
@@ -77612,7 +78394,6 @@
     ArcGIS: ArcGIS,
     CartoDB: CartoDB,
     Google: Google,
-    IGM: IGM,
     IGN: IGN,
     IGNplan: IGNplan,
     IGNtop25: IGNtop25,
@@ -79564,6 +80345,7 @@
 
     render(evt) {
       const view = evt.map.getView(),
+        permalinks = (localStorage.permalink || '6/47/2').split('/'),
         //BEST init with res=<resolution> or extent (not zoom, lon, lat)
         urlMod = (typeof this.options.init === 'object' ? // init: [<zoom>, <lon>, <lat>]
           'zoom=' + this.options.init[0] + '&lon=' + this.options.init[1] + '&lat=' + this.options.init[2] + ',' :
@@ -79573,9 +80355,9 @@
           'zoom=$1&lon=$2&lat=$3' // zoom=<zoom>&lon=<lon>&lat=<lat>
         ) + ',' +
         // Last values
-        'zoom=' + localStorage.myolZoom + ',' +
-        'lon=' + localStorage.myolLon + ',' +
-        'lat=' + localStorage.myolLat + ',' +
+        'zoom=' + permalinks[0] + ',' +
+        'lat=' + permalinks[1] + ',' +
+        'lon=' + permalinks[2] + ',' +
         // Default
         'zoom=' + this.options.default[0] + '&lon=' + this.options.default[1] + '&lat=' + this.options.default[2];
 
@@ -79593,16 +80375,18 @@
 
       // Set the permalink with current map zoom, position & layer
       if (view.getCenter()) {
-        const ll4326 = transform$1(view.getCenter(), 'EPSG:3857', 'EPSG:4326'),
-          newParams = 'map=' +
-          (localStorage.myolZoom = Math.round(view.getZoom() * 10) / 10) + '/' +
-          (localStorage.myolLon = Math.round(ll4326[0] * 10000) / 10000) + '/' +
-          (localStorage.myolLat = Math.round(ll4326[1] * 10000) / 10000) +
-          '&baselayer=' + encodeURI(localStorage.myolBaselayer);
+        const ll4326 = transform$1(view.getCenter(), 'EPSG:3857', 'EPSG:4326');
+
+        localStorage.permalink = [
+          view.getZoom().toFixed(1),
+          ll4326[1].toFixed(5),
+          ll4326[0].toFixed(5),
+        ].join('/');
 
         if (this.linkEl) {
-          this.linkEl.href = this.options.hash + newParams;
+          const newParams = 'map=' + localStorage.permalink + '&baselayer=' + encodeURI(localStorage.myolBaselayer);
 
+          this.linkEl.href = this.options.hash + newParams;
           if (this.options.setUrl)
             location.href = '#' + newParams;
         }
@@ -79972,7 +80756,10 @@
     }, {});
     var paramName, paramVal, paramOutname;
     var params = {
-      proj: 'projName',
+      proj: function (v) {
+        // 'lonlat', 'latlon' and 'latlong' are aliases of 'longlat'
+        self.projName = ['lonlat', 'latlon', 'latlong'].includes(v) ? 'longlat' : v;
+      },
       datum: 'datumCode',
       rf: function (v) {
         self.rf = parseFloat(v);
@@ -79991,6 +80778,9 @@
       },
       lon_0: function (v) {
         self.long0 = v * D2R$1;
+      },
+      lon_wrap: function (v) {
+        self.long_wrap = parseFloat(v) * D2R$1;
       },
       lon_1: function (v) {
         self.long1 = v * D2R$1;
@@ -80147,10 +80937,11 @@
         if (abbreviation === 'E') direction = 'east';
         else if (abbreviation === 'N') direction = 'north';
         else if (abbreviation === 'U') direction = 'up';
+        else if (node[2]) direction = node[2];
         else throw new Error(`Unknown axis abbreviation: ${abbreviation}`);
       } else {
         // Use the explicit direction provided in the AXIS node
-        direction = node[2] ? node[2].toLowerCase() : 'unknown';
+        direction = node[2] || 'unknown';
       }
 
       const orderNode = node.find((child) => Array.isArray(child) && child[0] === 'ORDER');
@@ -80194,7 +80985,7 @@
           const csNode = node.find((child) => Array.isArray(child) && child[0] === 'CS');
           if (csNode) {
             result.coordinate_system = {
-              type: csNode[1],
+              subtype: csNode[1],
               axis: this.extractAxes(node),
             };
           }
@@ -80210,7 +81001,8 @@
 
         case 'BASEGEOGCRS':
         case 'GEOGCRS':
-          result.type = 'GeographicCRS';
+        case 'GEODCRS':
+          result.type = node[0] === 'GEODCRS' ? 'GeodeticCRS' : 'GeographicCRS';
           result.name = node[1];
         
           // Handle DATUM or ENSEMBLE
@@ -80233,8 +81025,9 @@
             }
           }
         
+          const geogCsNode = node.find((child) => Array.isArray(child) && child[0] === 'CS');
           result.coordinate_system = {
-            type: 'ellipsoidal',
+            subtype: geogCsNode ? geogCsNode[1] : 'ellipsoidal',
             axis: this.extractAxes(node),
           };
         
@@ -80415,90 +81208,13 @@
     }
   }
 
-  class PROJJSONBuilder2015 extends PROJJSONBuilderBase {
-    static convert(node, result = {}) {
-      super.convert(node, result);
-
-      // Skip `CS` and `USAGE` nodes for WKT2-2015
-      if (result.coordinate_system && result.coordinate_system.subtype === 'Cartesian') {
-        delete result.coordinate_system;
-      }
-      if (result.usage) {
-        delete result.usage;
-      }
-
-      return result;
-    }
-  }
-
-  class PROJJSONBuilder2019 extends PROJJSONBuilderBase {
-    static convert(node, result = {}) {
-      super.convert(node, result);
-
-      // Handle `CS` node for WKT2-2019
-      const csNode = node.find((child) => Array.isArray(child) && child[0] === 'CS');
-      if (csNode) {
-        result.coordinate_system = {
-          subtype: csNode[1],
-          axis: this.extractAxes(node),
-        };
-      }
-
-      // Handle `USAGE` node for WKT2-2019
-      const usageNode = node.find((child) => Array.isArray(child) && child[0] === 'USAGE');
-      if (usageNode) {
-        const scope = usageNode.find((child) => Array.isArray(child) && child[0] === 'SCOPE');
-        const area = usageNode.find((child) => Array.isArray(child) && child[0] === 'AREA');
-        const bbox = usageNode.find((child) => Array.isArray(child) && child[0] === 'BBOX');
-        result.usage = {};
-        if (scope) {
-          result.usage.scope = scope[1];
-        }
-        if (area) {
-          result.usage.area = area[1];
-        }
-        if (bbox) {
-          result.usage.bbox = bbox.slice(1);
-        }
-      }
-
-      return result;
-    }
-  }
-
-  /**
-   * Detects the WKT2 version based on the structure of the WKT.
-   * @param {Array} root The root WKT array node.
-   * @returns {string} The detected version ("2015" or "2019").
-   */
-  function detectWKT2Version(root) {
-    // Check for WKT2-2019-specific nodes
-    if (root.find((child) => Array.isArray(child) && child[0] === 'USAGE')) {
-      return '2019'; // `USAGE` is specific to WKT2-2019
-    }
-
-    // Check for WKT2-2015-specific nodes
-    if (root.find((child) => Array.isArray(child) && child[0] === 'CS')) {
-      return '2015'; // `CS` is valid in both, but default to 2015 unless `USAGE` is present
-    }
-
-    if (root[0] === 'BOUNDCRS' || root[0] === 'PROJCRS' || root[0] === 'GEOGCRS') {
-      return '2015'; // These are valid in both, but default to 2015
-    }
-
-    // Default to WKT2-2015 if no specific indicators are found
-    return '2015';
-  }
-
   /**
    * Builds a PROJJSON object from a WKT array structure.
    * @param {Array} root The root WKT array node.
    * @returns {Object} The PROJJSON object.
    */
   function buildPROJJSON(root) {
-    const version = detectWKT2Version(root);
-    const builder = version === '2019' ? PROJJSONBuilder2019 : PROJJSONBuilder2015;
-    return builder.convert(root);
+    return PROJJSONBuilderBase.convert(root);
   }
 
   /**
@@ -80834,8 +81550,8 @@
     // Normalize projName for WKT2 compatibility
     const normalizedProjName = (wkt.projName || '').toLowerCase().replace(/_/g, ' ');
 
-    if (!wkt.long0 && wkt.longc && (normalizedProjName === 'albers conic equal area' || normalizedProjName === 'lambert azimuthal equal area')) {
-      wkt.long0 = wkt.longc;
+    if (wkt.long0 === undefined && wkt.longc !== undefined) {
+      wkt.long0 = wkt.longc; // keep in the projection's native prime meridian frame
     }
     if (!wkt.lat_ts && wkt.lat1 && (normalizedProjName === 'stereographic south pole' || normalizedProjName === 'polar stereographic (variant b)')) {
       wkt.lat0 = d2r(wkt.lat1 > 0 ? 90 : -90);
@@ -80931,6 +81647,12 @@
         case 'type':
           if (value === 'GeographicCRS') {
             result.projName = 'longlat';
+          } else if (value === 'GeodeticCRS') {
+            if (projjson.coordinate_system && projjson.coordinate_system.subtype === 'Cartesian') {
+              result.projName = 'geocent';
+            } else {
+              result.projName = 'longlat';
+            }
           } else if (value === 'ProjectedCRS' && projjson.conversion && projjson.conversion.method) {
             result.projName = projjson.conversion.method.name; // Retain original capitalization
           }
@@ -80959,16 +81681,24 @@
 
         case 'coordinate_system':
           if (value.axis) {
-            result.axis = value.axis
-              .map((axis) => {
-                const direction = axis.direction;
-                if (direction === 'east') return 'e';
-                if (direction === 'north') return 'n';
-                if (direction === 'west') return 'w';
-                if (direction === 'south') return 's';
-                throw new Error(`Unknown axis direction: ${direction}`);
-              })
-              .join('') + 'u'; // Combine into a single string (e.g., "enu")
+            const directionMap = {
+              'east': 'e',
+              'north': 'n',
+              'west': 'w',
+              'south': 's',
+              'up': 'u',
+              'down': 'd',
+              'geocentricx': 'e',
+              'geocentricy': 'n',
+              'geocentricz': 'u',
+            };
+            const mapped = value.axis.map((axis) => directionMap[axis.direction.toLowerCase()]);
+            if (mapped.every(Boolean)) {
+              result.axis = mapped.join('');
+              if (result.axis.length === 2) {
+                result.axis += 'u';
+              }
+            }
 
             if (value.unit) {
               const { units, to_meter } = processUnit(value.unit);
@@ -81196,9 +81926,9 @@
       geogcs = wkt;
     }
     if (geogcs) {
-      //if(wkt.GEOGCS.PRIMEM&&wkt.GEOGCS.PRIMEM.convert){
-      //  wkt.from_greenwich=wkt.GEOGCS.PRIMEM.convert*D2R;
-      //}
+      if (geogcs.PRIMEM && geogcs.PRIMEM.convert) {
+        wkt.from_greenwich = d2r(geogcs.PRIMEM.convert);
+      }
       if (geogcs.DATUM) {
         wkt.datumCode = geogcs.DATUM.name.toLowerCase();
       } else {
@@ -81226,7 +81956,7 @@
         }
 
         wkt.a = geogcs.DATUM.SPHEROID.a;
-        wkt.rf = parseFloat(geogcs.DATUM.SPHEROID.rf, 10);
+        wkt.rf = parseFloat(geogcs.DATUM.SPHEROID.rf);
       }
 
       if (geogcs.DATUM && geogcs.DATUM.TOWGS84) {
@@ -81335,6 +82065,7 @@
    * @property {number} [long0]
    * @property {number} [long1]
    * @property {number} [long2]
+   * @property {number} [long_wrap]
    * @property {number} [alpha]
    * @property {number} [longc]
    * @property {number} [x0]
@@ -81440,6 +82171,9 @@
   }
   var codes = ['3857', '900913', '3785', '102113'];
   function checkMercator(item) {
+    if (item.title) {
+      return item.title.toLowerCase().indexOf('epsg:') === 0 && codes.indexOf(item.title.substr(5)) > -1;
+    }
     var auth = match(item, 'authority');
     if (!auth) {
       return;
@@ -81462,31 +82196,27 @@
    * @returns {import('./defs').ProjectionDefinition}
    */
   function parse(code) {
+    let out;
     if (testObj(code)) {
       // check to see if this is a WKT string
       if (testDef(code)) {
-        return defs[code];
-      }
-      if (testWKT(code)) {
-        var out = wkt(code);
-        // test of spetial case, due to this being a very common and often malformed
-        if (checkMercator(out)) {
-          return defs['EPSG:3857'];
-        }
+        out = defs[code];
+      } else if (testWKT(code)) {
+        out = wkt(code);
         var maybeProjStr = checkProjStr(out);
         if (maybeProjStr) {
-          return projStr(maybeProjStr);
+          out = projStr(maybeProjStr);
         }
-        return out;
-      }
-      if (testProj(code)) {
-        return projStr(code);
+      } else if (testProj(code)) {
+        out = projStr(code);
       }
     } else if (!('projName' in code)) {
-      return wkt(code);
+      out = wkt(code);
     } else {
-      return code;
+      out = code;
     }
+    // test for special Web Mercator case, due to this being a very common and often malformed
+    return out && checkMercator(out) ? defs['EPSG:3857'] : out;
   }
 
   function extend (destination, source) {
@@ -81551,7 +82281,7 @@
    */
 
   /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
-  function init$y() {
+  function init$z() {
     var con = this.b / this.a;
     this.es = 1 - con * con;
     if (!('x0' in this)) {
@@ -81560,6 +82290,7 @@
     if (!('y0' in this)) {
       this.y0 = 0;
     }
+    this.long0 = this.long0 || 0;
     this.e = Math.sqrt(this.es);
     if (this.lat_ts) {
       if (this.sphere) {
@@ -81581,7 +82312,7 @@
   /* Mercator forward equations--mapping lat,long to x,y
     -------------------------------------------------- */
 
-  function forward$w(p) {
+  function forward$x(p) {
     var lon = p.x;
     var lat = p.y;
     // convert to radians
@@ -81610,7 +82341,7 @@
 
   /* Mercator inverse equations--mapping x,y to lat/long
     -------------------------------------------------- */
-  function inverse$w(p) {
+  function inverse$x(p) {
     var x = p.x - this.x0;
     var y = p.y - this.y0;
     var lon, lat;
@@ -81631,32 +82362,32 @@
     return p;
   }
 
-  var names$y = ['Mercator', 'Popular Visualisation Pseudo Mercator', 'Mercator_1SP', 'Mercator_Auxiliary_Sphere', 'Mercator_Variant_A', 'merc'];
+  var names$z = ['Mercator', 'Popular Visualisation Pseudo Mercator', 'Mercator_1SP', 'Mercator_Auxiliary_Sphere', 'Mercator_Variant_A', 'merc'];
   var merc = {
-    init: init$y,
-    forward: forward$w,
-    inverse: inverse$w,
-    names: names$y
+    init: init$z,
+    forward: forward$x,
+    inverse: inverse$x,
+    names: names$z
   };
 
-  function init$x() {
+  function init$y() {
     // no-op for longlat
   }
 
   function identity(pt) {
     return pt;
   }
-  var names$x = ['longlat', 'identity'];
+  var names$y = ['longlat', 'identity', 'lonlat', 'latlon', 'latlong'];
   var longlat = {
-    init: init$x,
+    init: init$y,
     forward: identity,
     inverse: identity,
-    names: names$x
+    names: names$y
   };
 
   /** @type {Array<Partial<import('./Proj').default>>} */
   var projs = [merc, longlat];
-  var names$w = {};
+  var names$x = {};
   var projStore = [];
 
   /**
@@ -81671,7 +82402,7 @@
     }
     projStore[len] = proj;
     proj.names.forEach(function (n) {
-      names$w[n.toLowerCase()] = len;
+      names$x[n.toLowerCase()] = len;
     });
     return this;
   }
@@ -81690,12 +82421,12 @@
       return false;
     }
     var n = name.toLowerCase();
-    if (typeof names$w[n] !== 'undefined' && projStore[names$w[n]]) {
-      return projStore[names$w[n]];
+    if (typeof names$x[n] !== 'undefined' && projStore[names$x[n]]) {
+      return projStore[names$x[n]];
     }
     n = getNormalizedProjName(n);
-    if (n in names$w && projStore[names$w[n]]) {
-      return projStore[names$w[n]];
+    if (n in names$x && projStore[names$x[n]]) {
+      return projStore[names$x[n]];
     }
   }
 
@@ -81887,7 +82618,7 @@
     },
     plessis: {
       a: 6376523,
-      rf: 6355863,
+      b: 6355863,
       ellipseName: 'Plessis 1817 (France)'
     },
     krass: {
@@ -82012,7 +82743,7 @@
     },
     carthage: {
       towgs84: '-263.0,6.0,431.0',
-      ellipse: 'clark80',
+      ellipse: 'clrk80ign',
       datumName: 'Carthage 1934 Tunisia'
     },
     hermannskogel: {
@@ -82110,7 +82841,7 @@
       towgs84: '-178.3,-316.7,-131.5,5.278,6.077,10.979,19.166'
     },
     EPSG_4231: {
-      towgs84: '-83.11,-97.38,-117.22,0.0276,-0.2167,0.2147,0.1218'
+      towgs84: '-83.11,-97.38,-117.22,0.005693,-0.044698,0.044285,0.1218'
     },
     EPSG_4274: {
       towgs84: '-230.994,102.591,25.199,0.633,-0.239,0.9,1.95'
@@ -82140,7 +82871,7 @@
       towgs84: '8.846,-4.394,-1.122,-0.00237,-0.146528,0.130428,0.783926'
     },
     EPSG_4289: {
-      towgs84: '565.7381,50.4018,465.2904,-1.91514,1.60363,-9.09546,4.07244'
+      towgs84: '565.7381,50.4018,465.2904,-0.395026,0.330772,-1.876073,4.07244'
     },
     EPSG_4230: {
       towgs84: '-68.863,-134.888,-111.49,-0.53,-0.14,0.57,-3.4'
@@ -82170,7 +82901,7 @@
       towgs84: '-45,417,-3.5'
     },
     EPSG_4611: {
-      towgs84: '-162.619,-276.959,-161.764,0.067753,-2.243649,-1.158827,-1.094246'
+      towgs84: '-162.619,-276.959,-161.764,0.067753,-2.243648,-1.158828,-1.094246'
     },
     EPSG_4633: {
       towgs84: '137.092,131.66,91.475,-1.9436,-11.5993,-4.3321,-7.4824'
@@ -82188,7 +82919,7 @@
       towgs84: '482.5,-130.6,564.6,-1.042,-0.214,-0.631,8.15'
     },
     EPSG_4660: {
-      towgs84: '982.6087,552.753,-540.873,32.39344,-153.25684,-96.2266,16.805'
+      towgs84: '982.6087,552.753,-540.873,6.681627,-31.611492,-19.848161,16.805'
     },
     EPSG_4662: {
       towgs84: '97.295,-263.247,310.882,-1.5999,0.8386,3.1409,13.3259'
@@ -82218,7 +82949,7 @@
       towgs84: '217.109,86.452,23.711,0.0183,-0.0003,0.007,-0.0093'
     },
     EPSG_9333: {
-      towgs84: '0,0,0,-8.393,0.749,-10.276,0'
+      towgs84: '0,0,0,-0.008393,0.000749,-0.010276,0'
     },
     EPSG_9059: {
       towgs84: '0,0,0'
@@ -82374,7 +83105,7 @@
       towgs84: '674.374,15.056,405.346'
     },
     EPSG_4617: {
-      towgs84: '-0.991,1.9072,0.5129,1.25033e-7,4.6785e-8,5.6529e-8,0'
+      towgs84: '-0.991,1.9072,0.5129,0.02579,0.00965,0.01166,0'
     },
     EPSG_4663: {
       towgs84: '-210.502,-66.902,-48.476,2.094,-15.067,-5.817,0.485'
@@ -82437,10 +83168,10 @@
       towgs84: '275.57,676.78,229.6'
     },
     EPSG_4283: {
-      towgs84: '61.55,-10.87,-40.19,39.4924,32.7221,32.8979,-9.994'
+      towgs84: '0.06155,-0.01087,-0.04019,0.039492,0.032722,0.032898,-0.009994'
     },
     EPSG_4317: {
-      towgs84: '2.3287,-147.0425,-92.0802,-0.3092483,0.32482185,0.49729934,5.68906266'
+      towgs84: '2.3287,-147.0425,-92.0802,-0.309248,0.324822,0.497299,5.689063'
     },
     EPSG_4272: {
       towgs84: '59.47,-5.04,187.44,0.47,-0.1,1.024,-4.5993'
@@ -82563,7 +83294,7 @@
       towgs84: '-208.4058,-109.8777,-2.5764'
     },
     ESRI_104101: {
-      towgs84: '374,150,588'
+      towgs84: '372.87,149.23,585.29'
     },
     EPSG_4693: {
       towgs84: '0,-0.15,0.68'
@@ -83248,6 +83979,87 @@
     },
     EPSG_4818: {
       towgs84: '589,76,480'
+    },
+    EPSG_10328: {
+      towgs84: '0,0,0'
+    },
+    EPSG_9782: {
+      towgs84: '0,0,0'
+    },
+    EPSG_9777: {
+      towgs84: '0,0,0'
+    },
+    EPSG_10690: {
+      towgs84: '0,0,0'
+    },
+    EPSG_10639: {
+      towgs84: '0,0,0'
+    },
+    EPSG_10739: {
+      towgs84: '0,0,0'
+    },
+    EPSG_7686: {
+      towgs84: '0,0,0'
+    },
+    EPSG_8900: {
+      towgs84: '0,0,0'
+    },
+    EPSG_5886: {
+      towgs84: '0,0,0'
+    },
+    EPSG_7683: {
+      towgs84: '0,0,0'
+    },
+    EPSG_6668: {
+      towgs84: '0,0,0'
+    },
+    EPSG_20046: {
+      towgs84: '0,0,0'
+    },
+    EPSG_10299: {
+      towgs84: '0,0,0'
+    },
+    EPSG_10310: {
+      towgs84: '0,0,0'
+    },
+    EPSG_10475: {
+      towgs84: '0,0,0'
+    },
+    EPSG_4742: {
+      towgs84: '0,0,0'
+    },
+    EPSG_10671: {
+      towgs84: '0,0,0'
+    },
+    EPSG_10762: {
+      towgs84: '0,0,0'
+    },
+    EPSG_10725: {
+      towgs84: '0,0,0'
+    },
+    EPSG_10791: {
+      towgs84: '0,0,0'
+    },
+    EPSG_10800: {
+      towgs84: '0,0,0'
+    },
+    EPSG_10305: {
+      towgs84: '0,0,0'
+    },
+    EPSG_10941: {
+      towgs84: '0,0,0'
+    },
+    EPSG_10968: {
+      towgs84: '0,0,0'
+    },
+    EPSG_10875: {
+      towgs84: '0,0,0'
+    },
+    EPSG_6318: {
+      towgs84: '0,0,0'
+    },
+    EPSG_10910: {
+      towgs84: '0,0,0'
     }
   };
 
@@ -83261,14 +84073,10 @@
 
   function datum(datumCode, datum_params, a, b, es, ep2, nadgrids) {
     var out = {};
-
-    if (datumCode === undefined || datumCode === 'none') {
-      out.datum_type = PJD_NODATUM;
-    } else {
-      out.datum_type = PJD_WGS84;
-    }
+    out.datum_type = PJD_NODATUM;
 
     if (datum_params) {
+      out.datum_type = PJD_WGS84;
       out.datum_params = datum_params.map(parseFloat);
       if (out.datum_params[0] !== 0 || out.datum_params[1] !== 0 || out.datum_params[2] !== 0) {
         out.datum_type = PJD_3PARAM;
@@ -83337,22 +84145,6 @@
 
   /** @typedef {{header: NadgridHeader, subgrids: Array<Subgrid>}} NADGrid */
 
-  /**
-   * @typedef {Object} GeoTIFF
-   * @property {() => Promise<number>} getImageCount - Returns the number of images in the GeoTIFF.
-   * @property {(index: number) => Promise<GeoTIFFImage>} getImage - Returns a GeoTIFFImage for the given index.
-   */
-
-  /**
-   * @typedef {Object} GeoTIFFImage
-   * @property {() => number} getWidth - Returns the width of the image.
-   * @property {() => number} getHeight - Returns the height of the image.
-   * @property {() => number[]} getBoundingBox - Returns the bounding box as [minX, minY, maxX, maxY] in degrees.
-   * @property {() => Promise<ArrayLike<ArrayLike<number>>>} readRasters - Returns the raster data as an array of bands.
-   * @property {Object} fileDirectory - The file directory object containing metadata.
-   * @property {Object} fileDirectory.ModelPixelScale - The pixel scale array [scaleX, scaleY, scaleZ] in degrees.
-   */
-
   var loadedNadgrids = {};
 
   /**
@@ -83365,14 +84157,14 @@
   /**
    * @overload
    * @param {string} key - The key to associate with the loaded grid.
-   * @param {GeoTIFF} data - The GeoTIFF instance to read the grid from.
+   * @param {import('geotiff').GeoTIFF} data - The GeoTIFF instance to read the grid from.
    * @returns {{ready: Promise<NADGrid>}} - A promise that resolves to the loaded grid information.
    */
   /**
    * Load either a NTv2 file (.gsb) or a Geotiff (.tif) to a key that can be used in a proj string like +nadgrids=<key>. Pass the NTv2 file
    * as an ArrayBuffer. Pass Geotiff as a GeoTIFF instance from the geotiff.js library.
    * @param {string} key - The key to associate with the loaded grid.
-   * @param {ArrayBuffer|GeoTIFF} data The data to load, either an ArrayBuffer for NTv2 or a GeoTIFF instance.
+   * @param {ArrayBuffer|import('geotiff').GeoTIFF} data The data to load, either an ArrayBuffer for NTv2 or a GeoTIFF instance.
    * @param {NTV2GridOptions} [options] Optional parameters.
    * @returns {{ready: Promise<NADGrid>}|NADGrid} - A promise that resolves to the loaded grid information.
    */
@@ -83405,7 +84197,7 @@
 
   /**
    * @param {string} key The key to associate with the loaded grid.
-   * @param {GeoTIFF} tiff The GeoTIFF instance to read the grid from.
+   * @param {import('geotiff').GeoTIFF} tiff The GeoTIFF instance to read the grid from.
    * @returns {Promise<NADGrid>} A promise that resolves to the loaded NAD grid information.
    */
   async function readGeotiffGrid(key, tiff) {
@@ -83419,7 +84211,12 @@
       var data = rasters;
       var lim = [image.getWidth(), image.getHeight()];
       var imageBBoxRadians = image.getBoundingBox().map(degreesToRadians);
-      var del = [image.fileDirectory.ModelPixelScale[0], image.fileDirectory.ModelPixelScale[1]].map(degreesToRadians);
+      var modelPixelScale = typeof image.fileDirectory.getValue === 'function'
+        // geotiff v3
+        ? image.fileDirectory.getValue('ModelPixelScale')
+        // geotiff v2
+        : /** @type {any} */ (image.fileDirectory).ModelPixelScale;
+      var del = [modelPixelScale[0], modelPixelScale[1]].map(degreesToRadians);
 
       var maxX = imageBBoxRadians[0] + (lim[0] - 1) * del[0];
       var minY = imageBBoxRadians[3] - (lim[1] - 1) * del[1];
@@ -83628,6 +84425,8 @@
     this.init = null;
     /** @type {string} */
     this.name;
+    /** @type {string} */
+    this.axis;
     /** @type {Array<string>} */
     this.names = null;
     /** @type {string} */
@@ -83655,7 +84454,6 @@
         json.datumName = datumDef.datumName ? datumDef.datumName : json.datumCode;
       }
     }
-    json.k0 = json.k0 || 1.0;
     json.axis = json.axis || 'enu';
     json.ellps = json.ellps || 'wgs84';
     json.lat1 = json.lat1 || json.lat0; // Lambert_Conformal_Conic_1SP, for example, needs this
@@ -83687,6 +84485,11 @@
     // init the projection
     if ('init' in this && typeof this.init === 'function') {
       this.init();
+    }
+
+    // only default the scale factor once the projection had a chance to set its own
+    if (!this.k0) {
+      this.k0 = 1.0;
     }
 
     // legecy callback from back in the day when it went to spatialreference.org
@@ -84119,60 +84922,82 @@
     return val;
   }
 
-  function adjust_axis (crs, denorm, point) {
-    var xin = point.x,
-      yin = point.y,
-      zin = point.z || 0.0;
-    var v, t, i;
+  var order = ['x', 'y', 'z'];
+
+  /**
+   * Convert a point in a given CRS axis order to ENU (east/north/up) order
+   * @param {import('./defs').ProjectionDefinition} crs
+   * @param {import('./core').InterfaceCoordinates} point
+   * @returns {import('./core').InterfaceCoordinates | null}
+   */
+  function adjustAxisToEnu(crs, point) {
     /** @type {import("./core").InterfaceCoordinates} */
-    var out = {};
-    for (i = 0; i < 3; i++) {
-      if (denorm && i === 2 && point.z === undefined) {
+    const out = {};
+    for (let i = 0, ii = crs.axis.length; i < ii; i++) {
+      if (i === 2 && point.z === undefined) {
         continue;
       }
-      if (i === 0) {
-        v = xin;
-        if ('ew'.indexOf(crs.axis[i]) !== -1) {
-          t = 'x';
-        } else {
-          t = 'y';
-        }
-      } else if (i === 1) {
-        v = yin;
-        if ('ns'.indexOf(crs.axis[i]) !== -1) {
-          t = 'y';
-        } else {
-          t = 'x';
-        }
-      } else {
-        v = zin;
-        t = 'z';
+      let v = point[order[i]];
+      switch (crs.axis[i]) {
+        case 'e':
+          out.x = v;
+          break;
+        case 'w':
+          out.x = -v;
+          break;
+        case 'n':
+          out.y = v;
+          break;
+        case 's':
+          out.y = -v;
+          break;
+        case 'u':
+          out.z = v;
+          break;
+        case 'd':
+          out.z = -v;
+          break;
+        default:
+          // console.log("ERROR: unknown axis ("+crs.axis[i]+") - check definition of "+crs.projName);
+          return null;
+      }
+    }
+    return out;
+  }
+
+  /**
+   * Convert a point in ENU (east/north/up) order to the given CRS axis order.
+   * @param {import('./defs').ProjectionDefinition} crs
+   * @param {import('./core').InterfaceCoordinates} point
+   * @returns {import('./core').InterfaceCoordinates | null}
+   */
+  function adjustAxisFromEnu(crs, point) {
+    const out = /** @type {import("./core").InterfaceCoordinates} */ ({});
+    for (let i = 0, ii = crs.axis.length; i < ii; i++) {
+      if (i === 2 && point.z === undefined) {
+        continue;
       }
       switch (crs.axis[i]) {
         case 'e':
-          out[t] = v;
+          out[order[i]] = point.x;
           break;
         case 'w':
-          out[t] = -v;
+          out[order[i]] = -point.x;
           break;
         case 'n':
-          out[t] = v;
+          out[order[i]] = point.y;
           break;
         case 's':
-          out[t] = -v;
+          out[order[i]] = -point.y;
           break;
         case 'u':
-          if (point[t] !== undefined) {
-            out.z = v;
-          }
+          out[order[i]] = point.z;
           break;
         case 'd':
-          if (point[t] !== undefined) {
-            out.z = -v;
-          }
+          out[order[i]] = -point.z;
           break;
         default:
-        // console.log("ERROR: unknow axis ("+crs.axis[i]+") - check definition of "+crs.projName);
+          // console.log("ERROR: unknown axis ("+crs.axis[i]+") - check definition of "+crs.projName);
           return null;
       }
     }
@@ -84220,36 +85045,26 @@
   }
 
   /**
+   * Internal transform: accepts an already-cloned point object, returns transformed point object.
    * @param {import('./defs').ProjectionDefinition} source
    * @param {import('./defs').ProjectionDefinition} dest
-   * @param {import('./core').TemplateCoordinates} point
-   * @param {boolean} enforceAxis
+   * @param {import('./core').InterfaceCoordinates} point
+   * @param {boolean} [enforceAxis]
    * @returns {import('./core').InterfaceCoordinates | undefined}
    */
-  function transform(source, dest, point, enforceAxis) {
+  function transformInternal(source, dest, point, enforceAxis) {
     var wgs84;
-    if (Array.isArray(point)) {
-      point = common(point);
-    } else {
-      // Clone the point object so inputs don't get modified
-      point = {
-        x: point.x,
-        y: point.y,
-        z: point.z,
-        m: point.m
-      };
-    }
     var hasZ = point.z !== undefined;
     checkSanity(point);
     // Workaround for datum shifts towgs84, if either source or destination projection is not wgs84
     if (source.datum && dest.datum && checkNotWGS(source, dest)) {
       wgs84 = new Projection('WGS84');
-      point = transform(source, wgs84, point, enforceAxis);
+      point = transformInternal(source, wgs84, point, enforceAxis);
       source = wgs84;
     }
     // DGR, 2010/11/12
     if (enforceAxis && source.axis !== 'enu') {
-      point = adjust_axis(source, false, point);
+      point = adjustAxisToEnu(source, point);
     }
     // Transform source points to long/lat, if they aren't already.
     if (source.projName === 'longlat') {
@@ -84294,6 +85109,10 @@
     }
 
     if (dest.projName === 'longlat') {
+      // wrap longitude into the range centered on dest.long_wrap, if requested (+lon_wrap)
+      if (dest.long_wrap !== undefined) {
+        point.x = dest.long_wrap + adjust_lon(point.x - dest.long_wrap);
+      }
       // convert radians to decimal degrees
       point = {
         x: point.x * R2D,
@@ -84313,13 +85132,31 @@
 
     // DGR, 2010/11/12
     if (enforceAxis && dest.axis !== 'enu') {
-      return adjust_axis(dest, true, point);
+      return adjustAxisFromEnu(dest, point);
     }
 
-    if (point && !hasZ) {
+    if (point && !hasZ && dest.projName !== 'geocent') {
       delete point.z;
     }
     return point;
+  }
+
+  /**
+   * @param {import('./defs').ProjectionDefinition} source
+   * @param {import('./defs').ProjectionDefinition} dest
+   * @param {import('./core').TemplateCoordinates} point
+   * @param {boolean} [enforceAxis]
+   * @returns {import('./core').InterfaceCoordinates | undefined}
+   */
+  function transform(source, dest, point, enforceAxis) {
+    var pt;
+    if (Array.isArray(point)) {
+      pt = common(point);
+    } else {
+      // Clone the point object so inputs don't get modified
+      pt = { x: point.x, y: point.y, z: point.z, m: point.m };
+    }
+    return transformInternal(source, dest, pt, enforceAxis);
   }
 
   var wgs84 = Projection('WGS84');
@@ -84404,37 +85241,36 @@
    * @returns {T}
    */
   function transformer(from, to, coords, enforceAxis) {
-    var transformedArray, out, keys;
+    var out, geocent, keys;
     if (Array.isArray(coords)) {
-      transformedArray = transform(from, to, coords, enforceAxis) || { x: NaN, y: NaN };
+      out = transformInternal(from, to, common(coords), enforceAxis) || { x: NaN, y: NaN };
       if (coords.length > 2) {
-        if ((typeof from.name !== 'undefined' && from.name === 'geocent') || (typeof to.name !== 'undefined' && to.name === 'geocent')) {
-          if (typeof transformedArray.z === 'number') {
-            return /** @type {T} */ ([transformedArray.x, transformedArray.y, transformedArray.z].concat(coords.slice(3)));
-          } else {
-            return /** @type {T} */ ([transformedArray.x, transformedArray.y, coords[2]].concat(coords.slice(3)));
+        geocent = (typeof from.name !== 'undefined' && from.name === 'geocent') || (typeof to.name !== 'undefined' && to.name === 'geocent');
+        if (geocent) {
+          if (typeof out.z === 'number') {
+            return /** @type {T} */ ([out.x, out.y, out.z].concat(coords.slice(3)));
           }
-        } else {
-          return /** @type {T} */ ([transformedArray.x, transformedArray.y].concat(coords.slice(2)));
+          return /** @type {T} */ ([out.x, out.y, coords[2]].concat(coords.slice(3)));
         }
-      } else {
-        return /** @type {T} */ ([transformedArray.x, transformedArray.y]);
+        if (enforceAxis && typeof out.z === 'number') {
+          return /** @type {T} */ ([out.x, out.y, out.z].concat(coords.slice(3)));
+        }
+        return /** @type {T} */ ([out.x, out.y].concat(coords.slice(2)));
       }
+      return /** @type {T} */ ([out.x, out.y]);
     } else {
-      out = transform(from, to, coords, enforceAxis);
+      out = transformInternal(from, to, { x: coords.x, y: coords.y, z: coords.z, m: coords.m }, enforceAxis) || { x: NaN, y: NaN };
       keys = Object.keys(coords);
       if (keys.length === 2) {
         return /** @type {T} */ (out);
       }
+      geocent = (typeof from.name !== 'undefined' && from.name === 'geocent') || (typeof to.name !== 'undefined' && to.name === 'geocent');
       keys.forEach(function (key) {
-        if ((typeof from.name !== 'undefined' && from.name === 'geocent') || (typeof to.name !== 'undefined' && to.name === 'geocent')) {
-          if (key === 'x' || key === 'y' || key === 'z') {
-            return;
-          }
-        } else {
-          if (key === 'x' || key === 'y') {
-            return;
-          }
+        if (key === 'x' || key === 'y') {
+          return;
+        }
+        if (key === 'z' && (geocent || enforceAxis)) {
+          return;
         }
         out[key] = coords[key];
       });
@@ -84573,8 +85409,8 @@
   var V = 86; // V
   var Z = 90; // Z
   var mgrs = {
-    forward: forward$v,
-    inverse: inverse$v,
+    forward: forward$w,
+    inverse: inverse$w,
     toPoint: toPoint
   };
   /**
@@ -84586,7 +85422,7 @@
    *      100 m, 2 for 1000 m or 1 for 10000 m). Optional, default is 5.
    * @return {string} the MGRS string for the given location and accuracy.
    */
-  function forward$v(ll, accuracy) {
+  function forward$w(ll, accuracy) {
     accuracy = accuracy || 5; // default accuracy 1m
     return encode(LLtoUTM({
       lat: ll[1],
@@ -84601,7 +85437,7 @@
    *     (longitude) and top (latitude) values in WGS84, representing the
    *     bounding box for the provided MGRS reference.
    */
-  function inverse$v(mgrs) {
+  function inverse$w(mgrs) {
     var bbox = UTMtoLL(decode(mgrs.toUpperCase()));
     if (bbox.lat && bbox.lon) {
       return [bbox.lon, bbox.lat, bbox.lon, bbox.lat];
@@ -85319,7 +86155,7 @@
     return new Point(toPoint(mgrsStr));
   };
   Point.prototype.toMGRS = function (accuracy) {
-    return forward$v([this.x, this.y], accuracy);
+    return forward$w([this.x, this.y], accuracy);
   };
 
   var C00 = 1;
@@ -85385,7 +86221,7 @@
    */
 
   /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
-  function init$w() {
+  function init$x() {
     this.x0 = this.x0 !== undefined ? this.x0 : 0;
     this.y0 = this.y0 !== undefined ? this.y0 : 0;
     this.long0 = this.long0 !== undefined ? this.long0 : 0;
@@ -85401,7 +86237,7 @@
       Transverse Mercator Forward  - long/lat to x/y
       long/lat in radians
     */
-  function forward$u(p) {
+  function forward$v(p) {
     var lon = p.x;
     var lat = p.y;
 
@@ -85472,7 +86308,7 @@
   /**
       Transverse Mercator Inverse  -  x/y to long/lat
     */
-  function inverse$u(p) {
+  function inverse$v(p) {
     var con, phi;
     var lat, lon;
     var x = (p.x - this.x0) * (1 / this.a);
@@ -85533,12 +86369,12 @@
     return p;
   }
 
-  var names$v = ['Fast_Transverse_Mercator', 'Fast Transverse Mercator'];
+  var names$w = ['Fast_Transverse_Mercator', 'Fast Transverse Mercator'];
   var tmerc = {
-    init: init$w,
-    forward: forward$u,
-    inverse: inverse$u,
-    names: names$v
+    init: init$x,
+    forward: forward$v,
+    inverse: inverse$v,
+    names: names$w
   };
 
   function sinh (x) {
@@ -85654,7 +86490,7 @@
    */
 
   /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
-  function init$v() {
+  function init$w() {
     if (!this.approx && (isNaN(this.es) || this.es <= 0)) {
       throw new Error('Incorrect elliptical usage. Try using the +approx option in the proj string, or PROJECTION["Fast_Transverse_Mercator"] in the WKT.');
     }
@@ -85669,6 +86505,7 @@
     this.y0 = this.y0 !== undefined ? this.y0 : 0;
     this.long0 = this.long0 !== undefined ? this.long0 : 0;
     this.lat0 = this.lat0 !== undefined ? this.lat0 : 0;
+    this.k0 = this.k0 !== undefined ? this.k0 : 1;
 
     this.cgb = [];
     this.cbg = [];
@@ -85731,7 +86568,7 @@
     this.Zb = -this.Qn * (Z + clens(this.gtu, 2 * Z));
   }
 
-  function forward$t(p) {
+  function forward$u(p) {
     var Ce = adjust_lon(p.x - this.long0, this.over);
     var Cn = p.y;
 
@@ -85767,7 +86604,7 @@
     return p;
   }
 
-  function inverse$t(p) {
+  function inverse$u(p) {
     var Ce = (p.x - this.x0) * (1 / this.a);
     var Cn = (p.y - this.y0) * (1 / this.a);
 
@@ -85805,12 +86642,12 @@
     return p;
   }
 
-  var names$u = ['Extended_Transverse_Mercator', 'Extended Transverse Mercator', 'etmerc', 'Transverse_Mercator', 'Transverse Mercator', 'Gauss Kruger', 'Gauss_Kruger', 'tmerc'];
+  var names$v = ['Extended_Transverse_Mercator', 'Extended Transverse Mercator', 'etmerc', 'Transverse_Mercator', 'Transverse Mercator', 'Gauss Kruger', 'Gauss_Kruger', 'tmerc'];
   var etmerc = {
-    init: init$v,
-    forward: forward$t,
-    inverse: inverse$t,
-    names: names$u
+    init: init$w,
+    forward: forward$u,
+    inverse: inverse$u,
+    names: names$v
   };
 
   function adjust_zone (zone, lon) {
@@ -85829,7 +86666,7 @@
   var dependsOn = 'etmerc';
 
   /** @this {import('../defs.js').ProjectionDefinition} */
-  function init$u() {
+  function init$v() {
     var zone = adjust_zone(this.zone, this.long0);
     if (zone === undefined) {
       throw new Error('unknown utm zone');
@@ -85845,10 +86682,10 @@
     this.inverse = etmerc.inverse;
   }
 
-  var names$t = ['Universal Transverse Mercator System', 'utm'];
+  var names$u = ['Universal Transverse Mercator System', 'utm'];
   var utm = {
-    init: init$u,
-    names: names$t,
+    init: init$v,
+    names: names$u,
     dependsOn: dependsOn
   };
 
@@ -85870,7 +86707,7 @@
    */
 
   /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
-  function init$t() {
+  function init$u() {
     var sphi = Math.sin(this.lat0);
     var cphi = Math.cos(this.lat0);
     cphi *= cphi;
@@ -85881,7 +86718,7 @@
     this.K = Math.tan(0.5 * this.phic0 + FORTPI) / (Math.pow(Math.tan(0.5 * this.lat0 + FORTPI), this.C) * srat(this.e * sphi, this.ratexp));
   }
 
-  function forward$s(p) {
+  function forward$t(p) {
     var lon = p.x;
     var lat = p.y;
 
@@ -85890,7 +86727,7 @@
     return p;
   }
 
-  function inverse$s(p) {
+  function inverse$t(p) {
     var DEL_TOL = 1e-14;
     var lon = p.x / this.C;
     var lat = p.y;
@@ -85911,9 +86748,9 @@
     return p;
   }
   var gauss = {
-    init: init$t,
-    forward: forward$s,
-    inverse: inverse$s};
+    init: init$u,
+    forward: forward$t,
+    inverse: inverse$t};
 
   /**
    * @typedef {Object} LocalThis
@@ -85925,7 +86762,7 @@
    */
 
   /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
-  function init$s() {
+  function init$t() {
     gauss.init.apply(this);
     if (!this.rc) {
       return;
@@ -85938,7 +86775,7 @@
     }
   }
 
-  function forward$r(p) {
+  function forward$s(p) {
     var sinc, cosc, cosl, k;
     p.x = adjust_lon(p.x - this.long0, this.over);
     gauss.forward.apply(this, [p]);
@@ -85953,7 +86790,7 @@
     return p;
   }
 
-  function inverse$r(p) {
+  function inverse$s(p) {
     var sinc, cosc, lon, lat, rho;
     p.x = (p.x - this.x0) / this.a;
     p.y = (p.y - this.y0) / this.a;
@@ -85978,12 +86815,12 @@
     return p;
   }
 
-  var names$s = ['Stereographic_North_Pole', 'Oblique_Stereographic', 'sterea', 'Oblique Stereographic Alternative', 'Double_Stereographic'];
+  var names$t = ['Stereographic_North_Pole', 'Oblique_Stereographic', 'sterea', 'Oblique Stereographic Alternative', 'Double_Stereographic'];
   var sterea = {
-    init: init$s,
-    forward: forward$r,
-    inverse: inverse$r,
-    names: names$s
+    init: init$t,
+    forward: forward$s,
+    inverse: inverse$s,
+    names: names$t
   };
 
   /**
@@ -86005,7 +86842,7 @@
   }
 
   /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
-  function init$r() {
+  function init$s() {
     // setting default parameters
     this.x0 = this.x0 || 0;
     this.y0 = this.y0 || 0;
@@ -86015,7 +86852,7 @@
     this.coslat0 = Math.cos(this.lat0);
     this.sinlat0 = Math.sin(this.lat0);
     if (this.sphere) {
-      if (this.k0 === 1 && !isNaN(this.lat_ts) && Math.abs(this.coslat0) <= EPSLN) {
+      if (!isNaN(this.lat_ts) && Math.abs(this.coslat0) <= EPSLN) {
         this.k0 = 0.5 * (1 + sign(this.lat0) * Math.sin(this.lat_ts));
       }
     } else {
@@ -86031,9 +86868,9 @@
         }
       }
       this.cons = Math.sqrt(Math.pow(1 + this.e, 1 + this.e) * Math.pow(1 - this.e, 1 - this.e));
-      if (this.k0 === 1 && !isNaN(this.lat_ts) && Math.abs(this.coslat0) <= EPSLN && Math.abs(Math.cos(this.lat_ts)) > EPSLN) {
-        // When k0 is 1 (default value) and lat_ts is a vaild number and lat0 is at a pole and lat_ts is not at a pole
-        // Recalculate k0 using formula 21-35 from p161 of Snyder, 1987
+      if (!isNaN(this.lat_ts) && Math.abs(this.coslat0) <= EPSLN && Math.abs(Math.cos(this.lat_ts)) > EPSLN) {
+        // Polar Stereographic variant B: k0 is derived from lat_ts (EPSG guidance note 7-2, method 9829)
+        // https://epsg.org/coord-operation-method_9829/Polar-Stereographic-variant-B.html
         this.k0 = 0.5 * this.cons * msfnz(this.e, Math.sin(this.lat_ts), Math.cos(this.lat_ts)) / tsfnz(this.e, this.con * this.lat_ts, this.con * Math.sin(this.lat_ts));
       }
       this.ms1 = msfnz(this.e, this.sinlat0, this.coslat0);
@@ -86044,7 +86881,7 @@
   }
 
   // Stereographic forward equations--mapping lat,long to x,y
-  function forward$q(p) {
+  function forward$r(p) {
     var lon = p.x;
     var lat = p.y;
     var sinlat = Math.sin(lat);
@@ -86094,7 +86931,7 @@
   }
 
   //* Stereographic inverse equations--mapping x,y to lat/long
-  function inverse$q(p) {
+  function inverse$r(p) {
     p.x -= this.x0;
     p.y -= this.y0;
     var lon, lat, ts, ce, Chi;
@@ -86155,12 +86992,12 @@
     return p;
   }
 
-  var names$r = ['stere', 'Stereographic_South_Pole', 'Polar_Stereographic_variant_A', 'Polar_Stereographic_variant_B', 'Polar_Stereographic'];
+  var names$s = ['stere', 'Stereographic_South_Pole', 'Polar_Stereographic_variant_A', 'Polar_Stereographic_variant_B', 'Polar_Stereographic'];
   var stere = {
-    init: init$r,
-    forward: forward$q,
-    inverse: inverse$q,
-    names: names$r,
+    init: init$s,
+    forward: forward$r,
+    inverse: inverse$r,
+    names: names$s,
     ssfn_: ssfn_
   };
 
@@ -86182,7 +87019,10 @@
    */
 
   /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
-  function init$q() {
+  function init$r() {
+    if (!this.k0) {
+      this.k0 = 1;
+    }
     var phy0 = this.lat0;
     this.lambda0 = this.long0;
     var sinPhy0 = Math.sin(phy0);
@@ -86200,7 +87040,7 @@
     this.K = k1 - this.alpha * k2 + this.alpha * e / 2 * k3;
   }
 
-  function forward$p(p) {
+  function forward$q(p) {
     var Sa1 = Math.log(Math.tan(Math.PI / 4 - p.y / 2));
     var Sa2 = this.e / 2 * Math.log((1 + this.e * Math.sin(p.y)) / (1 - this.e * Math.sin(p.y)));
     var S = -this.alpha * (Sa1 + Sa2) + this.K;
@@ -86221,7 +87061,7 @@
     return p;
   }
 
-  function inverse$p(p) {
+  function inverse$q(p) {
     var Y = p.x - this.x0;
     var X = p.y - this.y0;
 
@@ -86253,12 +87093,12 @@
     return p;
   }
 
-  var names$q = ['somerc'];
+  var names$r = ['somerc'];
   var somerc = {
-    init: init$q,
-    forward: forward$p,
-    inverse: inverse$p,
-    names: names$q
+    init: init$r,
+    forward: forward$q,
+    inverse: inverse$q,
+    names: names$r
   };
 
   /**
@@ -86297,9 +87137,13 @@
    * Initialize the Oblique Mercator  projection
    * @this {import('../defs.js').ProjectionDefinition & LocalThis}
    */
-  function init$p() {
+  function init$q() {
     var con, com, cosph0, D, F, H, L, sinph0, p, J, gamma = 0,
       gamma0, lamc = 0, lam1 = 0, lam2 = 0, phi1 = 0, phi2 = 0, alpha_c = 0;
+
+    if (!this.k0) {
+      this.k0 = 1;
+    }
 
     // only Type A uses the no_off or no_uoff property
     // https://github.com/OSGeo/proj.4/issues/104
@@ -86322,6 +87166,10 @@
 
     if (gam) {
       gamma = this.rectified_grid_angle;
+      if (!alp) {
+        alpha_c = 0;
+        alp = true;
+      }
     }
 
     if (alp || gam) {
@@ -86426,7 +87274,7 @@
 
   /* Oblique Mercator forward equations--mapping lat,long to x,y
       ---------------------------------------------------------- */
-  function forward$o(p) {
+  function forward$p(p) {
     var coords = {};
     var S, T, U, V, W, temp, u, v;
     p.x = p.x - this.lam0;
@@ -86469,10 +87317,16 @@
     coords.x = (this.a * coords.x + this.x0);
     coords.y = (this.a * coords.y + this.y0);
 
+    if (p.z !== undefined) {
+      coords.z = p.z;
+    }
+    if (p.m !== undefined) {
+      coords.m = p.m;
+    }
     return coords;
   }
 
-  function inverse$o(p) {
+  function inverse$p(p) {
     var u, v, Qp, Sp, Tp, Vp, Up;
     var coords = {};
 
@@ -86509,15 +87363,21 @@
 
     coords.x += this.lam0;
 
+    if (p.z !== undefined) {
+      coords.z = p.z;
+    }
+    if (p.m !== undefined) {
+      coords.m = p.m;
+    }
     return coords;
   }
 
-  var names$p = ['Hotine_Oblique_Mercator', 'Hotine Oblique Mercator', 'Hotine_Oblique_Mercator_variant_A', 'Hotine_Oblique_Mercator_Variant_B', 'Hotine_Oblique_Mercator_Azimuth_Natural_Origin', 'Hotine_Oblique_Mercator_Two_Point_Natural_Origin', 'Hotine_Oblique_Mercator_Azimuth_Center', 'Oblique_Mercator', 'omerc'];
+  var names$q = ['Hotine_Oblique_Mercator', 'Hotine Oblique Mercator', 'Hotine_Oblique_Mercator_variant_A', 'Hotine_Oblique_Mercator_Variant_B', 'Hotine_Oblique_Mercator_Azimuth_Natural_Origin', 'Hotine_Oblique_Mercator_Two_Point_Natural_Origin', 'Hotine_Oblique_Mercator_Azimuth_Center', 'Oblique_Mercator', 'omerc'];
   var omerc = {
-    init: init$p,
-    forward: forward$o,
-    inverse: inverse$o,
-    names: names$p
+    init: init$q,
+    forward: forward$p,
+    inverse: inverse$p,
+    names: names$q
   };
 
   /**
@@ -86529,7 +87389,7 @@
    */
 
   /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
-  function init$o() {
+  function init$p() {
     // double lat0;                    /* the reference latitude               */
     // double long0;                   /* the reference longitude              */
     // double lat1;                    /* first standard parallel              */
@@ -86550,6 +87410,7 @@
     }
     this.x0 = this.x0 || 0;
     this.y0 = this.y0 || 0;
+    this.long0 = this.long0 || 0;
     // Standard Parallels cannot be equal and on opposite sides of the equator
     if (Math.abs(this.lat1 + this.lat2) < EPSLN) {
       return;
@@ -86567,10 +87428,7 @@
     var cos2 = Math.cos(this.lat2);
     var ms2 = msfnz(this.e, sin2, cos2);
     var ts2 = tsfnz(this.e, this.lat2, sin2);
-
-    var ts0 = Math.abs(Math.abs(this.lat0) - HALF_PI) < EPSLN
-      ? 0 // Handle poles by setting ts0 to 0
-      : tsfnz(this.e, this.lat0, Math.sin(this.lat0));
+    var ts0 = tsfnz(this.e, this.lat0, Math.sin(this.lat0));
 
     if (Math.abs(this.lat1 - this.lat2) > EPSLN) {
       this.ns = Math.log(ms1 / ms2) / Math.log(ts1 / ts2);
@@ -86581,7 +87439,9 @@
       this.ns = sin1;
     }
     this.f0 = ms1 / (this.ns * Math.pow(ts1, this.ns));
-    this.rh = this.a * this.f0 * Math.pow(ts0, this.ns);
+    this.rh = Math.abs(Math.abs(this.lat0) - HALF_PI) < EPSLN
+      ? 0 // Handle poles by setting rh to 0
+      : this.a * this.f0 * Math.pow(ts0, this.ns);
     if (!this.title) {
       this.title = 'Lambert Conformal Conic';
     }
@@ -86589,7 +87449,7 @@
 
   // Lambert Conformal conic forward equations--mapping lat,long to x,y
   // -----------------------------------------------------------------
-  function forward$n(p) {
+  function forward$o(p) {
     var lon = p.x;
     var lat = p.y;
 
@@ -86619,7 +87479,7 @@
 
   // Lambert Conformal Conic inverse equations--mapping x,y to lat/long
   // -----------------------------------------------------------------
-  function inverse$n(p) {
+  function inverse$o(p) {
     var rh1, con, ts;
     var lat, lon;
     var x = (p.x - this.x0) / this.k0;
@@ -86652,7 +87512,7 @@
     return p;
   }
 
-  var names$o = [
+  var names$p = [
     'Lambert Tangential Conformal Conic Projection',
     'Lambert_Conformal_Conic',
     'Lambert_Conformal_Conic_1SP',
@@ -86663,13 +87523,13 @@
   ];
 
   var lcc = {
-    init: init$o,
-    forward: forward$n,
-    inverse: inverse$n,
-    names: names$o
+    init: init$p,
+    forward: forward$o,
+    inverse: inverse$o,
+    names: names$p
   };
 
-  function init$n() {
+  function init$o() {
     this.a = 6377397.155;
     this.es = 0.006674372230614;
     this.e = Math.sqrt(this.es);
@@ -86677,7 +87537,7 @@
       this.lat0 = 0.863937979737193;
     }
     if (!this.long0) {
-      this.long0 = 0.7417649320975901 - 0.308341501185665;
+      this.long0 = 0.7417649320975901 - 0.308341501185665; // 42.5° from Ferro = 24.833° from Greenwich
     }
     /* if scale not set default to 0.9999 */
     if (!this.k0) {
@@ -86704,7 +87564,7 @@
   /* ellipsoid */
   /* calculate xy from lat/lon */
   /* Constants, identical to inverse transform function */
-  function forward$m(p) {
+  function forward$n(p) {
     var gfi, u, deltav, s, d, eps, ro;
     var lon = p.x;
     var lat = p.y;
@@ -86728,7 +87588,7 @@
   }
 
   /* calculate lat/lon from xy */
-  function inverse$m(p) {
+  function inverse$n(p) {
     var u, deltav, s, d, eps, ro, fi1;
     var ok;
 
@@ -86766,12 +87626,12 @@
     return (p);
   }
 
-  var names$n = ['Krovak', 'krovak'];
+  var names$o = ['Krovak', 'Krovak Modified', 'Krovak (North Orientated)', 'Krovak Modified (North Orientated)', 'krovak'];
   var krovak = {
-    init: init$n,
-    forward: forward$m,
-    inverse: inverse$m,
-    names: names$n
+    init: init$o,
+    forward: forward$n,
+    inverse: inverse$n,
+    names: names$o
   };
 
   function mlfn (e0, e1, e2, e3, phi) {
@@ -86831,7 +87691,7 @@
    */
 
   /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
-  function init$m() {
+  function init$n() {
     if (!this.sphere) {
       this.e0 = e0fn(this.es);
       this.e1 = e1fn(this.es);
@@ -86843,7 +87703,7 @@
 
   /* Cassini forward equations--mapping lat,long to x,y
     ----------------------------------------------------------------------- */
-  function forward$l(p) {
+  function forward$m(p) {
     /* Forward equations
         ----------------- */
     var x, y;
@@ -86876,7 +87736,7 @@
 
   /* Inverse equations
     ----------------- */
-  function inverse$l(p) {
+  function inverse$m(p) {
     p.x -= this.x0;
     p.y -= this.y0;
     var x = p.x / this.a;
@@ -86914,12 +87774,12 @@
     return p;
   }
 
-  var names$m = ['Cassini', 'Cassini_Soldner', 'cass'];
+  var names$n = ['Cassini', 'Cassini_Soldner', 'cass'];
   var cass = {
-    init: init$m,
-    forward: forward$l,
-    inverse: inverse$l,
-    names: names$m
+    init: init$n,
+    forward: forward$m,
+    inverse: inverse$m,
+    names: names$n
   };
 
   function qsfnz (eccent, sinphi) {
@@ -86930,6 +87790,32 @@
     } else {
       return (2 * sinphi);
     }
+  }
+
+  var P00 = 0.33333333333333333333;
+  var P01 = 0.17222222222222222222;
+  var P02 = 0.10257936507936507936;
+  var P10 = 0.06388888888888888888;
+  var P11 = 0.06640211640211640211;
+  var P20 = 0.01641501294219154443;
+
+  function authset(es) {
+    var t;
+    var APA = [];
+    APA[0] = es * P00;
+    t = es * es;
+    APA[0] += t * P01;
+    APA[1] = t * P10;
+    t *= es;
+    APA[0] += t * P02;
+    APA[1] += t * P11;
+    APA[2] = t * P20;
+    return APA;
+  }
+
+  function authlat(beta, APA) {
+    var t = beta + beta;
+    return (beta + APA[0] * Math.sin(t) + APA[1] * Math.sin(t + t) + APA[2] * Math.sin(t + t + t));
   }
 
   /**
@@ -86965,7 +87851,7 @@
    * Initialize the Lambert Azimuthal Equal Area projection
    * @this {import('../defs.js').ProjectionDefinition & LocalThis}
    */
-  function init$l() {
+  function init$m() {
     var t = Math.abs(this.lat0);
     if (Math.abs(t - HALF_PI) < EPSLN) {
       this.mode = this.lat0 < 0 ? S_POLE : N_POLE;
@@ -87013,7 +87899,7 @@
 
   /* Lambert Azimuthal Equal Area forward equations--mapping lat,long to x,y
     ----------------------------------------------------------------------- */
-  function forward$k(p) {
+  function forward$l(p) {
     /* Forward equations
         ----------------- */
     var x, y, coslam, sinlam, sinphi, q, sinb, cosb, b, cosphi;
@@ -87106,7 +87992,7 @@
 
   /* Inverse equations
     ----------------- */
-  function inverse$k(p) {
+  function inverse$l(p) {
     p.x -= this.x0;
     p.y -= this.y0;
     var x = p.x / this.a;
@@ -87193,40 +88079,12 @@
     return p;
   }
 
-  /* determine latitude from authalic latitude */
-  var P00 = 0.33333333333333333333;
-
-  var P01 = 0.17222222222222222222;
-  var P02 = 0.10257936507936507936;
-  var P10 = 0.06388888888888888888;
-  var P11 = 0.06640211640211640211;
-  var P20 = 0.01641501294219154443;
-
-  function authset(es) {
-    var t;
-    var APA = [];
-    APA[0] = es * P00;
-    t = es * es;
-    APA[0] += t * P01;
-    APA[1] = t * P10;
-    t *= es;
-    APA[0] += t * P02;
-    APA[1] += t * P11;
-    APA[2] = t * P20;
-    return APA;
-  }
-
-  function authlat(beta, APA) {
-    var t = beta + beta;
-    return (beta + APA[0] * Math.sin(t) + APA[1] * Math.sin(t + t) + APA[2] * Math.sin(t + t + t));
-  }
-
-  var names$l = ['Lambert Azimuthal Equal Area', 'Lambert_Azimuthal_Equal_Area', 'laea'];
+  var names$m = ['Lambert Azimuthal Equal Area', 'Lambert_Azimuthal_Equal_Area', 'laea'];
   var laea = {
-    init: init$l,
-    forward: forward$k,
-    inverse: inverse$k,
-    names: names$l,
+    init: init$m,
+    forward: forward$l,
+    inverse: inverse$l,
+    names: names$m,
     S_POLE: S_POLE,
     N_POLE: N_POLE,
     EQUIT: EQUIT,
@@ -87264,7 +88122,7 @@
    */
 
   /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
-  function init$k() {
+  function init$l() {
     if (Math.abs(this.lat1 + this.lat2) < EPSLN) {
       return;
     }
@@ -87302,7 +88160,7 @@
   /* Albers Conical Equal Area forward equations--mapping lat,long to x,y
     ------------------------------------------------------------------- */
   /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
-  function forward$j(p) {
+  function forward$k(p) {
     var lon = p.x;
     var lat = p.y;
 
@@ -87320,7 +88178,7 @@
     return p;
   }
 
-  function inverse$j(p) {
+  function inverse$k(p) {
     var rh1, qs, con, theta, lon, lat;
 
     p.x -= this.x0;
@@ -87375,12 +88233,12 @@
     return null;
   }
 
-  var names$k = ['Albers_Conic_Equal_Area', 'Albers_Equal_Area', 'Albers', 'aea'];
+  var names$l = ['Albers_Conic_Equal_Area', 'Albers_Equal_Area', 'Albers', 'aea'];
   var aea = {
-    init: init$k,
-    forward: forward$j,
-    inverse: inverse$j,
-    names: names$k,
+    init: init$l,
+    forward: forward$k,
+    inverse: inverse$k,
+    names: names$l,
     phi1z: phi1z
   };
 
@@ -87399,7 +88257,7 @@
       Accessed: 12th November 2009
      @this {import('../defs.js').ProjectionDefinition & LocalThis}
    */
-  function init$j() {
+  function init$k() {
     /* Place parameters in static storage for common use
         ------------------------------------------------- */
     this.sin_p14 = Math.sin(this.lat0);
@@ -87411,7 +88269,7 @@
 
   /* Gnomonic forward equations--mapping lat,long to x,y
       --------------------------------------------------- */
-  function forward$i(p) {
+  function forward$j(p) {
     var sinphi, cosphi; /* sin and cos value        */
     var dlon; /* delta longitude value      */
     var coslon; /* cos of longitude        */
@@ -87449,7 +88307,7 @@
     return p;
   }
 
-  function inverse$i(p) {
+  function inverse$j(p) {
     var rh; /* Rho */
     var sinc, cosc;
     var c;
@@ -87481,12 +88339,12 @@
     return p;
   }
 
-  var names$j = ['gnom'];
+  var names$k = ['gnom'];
   var gnom = {
-    init: init$j,
-    forward: forward$i,
-    inverse: inverse$i,
-    names: names$j
+    init: init$k,
+    forward: forward$j,
+    inverse: inverse$j,
+    names: names$k
   };
 
   function iqsfnz (eccent, q) {
@@ -87531,7 +88389,7 @@
       USGS Open File Report 90-284and Release 4 Interim Reports (2003)
     @this {import('../defs.js').ProjectionDefinition & LocalThis}
   */
-  function init$i() {
+  function init$j() {
     // no-op
     if (!this.sphere) {
       this.k0 = msfnz(this.e, Math.sin(this.lat_ts), Math.cos(this.lat_ts));
@@ -87540,7 +88398,7 @@
 
   /* Cylindrical Equal Area forward equations--mapping lat,long to x,y
       ------------------------------------------------------------ */
-  function forward$h(p) {
+  function forward$i(p) {
     var lon = p.x;
     var lat = p.y;
     var x, y;
@@ -87563,7 +88421,7 @@
 
   /* Cylindrical Equal Area inverse equations--mapping x,y to lat/long
       ------------------------------------------------------------ */
-  function inverse$h(p) {
+  function inverse$i(p) {
     p.x -= this.x0;
     p.y -= this.y0;
     var lon, lat;
@@ -87581,15 +88439,15 @@
     return p;
   }
 
-  var names$i = ['cea'];
+  var names$j = ['cea'];
   var cea = {
-    init: init$i,
-    forward: forward$h,
-    inverse: inverse$h,
-    names: names$i
+    init: init$j,
+    forward: forward$i,
+    inverse: inverse$i,
+    names: names$j
   };
 
-  function init$h() {
+  function init$i() {
     this.x0 = this.x0 || 0;
     this.y0 = this.y0 || 0;
     this.lat0 = this.lat0 || 0;
@@ -87602,7 +88460,7 @@
 
   // forward equations--mapping lat,long to x,y
   // -----------------------------------------------------------------
-  function forward$g(p) {
+  function forward$h(p) {
     var lon = p.x;
     var lat = p.y;
 
@@ -87615,7 +88473,7 @@
 
   // inverse equations--mapping x,y to lat/long
   // -----------------------------------------------------------------
-  function inverse$g(p) {
+  function inverse$h(p) {
     var x = p.x;
     var y = p.y;
 
@@ -87624,12 +88482,12 @@
     return p;
   }
 
-  var names$h = ['Equirectangular', 'Equidistant_Cylindrical', 'Equidistant_Cylindrical_Spherical', 'eqc'];
+  var names$i = ['Equirectangular', 'Equidistant_Cylindrical', 'Equidistant_Cylindrical_Spherical', 'eqc'];
   var eqc = {
-    init: init$h,
-    forward: forward$g,
-    inverse: inverse$g,
-    names: names$h
+    init: init$i,
+    forward: forward$h,
+    inverse: inverse$h,
+    names: names$i
   };
 
   /**
@@ -87647,7 +88505,7 @@
   var MAX_ITER$1 = 20;
 
   /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
-  function init$g() {
+  function init$h() {
     /* Place parameters in static storage for common use
         ------------------------------------------------- */
     this.temp = this.b / this.a;
@@ -87662,7 +88520,7 @@
 
   /* Polyconic forward equations--mapping lat,long to x,y
       --------------------------------------------------- */
-  function forward$f(p) {
+  function forward$g(p) {
     var lon = p.x;
     var lat = p.y;
     var x, y, el;
@@ -87693,7 +88551,7 @@
 
   /* Inverse equations
     ----------------- */
-  function inverse$f(p) {
+  function inverse$g(p) {
     var lon, lat, x, y, i;
     var al, bl;
     var phi, dphi;
@@ -87755,15 +88613,31 @@
     return p;
   }
 
-  var names$g = ['Polyconic', 'American_Polyconic', 'poly'];
+  var names$h = ['Polyconic', 'American_Polyconic', 'poly'];
   var poly = {
-    init: init$g,
-    forward: forward$f,
-    inverse: inverse$f,
-    names: names$g
+    init: init$h,
+    forward: forward$g,
+    inverse: inverse$g,
+    names: names$h
   };
 
-  function init$f() {
+  /*
+    reference
+      Department of Land and Survey Technical Circular 1973/32
+        http://www.linz.govt.nz/docs/miscellaneous/nz-map-definition.pdf
+      OSG Technical Report 4.1
+        http://www.linz.govt.nz/docs/miscellaneous/nzmg.pdf
+    */
+
+  /**
+   * iterations: Number of iterations to refine inverse transform.
+   *     0 -> km accuracy
+   *     1 -> m accuracy -- suitable for most mapping applications
+   *     2 -> mm accuracy
+   */
+  var iterations = 1;
+
+  function init$g() {
     this.A = [];
     this.A[1] = 0.6399175073;
     this.A[2] = -0.1358797613;
@@ -87822,7 +88696,7 @@
       New Zealand Map Grid Forward  - long/lat to x/y
       long/lat in radians
     */
-  function forward$e(p) {
+  function forward$f(p) {
     var n;
     var lon = p.x;
     var lat = p.y;
@@ -87873,7 +88747,7 @@
   /**
       New Zealand Map Grid Inverse  -  x/y to long/lat
     */
-  function inverse$e(p) {
+  function inverse$f(p) {
     var n;
     var x = p.x;
     var y = p.y;
@@ -87964,12 +88838,13 @@
     return p;
   }
 
-  var names$f = ['New_Zealand_Map_Grid', 'nzmg'];
+  var names$g = ['New_Zealand_Map_Grid', 'nzmg'];
   var nzmg = {
-    init: init$f,
-    forward: forward$e,
-    inverse: inverse$e,
-    names: names$f
+    init: init$g,
+    forward: forward$f,
+    inverse: inverse$f,
+    names: names$g,
+    iterations: iterations
   };
 
   /*
@@ -87980,13 +88855,13 @@
 
   /* Initialize the Miller Cylindrical projection
     ------------------------------------------- */
-  function init$e() {
+  function init$f() {
     // no-op
   }
 
   /* Miller Cylindrical forward equations--mapping lat,long to x,y
       ------------------------------------------------------------ */
-  function forward$d(p) {
+  function forward$e(p) {
     var lon = p.x;
     var lat = p.y;
     /* Forward equations
@@ -88002,7 +88877,7 @@
 
   /* Miller Cylindrical inverse equations--mapping x,y to lat/long
       ------------------------------------------------------------ */
-  function inverse$d(p) {
+  function inverse$e(p) {
     p.x -= this.x0;
     p.y -= this.y0;
 
@@ -88014,12 +88889,12 @@
     return p;
   }
 
-  var names$e = ['Miller_Cylindrical', 'mill'];
+  var names$f = ['Miller_Cylindrical', 'mill'];
   var mill = {
-    init: init$e,
-    forward: forward$d,
-    inverse: inverse$d,
-    names: names$e
+    init: init$f,
+    forward: forward$e,
+    inverse: inverse$e,
+    names: names$f
   };
 
   var MAX_ITER = 20;
@@ -88035,9 +88910,10 @@
    */
 
   /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
-  function init$d() {
+  function init$e() {
     /* Place parameters in static storage for common use
       ------------------------------------------------- */
+    this.long0 = this.long0 || 0;
 
     if (!this.sphere) {
       this.en = pj_enfn(this.es);
@@ -88052,7 +88928,7 @@
 
   /* Sinusoidal forward equations--mapping lat,long to x,y
     ----------------------------------------------------- */
-  function forward$c(p) {
+  function forward$d(p) {
     var x, y;
     var lon = p.x;
     var lat = p.y;
@@ -88087,7 +88963,7 @@
     return p;
   }
 
-  function inverse$c(p) {
+  function inverse$d(p) {
     var lat, temp, lon, s;
 
     p.x -= this.x0;
@@ -88122,8 +88998,45 @@
     return p;
   }
 
-  var names$d = ['Sinusoidal', 'sinu'];
+  var names$e = ['Sinusoidal', 'sinu'];
   var sinu = {
+    init: init$e,
+    forward: forward$d,
+    inverse: inverse$d,
+    names: names$e
+  };
+
+  /**
+   * Eckert VI projection — spherical sinusoidal variant with m=1, n=1+π/2.
+   * Always forces spherical computation regardless of the ellipsoid.
+   *
+   * @typedef {Object} LocalThis
+   * @property {number} m
+   * @property {number} n
+   * @property {number} C_y
+   * @property {number} C_x
+   * @property {number} es
+   */
+
+  /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
+  function init$d() {
+    /* Force spherical handling */
+    this.sphere = true;
+    this.b = this.a;
+
+    this.m = 1.0;
+    this.n = 2.570796326794896619231321691; /* 1 + π/2 */
+    this.es = 0;
+
+    this.C_y = Math.sqrt((this.m + 1.0) / this.n);
+    this.C_x = this.C_y / (this.m + 1.0);
+  }
+
+  var forward$c = forward$d;
+  var inverse$c = inverse$d;
+
+  var names$d = ['Eckert_VI', 'eck6'];
+  var eck6 = {
     init: init$d,
     forward: forward$c,
     inverse: inverse$c,
@@ -88366,6 +89279,9 @@
     if (Math.abs(lat) <= EPSLN) {
       x = this.x0 + this.R * dlon;
       y = this.y0;
+      p.x = x;
+      p.y = y;
+      return p;
     }
     var theta = asinz(2 * Math.abs(lat / Math.PI));
     if ((Math.abs(dlon) <= EPSLN) || (Math.abs(Math.abs(lat) - HALF_PI) <= EPSLN)) {
@@ -88375,7 +89291,9 @@
       } else {
         y = this.y0 + Math.PI * this.R * -Math.tan(0.5 * theta);
       }
-      //  return(OK);
+      p.x = x;
+      p.y = y;
+      return p;
     }
     var al = 0.5 * Math.abs((Math.PI / dlon) - (dlon / Math.PI));
     var asq = al * al;
@@ -88602,6 +89520,9 @@
   function init$9() {
     this.sin_p12 = Math.sin(this.lat0);
     this.cos_p12 = Math.cos(this.lat0);
+    this.x0 = this.x0 || 0;
+    this.y0 = this.y0 || 0;
+    this.long0 = this.long0 || 0;
     // flattening for ellipsoid
     this.f = this.es / (1 + Math.sqrt(1 - this.es));
   }
@@ -88655,13 +89576,14 @@
       } else {
         // Default case
         if (Math.abs(lon) < EPSLN && Math.abs(lat - this.lat0) < EPSLN) {
-          p.x = p.y = 0;
+          p.x = this.x0;
+          p.y = this.y0;
           return p;
         }
         vars = vincentyInverse(this.lat0, this.long0, lat, lon, this.a, this.f);
         azi1 = vars.azi1;
-        p.x = vars.s12 * Math.sin(azi1);
-        p.y = vars.s12 * Math.cos(azi1);
+        p.x = this.x0 + vars.s12 * Math.sin(azi1);
+        p.y = this.y0 + vars.s12 * Math.cos(azi1);
         return p;
       }
     }
@@ -88760,8 +89682,8 @@
 
     /* Place parameters in static storage for common use
         ------------------------------------------------- */
-    this.sin_p14 = Math.sin(this.lat0);
-    this.cos_p14 = Math.cos(this.lat0);
+    this.sin_p14 = Math.sin(this.lat0 || 0);
+    this.cos_p14 = Math.cos(this.lat0 || 0);
   }
 
   /* Orthographic forward equations--mapping lat,long to x,y
@@ -88776,7 +89698,7 @@
     var lat = p.y;
     /* Forward equations
         ----------------- */
-    dlon = adjust_lon(lon - this.long0, this.over);
+    dlon = adjust_lon(lon - (this.long0 || 0), this.over);
 
     sinphi = Math.sin(lat);
     cosphi = Math.cos(lat);
@@ -88785,8 +89707,8 @@
     g = this.sin_p14 * sinphi + this.cos_p14 * cosphi * coslon;
     ksp = 1;
     if ((g > 0) || (Math.abs(g) <= EPSLN)) {
-      x = this.a * ksp * cosphi * Math.sin(dlon);
-      y = this.y0 + this.a * ksp * (this.cos_p14 * sinphi - this.sin_p14 * cosphi * coslon);
+      x = (this.x0 || 0) + this.a * ksp * cosphi * Math.sin(dlon);
+      y = (this.y0 || 0) + this.a * ksp * (this.cos_p14 * sinphi - this.sin_p14 * cosphi * coslon);
     }
     p.x = x;
     p.y = y;
@@ -88799,36 +89721,39 @@
     var sinz, cosz; /* sin of z and cos of z      */
     var con;
     var lon, lat;
+    var long0, lat0;
     /* Inverse equations
         ----------------- */
-    p.x -= this.x0;
-    p.y -= this.y0;
+    p.x -= this.x0 || 0;
+    p.y -= this.y0 || 0;
     rh = Math.sqrt(p.x * p.x + p.y * p.y);
     z = asinz(rh / this.a);
 
     sinz = Math.sin(z);
     cosz = Math.cos(z);
 
-    lon = this.long0;
+    long0 = this.long0 || 0;
+    lat0 = this.lat0 || 0;
+    lon = long0;
     if (Math.abs(rh) <= EPSLN) {
-      lat = this.lat0;
+      lat = lat0;
       p.x = lon;
       p.y = lat;
       return p;
     }
     lat = asinz(cosz * this.sin_p14 + (p.y * sinz * this.cos_p14) / rh);
-    con = Math.abs(this.lat0) - HALF_PI;
+    con = Math.abs(lat0) - HALF_PI;
     if (Math.abs(con) <= EPSLN) {
-      if (this.lat0 >= 0) {
-        lon = adjust_lon(this.long0 + Math.atan2(p.x, -p.y), this.over);
+      if (lat0 >= 0) {
+        lon = adjust_lon(long0 + Math.atan2(p.x, -p.y), this.over);
       } else {
-        lon = adjust_lon(this.long0 - Math.atan2(-p.x, p.y), this.over);
+        lon = adjust_lon(long0 - Math.atan2(-p.x, p.y), this.over);
       }
       p.x = lon;
       p.y = lat;
       return p;
     }
-    lon = adjust_lon(this.long0 + Math.atan2((p.x * sinz), rh * this.cos_p14 * cosz - p.y * this.sin_p14 * sinz), this.over);
+    lon = adjust_lon(long0 + Math.atan2((p.x * sinz), rh * this.cos_p14 * cosz - p.y * this.sin_p14 * sinz), this.over);
     p.x = lon;
     p.y = lat;
     return p;
@@ -89323,6 +90248,13 @@
 
     xy.x = xy.x * this.a * FXC + this.x0;
     xy.y = xy.y * this.a * FYC + this.y0;
+
+    if (ll.z !== undefined) {
+      xy.z = ll.z;
+    }
+    if (ll.m !== undefined) {
+      xy.m = ll.m;
+    }
     return xy;
   }
 
@@ -89368,6 +90300,13 @@
     }
 
     ll.x = adjust_lon(ll.x + this.long0, this.over);
+
+    if (xy.z !== undefined) {
+      ll.z = xy.z;
+    }
+    if (xy.m !== undefined) {
+      ll.m = xy.m;
+    }
     return ll;
   }
 
@@ -89797,31 +90736,61 @@
     A4 = 0.003796,
     M = Math.sqrt(3) / 2.0;
 
+  /**
+   * @typedef {Object} LocalThis
+   * @property {number} es
+   * @property {number} e
+   * @property {Array<number>} apa
+   * @property {number} qp
+   * @property {number} rqda
+   */
+
+  /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
   function init$2() {
-    this.es = 0;
     this.long0 = this.long0 !== undefined ? this.long0 : 0;
     this.x0 = this.x0 !== undefined ? this.x0 : 0;
     this.y0 = this.y0 !== undefined ? this.y0 : 0;
+    if (this.es !== 0) {
+      this.apa = authset(this.es);
+      this.qp = qsfnz(this.e, 1);
+      this.rqda = Math.sqrt(0.5 * this.qp);
+    }
   }
 
+  /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
   function forward$1(p) {
     var lam = adjust_lon(p.x - this.long0, this.over);
     var phi = p.y;
-    var paramLat = Math.asin(M * Math.sin(phi)),
+    var sinphi = Math.sin(phi);
+    if (this.es !== 0) {
+      sinphi = qsfnz(this.e, sinphi) / this.qp;
+    }
+    var paramLat = Math.asin(M * sinphi),
       paramLatSq = paramLat * paramLat,
       paramLatPow6 = paramLatSq * paramLatSq * paramLatSq;
     p.x = lam * Math.cos(paramLat)
       / (M * (A1 + 3 * A2 * paramLatSq + paramLatPow6 * (7 * A3 + 9 * A4 * paramLatSq)));
     p.y = paramLat * (A1 + A2 * paramLatSq + paramLatPow6 * (A3 + A4 * paramLatSq));
 
+    if (this.es !== 0) {
+      p.x *= this.rqda;
+      p.y *= this.rqda;
+    }
+
     p.x = this.a * p.x + this.x0;
     p.y = this.a * p.y + this.y0;
     return p;
   }
 
+  /** @this {import('../defs.js').ProjectionDefinition & LocalThis} */
   function inverse$1(p) {
     p.x = (p.x - this.x0) / this.a;
     p.y = (p.y - this.y0) / this.a;
+
+    if (this.es !== 0) {
+      p.x /= this.rqda;
+      p.y /= this.rqda;
+    }
 
     var EPS = 1e-9,
       NITER = 12,
@@ -89843,6 +90812,10 @@
     p.x = M * p.x * (A1 + 3 * A2 * paramLatSq + paramLatPow6 * (7 * A3 + 9 * A4 * paramLatSq))
       / Math.cos(paramLat);
     p.y = Math.asin(Math.sin(paramLat) / M);
+
+    if (this.es !== 0) {
+      p.y = authlat(p.y, this.apa);
+    }
 
     p.x = adjust_lon(p.x + this.long0, this.over);
     return p;
@@ -90061,7 +91034,7 @@
     this.y0 = this.y0 || 0;
     this.long0 = this.long0 || 0;
     this.title = this.title || 'General Oblique Transformation';
-    this.isIdentity = names$x.includes(this.o_proj);
+    this.isIdentity = names$y.includes(this.o_proj);
 
     /** Verify required parameters exist */
     if (!this.o_proj) {
@@ -90218,7 +91191,7 @@
    */
   function forwardOblique(self, lp) {
     let { x: lam, y: phi } = lp;
-    lam += self.long0;
+    lam = adjust_lon(lam - self.long0, self.over);
     const coslam = Math.cos(lam);
     const sinphi = Math.sin(phi);
     const cosphi = Math.cos(phi);
@@ -90248,7 +91221,7 @@
    */
   function forwardTransverse(self, lp) {
     let { x: lam, y: phi } = lp;
-    lam += self.long0;
+    lam = adjust_lon(lam - self.long0, self.over);
     const cosphi = Math.cos(phi);
     const coslam = Math.cos(lam);
     lp.x = adjust_lon(
@@ -90358,6 +91331,7 @@
     proj4.Proj.projections.add(nzmg);
     proj4.Proj.projections.add(mill);
     proj4.Proj.projections.add(sinu);
+    proj4.Proj.projections.add(eck6);
     proj4.Proj.projections.add(moll);
     proj4.Proj.projections.add(eqdc);
     proj4.Proj.projections.add(vandg);
@@ -90413,22 +91387,23 @@
 
   class Marker extends VectorLayer {
     constructor(opt) {
-      const options = {
-        // src: 'imageUrl', // url of marker image
-        defaultPosition: [localStorage.myolLon || 2, localStorage.myolLat || 47], // Initial position of the marker
-        // dragable: false, // Can draw the marker to edit position
-        // focus: number // Center & value of zoom on the marker
-        zIndex: 600, // Above points & hover
+      const permalinks = (localStorage.permalink || '6/2/47').split('/'),
+        options = {
+          // src: 'imageUrl', // url of marker image
+          defaultPosition: [permalinks[1], permalinks[2]], // Initial position of the marker
+          // dragable: false, // Can draw the marker to edit position
+          // focus: number // Center & value of zoom on the marker
+          zIndex: 600, // Above points & hover
 
-        prefix: 'marker', // Will take the values on
-        // marker-json, // <input> json form
-        // marker-lon, marker-lat, // <input> longitude / latitude
-        // marker-x, marker-y', // <input> Swiss EPSG:21781
-        // marker-select, marker-string, select // display coords format
-        //BEST split in 4 options
+          prefix: 'marker', // Will take the values on
+          // marker-json, // <input> json form
+          // marker-lon, marker-lat, // <input> longitude / latitude
+          // marker-x, marker-y', // <input> Swiss EPSG:21781
+          // marker-select, marker-string, select // display coords format
+          //BEST split in 4 options
 
-        ...opt,
-      };
+          ...opt,
+        };
 
       const point = new Point$1(
         transform$1(options.defaultPosition, 'EPSG:4326', 'EPSG:3857') // If no json value
@@ -90587,8 +91562,8 @@
         this.view.setCenter(ll3857);
 
       // Populate inputs
-      this.els.lon.value = Math.round(ll4326[0] * 100000) / 100000;
-      this.els.lat.value = Math.round(ll4326[1] * 100000) / 100000;
+      this.els.lon.value = ll4326[0].toFixed(5);
+      this.els.lat.value = ll4326[1].toFixed(5);
       this.els.json.value = '{"type":"Point","coordinates":[' + this.els.lon.value + ',' + this.els.lat.value + ']}';
 
       // Display
@@ -90888,7 +91863,7 @@
             this.logs.tileSize + ', ' + this.getFeatures().length +
             (this.logs.isCluster ? ' clusters, ' : ' points, ') +
             transform$1(getCenter(this.getExtent()), 'EPSG:3857', 'EPSG:4326')
-            .map(x => Math.round(x * 1000) / 1000)
+            .map(x => x.toFixed(3))
             .join('°E/') + '°N'
           );
 
@@ -91751,7 +92726,7 @@
   }
 
   // alpages.info
-  //TODO vite : Access to XMLHttpRequest at 'https://alpages.info/ext/Dominique92/GeoBB/gis.php?forums=on&bbox=5.85311%2C44.7727%2C5.91689%2C44.8093' from origin 'http://localhost:5173' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+  //TODO vite : Access to XMLHttpRequest at 'https://alpages.info/ext/Dominique92/GeoBB/gis.php?forums=on&bbox=5.85311%2C44.7727%2C5.91689%2C44.8093' from origin 'https://localhost:5173' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
   class Alpages extends MyVectorLayer {
     constructor(options) {
       super({
@@ -91916,7 +92891,7 @@
   /**
    * OSM XML overpass POI layer
    * From: https://openlayers.org/en/latest/examples/vector-osm.html
-   * Doc: http://wiki.openstreetmap.org/wiki/Overpass_API/Language_Guide
+   * Doc: https://wiki.openstreetmap.org/wiki/Overpass_API/Language_Guide
    */
   class Overpass extends MyVectorLayer {
     constructor(options) {
@@ -92071,7 +93046,7 @@
   /* global map */
 
 
-  const VERSION = '1.1.2.dev 01/04/2026 20:36:06';
+  const VERSION = '1.1.2.dev 13/09/2026 18:45:41';
 
   async function traces(options) {
     const debug = {
@@ -92087,7 +93062,7 @@
         'Ol v' + VERSION$1,
         'MyOl ' + VERSION,
         'Geocoder 4.3.3-4',
-        'Proj4 2.20.2',
+        'Proj4 2.22.0',
         'language ' + navigator.language,
       ]);
 

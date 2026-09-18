@@ -1,0 +1,57 @@
+/***************************************************
+ * Personnal adaptations & turn around for leaflet *
+ * © Dominique Cavailhez 2026                      *
+ ***************************************************/
+
+.leaflet-control-coordinates,
+.leaflet-control-geocoder input {
+  /* For dark mode */
+  color: black;
+}
+
+/* Inhibe l'affichage du pavé coordonnées quand il n'y a rien dedans */
+.leaflet-control-coordinates:has(span:empty) {
+  display: none;
+}
+
+/* VECTORLAYERS */
+/* Etiquettes icones et polygones */
+.leaflet-tooltip {
+  top: -8px;
+  left: 12px;
+  padding: 0;
+  line-height: 12px;
+  border-radius: 3px;
+  color: blue;
+}
+
+.hide-tooltips .leaflet-tooltip {
+  opacity: 0 !important;
+}
+
+.leaflet-control-layers-overlays img {
+  width: 16px;
+}
+
+/* Overpass popups */
+.leaflet-popup-content {
+  margin: 3px;
+}
+
+.leaflet-popup-content table {
+  border-spacing: 0 !important;
+}
+
+.leaflet-popup-content>div>a {
+  display: none;
+}
+
+/* DCMM FUTUR HORS RESEAU */
+/* Préchargement des tuiles */
+.leaflet-control-preload button {
+  margin-right: 8px;
+  padding: 0;
+  aspect-ratio: 1;
+  font-size: 20px;
+  cursor: pointer;
+}

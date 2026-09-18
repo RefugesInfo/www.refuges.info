@@ -2,7 +2,6 @@
 
 // Couches refuges.info
 const clusteredVectorlayers = {
-    //TODO gérer dans la table point_type ?
     'Cabane non gardée': [7, 'cabane'],
     'Refuge gardé': [10, 'cabane_red'],
     'Gîte d\'étape': [9, 'cabane_green'],
@@ -120,6 +119,7 @@ function initLeafletMap(mapId, serveurAPI, versionFeatures, layerKeys) {
     vectorCluster = L.markerClusterGroup({
       spiderfyOnMaxZoom: true, // Overlapping markers will spiderfy when clicked
       showCoverageOnHover: false, // Optional: hides the cluster bounds polygon
+      maxClusterRadius: 30, // Less clusters
     });
 
   for (const [nom, args] of Object.entries(clusteredVectorlayers)) {
@@ -211,10 +211,12 @@ function initLeafletMap(mapId, serveurAPI, versionFeatures, layerKeys) {
         if (lsInputEl.checked)
           baseLayerName = lsInputEl.parentElement.lastChild.innerText.trim();
 
-      localStorage.permalink = [evt.target.getZoom(), pos.lat, pos.lng]
-        .map(f => Math.round(f * 10000) / 10000)
-        .join('/') +
-        '/' + encodeURI(baseLayerName);
+      localStorage.permalink = [
+        map.getZoom().toFixed(1),
+        pos.lat.toFixed(5),
+        pos.lng.toFixed(5),
+        encodeURI(baseLayerName),
+      ].join('/');
     });
   });
 

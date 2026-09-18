@@ -64,7 +64,6 @@ const ol = {
     //BingMaps: source.BingMaps,
     Cluster: source.Cluster,
     OSM: source.OSM,
-    TileWMS: source.TileWMS,
     Vector: source.Vector,
     WMTS: source.WMTS,
     XYZ: source.XYZ,

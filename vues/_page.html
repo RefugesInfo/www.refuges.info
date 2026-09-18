@@ -35,7 +35,7 @@ switch ($vue->carte??''){
       add_lib('myol.css', 'chemin_ol');
       add_lib('myol-debug.js', 'chemin_ol');
     }
-    add_lib('_cartes.js');
+    add_lib('_cartes_myol.js');
     break;
 
   case 'leaflet':
@@ -64,11 +64,8 @@ switch ($vue->carte??''){
     add_lib('overpass/dist/OverPassLayer.css', 'chemin_leaflet');
     add_lib('geocoder/Control.Geocoder.css', 'chemin_leaflet');
     add_lib('geocoder/Control.Geocoder.js', 'chemin_leaflet');
-    add_lib('src/patch.css', 'chemin_leaflet');
-    add_lib('src/MarkerCompass.js', 'chemin_leaflet');
-    add_lib('src/tileLayers.js', 'chemin_leaflet');
-    add_lib('src/vectorLayers.css', 'chemin_leaflet');
-    add_lib('src/vectorLayers.js', 'chemin_leaflet');
+    add_lib('myLeaflet.css', 'chemin_leaflet');
+    add_lib('myLeaflet.js', 'chemin_leaflet');
     add_lib('_cartes_leaflet.js');
     break;
 }

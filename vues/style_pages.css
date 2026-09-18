@@ -165,6 +165,10 @@ li {
   /* dernière, 100% invisible */
 }
 
+form#form_point {
+  margin-top: 8px;
+}
+
 form#form_point fieldset {
   border: thin solid transparent;
   /* pour les allergiques aux barrieres ;) */
@@ -472,6 +476,12 @@ a img {
 }
 
 /* Sélecteur externe au delà d'une certaine largeur de fenêtre */
+@media screen and (max-width: 799.99px) {
+  #conteneur-selecteur-points {
+    display: none;
+  }
+}
+
 #conteneur-selecteur-points {
   float: left;
   margin: 5px;
@@ -662,6 +672,7 @@ a img {
 }
 
 .texte-tout-petit {
+  margin-top: 6px;
   font-size: x-small;
 }
 

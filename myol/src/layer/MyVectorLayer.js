@@ -61,7 +61,7 @@ class MyVectorSource extends VectorSource {
           this.logs.tileSize + ', ' + this.getFeatures().length +
           (this.logs.isCluster ? ' clusters, ' : ' points, ') +
           transform(getCenter(this.getExtent()), 'EPSG:3857', 'EPSG:4326')
-          .map(x => Math.round(x * 1000) / 1000)
+          .map(x => x.toFixed(3))
           .join('°E/') + '°N'
         );
 

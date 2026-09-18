@@ -8,7 +8,6 @@
 
   <div id="conteneur-carte-saisie">
     <div id="carte-saisie"></div>
-    <p>Double clic sur la carte y déplace le curseur.</p>
   </div>
 
   <form class="wri" id="form_point" method="post" action="/point_modification">
@@ -27,20 +26,17 @@
     </div>
 
     <!-- Edition de la position -->
-    <input type="hidden" id="marker-json" name="geojson" value='<?=!empty($vue->point->id_point)?$vue->point->geojson:''?>'>
-
     <fieldset>
       <legend>Coordonnées</legend>
-      <div>
+      <div id="markers-lon-lat">
         <label>
+          <input DCMMtype="hidden" name="geojson" value='<?=!empty($vue->point->id_point)?$vue->point->geojson:''?>'>
           Longitude :
-          <input type="text" id="marker-lon" name="lon" size="12" maxlength="12">&nbsp;
-          <span class="xy"> / X : <input id="marker-x" type="text" name="x" size="7" maxlength="12"> (CH 1903)</span>
-        </label>
-        <label>
+          <input type="text" name="lon" size="12" maxlength="12"
+            value="<?=$vue->point->longitude?>" onchange="centrecCarteAuxInputs()">
           Latitude :
-          <input type="text" id="marker-lat" name="lat" size="12" maxlength="12">&nbsp;
-          <span class="xy"> / Y : <input id="marker-y" type="text" name="y" size="7" maxlength="12"></span>
+          <input type="text" name="lat" size="12" maxlength="12"
+            value="<?=$vue->point->latitude?>" onchange="centrecCarteAuxInputs()">
         </label>
       </div>
 

@@ -25,22 +25,23 @@ import VectorSource from 'ol/source/Vector';
 
 class Marker extends VectorLayer {
   constructor(opt) {
-    const options = {
-      // src: 'imageUrl', // url of marker image
-      defaultPosition: [localStorage.myolLon || 2, localStorage.myolLat || 47], // Initial position of the marker
-      // dragable: false, // Can draw the marker to edit position
-      // focus: number // Center & value of zoom on the marker
-      zIndex: 600, // Above points & hover
+    const permalinks = (localStorage.permalink || '6/2/47').split('/'),
+      options = {
+        // src: 'imageUrl', // url of marker image
+        defaultPosition: [permalinks[1], permalinks[2]], // Initial position of the marker
+        // dragable: false, // Can draw the marker to edit position
+        // focus: number // Center & value of zoom on the marker
+        zIndex: 600, // Above points & hover
 
-      prefix: 'marker', // Will take the values on
-      // marker-json, // <input> json form
-      // marker-lon, marker-lat, // <input> longitude / latitude
-      // marker-x, marker-y', // <input> Swiss EPSG:21781
-      // marker-select, marker-string, select // display coords format
-      //BEST split in 4 options
+        prefix: 'marker', // Will take the values on
+        // marker-json, // <input> json form
+        // marker-lon, marker-lat, // <input> longitude / latitude
+        // marker-x, marker-y', // <input> Swiss EPSG:21781
+        // marker-select, marker-string, select // display coords format
+        //BEST split in 4 options
 
-      ...opt,
-    };
+        ...opt,
+      };
 
     const point = new Point(
       transform(options.defaultPosition, 'EPSG:4326', 'EPSG:3857') // If no json value
@@ -199,8 +200,8 @@ class Marker extends VectorLayer {
       this.view.setCenter(ll3857);
 
     // Populate inputs
-    this.els.lon.value = Math.round(ll4326[0] * 100000) / 100000;
-    this.els.lat.value = Math.round(ll4326[1] * 100000) / 100000;
+    this.els.lon.value = ll4326[0].toFixed(5);
+    this.els.lat.value = ll4326[1].toFixed(5);
     this.els.json.value = '{"type":"Point","coordinates":[' + this.els.lon.value + ',' + this.els.lat.value + ']}';
 
     // Display

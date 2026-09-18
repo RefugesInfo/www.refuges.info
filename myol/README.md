@@ -46,7 +46,6 @@ See a [Tile layers example](https://Dominique92.github.io/myol/examples/?sample=
 * Österreich Kompass
 * Great Britain Ordnance Survey
 * IDEE España, satellite
-* IGM Italie
 * Google maps, satellite
 * Maxar, ArcGIS
 
@@ -102,8 +101,8 @@ If you want to use external providers layers, you must acquire free keys and rep
 * French IGN : Get your own (free) IGN key at [https://geoservices.ign.fr/](https://geoservices.ign.fr/)
 * OSM thunderforest : Get your own (free) THUNDERFOREST key at [https://manage.thunderforest.com](https://manage.thunderforest.com)
 * England Ordnance Survey : Get your own (free) key at [https://osdatahub.os.uk/](https://osdatahub.os.uk/)
-* Austria kompass : Get your own (free) key at [http://www.kompass.de/livemap/](http://www.kompass.de/livemap/)
-* Austria kompass : Get your own (free) key at [http://www.kompass.de/livemap/](http://www.kompass.de/livemap/)
+* Austria kompass : Get your own (free) key at [https://www.kompass.de/livemap/](https://www.kompass.de/livemap/)
+* Austria kompass : Get your own (free) key at [https://www.kompass.de/livemap/](https://www.kompass.de/livemap/)
 * Maxar / Mapbox : Get your own (free) key at https://www.mapbox.com/
 * SwissTopo : Register your domain in [https://shop.swisstopo.admin.ch/](https://shop.swisstopo.admin.ch/fr/products/geoservice/swisstopo_geoservices/WMTS_info)
 
@@ -136,3 +135,5 @@ Tested on
 * Windows 10 : Edge, FireFox, Chrome, Opera, Brave
 * Android (Samsung) : Samsung Internet, FireFox, Chrome, Brave, DuckDuckGo
 * Linux : FireFox
+
+TEST sous-modules : MODIF 251219-7 dans myol

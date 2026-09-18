@@ -42,6 +42,7 @@ class Permalink extends Control {
 
   render(evt) {
     const view = evt.map.getView(),
+      permalinks = (localStorage.permalink || '6/47/2').split('/'),
       //BEST init with res=<resolution> or extent (not zoom, lon, lat)
       urlMod = (typeof this.options.init === 'object' ? // init: [<zoom>, <lon>, <lat>]
         'zoom=' + this.options.init[0] + '&lon=' + this.options.init[1] + '&lat=' + this.options.init[2] + ',' :
@@ -51,9 +52,9 @@ class Permalink extends Control {
         'zoom=$1&lon=$2&lat=$3' // zoom=<zoom>&lon=<lon>&lat=<lat>
       ) + ',' +
       // Last values
-      'zoom=' + localStorage.myolZoom + ',' +
-      'lon=' + localStorage.myolLon + ',' +
-      'lat=' + localStorage.myolLat + ',' +
+      'zoom=' + permalinks[0] + ',' +
+      'lat=' + permalinks[1] + ',' +
+      'lon=' + permalinks[2] + ',' +
       // Default
       'zoom=' + this.options.default[0] + '&lon=' + this.options.default[1] + '&lat=' + this.options.default[2];
 
@@ -71,16 +72,18 @@ class Permalink extends Control {
 
     // Set the permalink with current map zoom, position & layer
     if (view.getCenter()) {
-      const ll4326 = transform(view.getCenter(), 'EPSG:3857', 'EPSG:4326'),
-        newParams = 'map=' +
-        (localStorage.myolZoom = Math.round(view.getZoom() * 10) / 10) + '/' +
-        (localStorage.myolLon = Math.round(ll4326[0] * 10000) / 10000) + '/' +
-        (localStorage.myolLat = Math.round(ll4326[1] * 10000) / 10000) +
-        '&baselayer=' + encodeURI(localStorage.myolBaselayer);
+      const ll4326 = transform(view.getCenter(), 'EPSG:3857', 'EPSG:4326');
+
+      localStorage.permalink = [
+        view.getZoom().toFixed(1),
+        ll4326[1].toFixed(5),
+        ll4326[0].toFixed(5),
+      ].join('/');
 
       if (this.linkEl) {
-        this.linkEl.href = this.options.hash + newParams;
+        const newParams = 'map=' + localStorage.permalink + '&baselayer=' + encodeURI(localStorage.myolBaselayer);
 
+        this.linkEl.href = this.options.hash + newParams;
         if (this.options.setUrl)
           location.href = '#' + newParams;
       }

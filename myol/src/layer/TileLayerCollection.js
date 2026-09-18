@@ -14,7 +14,6 @@ import SourceOSM from 'ol/source/OSM.js';
 import SourceXYZ from 'ol/source/XYZ.js';
 import TilegridWMTS from 'ol/tilegrid/WMTS.js';
 import TileLayer from 'ol/layer/Tile';
-import TileWMS from 'ol/source/TileWMS.js';
 import WMTS from 'ol/source/WMTS.js';
 
 import './TileLayerCollection.css';
@@ -242,47 +241,6 @@ export class IgnES extends TileLayer {
         ...options,
       }),
       ...options,
-    });
-  }
-}
-
-/**
- * Italy IGM
- * Doc : https://gn.mase.gov.it/
- * Map : http://www.pcn.minambiente.it/viewer/
- */
-export class IGM extends TileLayer {
-  constructor() {
-    super({
-      source: new TileWMS({
-        url: 'https://chemineur.fr/assets/proxy/?s=minambiente.it', // Not available via https
-        attributions: '&copy <a href="https://gn.mase.gov.it/">IGM</a>',
-      }),
-      maxResolution: 120,
-      extent: [720000, 4380000, 2070000, 5970000],
-    });
-  }
-
-  setMapInternal(map) {
-    const view = map.getView();
-
-    view.on('change:resolution', () => this.updateResolution(view));
-    this.updateResolution(view);
-
-    return super.setMapInternal(map);
-  }
-
-  updateResolution(view) {
-    const mapResolution = view.getResolutionForZoom(view.getZoom());
-    let layerResolution = 25000; // mapResolution < 10
-
-    if (mapResolution > 10) layerResolution = 100000;
-    if (mapResolution > 30) layerResolution = 250000;
-
-    this.getSource().updateParams({
-      type: 'png',
-      map: '/ms_ogc/WMS_v1.3/raster/IGM_' + layerResolution + '.map',
-      layers: (layerResolution === 100000 ? 'MB.IGM' : 'CB.IGM') + layerResolution,
     });
   }
 }
@@ -579,7 +537,6 @@ export function collection(options = {}) {
       key: options.os, // For simplified options
       ...options.os, // Include key
     }),
-    'Italie': new IGM(),
 
     'Google': new Google(),
     /*'Photo Bing': new Bing({
