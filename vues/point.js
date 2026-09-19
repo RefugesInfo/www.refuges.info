@@ -2,7 +2,9 @@
 const nom_type="<?=$vue->point->nom_type?>";
 
 if(localStorage.checkedLayers)
-  localStorage.checkedLayers +=' ,';
+  localStorage.checkedLayers += ' ,';
+else
+  localStorage.checkedLayers = '';
 
 localStorage.checkedLayers += nom_type.charAt(0).toUpperCase() + nom_type.slice(1);
 

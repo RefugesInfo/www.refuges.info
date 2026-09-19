@@ -1,9 +1,9 @@
-// Défaut : zoom/latitude/longitude
-const permalinkInit = (localStorage.permalink || '5/46.5/5').split('/');
-
+// Remonte le zoom à un minimum de 12
+const permalinkInit = localStorage.permalink.split('/');
 permalinkInit[0] = Math.min(parseInt(permalinkInit[0]), 12);
 localStorage.permalink = permalinkInit.join('/');
 
+// Initialise la carte
 const map = initLeafletMap(
   'carte-accueil',
   'https://<?=$_SERVER["SERVER_NAME"]?>',

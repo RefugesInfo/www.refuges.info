@@ -1,5 +1,8 @@
 /* global L, MarkerCompass, tileLayerIGN, wriPOILayer, wriPolygonLayer */
 
+// Position par défaut
+localStorage.permalink ||= '5/46.5/5';
+
 // Couches refuges.info
 const clusteredVectorlayers = {
     'Cabane non gardée': [7, 'cabane'],
