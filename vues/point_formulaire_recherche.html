@@ -238,10 +238,22 @@
 </div>
 
 <script>
-  const polygones = [];
+  const polygones_bruts = [];
   <?php foreach ( $vue->polygones as $polygone) { ?>
-    polygones[<?=$polygone->id_polygone?>] = "<?=addslashes($polygone->nom_polygone)?>";
+    polygones_bruts[<?=$polygone->id_polygone?>] = {
+      nom: <?=json_encode($polygone->nom_polygone)?>,
+      type: <?=json_encode($polygone->type_polygone)?>
+    };
   <?php } ?>
+
+  // Deux polygones de même nom exact (ex : le massif et le département "Vosges") sont
+  // indiscernables dans la liste : on ajoute alors leur type entre parenthèses
+  const nb_par_nom = {};
+  polygones_bruts.forEach(function (p) { nb_par_nom[p.nom] = (nb_par_nom[p.nom] || 0) + 1; });
+  const polygones = [];
+  polygones_bruts.forEach(function (p, id) {
+    polygones[id] = nb_par_nom[p.nom] > 1 ? p.nom + " (" + p.type + ")" : p.nom;
+  });
 
   window.addEventListener('load', function() {
     autocomplete(document.getElementById("inputpolygone"), document.getElementById("id_polygone"), polygones);
