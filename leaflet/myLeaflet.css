@@ -45,13 +45,3 @@
 .leaflet-popup-content>div>a {
   display: none;
 }
-
-/* DCMM FUTUR HORS RESEAU */
-/* Préchargement des tuiles */
-.leaflet-control-preload button {
-  margin-right: 8px;
-  padding: 0;
-  aspect-ratio: 1;
-  font-size: 20px;
-  cursor: pointer;
-}
