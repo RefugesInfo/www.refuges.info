@@ -678,6 +678,10 @@ a img {
   font-size: x-small;
 }
 
+.index .texte-tout-petit {
+  text-align: center;
+}
+
 /* css pour se comporter comme une table */
 .table {
   display: table;
