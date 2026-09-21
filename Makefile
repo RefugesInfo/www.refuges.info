@@ -18,7 +18,7 @@ up: ## Construit et démarre la stack (config + base chargées si besoin)
 	@[ -f config_privee.php ] || cp docker/config_privee.docker.php config_privee.php
 	@[ -f .htaccess ] || cp htaccess.modele.txt .htaccess
 	@# phpBB (cache, fichiers) et le site écrivent dans ces dossiers : le conteneur tourne en www-data, pas sous votre uid
-	@chmod -R a+rwX forum/cache forum/store forum/files forum/images/avatars/upload 2>/dev/null || true
+	@chmod -R a+rwX forum/cache forum/store forum/files forum/images/avatars/upload photos_points forum/photos-points 2>/dev/null || true
 	$(COMPOSE) up -d --build
 	@printf "Attente de PostgreSQL"; \
 	  until $(COMPOSE) exec -T db pg_isready -U refuges >/dev/null 2>&1; do printf "."; sleep 1; done; \

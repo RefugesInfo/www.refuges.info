@@ -15,10 +15,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         locales \
     && rm -rf /var/lib/apt/lists/*
 
-# Locale française (utilisée par setlocale/strftime dans includes/config.php)
-RUN sed -i 's/# fr_FR.UTF-8/fr_FR.UTF-8/' /etc/locale.gen && locale-gen
+# Locales : fr_FR est utilisée par setlocale/strftime dans includes/config.php ; les autres sont prévues pour la
+# traduction du site (gettext exige que la locale de chaque langue soit générée dans le système).
+# Langues prévues : français, anglais (en_GB), allemand, italien, espagnol.
+RUN for l in fr_FR de_DE en_GB it_IT es_ES; do sed -i "s/^# $l.UTF-8/$l.UTF-8/" /etc/locale.gen; done \
+    && locale-gen
 
-# Extensions PHP : pgsql gd mbstring xml opcache zip intl
+# Extensions PHP : pgsql gd mbstring xml opcache zip intl exif gettext
+# (exif est requis par modeles/commentaire.php -> exif_imagetype/exif_read_data à l'ajout d'une photo)
+# (gettext : pas encore utilisé, prévu pour la traduction du site ; présent aussi sur le serveur de prod)
 # (intl est requis par includes/mise_en_forme_texte.php -> IntlDateFormatter)
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j"$(nproc)" \
@@ -29,7 +34,9 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
         xml \
         opcache \
         zip \
-        intl
+        intl \
+        exif \
+        gettext
 
 # Apache : mod_rewrite (routing via .htaccess) + AllowOverride All
 RUN a2enmod rewrite expires deflate
