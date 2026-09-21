@@ -3,11 +3,13 @@
 
 COMPOSE := docker compose -f docker/docker-compose.yml
 DB      := $(COMPOSE) exec -T db psql -U refuges
+# Adresse publique de l'instance (reportée dans la config de phpBB par db-load) : make up SITE_URL=https://mon.domaine
+SITE_URL ?= http://localhost:8080
 DUMP    := ressources/sql/2026-09-21-jeu-de-donnee-test-avec-la-base-de-refuges.info.sql.gz
 
 .DEFAULT_GOAL := help
 
-.PHONY: help up down restart build logs shell db db-load db-dump ps clean
+.PHONY: help up down restart build logs shell db db-load phpbb-url db-dump ps clean
 
 help: ## Affiche cette aide
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
@@ -55,6 +57,16 @@ db-load: ## (Ré)initialise la base depuis le dump de test
 	$(DB) -d postgres -c "CREATE DATABASE refuges;"
 	gzip -dc $(DUMP) | $(DB) -d refuges -v ON_ERROR_STOP=0 >/dev/null 2>&1
 	@echo "Base rechargée depuis $(DUMP)."
+	@$(MAKE) --no-print-directory phpbb-url
+
+phpbb-url: ## Règle l'adresse du forum phpBB d'après SITE_URL (défaut http://localhost:8080)
+	@u='$(SITE_URL)'; proto=$${u%%://*}; rest=$${u#*://}; host=$${rest%%[:/]*}; \
+	  port=$$(echo "$$rest" | sed -nE 's#^[^:/]+:([0-9]+).*#\1#p'); \
+	  if [ -z "$$port" ]; then [ "$$proto" = https ] && port=443 || port=80; fi; \
+	  secure=0; [ "$$proto" = https ] && secure=1; \
+	  $(DB) -d refuges -q -c "UPDATE phpbb3_config SET config_value = CASE config_name WHEN 'server_name' THEN '$$host' WHEN 'server_port' THEN '$$port' WHEN 'server_protocol' THEN '$$proto://' WHEN 'cookie_secure' THEN '$$secure' END WHERE config_name IN ('server_name','server_port','server_protocol','cookie_secure')"; \
+	  find forum/cache \( -name 'data_*' -o -name 'sql_*' \) -delete 2>/dev/null || true; \
+	  echo "Forum phpBB réglé sur $$proto://$$host:$$port"
 
 db-dump: ## Régénère le dump de test à partir de la base courante (purgé des données personnelles)
 	$(COMPOSE) exec -T db pg_dump -U refuges --no-owner --no-privileges refuges > $(DUMP:.gz=).brut

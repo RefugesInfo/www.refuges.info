@@ -24,3 +24,13 @@ $config_wri['mapKeys'] = [
 $config_wri['debug']=true;
 ini_set('error_reporting', E_ALL ^ E_NOTICE ^ E_DEPRECATED);
 ini_set('display_errors', '1');
+
+// Derrière un reverse proxy qui termine le TLS (Traefik, nginx...) : le conteneur ne voit que du HTTP.
+// On suit X-Forwarded-Proto, sinon le bandeau refuse d'afficher le formulaire de connexion
+// ("vous devez passer en HTTPS", voir vues/bandeau.html) et phpBB construit des URL en http.
+if (($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https')
+{
+  $_SERVER['HTTPS'] = 'on';
+  $_SERVER['REQUEST_SCHEME'] = 'https';
+  $_SERVER['SERVER_PORT'] = 443;
+}
