@@ -85,7 +85,10 @@ elseif ( !empty($_REQUEST["id_point_type"]))
   $points_modele=infos_points($conditions);
   if (count($points_modele)!=1)
   {
-    print("<strong>oulla big problème, le modèle du type de point ".$_REQUEST["id_point_type"]." n'est pas dans la base, on continue avec les champs vides</strong>");
+    // Un "modèle" est une fiche spéciale (flag modele) servant à pré-remplir le formulaire d'ajout pour un type de point
+    $probleme = count($points_modele)==0 ? "aucune fiche modèle n'existe" : "plusieurs fiches modèles existent";
+    // Affiché par la vue sous le bandeau (pas de print ici : ça sortirait tout en haut de la page, avant les en-têtes)
+    $vue->avertissement="Le formulaire d'ajout n'a pas pu être pré-rempli : ".$probleme." pour le type de point n°".(int)$_REQUEST["id_point_type"]." dans la base (il en faut exactement une). Le formulaire est affiché avec des champs vides, vous pouvez le remplir normalement.";
     $point = new stdClass;
   }
   else

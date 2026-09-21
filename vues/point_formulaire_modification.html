@@ -1,4 +1,7 @@
 <div class="contenu">
+  <?php if (!empty($vue->avertissement)) { ?>
+    <p><strong class="warning">À noter : <?=htmlspecialchars($vue->avertissement)?></strong></p>
+  <?php } ?>
   <?php // Signaler les fiches qui sont des modèles
   if ($vue->point->modele??'') { ?>
     <strong class="warning">
