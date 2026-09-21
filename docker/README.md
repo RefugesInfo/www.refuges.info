@@ -35,6 +35,9 @@ L'image `php:8.4-apache` n'a pas de `php.ini` : le Dockerfile écrit `conf.d/wri
 avec la valeur par défaut, `$_REQUEST` arrive vide aux contrôleurs après le chargement de phpBB
 (le formulaire d'ajout de point affiche « vous n'auriez pas dû arriver ici », sans aucune erreur).
 
+Les erreurs PHP sont affichées dans la page **et** écrites dans le log d'Apache : `make logs` les montre avec les
+accès (`display_errors` et `log_errors` sont activés, l'image n'ayant pas de `php.ini`).
+
 Extensions : `exif` est requis à l'ajout d'une photo ; `gettext` et les locales `fr_FR`, `de_DE`, `en_GB`, `it_IT`,
 `es_ES` sont prévus pour la traduction du site (pas encore utilisés). Ajouter une langue = l'ajouter à la liste
 de la boucle `locale-gen` du Dockerfile, puis `make up` pour reconstruire l'image.

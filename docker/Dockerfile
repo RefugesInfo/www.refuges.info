@@ -54,5 +54,8 @@ RUN printf '<Directory /var/www/html>\n    AllowOverride All\n    Require all gr
 #   "vous n'auriez pas dû arriver ici", sans aucune erreur). Sans php.ini PHP garde On : $_REQUEST n'est alors construit
 #   que si un fichier déjà compilé le cite, et phpBB (identification.php, enable_super_globals) restaure la copie vide
 #   capturée à son chargement.
-RUN printf 'short_open_tag = Off\noutput_buffering = 4096\nupload_max_filesize = 20M\npost_max_size = 25M\nauto_globals_jit = Off\n' \
+# - display_errors + log_errors : image destinée au développement, les erreurs PHP sont affichées dans la page ET écrites
+#   dans le log d'Apache (donc visibles avec `make logs`). Sans php.ini, log_errors vaut Off : une erreur fatale qui vide
+#   la page ne laissait alors aucune trace.
+RUN printf 'short_open_tag = Off\noutput_buffering = 4096\nupload_max_filesize = 20M\npost_max_size = 25M\nauto_globals_jit = Off\ndisplay_errors = On\nlog_errors = On\n' \
         > /usr/local/etc/php/conf.d/wri.ini
