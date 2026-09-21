@@ -43,5 +43,9 @@ RUN printf '<Directory /var/www/html>\n    AllowOverride All\n    Require all gr
 # - output_buffering : indispensable car des vues (ex. vues/style.css.php) émettent
 #   du contenu avant leur appel header('content-type: text/css'). Sans buffer, le
 #   Content-Type reste text/html et les CSS ne s'appliquent pas (comportement de prod).
-RUN printf 'short_open_tag = Off\noutput_buffering = 4096\nupload_max_filesize = 20M\npost_max_size = 25M\n' \
+# - auto_globals_jit : Off, sinon $_REQUEST arrive vide aux contrôleurs (formulaire d'ajout de point qui affiche
+#   "vous n'auriez pas dû arriver ici", sans aucune erreur). Sans php.ini PHP garde On : $_REQUEST n'est alors construit
+#   que si un fichier déjà compilé le cite, et phpBB (identification.php, enable_super_globals) restaure la copie vide
+#   capturée à son chargement.
+RUN printf 'short_open_tag = Off\noutput_buffering = 4096\nupload_max_filesize = 20M\npost_max_size = 25M\nauto_globals_jit = Off\n' \
         > /usr/local/etc/php/conf.d/wri.ini
