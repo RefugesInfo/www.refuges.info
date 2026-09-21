@@ -19,45 +19,34 @@ Cette commande :
    `.htaccess` (depuis `htaccess.modele.txt`) s'ils n'existent pas ;
 2. construit l'image web (PHP 8.4 + Apache + extensions pgsql/gd/mbstring/xml/intl…) ;
 3. démarre PostgreSQL 15 + PostGIS 3 ;
-4. charge la base depuis `docker/init/refuges-local.sql.gz` si elle est vide.
+4. charge la base de test (`ressources/sql/2026-09-21-jeu-de-donnee-test-avec-la-base-de-refuges.info.sql.gz`) si elle est vide.
 
 Le site est ensuite disponible sur **http://localhost:8080**.
 
 `make help` liste toutes les commandes (`down`, `logs`, `shell`, `db`,
 `db-load`, `db-dump`, `seed`, `clean`…).
 
-## Remplir la base avec des données de démo
+## Ce que contient la base de test
 
-La base chargée est quasi vide. Pour avoir des massifs, des points et des
-commentaires plausibles (données 100 % fictives) :
+Une copie de dév du site, **purgée de toutes les données personnelles** :
 
-```bash
-make seed
-```
+- 613 points, 2 541 polygones (massifs, zones, départements…), le wiki et 821 commentaires ;
+- un forum phpBB 3.3.17 fonctionnel (12 forums, environ 1 400 messages) ;
+- des comptes de test, **tous avec le mot de passe `admin`** :
+  - administrateurs : `sly`, `Dominique`, `Claude Mauguier`, `leosw`, `Pascal 74` ;
+  - membres sans droits particuliers : `slytest`, `slytest2`, `Pascaltest`, `Plea`.
 
-Le jeu de démo (`docker/init/seed-demo.sql`) est rejouable : il se nettoie tout
-seul avant réinsertion. Il peuple 5 massifs, 2 grandes zones (Alpes, Pyrénées),
-18 points de types variés et 10 commentaires, répartis dans les Alpes et les
-Pyrénées pour s'afficher sur la carte d'accueil.
+Ne sont **pas** dans le dump : messages privés, journaux, sessions, adresses IP, e-mails
+(tous en `@pas.fr`), clés d'API. L'extension anti-spam Cleantalk est désactivée
+(elle contacterait un service externe) et l'envoi d'e-mails du forum est coupé.
+La question anti-robot de l'inscription au forum a pour réponse `sly`.
 
-## Ce qu'il faut savoir
+`make seed` (jeu de démo fictif) n'est plus nécessaire avec cette base.
 
-**La base est quasi vide.** Le snapshot fourni ne contient que la *structure*
-(les dumps publics de `ressources/sql/` ne contiennent pas les données). Le site
-fonctionne mais sans contenu. Pour de vraies données, demandez une copie de la
-base aux mainteneurs (voir le README principal).
-
-**Le forum phpBB est désactivé en local** via `$config_wri['forum_desactive']`
-dans `config_privee.php`. Le code est en phpBB 3.3.17 alors que les dumps SQL
-publics fournissent un schéma phpBB 3.0/3.1 incompatible. Comme
-`controlleurs/bandeau.php` initialise une session phpBB sur chaque page, on la
-court-circuite (voir `modeles/identification.php`). `/forum/` ne fonctionnera
-donc pas tant que vous ne disposez pas d'une vraie base phpBB.
-
-## Régénérer le snapshot
+## Régénérer le dump
 
 Après avoir modifié la structure de la base localement :
 
 ```bash
-make db-dump   # réécrit docker/init/refuges-local.sql.gz
+make db-dump   # réécrit le dump de ressources/sql/, en le purgeant (ressources/sql/purge-dump.py)
 ```

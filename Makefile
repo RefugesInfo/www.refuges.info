@@ -3,7 +3,7 @@
 
 COMPOSE := docker compose -f docker/docker-compose.yml
 DB      := $(COMPOSE) exec -T db psql -U refuges
-DUMP    := docker/init/refuges-local.sql.gz
+DUMP    := ressources/sql/2026-09-21-jeu-de-donnee-test-avec-la-base-de-refuges.info.sql.gz
 
 .DEFAULT_GOAL := help
 
@@ -17,6 +17,8 @@ help: ## Affiche cette aide
 up: ## Construit et démarre la stack (config + base chargées si besoin)
 	@[ -f config_privee.php ] || cp docker/config_privee.docker.php config_privee.php
 	@[ -f .htaccess ] || cp htaccess.modele.txt .htaccess
+	@# phpBB (cache, fichiers) et le site écrivent dans ces dossiers : le conteneur tourne en www-data, pas sous votre uid
+	@chmod -R a+rwX forum/cache forum/store forum/files forum/images/avatars/upload 2>/dev/null || true
 	$(COMPOSE) up -d --build
 	@printf "Attente de PostgreSQL"; \
 	  until $(COMPOSE) exec -T db pg_isready -U refuges >/dev/null 2>&1; do printf "."; sleep 1; done; \
@@ -24,7 +26,7 @@ up: ## Construit et démarre la stack (config + base chargées si besoin)
 	@if ! $(DB) -d refuges -tAc "SELECT to_regclass('public.points')" 2>/dev/null | grep -q points; then \
 	  echo "Base vide → chargement du snapshot"; $(MAKE) --no-print-directory db-load; \
 	else echo "Base déjà chargée."; fi
-	@echo "\n✅  Site disponible sur http://localhost:8080"
+	@echo "\n✅  Site disponible sur http://localhost:8080 (compte administrateur : sly / admin, voir docker/README.md)"
 
 down: ## Arrête la stack (conserve les données)
 	$(COMPOSE) down
@@ -47,7 +49,7 @@ shell: ## Ouvre un shell bash dans le conteneur web
 db: ## Ouvre un client psql sur la base refuges
 	$(COMPOSE) exec db psql -U refuges -d refuges
 
-db-load: ## (Ré)initialise la base depuis docker/init/refuges-local.sql.gz
+db-load: ## (Ré)initialise la base depuis le dump de test
 	$(DB) -d postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname='refuges' AND pid<>pg_backend_pid();" >/dev/null
 	$(DB) -d postgres -c "DROP DATABASE IF EXISTS refuges;"
 	$(DB) -d postgres -c "CREATE DATABASE refuges;"
@@ -58,9 +60,12 @@ seed: ## Injecte un jeu de données de démo (massifs, points, commentaires)
 	$(DB) -d refuges -v ON_ERROR_STOP=1 < docker/init/seed-demo.sql
 	@echo "Données de démo injectées."
 
-db-dump: ## Régénère le snapshot versionné à partir de la base courante
-	$(COMPOSE) exec -T db pg_dump -U refuges --no-owner --no-privileges refuges | gzip > $(DUMP)
-	@echo "Snapshot écrit dans $(DUMP)."
+db-dump: ## Régénère le dump de test à partir de la base courante (purgé des données personnelles)
+	$(COMPOSE) exec -T db pg_dump -U refuges --no-owner --no-privileges refuges > $(DUMP:.gz=).brut
+	python3 ressources/sql/purge-dump.py $(DUMP:.gz=).brut $(DUMP:.gz=)
+	gzip -9 -f $(DUMP:.gz=)
+	rm -f $(DUMP:.gz=).brut
+	@echo "Dump purgé écrit dans $(DUMP)."
 
 clean: ## Arrête tout et SUPPRIME les données de la base (volume)
 	$(COMPOSE) down -v

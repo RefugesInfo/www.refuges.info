@@ -12,10 +12,9 @@ Si vous voulez seulement une copie du site qui tourne sur votre machine pour bid
 
 ```
 make up      # site sur http://localhost:8080
-make seed    # quelques massifs, points et commentaires de démo
 ```
 
-Voir docker/README.md pour les détails et les limites (base quasi vide, forum phpBB désactivé). Le reste de ce fichier décrit l'installation sur un vrai serveur.
+Voir docker/README.md pour les détails et les limites (comptes de test, contenu de la base). Le reste de ce fichier décrit l'installation sur un vrai serveur.
 
 Installation
 ============

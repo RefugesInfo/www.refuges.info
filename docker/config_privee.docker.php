@@ -24,10 +24,3 @@ $config_wri['mapKeys'] = [
 $config_wri['debug']=true;
 ini_set('error_reporting', E_ALL ^ E_NOTICE ^ E_DEPRECATED);
 ini_set('display_errors', '1');
-
-// [DEV LOCAL] Fait tourner le site sans le forum phpBB.
-// Les dumps SQL publics fournissent un schéma phpBB 3.0/3.1 incompatible avec
-// le code phpBB 3.3.17 du dépôt ; comme controlleurs/bandeau.php initialise une
-// session phpBB sur chaque page, on la court-circuite en local.
-// Voir modeles/identification.php. Retirer si vous disposez d'une vraie base phpBB.
-$config_wri['forum_desactive']=true;
