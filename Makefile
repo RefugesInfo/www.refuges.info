@@ -7,7 +7,7 @@ DUMP    := ressources/sql/2026-09-21-jeu-de-donnee-test-avec-la-base-de-refuges.
 
 .DEFAULT_GOAL := help
 
-.PHONY: help up down restart build logs shell db db-load db-dump seed ps clean
+.PHONY: help up down restart build logs shell db db-load db-dump ps clean
 
 help: ## Affiche cette aide
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
@@ -55,10 +55,6 @@ db-load: ## (Ré)initialise la base depuis le dump de test
 	$(DB) -d postgres -c "CREATE DATABASE refuges;"
 	gzip -dc $(DUMP) | $(DB) -d refuges -v ON_ERROR_STOP=0 >/dev/null 2>&1
 	@echo "Base rechargée depuis $(DUMP)."
-
-seed: ## Injecte un jeu de données de démo (massifs, points, commentaires)
-	$(DB) -d refuges -v ON_ERROR_STOP=1 < docker/init/seed-demo.sql
-	@echo "Données de démo injectées."
 
 db-dump: ## Régénère le dump de test à partir de la base courante (purgé des données personnelles)
 	$(COMPOSE) exec -T db pg_dump -U refuges --no-owner --no-privileges refuges > $(DUMP:.gz=).brut

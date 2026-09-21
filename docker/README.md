@@ -24,7 +24,7 @@ Cette commande :
 Le site est ensuite disponible sur **http://localhost:8080**.
 
 `make help` liste toutes les commandes (`down`, `logs`, `shell`, `db`,
-`db-load`, `db-dump`, `seed`, `clean`…).
+`db-load`, `db-dump`, `clean`…).
 
 ## Ce que contient la base de test
 
@@ -40,8 +40,6 @@ Ne sont **pas** dans le dump : messages privés, journaux, sessions, adresses IP
 (tous en `@pas.fr`), clés d'API. L'extension anti-spam Cleantalk est désactivée
 (elle contacterait un service externe) et l'envoi d'e-mails du forum est coupé.
 La question anti-robot de l'inscription au forum a pour réponse `sly`.
-
-`make seed` (jeu de démo fictif) n'est plus nécessaire avec cette base.
 
 ## Régénérer le dump
 
