@@ -27,6 +27,8 @@ CONFIG = {
     'site_desc':'Instance de developpement','board_email':'noreply@example.invalid',
     'board_contact':'noreply@example.invalid','board_email_sig':'','email_enable':'0',
     'cookie_domain':'','cookie_secure':'0',
+    # Le formulaire de connexion du bandeau du site calcule son propre jeton, sans l'id de session (modeles/identification.php)
+    'form_token_sid_guests':'0',
 }
 
 src,dst = sys.argv[1],sys.argv[2]
