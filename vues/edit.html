@@ -122,18 +122,18 @@
     <p>Placer un sommet en dehors du tracé suivi pour en sortir</p>
   </div>
 
-  <?if (isset($vue->polygone->id_polygone)) { ?>
+  <?php if (isset($vue->polygone->id_polygone)) { ?>
     <fieldset>
       <legend>Suppression</legend>
       <label>
-        <?if (empty($_GET['test_supprimer'])) { ?>
+        <?php if (empty($_GET['test_supprimer'])) { ?>
           <p>
             <a id="supprimer-massif"
               href="/edit/<?=$vue->polygone->id_polygone??0?>?test_supprimer=1">
               Supprimer <?=$vue->polygone->art_def_poly??''?> <?=$vue->polygone->type_polygone??0?>
             </a>(définitif).
           </p>
-        <? } else { ?>
+        <?php } else { ?>
           <b>
             <p style="color:red">ATTENTION: Ceci va supprimer définitivement <?=$vue->polygone->art_def_poly??''?> <?=$vue->polygone->type_polygone??0?> "<?=$vue->polygone->nom_polygone??''?>"</p>
             <p style="color:red">Aucune restauration ne sera possible</p>
@@ -145,10 +145,10 @@
             <input type="submit" name="annuler" value="Annuler" />
           </form>
           <br/>&nbsp;
-        <? } ?>
+        <?php } ?>
       </label>
     </fieldset>
-  <? } ?>
+  <?php } ?>
 
   <div id="myol-help-edit"></div>
 </div>

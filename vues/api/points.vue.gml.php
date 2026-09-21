@@ -9,7 +9,7 @@ headers_cors_par_default();
 headers_cache_api();
 
 ?>
-<?='<?'?>xml version="1.0" encoding="UTF-8" <?='?>'?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <wfs:FeatureCollection
   xmlns:wfs="https://www.opengis.net/wfs"
   xmlns:gml="https://www.opengis.net/gml"

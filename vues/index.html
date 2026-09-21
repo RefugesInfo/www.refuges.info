@@ -36,7 +36,7 @@
         <li>
           <a href="<?=$lien?>"><?=$nom_zone?></a>
         </li>
-      <? } ?>
+      <?php } ?>
     </ul>
   </div>
 
@@ -50,7 +50,7 @@
             title="<?=$nouveau_commentaire->nom?>">
             <img alt="photo" src="<?=$nouveau_commentaire->lien_photo['vignette']?>">
           </a>
-        <? }
+        <?php }
       } ?>
 
     <h4><?=$vue->stat->nbpoints?> points dans la base. Les <?=$config_wri['defaut_max_ajouts_recents']?> derniers ajoutés :</h4>
@@ -64,11 +64,11 @@
               par <?=$nouveau_point->nom_createur?>
             <?php } else { ?>
               par <a href="<?=$config_wri['fiche_utilisateur'].$nouveau_point->id_createur?>"><?=$nouveau_point->nom_createur?></a>
-            <? } ?>
-          <? } ?>
+            <?php } ?>
+          <?php } ?>
             : <a href="<?=lien_point($nouveau_point,true)?>"><?=mb_ucfirst($nouveau_point->nom)?></a>
         </li>
-      <? } ?>
+      <?php } ?>
       <li>
         <a href="/nouvelles/?nombre=<?=$config_wri['defaut_nombre_nouvelles_page_nouvelles']?>&amp;quoi=points"
           title="Voir les <?=$config_wri['defaut_nombre_nouvelles_page_nouvelles']?> derniers points ajoutés sur le site">
@@ -88,15 +88,15 @@
               par <?=$nouveau_commentaire->auteur_commentaire?>
             <?php } else { ?>
               par <a href="<?=$config_wri['fiche_utilisateur'].$nouveau_commentaire->id_createur_commentaire?>"><?=$nouveau_commentaire->auteur_commentaire?></a>
-            <? } ?>
-          <? } ?>
+            <?php } ?>
+          <?php } ?>
             sur <a href="<?=lien_point($nouveau_commentaire,true)?>#C<?=$nouveau_commentaire->id_commentaire?>"><?=$nouveau_commentaire->nom?></a>
             <?php if (isset($nouveau_commentaire->id_polygone)) { ?>
               dans le
               <a href="<?=lien_polygone($nouveau_commentaire,True)?>">massif <?=$nouveau_commentaire->article_partitif?> <?=$nouveau_commentaire->nom_polygone?></a>
-            <? } ?>
+            <?php } ?>
         </li>
-      <? } ?>
+      <?php } ?>
       <li>
         <a href="/nouvelles/?nombre=<?=$config_wri['defaut_nombre_nouvelles_page_nouvelles']?>&quoi=commentaires"
           title="Les <?=$config_wri['defaut_nombre_nouvelles_page_nouvelles']?>derniers commentaires dans refuges.info">

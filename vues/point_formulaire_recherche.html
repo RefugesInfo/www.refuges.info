@@ -1,4 +1,4 @@
-<?
+<?php
 // Bloc affiché sur la page de recherche
 
 // Ce fichier est l'unique endroit ou peuvent se trouver des balises HTML
@@ -32,7 +32,7 @@
             <?php if (is_array($vue->infos_base->types_point))
               foreach ($vue->infos_base->types_point AS $t) { ?>
                 <option value="<?=$t->id_point_type?>"><?=$t->nom_type?></option>
-              <? } ?>
+              <?php } ?>
           </select>
         </label>
         <label title="Polygones (départements, régions, massifs, réserves naturelles, tous les polygones dans notre base) contenant les points recherchés">Dans le massif/département/...  :
@@ -159,9 +159,9 @@
           <label title="Un positionnement précis est-il indispensable ?">Provenance des coordonnéés GPS :
             <select name="precision_gps" >
               <option value="">(Peu importe)</option>
-              <?foreach ($vue->infos_base->type_precision AS $p) { ?>
+              <?php foreach ($vue->infos_base->type_precision AS $p) { ?>
                 <option value="<?=$p->id_type_precision_gps?>"><?=$p->nom_precision_gps?></option>
-              <? } ?>
+              <?php } ?>
             </select>
           </label>
           <label>Dont le modérateur est :
@@ -173,7 +173,7 @@
                 <option  value="<?=$utilisateur->user_id?>">
                   <?=$utilisateur->username?>
                 </option>
-              <? } ?>
+              <?php } ?>
             </select>
           </label>
 

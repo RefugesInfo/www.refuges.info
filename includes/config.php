@@ -230,7 +230,6 @@ mb_internal_encoding("UTF-8");
 
 
 
-ini_set('short_open_tag','1'); // on utilise encore par ci par là la notation < ? print(1); ? > qui a besoin de cette option
 ini_set('date.timezone',$config_wri['timezone']);
 // NOTE: j'aurais aimé tout mettre ici, par exemple la taille max de fichier qu'on peut envoyer, mais ça n'est pas pris en compte par php, voir le fichier .user.ini
 

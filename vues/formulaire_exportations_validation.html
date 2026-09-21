@@ -1,5 +1,5 @@
 <div class="contenu">
-  <? if (!empty($vue->lien_export->url)) { ?>
+  <?php if (!empty($vue->lien_export->url)) { ?>
     <h3>Lien vers les données demandées</h3>
     <dl>
       <dt>Licence</dt>
@@ -12,7 +12,7 @@
     <p>
       <a href="<?=$vue->lien_export->url?>" alt="lien vers les donnees">Cliquez ici pour télécharger les données</a>
     </p>
-  <? } else { ?>
+  <?php } else { ?>
     <p style="color:red;text-indent:2em;">Vous n'avez sélectionné aucun type de point ou aucun massif, revenez en arrière pour compléter le formulaire</p>
-  <? } ?>
+  <?php } ?>
 </div>
