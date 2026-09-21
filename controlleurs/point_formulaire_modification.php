@@ -112,7 +112,10 @@ elseif ( !empty($_REQUEST["id_point_type"]))
 else
 {
   $vue->type="page_simple";
-  $vue->titre="Vous n'auriez pas dû arriver sur cette page de cette façon (formulaire précédent incomplet ?)";
+  $vue->titre="Formulaire d'ajout de point : information manquante";
+  $vue->contenu="Vous n'auriez pas dû arriver ici, le type de point à créer n'a pas été reçu (ni l'identifiant d'un point à modifier).";
+  $vue->titre_lien="Choisir le type de point à ajouter";
+  $vue->lien="/point_ajout";
   return "";
 }
 
