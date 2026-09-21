@@ -38,9 +38,10 @@ RUN printf '<Directory /var/www/html>\n    AllowOverride All\n    Require all gr
     && a2enconf wri-override
 
 # Config PHP du site :
-# - short_open_tag : utilisé par du vieux code du site
+# - short_open_tag : Off explicite, car sans php.ini (cas de cette image) le défaut compilé de PHP est On.
+#   Le code n'utilise plus les balises courtes "<?" et les vues d'export commencent par <?xml
 # - output_buffering : indispensable car des vues (ex. vues/style.css.php) émettent
 #   du contenu avant leur appel header('content-type: text/css'). Sans buffer, le
 #   Content-Type reste text/html et les CSS ne s'appliquent pas (comportement de prod).
-RUN printf 'short_open_tag = On\noutput_buffering = 4096\nupload_max_filesize = 20M\npost_max_size = 25M\n' \
+RUN printf 'short_open_tag = Off\noutput_buffering = 4096\nupload_max_filesize = 20M\npost_max_size = 25M\n' \
         > /usr/local/etc/php/conf.d/wri.ini
