@@ -11,7 +11,7 @@ $vue contient les données passées par le fichier PHP
 <div class="contenu">
   <?php // Parcours tous les refuges de la recherche
   if (isset($vue->points)) { ?>
-  <h4><?=$vue->titre?></h4>
+  <h4>Recherche sur refuges.info (<?=$vue->nombre_points?> points affichés<?php if (isset($vue->limite_atteinte)) { ?><strong> et la limite du nombre de point a été atteinte</strong><?php } ?>)</h4>
 
   <p>
     <div class="table">
@@ -35,9 +35,6 @@ $vue contient les données passées par le fichier PHP
       </div>
       <?php } ?>
     </div>
-    <?php if(isset($vue->limite_atteinte) ) { ?>
-      <p><strong>La limite du nombre de point a été atteinte.</strong></p>
-    <?php } ?>
 
   </p>
   <?php } else { ?>
