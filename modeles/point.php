@@ -145,23 +145,25 @@ function infos_points($conditions)
   }
 
     // On souhaite sortir tous les polygones de la base auquel chaque point appartient
+    // 2026-09 sly : le calcul se fait maintenant en 2 requêtes séparées (voir juste avant l'exécution, plus bas),
+    // pour ne plus tronquer sur les lignes brutes dupliquées par la jointure polygones (chaque point ressort une fois
+    // par polygone d'appartenance) au lieu du nombre de points réellement voulu. Voir mémoire "bug troncature
+    // recherche par nom" pour l'historique du problème (l'ancien ×7 empirique sous-estimait de plus en plus la
+    // multiplication réelle, à mesure que le nombre de polygones par point augmentait).
+    // $conditions->ordre ne doit donc plus jamais référencer polygone_type (pas encore joint dans la 1ère des 2
+    // requêtes) : un appelant qui veut départager l'ordre des polygones d'un même point passe $conditions->ordre_polygone
+    // à la place, qui n'est utilisé que dans la 2ème requête, une fois la jointure polygones en place (voir plus bas).
   if (!empty($conditions->avec_liste_polygones) )
   {
-    $tables_en_plus.=", points points2 left join polygones polygones2 on ST_Within(points2.geom, polygones2.geom) left join polygone_type on polygones2.id_polygone_type=polygone_type.id_polygone_type";
-
     foreach ($proprietes_interessantes_polygones as $propriete)
       $champs_polygones.=",polygones2.$propriete";
     foreach ($proprietes_interessantes_type_polygones as $propriete)
       $champs_polygones.=",polygone_type.$propriete";
 
-    //Condition de jointure implicite pour que la 2ème référence à la table point joigne bien avec le même point dans la table points
-    $conditions_sql .= "\n\tAND points.id_point=points2.id_point";
     if (empty($conditions->ordre))
-      $ordre="ORDER BY points.nom,polygone_type.ordre_taille DESC";
-    /* Là, c'est méga sioux et empirique comme bidouille, la limite s'appliqe au nombre de records retournés, mais avec la jointure, chaque point donne lieu à 4, 5 voir 8 lignes pour chaque polygones dont le point est membre. Alors si on voulait une limite je multiplie arbitrairement par 6 la limite demandée. (le tableau final sera tronqué pour tomber pile sur la limite demandée de nombre de points retournés)
-    Pourquoi alors mettre une limite me diriez vous ? pour économiser des ressources et du temps à attendre cette énorme requête */
-    if (!empty($conditions->limite))
-      $limite="\n\tLIMIT ".(7*$conditions->limite);
+      $ordre="ORDER BY points.nom";
+    if (empty($conditions->ordre_polygone))
+      $conditions->ordre_polygone="polygone_type.ordre_taille DESC";
   }
 
   // on restreint les points qui appartiennent à cette geometrie (utile pour les points dans une bbox donnée)
@@ -306,7 +308,7 @@ function infos_points($conditions)
   // CLUSTERISATION AU NIVEAU DU SERVEUR
   if (!empty($conditions->cluster))
     if ( $conditions->cluster &&
-      !$tables_en_plus ) // Si on croise avec un polygone ou autre, on ne clusterise pas car il y aura moins de points et ça évite une requete compliquée :)
+      !$tables_en_plus && empty($conditions->avec_liste_polygones) ) // Si on croise avec un polygone ou autre, on ne clusterise pas car il y aura moins de points et ça évite une requete compliquée :)
     {
     // Groupage des points dans des carrés de <cluster> degrés de latitude et longitude
     $query_clusters="
@@ -345,6 +347,42 @@ function infos_points($conditions)
 
     // Sinon, on change le scope des points qu'il reste à traiter
     $conditions_sql.="\n\tAND id_point IN (".implode(',',$points_isoles).")";
+  }
+
+  // Si on veut la liste des polygones de chaque point (avec_liste_polygones), on calcule d'abord ici la liste des
+  // ids des points concernés par tous les critères ci-dessus (petite requête, sans la coûteuse jointure polygones),
+  // puis on ne fait cette jointure que sur ces ids précis juste après. Voir le commentaire plus haut, à l'endroit
+  // où $conditions->avec_liste_polygones est testé pour la première fois, pour le contexte de ce changement.
+  if (!empty($conditions->avec_liste_polygones))
+  {
+    $query_ids="
+      SELECT points.id_point
+      FROM
+        type_precision_gps,point_type, points LEFT join phpbb3_users on points.id_createur = phpbb3_users.user_id $tables_en_plus
+      WHERE
+        points.id_type_precision_gps=type_precision_gps.id_type_precision_gps
+        AND points.id_point_type=point_type.id_point_type
+        $conditions_sql
+      $ordre
+      $limite
+    ";
+    if ( ! ($res_ids = $pdo->query($query_ids)))
+      return erreur("Une erreur sur la requête est survenue",$query_ids);
+
+    $ids_points_trouves=[];
+    while ($raw=$res_ids->fetch())
+      $ids_points_trouves[]=$raw->id_point;
+
+    if (!count($ids_points_trouves)) // Rien ne correspond aux critères, inutile d'aller plus loin
+      return $points;
+
+    // On restreint la suite à ces points précis, et c'est seulement maintenant qu'on fait la jointure polygones,
+    // sur cette liste déjà bornée par $limite (donc plus besoin d'une LIMIT ni d'un multiplicateur empirique dessus)
+    $conditions_sql="\n\tAND points.id_point IN (".implode(',',$ids_points_trouves).")";
+    $tables_en_plus=" LEFT JOIN polygones polygones2 ON ST_Within(points.geom,polygones2.geom) LEFT JOIN polygone_type ON polygones2.id_polygone_type=polygone_type.id_polygone_type";
+    if (!empty($conditions->ordre_polygone)) // départage de l'ordre des polygones d'un même point, pertinent seulement maintenant que la jointure existe
+      $ordre.=",".$conditions->ordre_polygone;
+    $limite="";
   }
 
   $query_points="
