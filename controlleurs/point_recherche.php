@@ -30,7 +30,7 @@ if (!empty($_REQUEST))
   $conditions->precision_gps = $_REQUEST['precision_gps'] ?? '';
   $conditions->id_createur = $_REQUEST['id_createur'] ?? '';
   $conditions->ouvert = $_REQUEST['ouvert'] ?? '';
-  $conditions->limite = $_REQUEST['limite'] ?? $config_wri['points_maximum_recherche'];
+  $conditions->limite = $_REQUEST['limite'] ?? $config_wri['points_maximum_recherche']; // Par défaut, on compte sur le formulaire pour être raisonnable et passer le paramètre du nombre max, mais si jamais il n'y est pas, voici la limite haute de sécurité
   $conditions->uniquement_points_caches = $_REQUEST['uniquement_points_caches'] ?? False;
 
   // les cases à cocher qui peuvent être soit "cochée" = true, pas cochée = (vide)

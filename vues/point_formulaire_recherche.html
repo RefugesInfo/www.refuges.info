@@ -207,8 +207,8 @@
       <legend>Résultats</legend>
       <fieldset>
         <label title="Si cette case est cochée, la recherche renvois tous résultats sans limite (attention, cela peut lancer une recherche parfois longue)">
-          <input type="checkbox" name="limite" value="100000" />
-          Ne pas limiter aux <?=$config_wri['points_maximum_recherche']?> premiers résultats.
+          <input type="checkbox" checked="checked" name="limite" value="<?=$config_wri['points_recherches']?>" />
+          Limiter aux <?=$config_wri['points_recherches']?> premiers résultats.
         </label>
           <label>
             <input type="radio" name="condition_categorie_polygone" value="montagnarde" checked="checked" />
