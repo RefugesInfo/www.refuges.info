@@ -199,7 +199,7 @@
         <form method="get" action="/point_recherche">
           <div style="text-wrap: nowrap;">
             <input type="text" name="nom" class="input-text" placeholder="Recherche de point">
-            <input type="hidden" name="limite" value="40">
+            <input type="hidden" name="limite" value="<?=$config_wri['points_maximum_recherche']?>">
             <button type="submit" title="Lancer la recherche" style="border:none">🔍</button>
           </div>
           <a href="/point_formulaire_recherche" title="Recherche avancée">
