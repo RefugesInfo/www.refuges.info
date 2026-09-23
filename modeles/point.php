@@ -243,6 +243,14 @@ function infos_points($conditions)
     $conditions->avec_points_caches=True;
   }
 
+  // 2026-09 sly : on exclut les points cachés dès le SQL plutôt que de les filtrer seulement après coup (voir plus bas) :
+  // sinon un point caché consomme quand même une place sur $conditions->limite, ce qui rend le nombre de résultats
+  // affichés incohérent avec la limite demandée (et empêche le message de limite atteinte de se déclencher alors
+  // qu'il le faudrait). Exception : la recherche d'un point précis par id (infos_point()) doit encore pouvoir le
+  // trouver caché, pour renvoyer le message "ce point a existé mais est caché" (cf. plus bas) plutôt que "inexistant".
+  if (empty($conditions->avec_points_caches) and !(!empty($conditions->ids_points) and is_numeric($conditions->ids_points)))
+    $conditions_sql.="\n\tAND NOT points.cache";
+
   // cas spécial sur les modèles (ils sont dans la table point, ont modele=1 et servent à pré-remplir les champs d'une saisie d'un type particulier)
   // par défaut on ne les veut pas
   if (!empty($conditions->modele))
@@ -380,6 +388,13 @@ function infos_points($conditions)
     // sur cette liste déjà bornée par $limite (donc plus besoin d'une LIMIT ni d'un multiplicateur empirique dessus)
     $conditions_sql="\n\tAND points.id_point IN (".implode(',',$ids_points_trouves).")";
     $tables_en_plus=" LEFT JOIN polygones polygones2 ON ST_Within(points.geom,polygones2.geom) LEFT JOIN polygone_type ON polygones2.id_polygone_type=polygone_type.id_polygone_type";
+    // 2026-09 sly : points.id_point en départage systématique, sinon 2 points de même nom (ou même date, etc. selon
+    // le tri demandé) voient leurs lignes de polygones s'entrelacer au lieu de rester groupées par point - la boucle
+    // PHP plus bas suppose que toutes les lignes d'un même point se suivent, et compte alors à tort plusieurs
+    // "nouveaux points" pour un seul, ce qui consomme des crédits en trop sur $conditions->limite (bug trouvé en
+    // testant "bel" sur la prod : "abri du Belvédère" existe 2 fois, leurs lignes entrelacées coûtaient 10 crédits
+    // au lieu de 2)
+    $ordre.=",points.id_point";
     if (!empty($conditions->ordre_polygone)) // départage de l'ordre des polygones d'un même point, pertinent seulement maintenant que la jointure existe
       $ordre.=",".$conditions->ordre_polygone;
     $limite="";
@@ -581,14 +596,15 @@ function infos_points($conditions)
 
     // Ici, petite particularité sur les points cachés, par défaut, on ne veut pas les renvoyer, mais on veut quand
     // même, si un seul a été demandé, pouvoir dire qu'il est caché (du public) ce qui est différent d'inexistant dans la base. On va donc le chercher en base mais on renvoi un message erreur s'il est en caché
-    // FIXME : cela créer un bug sur l'utilisation des limites, car lorsque l'on en demande x on en obtient en fait x-le nombre de points cachés
+    // 2026-09 sly : $id_point_deja_fait doit être mis à jour même si ce point est cache et donc pas ajouté à $points,
+    // sinon (bug trouvé en testant le correctif de recherche par nom sur la prod) chacune de ses lignes suivantes
+    // (une par polygone d'appartenance) est reprise à tort pour un nouveau point, et consomme un crédit sur la
+    // limite demandée à chaque fois au lieu d'une seule (un point caché appartenant à N polygones coûtait N crédits)
     if (!$point->cache or !empty($conditions->avec_points_caches)) // On renvoi ce point, soit il n'est pas caché, soit on a demandé aussi les points cachés
-    {
       $points[$point->id_point]=$point_final;
-      $id_point_deja_fait=$point->id_point;
-    }
     elseif ( !empty($conditions->ids_points) and is_numeric($conditions->ids_points)) // on avait spécifiquement demandé un point mais il est caché on retourne un message d'erreur
       return erreur("Ce point d'id $conditions->ids_points a existé par le passé sur ce site, mais seul un modérateur peut retrouver son historique");
+    $id_point_deja_fait=$point->id_point;
   }
   return $points;
 }
