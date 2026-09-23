@@ -64,7 +64,6 @@ if (!empty($_REQUEST))
   else
   {
     $vue->nombre_points=sizeof($points);
-    $vue->titre="Recherche sur refuges.info ($vue->nombre_points points affichés)";
 
     if (isset($points))
       foreach ($points as $point)
@@ -76,6 +75,8 @@ if (!empty($_REQUEST))
     //en PG, pas moyen de savoir si on a tapé la limite. Je dis que si on a pile poile le nombre de points, c'est qu'on l'a atteinte
     if (!empty($conditions->limite) && $vue->nombre_points == $conditions->limite)
       $vue->limite_atteinte = $conditions->limite;
+
+    $vue->titre="Recherche sur refuges.info ($vue->nombre_points points affichés".(isset($vue->limite_atteinte)?" et la limite du nombre de point a été atteinte":"").")";
   }
 }
 else
