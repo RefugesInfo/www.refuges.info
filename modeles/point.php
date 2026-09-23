@@ -140,7 +140,13 @@ function infos_points($conditions)
     else
     {
       $tables_en_plus.=" INNER JOIN polygones ON ( ST_Within(points.geom,polygones.geom) AND polygones.id_polygone IN ($conditions->ids_polygones)   ) ";
-      $champs_polygones=",".$config_wri['champs_table_polygones'];
+      // 2026-09 sly : si avec_liste_polygones est aussi demandé, la 2ème requête (voir plus bas) remplace de toute
+      // façon $tables_en_plus par une jointure sur polygones2 et se sert de $champs_polygones à ce moment-là ;
+      // l'alias "polygones" (singulier) n'existe alors plus, ces colonnes ne seraient plus valides en SQL.
+      // (dans l'ancien code à requête unique, les 2 étaient déjà présents en même temps, mais polygones2 écrasait
+      // simplement polygones dans le résultat PHP final, ces colonnes étaient donc déjà redondantes dans ce cas)
+      if (empty($conditions->avec_liste_polygones))
+        $champs_polygones=",".$config_wri['champs_table_polygones'];
     }
   }
 
