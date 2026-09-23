@@ -124,7 +124,8 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
       case "grottes": $conditions->ids_types_point=$conditions->ids_types_point ?? $config_wri['id_grotte'];
       case "refuges": $conditions->ids_types_point=$conditions->ids_types_point ?? implode(',',$config_wri['tout_type_refuge']);
       case "points":
-        $conditions->ordre="points.date_creation DESC,polygone_type.ordre_taille DESC";
+        $conditions->ordre="points.date_creation DESC";
+        $conditions->ordre_polygone="polygone_type.ordre_taille DESC"; // départage de l'ordre des polygones d'un même point, appliqué seulement une fois la jointure polygones faite (voir modeles/point.php)
         $conditions->limite=$nombre;
         $conditions->avec_liste_polygones=True;
         $conditions->ids_polygones=$ids_polygones ?? Null;
