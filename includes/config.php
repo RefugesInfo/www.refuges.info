@@ -147,7 +147,7 @@ $config_wri['id_coordonees_gps_approximative']=4;
 /********** choix de maximums ************/
 
 // nombre maximum de points que peut sortir la recherche
-$config_wri['points_maximum_recherche']=40;
+$config_wri['points_maximum_recherche']=100;
 
 // nombre de points renvoyés par défaut, par l'API
 $config_wri['defaut_max_nombre_point']=250;
