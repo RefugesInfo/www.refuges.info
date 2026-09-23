@@ -36,7 +36,7 @@ plutôt que de lui passer 50 champs, on ne lui passe qu'un seul, un object conte
 de conditions et donc plus facilement extensible
 voici les paramètres attendus de recherche :
 (tous facultatifs, ces conditions seront toutes vérifiées par un AND entre elles)
-$conditions->nom : recherche de type ILIKE sur le champ (ILIKE est insensible à la case en postgresql)
+$conditions->nom : mots à trouver dans le nom (séparés par espace, tiret, apostrophe...), chacun doit commencer un mot du nom, sans tenir compte de la casse ni des accents
 $conditions->ids_types_point : liste d'id dans notre base des points type ex: 12 ou 12,13,14
 $conditions->places_maximum
 $conditions->places_minimum
@@ -128,9 +128,14 @@ function infos_points($conditions)
     else
       $conditions_sql.="\n\tAND points.id_point IN ($conditions->ids_points)";
 
-  // conditions sur le nom du point, on tente d'être tolérant en supportant les caractères non accentués, et les - , ou espaces de la même façon
+  // conditions sur le nom du point : chaque mot saisi doit commencer un mot du nom (\m = début de mot), sans tenir compte de la casse ni des accents
+  // on ne garde que des lettres/chiffres : aucun caractère spécial de regex à échapper
   if( !empty($conditions->nom) )
-    $conditions_sql .= "\n\tAND unaccent(points.nom) ILIKE unaccent(".$pdo->quote('%'.str_replace(array('-',' '),'%',$conditions->nom).'%').")";
+  {
+    preg_match_all('/[\p{L}\p{N}]+/u', $conditions->nom, $mots_recherches);
+    foreach ($mots_recherches[0] as $mot_recherche)
+      $conditions_sql .= "\n\tAND unaccent(points.nom) ~* unaccent(".$pdo->quote('\m'.$mot_recherche).")";
+  }
 
   // condition sur l'appartenance à un polygone
   if( !empty($conditions->ids_polygones) )
