@@ -26,13 +26,16 @@ function add_lib($nom_fichier_vue, $chemin = 'chemin_vues')
 {
   global $vue;
 
-  $fichier_vue = fichier_vue($nom_fichier_vue, $chemin);
+  // Fichier introuvable (fichier_vue() renvoie alors null) : on l'ignore plutôt que d'ajouter un lien cassé à la page
+  $url = fichier_vue($nom_fichier_vue, $chemin, true);
+  if (!$url)
+    return;
 
-  if(strpos($fichier_vue, '.css'))
-    $vue->css_lib_head[] = fichier_vue($nom_fichier_vue, $chemin, true);
+  if(strpos($nom_fichier_vue, '.css'))
+    $vue->css_lib_head[] = $url;
 
-  if(strpos($fichier_vue, '.js'))
-    $vue->java_lib_foot[] = fichier_vue($nom_fichier_vue, $chemin, true);
+  if(strpos($nom_fichier_vue, '.js'))
+    $vue->java_lib_foot[] = $url;
 }
 
 function temps_execution()
