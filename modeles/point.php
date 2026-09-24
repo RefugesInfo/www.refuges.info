@@ -36,7 +36,7 @@ plutôt que de lui passer 50 champs, on ne lui passe qu'un seul, un object conte
 de conditions et donc plus facilement extensible
 voici les paramètres attendus de recherche :
 (tous facultatifs, ces conditions seront toutes vérifiées par un AND entre elles)
-$conditions->nom : recherche de type ILIKE sur le champ (ILIKE est insensible à la case en postgresql)
+$conditions->nom : mots à trouver dans le nom (séparés par espace, tiret, apostrophe...), chacun doit commencer un mot du nom, sans tenir compte de la casse ni des accents
 $conditions->ids_types_point : liste d'id dans notre base des points type ex: 12 ou 12,13,14
 $conditions->places_maximum
 $conditions->places_minimum
@@ -129,9 +129,14 @@ function infos_points($conditions)
     else
       $conditions_sql.="\n\tAND points.id_point IN ($conditions->ids_points)";
 
-  // conditions sur le nom du point, on tente d'être tolérant en supportant les caractères non accentués, et les - , ou espaces de la même façon
+  // conditions sur le nom du point : chaque mot saisi doit commencer un mot du nom (\m = début de mot), sans tenir compte de la casse ni des accents
+  // on ne garde que des lettres/chiffres : aucun caractère spécial de regex à échapper
   if( !empty($conditions->nom) )
-    $conditions_sql .= "\n\tAND unaccent(points.nom) ILIKE unaccent(".$pdo->quote('%'.str_replace(array('-',' '),'%',$conditions->nom).'%').")";
+  {
+    preg_match_all('/[\p{L}\p{N}]+/u', $conditions->nom, $mots_recherches);
+    foreach ($mots_recherches[0] as $mot_recherche)
+      $conditions_sql .= "\n\tAND unaccent(points.nom) ~* unaccent(".$pdo->quote('\m'.$mot_recherche).")";
+  }
 
   // condition sur l'appartenance à un polygone
   if( !empty($conditions->ids_polygones) )
@@ -141,7 +146,13 @@ function infos_points($conditions)
     else
     {
       $tables_en_plus.=" INNER JOIN polygones ON ( ST_Within(points.geom,polygones.geom) AND polygones.id_polygone IN ($conditions->ids_polygones)   ) ";
-      $champs_polygones=",".$config_wri['champs_table_polygones'];
+      // 2026-09 sly : si avec_liste_polygones est aussi demandé, la 2ème requête (voir plus bas) remplace de toute
+      // façon $tables_en_plus par une jointure sur polygones2 et se sert de $champs_polygones à ce moment-là ;
+      // l'alias "polygones" (singulier) n'existe alors plus, ces colonnes ne seraient plus valides en SQL.
+      // (dans l'ancien code à requête unique, les 2 étaient déjà présents en même temps, mais polygones2 écrasait
+      // simplement polygones dans le résultat PHP final, ces colonnes étaient donc déjà redondantes dans ce cas)
+      if (empty($conditions->avec_liste_polygones))
+        $champs_polygones=",".$config_wri['champs_table_polygones'];
     }
   }
 
