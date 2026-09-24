@@ -186,9 +186,10 @@ body {
   }
 
   /* Le titre est un lien, donc de la couleur du bandeau (--couleur_fond_titre = --couleur_lien) : invisible.
-     On l'inverse comme les autres titres du site, et on rend sa couleur de lien au survol (fond clair) */
+     Il hérite de la couleur du texte du bandeau, comme le burger et "Connexion", et reprend sa couleur
+     de lien au survol (fond clair) */
   .menu-haut .titre-site {
-    color: var(--couleur_titre);
+    color: inherit;
   }
 
   .menu-haut .titre-site:hover {
