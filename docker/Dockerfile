@@ -45,8 +45,8 @@ RUN printf '<Directory /var/www/html>\n    AllowOverride All\n    Require all gr
     && a2enconf wri-override
 
 # Config PHP du site :
-# - short_open_tag : Off explicite, car sans php.ini (cas de cette image) le défaut compilé de PHP est On.
-#   Le code n'utilise plus les balises courtes "<?" et les vues d'export commencent par <?xml
+# - short_open_tag : Off, comme le php.ini Debian de la prod (l'image php n'a pas de php.ini : le défaut
+#   compilé est On, ce qui casserait les vues d'export qui commencent par <?xml)
 # - output_buffering : indispensable car des vues (ex. vues/style.css.php) émettent
 #   du contenu avant leur appel header('content-type: text/css'). Sans buffer, le
 #   Content-Type reste text/html et les CSS ne s'appliquent pas (comportement de prod).
