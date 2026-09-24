@@ -15,7 +15,7 @@ make up
 
 Cette commande :
 
-1. crée `config_privee.php` (depuis `docker/config_privee.docker.php`) et
+1. crée `config_privee.php` (depuis `config_privee.php.modele`, avec les accès à la base du docker-compose et le debug activé) et
    `.htaccess` (depuis `htaccess.modele.txt`) s'ils n'existent pas, et rend inscriptibles par le conteneur
    (`www-data`) les dossiers où le site et phpBB écrivent (cache et fichiers du forum, `photos_points/`,
    `forum/photos-points/`) ;
@@ -67,7 +67,7 @@ make up SITE_URL=https://refugesinfo.exemple.fr
 ```
 
 `make db-load` reporte alors cette adresse dans la configuration de phpBB (`make phpbb-url` la règle seule).
-`docker/config_privee.docker.php` suit l'en-tête `X-Forwarded-Proto` du proxy : sans cela le bandeau du site
+`config_privee.php.modele` suit l'en-tête `X-Forwarded-Proto` du proxy : sans cela le bandeau du site
 refuse d'afficher le formulaire de connexion (« vous devez passer en HTTPS »). Si votre `config_privee.php`
 existe déjà, recopiez-y ce bloc.
 

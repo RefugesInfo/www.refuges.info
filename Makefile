@@ -16,8 +16,22 @@ help: ## Affiche cette aide
 	  | awk 'BEGIN{FS=":.*?## "}{printf "  \033[36m%-12s\033[0m %s\n", $$1, $$2}'
 	@echo "\n  → Site : http://localhost:8080"
 
-up: ## Construit et démarre la stack (config + base chargées si besoin)
-	@[ -f config_privee.php ] || cp docker/config_privee.docker.php config_privee.php
+# config_privee.php est généré depuis config_privee.php.modele (une seule fois : prérequis "order-only").
+# Les ??? sont remplacés par les valeurs du docker-compose, les clés de cartes sont laissées vides
+# (les fonds sous contrat IGN, Mapbox... ne s'afficheront pas) et les options de debug sont activées.
+config_privee.php: | config_privee.php.modele
+	sed -E \
+	  -e 's/(serveur_pgsql.\]=).*/\1"db";/' \
+	  -e 's/(utilisateur_pgsql.\]=).*/\1"refuges";/' \
+	  -e 's/(mot_de_passe_pgsql.\]=).*/\1"refuges";/' \
+	  -e 's/(base_pgsql.\]=).*/\1"refuges";/' \
+	  -e 's/(=> ).[?][?][?].,/\1"",/' \
+	  -e 's#^//([$$]config_wri..debug..=true;)#\1#' \
+	  -e 's#^//(ini_set..error_reporting., E_ALL . E_NOTICE)\);.*#\1 ^ E_DEPRECATED);#' \
+	  -e 's#^//(ini_set..display_errors.*;)#\1#' \
+	  config_privee.php.modele > $@
+
+up: config_privee.php ## Construit et démarre la stack (config + base chargées si besoin)
 	@[ -f .htaccess ] || cp htaccess.modele.txt .htaccess
 	@# phpBB (cache, fichiers) et le site écrivent dans ces dossiers : le conteneur tourne en www-data, pas sous votre uid
 	@chmod -R a+rwX forum/cache forum/store forum/files forum/images/avatars/upload photos_points forum/photos-points 2>/dev/null || true
