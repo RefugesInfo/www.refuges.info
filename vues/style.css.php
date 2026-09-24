@@ -25,8 +25,6 @@ Notes de sly sur l'année 2024: j'ai fais mal de ménage, ré-indenté tout ça,
 ***********************************************************************************************/
 
 header('content-type: text/css');
-// On peut mettre une expiration lointaine, il y a un hash pour raffraichir sir changement
-header('Cache-Control: max-age=2592000');
 
 // sly 2025 : je suis un fou de l'inutile, plutôt que choisir des mois un peu au pif, désormais je colle le style aux saisons Calendaire (approximatives) https://fr.wikipedia.org/wiki/Automne
 $debut_automne = new DateTime("22 September");
