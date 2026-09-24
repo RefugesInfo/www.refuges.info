@@ -184,6 +184,16 @@ body {
   .menu-haut {
     background-color: var(--couleur_fond_titre);
   }
+
+  /* Le titre est un lien, donc de la couleur du bandeau (--couleur_fond_titre = --couleur_lien) : invisible.
+     On l'inverse comme les autres titres du site, et on rend sa couleur de lien au survol (fond clair) */
+  .menu-haut .titre-site {
+    color: var(--couleur_titre);
+  }
+
+  .menu-haut .titre-site:hover {
+    color: var(--couleur_lien);
+  }
 }
 
 @media screen and (max-width: 400px) {
