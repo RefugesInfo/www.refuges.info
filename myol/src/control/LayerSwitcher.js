@@ -35,7 +35,7 @@ class LayerSwitcher extends Button {
     const bl = location.href.match(/baselayer=([^&]+)/u);
 
     if (bl)
-      localStorage.myolBaselayer = decodeURI(bl[1]);
+      sessionStorage.myolBaselayer = decodeURI(bl[1]);
 
     this.sliderEl = document.createElement('input');
     this.sliderEl.type = 'range';
@@ -98,13 +98,13 @@ class LayerSwitcher extends Button {
       evt.target.checked = true;
     }
     if (!this.element.querySelector('input[name="baselayer"]:checked'))
-      (this.element.querySelector('input[value="' + localStorage.myolBaselayer + '"]') ||
+      (this.element.querySelector('input[value="' + sessionStorage.myolBaselayer + '"]') ||
         this.selectorEls[0]
       ).checked = true;
 
     const selectedEls = this.element.querySelectorAll('input[name="baselayer"]:checked');
 
-    localStorage.myolBaselayer = selectedEls[0].value;
+    sessionStorage.myolBaselayer = selectedEls[0].value;
     this.sliderEl.value = 50;
     this.sliderEl.remove();
     this.transparentlayer = null;

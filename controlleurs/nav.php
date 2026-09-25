@@ -23,7 +23,15 @@ require_once ("forum.php");
 require_once ("meta_donnee.php");
 
 add_lib('wiki.js');
-$vue->carte='myol';
+
+if(empty($config_wri['debug'])) {
+  add_lib('myol-min.css', 'chemin_ol');
+  add_lib('myol.js', 'chemin_ol');
+} else {
+  add_lib('myol.css', 'chemin_ol');
+  add_lib('myol-debug.js', 'chemin_ol');
+}
+add_lib('_cartes_myol.js');
 
 // Récupère les infos de type "méta informations" sur les points et les polygones
 $vue->infos_base = infos_base ();

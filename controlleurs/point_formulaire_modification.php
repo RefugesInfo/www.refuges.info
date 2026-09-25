@@ -9,6 +9,7 @@ require_once ("polygone.php");
 require_once ("meta_donnee.php");
 require_once ("mise_en_forme_texte.php");
 require_once ("utilisateur.php");
+require_once ("leaflet_libs.php");
 
 // Récupère les infos de type "méta informations" sur les points et les polygones
 $vue->infos_base = infos_base (); //utile ici pour les list checkbox du HTML
@@ -210,8 +211,6 @@ if ( !empty($point->equivalent_conditions_utilisation) )
 }
 // ===========================================
 // Préparation de la $vue commune à chaque cas
-
-$vue->carte='leaflet';
 
 // sly : FIXME je n'ai pas sû ou le mettre dans ce fichier
 $vue->lien_bbcode = lien_wiki("syntaxe_bbcode");

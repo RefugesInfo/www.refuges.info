@@ -25,7 +25,7 @@ import VectorSource from 'ol/source/Vector';
 
 class Marker extends VectorLayer {
   constructor(opt) {
-    const permalinks = (localStorage.permalink || '6/2/47').split('/'),
+    const permalinks = (sessionStorage.permalink || '6/2/47').split('/'),
       options = {
         // src: 'imageUrl', // url of marker image
         defaultPosition: [permalinks[1], permalinks[2]], // Initial position of the marker

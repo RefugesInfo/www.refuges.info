@@ -1,25 +1,27 @@
-// Force la sélection du type de point concerné dans le sélecteur de couches de la carte
-const nom_type="<?=$vue->point->nom_type?>";
+// Initialisation de la carte
+const map = L.map('carte-point');
 
-if(localStorage.checkedLayers)
-  localStorage.checkedLayers += ' ,';
-else
-  localStorage.checkedLayers = '';
+// Couches tuilées
+const tileLayers = couchesDeFond(<?=json_encode($config_wri['mapKeys'])?>),
+  permalink = sessionStorage.permalink.split('/');
 
-localStorage.checkedLayers += nom_type.charAt(0).toUpperCase() + nom_type.slice(1);
+// Chargement du fond de carte actif
+permalinkControl(map);
+(tileLayers[decodeURI(permalink[3])] || Object.values(tileLayers)[0]).addTo(map);
 
-// Affichage de la carte
-const map = initLeafletMap(
-  'carte-point',
-  'https://<?=$_SERVER["SERVER_NAME"]?>',
-  <?=$vue->version_features?>,
-  <?=json_encode($config_wri['mapKeys'])?>
-);
+// Points refuges.info
+clusterPOI('https://<?=$_SERVER["SERVER_NAME"]?>', <?=$vue->version_features?>).addTo(map);
+
+// Contrôles
+controlesComuns(map).forEach((control) => control.addTo(map));
+
+L.control.layers(tileLayers, {
+  'Itinéraires': coucheItineraires,
+}).addTo(map);
 
 // Marqueur de position de cabane
 L.marker(
-  [<?=$vue->point->latitude?>, <?=$vue->point->longitude?>],
-  {
+  [<?=$vue->point->latitude?>, <?=$vue->point->longitude?>], {
     icon: L.icon({
       iconUrl: '/images/cadre.svg',
       iconSize: [32, 44],
@@ -28,4 +30,5 @@ L.marker(
   }
 ).addTo(map);
 
+// Lance le chargement de la carte
 map.setView([<?=$vue->point->latitude?>, <?=$vue->point->longitude?>], 15);

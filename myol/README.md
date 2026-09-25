@@ -61,7 +61,7 @@ Misc controls
 =============
 Collection of miscellaneous controls and buttons.
 See a [Control example](https://Dominique92.github.io/myol/examples/?sample=controls)
-* Keep position, zoom & zoom on localStorage
+* Keep position, zoom & zoom on sessionStorage
 * Geocoder
 * GPX upload & download
 * Off connexion GPS

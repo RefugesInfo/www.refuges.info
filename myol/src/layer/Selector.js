@@ -3,8 +3,8 @@
  * name : name of all the related input checkbox
  * The checkbox without value (all) check / uncheck the others
  * Check all the checkboxes check the checkbox without value (all)
- * Current selection is saved in window.localStorage
- * You can force the values in window.localStorage[simplified name]
+ * Current selection is saved in window.sessionStorage
+ * You can force the values in window.sessionStorage[simplified name]
  * callback(selection) : function to call at init or click
  * getSelection() : returns an array of selected values
  * If no name is specified or there are no checkbox with this name, return []
@@ -16,7 +16,7 @@ class Selector {
       this.safeName = 'myol_' + name.replace(/[^a-z]/giu, '');
       this.init =
         typeof initSelect === 'undefined' ?
-        localStorage[this.safeName] || '' :
+        sessionStorage[this.safeName] || '' :
         initSelect.toString();
       this.init = this.init.split(',');
       this.selectEls = [...document.getElementsByName(name)];
@@ -52,10 +52,10 @@ class Selector {
 
     // Save the current status
     if (this.safeName && this.getSelection().length)
-      localStorage[this.safeName] = this.getSelection().join(',');
+      sessionStorage[this.safeName] = this.getSelection().join(',');
     //BEST BUG : don't recover values including a ,
     else
-      delete localStorage[this.safeName];
+      delete sessionStorage[this.safeName];
 
     // Call the posted callbacks
     if (evt)

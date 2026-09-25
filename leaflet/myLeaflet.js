@@ -1,9 +1,11 @@
 /* global L, confirm, setInterval, clearInterval */
 
-/***************************************************
- * Personnal adaptations & turn around for leaflet *
- * © Dominique Cavailhez 2026                      *
- ***************************************************/
+/*************************************************
+ * Personnal adaptations & addOns for leaflet    *
+ * This file contains all the generic comon code *
+ * related to leaflet functions                  *
+ * © Dominique Cavailhez 2026                    *
+ *************************************************/
 
 /*********************************************
  * Couches vectorielles du site refuges.info *
@@ -20,10 +22,11 @@
   est fournie à la page HTML qui la passe en argument de l'API pour recharger si nécessaire.
 */
 
-// POINTS D'INTÉRÊT REFUGES.INFO
+/*********************************
+ * Points d'intérêt refuges.info *
+ *********************************/
 /* eslint-disable-next-line no-unused-vars */
 function wriPOILayer(serveurAPI, type, versionFeatures, hideTooltip) {
-  //TODO BUG l'étiquette ne s'affiche que pour les zooms faibles et ne rafraîchit pas après
   const iconList = [],
     poiLayer = L.geoJson(null, {
       // Icônes
@@ -72,12 +75,15 @@ function wriPOILayer(serveurAPI, type, versionFeatures, hideTooltip) {
         for (const name in iconList)
           document.body.insertAdjacentHTML('beforeend', '<img style="display:none" src="/images/icones/' + name + '.svg"/>')
       }
+      poiLayer.fire('load');
     });
 
   return poiLayer;
 }
 
-// POLYGONES DE MASSIFS DE REFUGES.INFO
+/*****************************
+ * Polygones de refuges.info *
+ *****************************/
 /* eslint-disable-next-line no-unused-vars */
 function wriPolygonLayer(serveurAPI, typeId, versionFeatures) {
   const polygonLayer = L.geoJson(null, {
@@ -214,4 +220,34 @@ class MarkerCompass extends L.Marker {
       this._icon.style.transform.replace(/rotateZ\([^)]+\)/u, '') +
       ' rotateZ(' + (45 - parseInt(this.heading, 10)) + 'deg)';
   }
+}
+
+/**************
+ * PERMALINKS *
+ **************/
+// Store lon/lat/zoom/baselayer in sessionStorage 
+/* eslint-disable-next-line no-unused-vars */
+function permalinkControl(map) {
+  // Permalink
+  ['baselayerchange', 'zoom', 'moveend'].forEach((evtName) => {
+    map.on(evtName, () => {
+      const baselayerSelector = document.querySelectorAll('.leaflet-control-layers-base input'),
+        pos = map.getCenter();
+      let baseLayerName = null;
+
+      for (const lsInputEl of baselayerSelector)
+        if (lsInputEl.checked || !baseLayerName)
+          baseLayerName = lsInputEl.parentElement.lastChild.innerText.trim();
+
+      sessionStorage.permalink = [
+        map.getZoom().toFixed(1),
+        pos.lat.toFixed(5),
+        pos.lng.toFixed(5),
+        encodeURI(baseLayerName),
+      ].join('/');
+
+      // Cache les étiquettes pour les grandes échèles
+      map.getContainer().classList[map.getZoom() < 8 ? 'add' : 'remove']('hide-tooltips');
+    });
+  });
 }

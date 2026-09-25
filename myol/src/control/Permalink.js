@@ -1,6 +1,6 @@
 /**
  * Permalink control
- * "map" url hash or localStorage: zoom=<ZOOM> lon=<LON> lat=<LAT>
+ * "map" url hash or sessionStorage : zoom=<ZOOM> lon=<LON> lat=<LAT>
  * Don't set view when you declare the map
  */
 
@@ -15,7 +15,7 @@ class Permalink extends Control {
   constructor(opt) {
     const options = {
       // display: false, // {false | true} Display permalink link the map.
-      // init: false, // {undefined | false | true | [<zoom>, <lon>, <lat>]} use url hash or localStorage to position the map.
+      // init: false, // {undefined | false | true | [<zoom>, <lon>, <lat>]} use url hash or sessionStorage to position the map.
       default: [6, 2, 47], // France
       // setUrl: false, // {false | true} Change url hash when moving the map.
       hash: '?', // {?, #} the permalink delimiter after the url
@@ -42,7 +42,7 @@ class Permalink extends Control {
 
   render(evt) {
     const view = evt.map.getView(),
-      permalinks = (localStorage.permalink || '6/47/2').split('/'),
+      permalinks = (sessionStorage.permalink || '6/47/2').split('/'),
       //BEST init with res=<resolution> or extent (not zoom, lon, lat)
       urlMod = (typeof this.options.init === 'object' ? // init: [<zoom>, <lon>, <lat>]
         'zoom=' + this.options.init[0] + '&lon=' + this.options.init[1] + '&lat=' + this.options.init[2] + ',' :
@@ -74,14 +74,14 @@ class Permalink extends Control {
     if (view.getCenter()) {
       const ll4326 = transform(view.getCenter(), 'EPSG:3857', 'EPSG:4326');
 
-      localStorage.permalink = [
+      sessionStorage.permalink = [
         view.getZoom().toFixed(1),
         ll4326[1].toFixed(5),
         ll4326[0].toFixed(5),
       ].join('/');
 
       if (this.linkEl) {
-        const newParams = 'map=' + localStorage.permalink + '&baselayer=' + encodeURI(localStorage.myolBaselayer);
+        const newParams = 'map=' + sessionStorage.permalink + '&baselayer=' + encodeURI(sessionStorage.myolBaselayer);
 
         this.linkEl.href = this.options.hash + newParams;
         if (this.options.setUrl)

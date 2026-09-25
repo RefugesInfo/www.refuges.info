@@ -24,51 +24,6 @@ if (!empty($vue->http_status_code))
 add_lib('style.css.php');
 add_lib('style_pages.css');
 add_lib('bandeau.css');
-
-// Includes cartes
-switch ($vue->carte??''){
-  case 'myol':
-    if(empty($config_wri['debug'])) {
-      add_lib('myol-min.css', 'chemin_ol');
-      add_lib('myol.js', 'chemin_ol');
-    } else {
-      add_lib('myol.css', 'chemin_ol');
-      add_lib('myol-debug.js', 'chemin_ol');
-    }
-    add_lib('_cartes_myol.js');
-    break;
-
-  case 'leaflet':
-    if(empty($config_wri['debug'])) { // Libs en mode debug
-      add_lib('leaflet/dist/leaflet.js', 'chemin_leaflet');
-      add_lib('markercluster/dist/leaflet.markercluster.js', 'chemin_leaflet');
-      add_lib('fullscreen/dist/Leaflet.fullscreen.min.js', 'chemin_leaflet');
-      add_lib('Coordinates/dist/Leaflet.Coordinates-0.1.5.min.js', 'chemin_leaflet');
-      add_lib('gps/dist/leaflet-gps.min.css', 'chemin_leaflet');
-      add_lib('gps/dist/leaflet-gps.min.js', 'chemin_leaflet');
-    } else { // Libs en mode prod
-      add_lib('leaflet/dist/leaflet-src.js', 'chemin_leaflet');
-      add_lib('markercluster/dist/leaflet.markercluster-src.js', 'chemin_leaflet');
-      add_lib('fullscreen/dist/Leaflet.fullscreen.js', 'chemin_leaflet');
-      add_lib('Coordinates/dist/Leaflet.Coordinates-0.1.5.src.js', 'chemin_leaflet');
-      add_lib('gps/dist/leaflet-gps.src.css', 'chemin_leaflet');
-      add_lib('gps/dist/leaflet-gps.src.js', 'chemin_leaflet');
-    } // Libs n'ayant pas de mode debug
-    add_lib('leaflet/dist/leaflet.css', 'chemin_leaflet');
-    add_lib('markercluster/dist/MarkerCluster.css', 'chemin_leaflet');
-    add_lib('markercluster/dist/MarkerCluster.Default.css', 'chemin_leaflet');
-    add_lib('fullscreen/dist/leaflet.fullscreen.css', 'chemin_leaflet');
-    add_lib('Coordinates/dist/Leaflet.Coordinates-0.1.5.css', 'chemin_leaflet');
-    add_lib('FeatureGroup.SubGroup/src/subgroup.js', 'chemin_leaflet');
-    add_lib('overpass/dist/OverPassLayer.bundle.js', 'chemin_leaflet');
-    add_lib('overpass/dist/OverPassLayer.css', 'chemin_leaflet');
-    add_lib('geocoder/Control.Geocoder.css', 'chemin_leaflet');
-    add_lib('geocoder/Control.Geocoder.js', 'chemin_leaflet');
-    add_lib('myLeaflet.css', 'chemin_leaflet');
-    add_lib('myLeaflet.js', 'chemin_leaflet');
-    add_lib('_cartes_leaflet.js');
-    break;
-}
 ?>
 <!doctype html>
 <html lang="fr">

@@ -4,7 +4,7 @@
  * This package adds many features to Openlayer https://openlayers.org/
  * https://github.com/Dominique92/myol#readme
  * Based on https://openlayers.org
- * Built 13/09/2026 18:45:41 using npm run build from the src/... sources
+ * Built 20/09/2026 20:33:27 using npm run build from the src/... sources
  * Please don't modify this file : best is to modify src/... & npm run build !
  */
 (function (global, factory) {
@@ -78489,7 +78489,7 @@
       const bl = location.href.match(/baselayer=([^&]+)/u);
 
       if (bl)
-        localStorage.myolBaselayer = decodeURI(bl[1]);
+        sessionStorage.myolBaselayer = decodeURI(bl[1]);
 
       this.sliderEl = document.createElement('input');
       this.sliderEl.type = 'range';
@@ -78552,13 +78552,13 @@
         evt.target.checked = true;
       }
       if (!this.element.querySelector('input[name="baselayer"]:checked'))
-        (this.element.querySelector('input[value="' + localStorage.myolBaselayer + '"]') ||
+        (this.element.querySelector('input[value="' + sessionStorage.myolBaselayer + '"]') ||
           this.selectorEls[0]
         ).checked = true;
 
       const selectedEls = this.element.querySelectorAll('input[name="baselayer"]:checked');
 
-      localStorage.myolBaselayer = selectedEls[0].value;
+      sessionStorage.myolBaselayer = selectedEls[0].value;
       this.sliderEl.value = 50;
       this.sliderEl.remove();
       this.transparentlayer = null;
@@ -80309,7 +80309,7 @@
 
   /**
    * Permalink control
-   * "map" url hash or localStorage: zoom=<ZOOM> lon=<LON> lat=<LAT>
+   * "map" url hash or sessionStorage : zoom=<ZOOM> lon=<LON> lat=<LAT>
    * Don't set view when you declare the map
    */
 
@@ -80318,7 +80318,7 @@
     constructor(opt) {
       const options = {
         // display: false, // {false | true} Display permalink link the map.
-        // init: false, // {undefined | false | true | [<zoom>, <lon>, <lat>]} use url hash or localStorage to position the map.
+        // init: false, // {undefined | false | true | [<zoom>, <lon>, <lat>]} use url hash or sessionStorage to position the map.
         default: [6, 2, 47], // France
         // setUrl: false, // {false | true} Change url hash when moving the map.
         hash: '?', // {?, #} the permalink delimiter after the url
@@ -80345,7 +80345,7 @@
 
     render(evt) {
       const view = evt.map.getView(),
-        permalinks = (localStorage.permalink || '6/47/2').split('/'),
+        permalinks = (sessionStorage.permalink || '6/47/2').split('/'),
         //BEST init with res=<resolution> or extent (not zoom, lon, lat)
         urlMod = (typeof this.options.init === 'object' ? // init: [<zoom>, <lon>, <lat>]
           'zoom=' + this.options.init[0] + '&lon=' + this.options.init[1] + '&lat=' + this.options.init[2] + ',' :
@@ -80377,14 +80377,14 @@
       if (view.getCenter()) {
         const ll4326 = transform$1(view.getCenter(), 'EPSG:3857', 'EPSG:4326');
 
-        localStorage.permalink = [
+        sessionStorage.permalink = [
           view.getZoom().toFixed(1),
           ll4326[1].toFixed(5),
           ll4326[0].toFixed(5),
         ].join('/');
 
         if (this.linkEl) {
-          const newParams = 'map=' + localStorage.permalink + '&baselayer=' + encodeURI(localStorage.myolBaselayer);
+          const newParams = 'map=' + sessionStorage.permalink + '&baselayer=' + encodeURI(sessionStorage.myolBaselayer);
 
           this.linkEl.href = this.options.hash + newParams;
           if (this.options.setUrl)
@@ -91387,7 +91387,7 @@
 
   class Marker extends VectorLayer {
     constructor(opt) {
-      const permalinks = (localStorage.permalink || '6/2/47').split('/'),
+      const permalinks = (sessionStorage.permalink || '6/2/47').split('/'),
         options = {
           // src: 'imageUrl', // url of marker image
           defaultPosition: [permalinks[1], permalinks[2]], // Initial position of the marker
@@ -91607,8 +91607,8 @@
    * name : name of all the related input checkbox
    * The checkbox without value (all) check / uncheck the others
    * Check all the checkboxes check the checkbox without value (all)
-   * Current selection is saved in window.localStorage
-   * You can force the values in window.localStorage[simplified name]
+   * Current selection is saved in window.sessionStorage
+   * You can force the values in window.sessionStorage[simplified name]
    * callback(selection) : function to call at init or click
    * getSelection() : returns an array of selected values
    * If no name is specified or there are no checkbox with this name, return []
@@ -91620,7 +91620,7 @@
         this.safeName = 'myol_' + name.replace(/[^a-z]/giu, '');
         this.init =
           typeof initSelect === 'undefined' ?
-          localStorage[this.safeName] || '' :
+          sessionStorage[this.safeName] || '' :
           initSelect.toString();
         this.init = this.init.split(',');
         this.selectEls = [...document.getElementsByName(name)];
@@ -91656,10 +91656,10 @@
 
       // Save the current status
       if (this.safeName && this.getSelection().length)
-        localStorage[this.safeName] = this.getSelection().join(',');
+        sessionStorage[this.safeName] = this.getSelection().join(',');
       //BEST BUG : don't recover values including a ,
       else
-        delete localStorage[this.safeName];
+        delete sessionStorage[this.safeName];
 
       // Call the posted callbacks
       if (evt)
@@ -93046,7 +93046,7 @@
   /* global map */
 
 
-  const VERSION = '1.1.2.dev 13/09/2026 18:45:41';
+  const VERSION = '1.1.2.dev 20/09/2026 20:33:27';
 
   async function traces(options) {
     const debug = {
