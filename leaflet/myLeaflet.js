@@ -1,5 +1,3 @@
-/* global L, confirm, setInterval, clearInterval */
-
 /*************************************************
  * Personnal adaptations & addOns for leaflet    *
  * This file contains all the generic comon code *
@@ -26,9 +24,15 @@
  * Points d'intérêt refuges.info *
  *********************************/
 /* eslint-disable-next-line no-unused-vars */
-function wriPOILayer(serveurAPI, type, versionFeatures, hideTooltip) {
-  const iconList = [],
-    poiLayer = L.geoJson(null, {
+class WriPOILayer extends L.geoJson {
+  constructor(serveurAPI, type, versionFeatures, hideTooltip) {
+    const iconList = [],
+      url = serveurAPI + '/api/bbox?' +
+      'nb_points=all&type_points=' + type +
+      '&version=' + versionFeatures + '&cache=' + (7 * 24 * 3600);
+    //TODO Délai cache api / depuis
+
+    super(null, {
       // Icônes
       pointToLayer: (feature, latlng) =>
         L.marker(latlng, {
@@ -54,45 +58,49 @@ function wriPOILayer(serveurAPI, type, versionFeatures, hideTooltip) {
           },
         });
 
+        // For icons prelaod
         iconList[feature.properties.type.icone] = true;
       },
-    }),
-    url = serveurAPI + '/api/bbox?' +
-    'nb_points=all&type_points=' + type +
-    '&version=' + versionFeatures + '&cache=' + (7 * 24 * 3600);
-  //TODO Délai cache api / depuis
-
-  // Fetch remote data
-  fetch(url)
-    .catch((er) => console.error(er + ' fetching ' + url))
-    .then((response) => response.json())
-    .then((json) => {
-      if (json.features.length) {
-        poiLayer.addData(json);
-        poiLayer.fire('adddata');
-
-        // Preload icons
-        for (const name in iconList)
-          document.body.insertAdjacentHTML('beforeend', '<img style="display:none" src="/images/icones/' + name + '.svg"/>')
-      }
-      poiLayer.fire('load');
     });
 
-  return poiLayer;
+    // Fetch remote data
+    fetch(url)
+      .catch((er) => console.error(er + ' fetching ' + url))
+      .then((response) => response.json())
+      .then((json) => {
+        if (json.features.length) {
+          this.addData(json);
+          this.fire('adddata');
+
+          // Preload icons
+          //TODO don't do it twice
+          for (const name in iconList)
+            document.body.insertAdjacentHTML('beforeend', '<img style="display:none" src="/images/icones/' + name + '.svg"/>')
+        }
+
+        // Trigger for who needs it
+        this.fire('load');
+      });
+  }
 }
 
 /*****************************
  * Polygones de refuges.info *
  *****************************/
 /* eslint-disable-next-line no-unused-vars */
-function wriPolygonLayer(serveurAPI, typeId, versionFeatures) {
-  const polygonLayer = L.geoJson(null, {
-      style: function(feature) {
-        return {
-          stroke: false,
-          color: feature.properties.couleur,
-        };
-      },
+class WriPolygonLayer extends L.geoJson {
+  constructor(serveurAPI, typeId, versionFeatures, clickEnabled) {
+    const url = serveurAPI + '/api/polygones?' +
+      'type_polygon=' + typeId +
+      '&version=' + versionFeatures +
+      '&cache=' + (7 * 24 * 3600);
+
+    super(null, {
+      style: (feature) => ({
+        stroke: false,
+        color: feature.properties.couleur,
+      }),
+
       onEachFeature: (feature, layer) => {
         // Etiquettes
         layer.bindTooltip(
@@ -109,26 +117,23 @@ function wriPolygonLayer(serveurAPI, typeId, versionFeatures) {
           });
         });
 
+if(clickEnabled)
         layer.on({
           click: (evt) => {
             location.href = '/nav/' + evt.sourceTarget.feature.id;
           },
         });
       },
-    }),
-    url = serveurAPI + '/api/polygones?' +
-    'type_polygon=' + typeId +
-    '&version=' + versionFeatures + '&cache=' + (7 * 24 * 3600); // version tient compte des polygones
-
-  fetch(url)
-    .catch((er) => console.error(er + ' fetching ' + url))
-    .then((response) => response.json())
-    .then((json) => {
-      if (json.features.length)
-        polygonLayer.addData(json);
     });
 
-  return polygonLayer;
+    fetch(url)
+      .catch((er) => console.error(er + ' fetching ' + url))
+      .then((response) => response.json())
+      .then((json) => {
+        if (json.features.length)
+          this.addData(json);
+      });
+  }
 }
 
 /**********************************************
@@ -136,22 +141,22 @@ function wriPolygonLayer(serveurAPI, typeId, versionFeatures) {
  * Remplace avantageusement 663 Ko de lib IGN *
  **********************************************/
 /* eslint-disable-next-line no-unused-vars */
-function tileLayerIGN(url, paramsIGN, paramsLayer) {
-  const params = {
-    request: 'GetTile',
-    service: 'WMTS',
-    version: '1.0.0',
-    tilematrixset: 'PM',
-    style: 'normal',
-    format: 'image/jpeg',
-    tilematrix: '{z}',
-    tilerow: '{y}',
-    tilecol: '{x}',
-    ...paramsIGN,
-  };
+class IGNTileLayer extends L.tileLayer {
+  constructor(url, paramsIGN, paramsLayer) {
+    const params = {
+      request: 'GetTile',
+      service: 'WMTS',
+      version: '1.0.0',
+      tilematrixset: 'PM',
+      style: 'normal',
+      format: 'image/jpeg',
+      tilematrix: '{z}',
+      tilerow: '{y}',
+      tilecol: '{x}',
+      ...paramsIGN,
+    };
 
-  return L.tileLayer(
-    url + Object.entries(params).map(e => e.join('=')).join('&'), {
+    super(url + Object.entries(params).map(e => e.join('=')).join('&'), {
       bounds: [
         [-75, -180],
         [81, 180],
@@ -159,6 +164,7 @@ function tileLayerIGN(url, paramsIGN, paramsLayer) {
       attribution: '<a href="https://www.geoportail.gouv.fr/">IGN Geoportail</a>',
       ...paramsLayer,
     });
+  }
 }
 
 /*********************************************************
@@ -222,13 +228,15 @@ class MarkerCompass extends L.Marker {
   }
 }
 
-/**************
- * PERMALINKS *
- **************/
+/*****************************
+ * Saving the map position   *
+ * Lon, lat, zoom, baselayer *
+ *****************************/
+let positionMemoryArray = []; // For use during the page lifetime.
+
 // Store lon/lat/zoom/baselayer in sessionStorage 
 /* eslint-disable-next-line no-unused-vars */
-function permalinkControl(map) {
-  // Permalink
+function positionMemoryControl(map) {
   ['baselayerchange', 'zoom', 'moveend'].forEach((evtName) => {
     map.on(evtName, () => {
       const baselayerSelector = document.querySelectorAll('.leaflet-control-layers-base input'),
@@ -239,14 +247,21 @@ function permalinkControl(map) {
         if (lsInputEl.checked || !baseLayerName)
           baseLayerName = lsInputEl.parentElement.lastChild.innerText.trim();
 
-      sessionStorage.permalink = [
+      // To restart from this position at the next map change
+      positionMemoryArray = [
         map.getZoom().toFixed(1),
         pos.lat.toFixed(5),
         pos.lng.toFixed(5),
         encodeURI(baseLayerName),
-      ].join('/');
+      ];
+      sessionStorage.positionMemory = positionMemoryArray.join('/');
 
-      // Cache les étiquettes pour les grandes échèles
+      // To resume from the last position at the start of the next session
+      const pa2 = Array.from(positionMemoryArray);
+      pa2[0] = Math.max(5, Math.min(10, pa2[0])); // In zoom limits
+      localStorage.positionMemory = pa2.join('/');
+
+      // Hides labels for large scales
       map.getContainer().classList[map.getZoom() < 8 ? 'add' : 'remove']('hide-tooltips');
     });
   });

@@ -1,5 +1,8 @@
+/* global couchesDeFond, clusterPOI, positionMemoryControl, positionMemoryArray, controlesComuns */
+
 // Utilitaire de saisie des boutons du formulaire
-function affiche_et_set(el, affiche, valeur) {
+/* eslint-disable-next-line no-unused-vars */
+function afficheEtSet(el, affiche, valeur) {
   document.getElementById(el).style.visibility = affiche;
   document.getElementById(el).value = valeur;
   return false;
@@ -7,32 +10,33 @@ function affiche_et_set(el, affiche, valeur) {
 
 // Positionne la carte à l'emplacement du point à modifier
 <?php if(!empty($vue->point->id_point)) { ?>
-  sessionStorage.permalink = '15/<?=$vue->point->latitude?>/<?=$vue->point->longitude?>/' + sessionStorage.permalink.split('/')[3];
+  sessionStorage.positionMemory =
+    '15/<?=$vue->point->latitude?>/<?=$vue->point->longitude?>/' + sessionStorage.positionMemory.split('/')[3];
 <?php } ?>
 
 // Initialisation de la carte
 const map = L.map('carte-saisie');
 
 // Couches tuilées
-const tileLayers = couchesDeFond(<?=json_encode($config_wri['mapKeys'])?>),
-  permalink = sessionStorage.permalink.split('/');
+const tileLayers = couchesDeFond('<?=json_encode($config_wri["mapKeys"])?>');
 
 // Chargement du fond de carte actif
-permalinkControl(map);
-(tileLayers[decodeURI(permalink[3])] || Object.values(tileLayers)[0]).addTo(map);
+positionMemoryControl(map);
+(tileLayers[decodeURI(positionMemoryArray[3])] || Object.values(tileLayers)[0]).addTo(map);
 
 // Points refuges.info
-clusterPOI('https://<?=$_SERVER["SERVER_NAME"]?>', <?=$vue->version_features?>) .addTo(map);
+clusterPOI('https://<?=$_SERVER["SERVER_NAME"]?>', '<?=$vue->version_features?>').addTo(map);
 
 // Contrôles
 controlesComuns(map).forEach((control) => control.addTo(map));
 L.control.layers(tileLayers).addTo(map);
 
 // Lance le chargement de la carte
-map.setView([permalink[1], permalink[2]], 15);
+map.setView([positionMemoryArray[1], positionMemoryArray[2]], 15);
 
 // Marqueur déplaçable d'édition de position de cabane
 const champsPositionEls = document.querySelectorAll('#champs-position input'),
+  //TODO no click, no cursor
   marqueur = L.marker(
     map.getCenter(), {
       icon: L.icon({
@@ -58,6 +62,7 @@ function deplacerMarqueur(ll) {
 }
 
 // Réponse aux changement de champs input
+/* eslint-disable-next-line no-unused-vars */
 function champPositionChange() {
   deplacerMarqueur(L.latLng(champsPositionEls[2].value, champsPositionEls[1].value));
   map.panTo(marqueur.getLatLng());

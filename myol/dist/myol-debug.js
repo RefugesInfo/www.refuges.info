@@ -4,7 +4,7 @@
  * This package adds many features to Openlayer https://openlayers.org/
  * https://github.com/Dominique92/myol#readme
  * Based on https://openlayers.org
- * Built 20/09/2026 20:33:27 using npm run build from the src/... sources
+ * Built 30/09/2026 17:14:47 using npm run build from the src/... sources
  * Please don't modify this file : best is to modify src/... & npm run build !
  */
 (function (global, factory) {
@@ -80345,7 +80345,7 @@
 
     render(evt) {
       const view = evt.map.getView(),
-        permalinks = (sessionStorage.permalink || '6/47/2').split('/'),
+        positionMemorys = (sessionStorage.positionMemory || localStorage.positionMemory || '6/47/2').split('/'),
         //BEST init with res=<resolution> or extent (not zoom, lon, lat)
         urlMod = (typeof this.options.init === 'object' ? // init: [<zoom>, <lon>, <lat>]
           'zoom=' + this.options.init[0] + '&lon=' + this.options.init[1] + '&lat=' + this.options.init[2] + ',' :
@@ -80355,9 +80355,9 @@
           'zoom=$1&lon=$2&lat=$3' // zoom=<zoom>&lon=<lon>&lat=<lat>
         ) + ',' +
         // Last values
-        'zoom=' + permalinks[0] + ',' +
-        'lat=' + permalinks[1] + ',' +
-        'lon=' + permalinks[2] + ',' +
+        'zoom=' + positionMemorys[0] + ',' +
+        'lat=' + positionMemorys[1] + ',' +
+        'lon=' + positionMemorys[2] + ',' +
         // Default
         'zoom=' + this.options.default[0] + '&lon=' + this.options.default[1] + '&lat=' + this.options.default[2];
 
@@ -80377,14 +80377,15 @@
       if (view.getCenter()) {
         const ll4326 = transform$1(view.getCenter(), 'EPSG:3857', 'EPSG:4326');
 
-        sessionStorage.permalink = [
+        sessionStorage.positionMemory = [
           view.getZoom().toFixed(1),
           ll4326[1].toFixed(5),
           ll4326[0].toFixed(5),
         ].join('/');
+        localStorage.positionMemory = sessionStorage.positionMemory;
 
         if (this.linkEl) {
-          const newParams = 'map=' + sessionStorage.permalink + '&baselayer=' + encodeURI(sessionStorage.myolBaselayer);
+          const newParams = 'map=' + sessionStorage.positionMemory + '&baselayer=' + encodeURI(sessionStorage.myolBaselayer);
 
           this.linkEl.href = this.options.hash + newParams;
           if (this.options.setUrl)
@@ -91387,10 +91388,10 @@
 
   class Marker extends VectorLayer {
     constructor(opt) {
-      const permalinks = (sessionStorage.permalink || '6/2/47').split('/'),
+      const positionMemorys = (sessionStorage.positionMemory || '6/2/47').split('/'),
         options = {
           // src: 'imageUrl', // url of marker image
-          defaultPosition: [permalinks[1], permalinks[2]], // Initial position of the marker
+          defaultPosition: [positionMemorys[1], positionMemorys[2]], // Initial position of the marker
           // dragable: false, // Can draw the marker to edit position
           // focus: number // Center & value of zoom on the marker
           zIndex: 600, // Above points & hover
@@ -93046,7 +93047,7 @@
   /* global map */
 
 
-  const VERSION = '1.1.2.dev 20/09/2026 20:33:27';
+  const VERSION = '1.1.2.dev 30/09/2026 17:14:47';
 
   async function traces(options) {
     const debug = {

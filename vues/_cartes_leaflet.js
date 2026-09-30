@@ -1,13 +1,17 @@
-/* global L, MarkerCompass, tileLayerIGN, wriPOILayer, wriPolygonLayer */
+/* global WriPOILayer, IGNTileLayer, MarkerCompass */
+/* eslint-disable-next-line no-unused-vars */
+/* global positionMemoryArray:writable */
 
 /*********************************************************************************
  * Ce fichier contient les paramètrages spécifiques et visibles sur refuges.info *
  *********************************************************************************/
 
-// Position et couches par défaut
-sessionStorage.permalink ||= '5/46.5/5';
-if (typeof sessionStorage.checkedLayers !== 'string')
-  sessionStorage.checkedLayers = 'Cabane non gardée,Refuge gardé,Gîte d\'étape';
+/*****************************************
+ * Position et couche de fond par défaut *
+ *****************************************/
+localStorage.positionMemory ||= '5/46.5/5'; // S'il n'y a aucune donnée enregistrée
+sessionStorage.positionMemory ||= localStorage.positionMemory; // En début de session, on repart de la dernière position
+positionMemoryArray = sessionStorage.positionMemory.split('/'); // Pour usage au cours de la durée de vie de la page.
 
 /*****************************************
  * Contrôles communs à toutes les cartes *
@@ -82,12 +86,12 @@ function couchesDeFond(layerKeys) {
           '<a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
       }),
 
-    TOP25: tileLayerIGN(
+    TOP25: new IGNTileLayer(
       'https://data.geopf.fr/private/wmts?', {
         layer: 'GEOGRAPHICALGRIDSYSTEMS.MAPS',
         apikey: 'ign_scan_ws',
       }),
-    'IGN plan': tileLayerIGN(
+    'IGN plan': new IGNTileLayer(
       'https://data.geopf.fr/wmts?', {
         layer: 'GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2',
         format: 'image/png',
@@ -101,7 +105,7 @@ function couchesDeFond(layerKeys) {
           '<a href="https://prod-swishop-s3.s3.eu-central-1.amazonaws.com/2022-04/symbols_fr_0.pdf">Légende</a>',
         maxZoom: 18,
       }),
-    Espagne: tileLayerIGN(
+    Espagne: new IGNTileLayer(
       'https://www.ign.es/wmts/mapa-raster?', {
         layer: 'MTN',
         style: 'default',
@@ -134,6 +138,7 @@ const couchesIconesWRI = {
     'Bâtiment à investiguer': [28, 'cabane_white_black_a63'],
   },
 
+  /* eslint-disable-next-line no-unused-vars */
   couchesOverpass = {
     'hôtel': '["tourism"~"hotel|guest_house|chalet|hostel|apartment"]',
     'camping': '["tourism"="camp_site"]',
@@ -143,6 +148,7 @@ const couchesIconesWRI = {
     'bus': '["highway"="bus_stop"]',
   },
 
+  /* eslint-disable-next-line no-unused-vars */
   coucheItineraires = L.tileLayer(
     'https://tile.waymarkedtrails.org/hiking/{z}/{x}/{y}.png', {
       maxZoom: 18,
@@ -159,7 +165,7 @@ function clusterPOI(serveurAPI, versionFeatures) {
 
   for (const entry of Object.entries(couchesIconesWRI))
     // On crée les couches pour chaque type de point
-    wriPOILayer(serveurAPI, entry[1][0], versionFeatures)
+    new WriPOILayer(serveurAPI, entry[1][0], versionFeatures)
     // Attente de la fin de réception pour l'intégrer au cluster
     .on('load', (evt) => cluster.addLayer(evt.target));
 

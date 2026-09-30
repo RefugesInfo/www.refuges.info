@@ -25,10 +25,10 @@ import VectorSource from 'ol/source/Vector';
 
 class Marker extends VectorLayer {
   constructor(opt) {
-    const permalinks = (sessionStorage.permalink || '6/2/47').split('/'),
+    const positionMemorys = (sessionStorage.positionMemory || '6/2/47').split('/'),
       options = {
         // src: 'imageUrl', // url of marker image
-        defaultPosition: [permalinks[1], permalinks[2]], // Initial position of the marker
+        defaultPosition: [positionMemorys[1], positionMemorys[2]], // Initial position of the marker
         // dragable: false, // Can draw the marker to edit position
         // focus: number // Center & value of zoom on the marker
         zIndex: 600, // Above points & hover

@@ -42,7 +42,7 @@ class Permalink extends Control {
 
   render(evt) {
     const view = evt.map.getView(),
-      permalinks = (sessionStorage.permalink || '6/47/2').split('/'),
+      positionMemorys = (sessionStorage.positionMemory || localStorage.positionMemory || '6/47/2').split('/'),
       //BEST init with res=<resolution> or extent (not zoom, lon, lat)
       urlMod = (typeof this.options.init === 'object' ? // init: [<zoom>, <lon>, <lat>]
         'zoom=' + this.options.init[0] + '&lon=' + this.options.init[1] + '&lat=' + this.options.init[2] + ',' :
@@ -52,9 +52,9 @@ class Permalink extends Control {
         'zoom=$1&lon=$2&lat=$3' // zoom=<zoom>&lon=<lon>&lat=<lat>
       ) + ',' +
       // Last values
-      'zoom=' + permalinks[0] + ',' +
-      'lat=' + permalinks[1] + ',' +
-      'lon=' + permalinks[2] + ',' +
+      'zoom=' + positionMemorys[0] + ',' +
+      'lat=' + positionMemorys[1] + ',' +
+      'lon=' + positionMemorys[2] + ',' +
       // Default
       'zoom=' + this.options.default[0] + '&lon=' + this.options.default[1] + '&lat=' + this.options.default[2];
 
@@ -74,14 +74,15 @@ class Permalink extends Control {
     if (view.getCenter()) {
       const ll4326 = transform(view.getCenter(), 'EPSG:3857', 'EPSG:4326');
 
-      sessionStorage.permalink = [
+      sessionStorage.positionMemory = [
         view.getZoom().toFixed(1),
         ll4326[1].toFixed(5),
         ll4326[0].toFixed(5),
       ].join('/');
+      localStorage.positionMemory = sessionStorage.positionMemory;
 
       if (this.linkEl) {
-        const newParams = 'map=' + sessionStorage.permalink + '&baselayer=' + encodeURI(sessionStorage.myolBaselayer);
+        const newParams = 'map=' + sessionStorage.positionMemory + '&baselayer=' + encodeURI(sessionStorage.myolBaselayer);
 
         this.linkEl.href = this.options.hash + newParams;
         if (this.options.setUrl)
