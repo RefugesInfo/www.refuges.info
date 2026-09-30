@@ -15,7 +15,7 @@
 
     <p id="export-carte">
       Export des points refuges.info sélectionnés sur la carte au format
-      <select name="format" onchange="setExportLink()">
+      <select name="format" onchange="addRemoveOverlay()">
         <option value="gpx">gpx (Complet, pour logiciel type osmand, marble, ...)</option>
         <option value="gpx_garmin">gpx (compatible basecamp/mapsource/viking/...)</option>
         <option value="gpx_simple">gpx simplifié (sans remarques et accès)</option>
@@ -23,8 +23,8 @@
         <option value="gml">Geography Markup Language</option>
         <option value="csv">csv (tableurs)</option>
         <option value="xml">xml Spécifique à notre base, exhaustif</option>
-        <option value="json">JSON</option>
-        <option value="geojson">GeoJSON</option>
+        <option value="json">Json</option>
+        <option value="geojson">GeoJson</option>
       </select>
       <a title="Télécharger le fichier">Télécharger</a>
       ou <a onclick="copyExportLink()" title="Copier le lien dans le clipboard">🔗</a>
