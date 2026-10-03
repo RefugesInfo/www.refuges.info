@@ -5,6 +5,9 @@ FIXME Réflexion rangement 2025 : je trouve bizarre que l'on soit toujours dans 
 
 ***/
 
+add_lib('style_formulaire.css');
+add_lib('point_ajout_commentaire.js'); // sélecteur de photo (pilule, glisser-déposer, aperçu)
+
 require_once ('forum.php');
 require_once ('commentaire.php');
 require_once ('mise_en_forme_texte.php');
@@ -33,6 +36,10 @@ else
   {
   /*** Ce commentaire existe et on a les droits de le modifier, on continue les traitements ***/
   $controlleur->type = 'gestion/moderation';
+  // La case « Supprimer la photo » cochée avec le bouton « Modifier » : même traitement que modifier puis supprimer la photo
+  if (($_REQUEST['type'] ?? '') == 'modification' and !empty($_REQUEST['supprimer_photo']))
+    $_REQUEST['type']='suppression_photo';
+
   // Traitement des actions
   if (!empty($_REQUEST['type']))
     switch ($_REQUEST['type'])
@@ -53,7 +60,8 @@ else
         $commentaire->auteur_commentaire=stripslashes($_REQUEST['auteur_commentaire'] ?? "");
 
         if (est_moderateur()) // Seul les modérateurs ont le droit de changer la date d'un commentaire
-          $commentaire->date = $_REQUEST['date'] ?? Null;
+          // Le sélecteur de date (datetime-local) envoie "2026-10-03T17:09:26", la base attend un espace
+          $commentaire->date = str_replace('T', ' ', $_REQUEST['date'] ?? '') ?: Null;
 
         if (est_moderateur()) // Seuls les modérateurs ont le droit de changer le user d'un commentaire
           $commentaire->id_createur_commentaire=$_REQUEST['id_createur_commentaire'] ?? 0;

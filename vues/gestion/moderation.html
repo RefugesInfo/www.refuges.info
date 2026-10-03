@@ -1,77 +1,94 @@
 <div class="contenu">
-  <h3>Modération des commentaires</h3>
+  <h3>Modifier le commentaire n°<?=$commentaire->id_commentaire?></h3>
   <?php if (!empty($vue->retour->message)) { ?>
     <p><?=$vue->retour->message?></p>
   <?php } else { ?>
-    <p>Vous entrez dans la zone de modification des commentaires qui va vous permettre de modifier un commentaire, de le déplacer vers le forum dans la section correspondant au point ou le transférer sur une autre fiche du site.</p>
+    <form id="comment" class="moderation" method="POST" enctype="multipart/form-data">
+      <!-- Bouton par défaut (touche Entrée dans un champ) : doit rester le premier bouton du formulaire -->
+      <button name="type" value="modification" type="submit" class="bouton_par_defaut" tabindex="-1" aria-hidden="true">Modifier</button>
 
-    <form method="POST" enctype="multipart/form-data">
-      <h4>le commentaire est :</h4>
-      <br/>
-      <label>Date:
-        <input type="text"<?= !est_moderateur() ? ' disabled="disabled"' : '' ?> name="date" size="25" value="<?=$commentaire->date??''?>"/>
-      </label>
-      <br/>
+      <fieldset>
+        <legend>Texte</legend>
+        <textarea class="textarea_large" name="texte"><?=protege($commentaire->texte??'')?></textarea>
+      </fieldset>
 
-      <?=bbcode2html($commentaire->texte)?>
-      <br/><br/>
+      <fieldset>
+        <legend>Photo</legend>
+        <?php if ($commentaire->photo_existe==1) { ?>
+          <p>
+            <img
+              src="<?=$commentaire->lien_photo['reduite']??''?>"
+              alt="photo liée au commentaire"
+              width="250px" />
+          </p>
+        <?php } ?>
+        <p>
+          <span class="zone_depot_fichier" id="zone_depot_photo">
+            <input type="file" id="comment_photo" name="comment_photo" accept="image/*" class="entree_fichier_masquee" />
+            <label for="comment_photo" class="pilule_fichier">
+              <span class="pilule_fichier_texte"><?= $commentaire->photo_existe==1 ? 'Remplacer la photo' : 'Ajouter une photo' ?></span>
+            </label>
+            <img class="apercu_photo" alt="Aperçu de la photo choisie" />
+            <span class="nom_fichier_choisi"></span>
+          </span>
+          <i class="texte-tout-petit">format <?=$config_wri['texte_des_formats_photo_autorisee']?></i>
+        </p>
+        <?php if ($commentaire->photo_existe==1) { ?>
+          <p class="rotation">
+            <span>Rotation :</span>
+            <label><input type="radio" name="rotation" value="0" checked="checked">aucune</label>
+            <label><input type="radio" name="rotation" value="90"><span class="fleche_rotation" aria-hidden="true">↺</span> 90° à gauche</label>
+            <label><input type="radio" name="rotation" value="180"><span class="fleche_rotation" aria-hidden="true">↻</span> 180°</label>
+            <label><input type="radio" name="rotation" value="270"><span class="fleche_rotation" aria-hidden="true">↻</span> 90° à droite</label>
+          </p>
+          <p>
+            <input type="checkbox" id="supprimer_photo" name="supprimer_photo" value="1" class="case_pilule" />
+            <label for="supprimer_photo">Supprimer la photo</label>
+          </p>
+        <?php } ?>
+      </fieldset>
 
-      <?php if ($commentaire->photo_existe==1) { ?>
-        <img
-          src="<?=$commentaire->lien_photo['reduite']??''?>"
-          alt="photo liée au commentaire"
-          width="300px" />
-        <br/><br/>
-      <?php } ?>
+      <fieldset>
+        <legend>Date et auteur</legend>
+        <p>
+          <label for="date_commentaire">Date :</label>
+          <?php // Seuls les modérateurs ont le droit de changer la date d'un commentaire ?>
+          <input type="datetime-local" step="1" id="date_commentaire" name="date"
+            value="<?= !empty($commentaire->date) ? date('Y-m-d\TH:i:s', strtotime($commentaire->date)) : '' ?>"
+            <?= !est_moderateur() ? ' disabled="disabled"' : '' ?> />
+        </p>
+        <?php if ($commentaire->id_createur_commentaire==0) { ?><!-- Seulement modifiable si n'était pas authentifié -->
+          <p>
+            <label for="auteur_commentaire">Auteur (si non authentifié) :</label>
+            <input type="text" id="auteur_commentaire" name="auteur_commentaire" value="<?=protege($commentaire->auteur_commentaire??'')?>" class="input_en_ligne" />
+          </p>
+        <?php } if (est_moderateur()) { // je ne souhaite pas qu'un contributeur puisse céder son commentaire à un autre utilisateur, seuls les modérateurs ont ce droit ?>
+          <p>
+            <label for="id_createur_commentaire">Auteur authentifié :</label>
+            <select id="id_createur_commentaire" name="id_createur_commentaire">
+              <option value="0" <?=(0==$commentaire->id_createur_commentaire)? 'selected="selected"' : '' ;?>>Non authentifié</option>
+              <?php foreach ($vue->utilisateurs AS $utilisateur) { ?>
+                <option value="<?=$utilisateur->user_id??''?>" <?=($utilisateur->user_id==$commentaire->id_createur_commentaire)? 'selected="selected"' : '' ;?>>
+                  <?=$utilisateur->username??''?>
+                </option>
+              <?php } ?>
+            </select>
+          </p>
+        <?php } ?>
+      </fieldset>
 
-      <h4>Le modifier :</h4>
-      <br/>
-
-      <textarea name="texte" rows="10" cols="100"><?=protege($commentaire->texte??'')?></textarea>
-      <br/><br/>
-
-      <label>
-        <?= $commentaire->photo_existe==1 ? 'Remplacer la photo par :' : 'Ajouter une photo :' ?>
-        <input type="file" name="comment_photo" accept="image/*" />
-      </label>
-      <br/><br/>
-
-      <?php if ($commentaire->photo_existe==1) { ?>
-        Rotation photo: &nbsp;
-        <input type="radio" name="rotation" value="0" checked="checked">aucune &nbsp;
-        <input type="radio" name="rotation" value="90"><img src="<?=$config_wri['url_chemin_images']?>270.png" /> &nbsp;
-        <input type="radio" name="rotation" value="180"><img src="<?=$config_wri['url_chemin_images']?>180.png" /> &nbsp;
-        <input type="radio" name="rotation" value="270"><img src="<?=$config_wri['url_chemin_images']?>90.png" />
-        <br/>
-      <?php } ?>
-      <br/>
-
-      <?php if ($commentaire->id_createur_commentaire==0) { ?><!-- Seulement modifiable si n'était pas authentifié -->
-        <label>Auteur (si non authentifié)  :
-          <input type="text" name="auteur_commentaire" value="<?=protege($commentaire->auteur_commentaire??'')?>" class="input_en_ligne" />
-        </label>
-        <br/><br/>
-      <?php } if (est_moderateur()) { // je ne souhaite pas qu'un contributeur puisse céder son commentaire à un autre utilisateur, seuls les modérateurs ont ce droit ?>
-        ou<br/>
-        Auteur authentifié :
-        <select name='id_createur_commentaire'>
-          <option  value="0" <?=(0==$commentaire->id_createur_commentaire)? 'selected="selected"' : '' ;?>>Non authentifié</option>
-          <?php foreach ($vue->utilisateurs AS $utilisateur) { ?>
-            <option  value="<?=$utilisateur->user_id??''?>" <?=($utilisateur->user_id==$commentaire->id_createur_commentaire)? 'selected="selected"' : '' ;?>>
-              <?=$utilisateur->username??''?>
-            </option>
-          <?php } ?>
-        </select>
-      <?php } ?>
-      <br/>
-      <button name="type" value="modification" type="submit">Modifier</button><br/><br/>
-      <button name="type" value="suppression_photo" type="submit">Modifier et supprimer la photo</button><br/>
-      <button name="type" value="transfert_forum" type="submit">Modifier et transférer sur le forum</button><br/>
-      <button name="type" value="transfert_autre_point" type="submit">Modifier et transférer le commentaire sur la fiche dont le numéro est :</button>
-      <input type="text" name="id_autre_point" value="" size="16"/><br/>
-      <button name="type" value="suppression" type="submit">Supprimer le commentaire et son éventuelle photo</button><br/>
+      <div class="actions_finales">
+        <button name="type" value="modification" type="submit">Modifier</button>
+        <button name="type" value="transfert_forum" type="submit">Transférer vers le forum</button>
+        <span class="groupe_transfert">
+          <button name="type" value="transfert_autre_point" type="submit">Transférer vers la fiche n°</button>
+          <input type="text" name="id_autre_point" value="" size="8" aria-label="Numéro de la fiche de destination" />
+        </span>
+        <button name="type" value="suppression" type="submit" class="danger">Supprimer le commentaire</button>
+      </div>
     </form>
   <?php } ?>
-  <br/>
-  <a href="<?=lien_point($vue->point??0)?>">Retourner à la fiche : <?=$vue->point->nom??''?></a>
+  <p>
+    <a href="<?=lien_point($vue->point??0)?>">Retourner à la fiche : <?=$vue->point->nom??''?></a>
+  </p>
 </div>
