@@ -360,6 +360,32 @@ a:hover {
   padding-left: 0.5em;
 }
 
+/* Lien d'intervention sur une fiche (modifier, historique, demander une modification, ajouter un commentaire) :
+   même aspect que les boutons des formulaires (style_formulaire.css) */
+a.lien_bouton {
+  display: inline-block;
+  border: 1.5px solid var(--couleur_lien);
+  border-radius: 7px;
+  padding: 0.35em 1.2em;
+  margin: 0.15em 0.1em;
+  background: var(--couleur_lien);
+  color: white;
+  font-weight: bold;
+  letter-spacing: 0.02em;
+  transition: opacity 0.18s, transform 0.1s;
+}
+
+a.lien_bouton:hover {
+  background: var(--couleur_lien);
+  color: white;
+  opacity: 0.82;
+  transform: translateY(-1px);
+}
+
+a.lien_bouton:active {
+  transform: translateY(0);
+}
+
 .bloc_liens_centre {
   text-align: center;
   font-weight: bold;

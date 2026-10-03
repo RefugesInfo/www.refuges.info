@@ -27,15 +27,15 @@
     // Si les droits sont suffisants, lien de modification
     if (est_autorise($point->id_createur)) { ?>
       <div class="noprint bloc_liens_centre">
-        <p><b>Vous êtes modérateur de cette fiche, vous pouvez :
-          <a class="liens_avec_decoration" href="/point_formulaire_modification?id_point=<?=$vue->point->id_point?>">
-            Modifier cette fiche
+        <p><b>
+          <a class="lien_bouton" href="/point_formulaire_modification?id_point=<?=$vue->point->id_point?>">
+            Modification
           </a>&nbsp;
-          <a class="liens_avec_decoration" href="/gestion/historique_modifications/<?=$vue->point->id_point?>">
-            Consulter l'historique de cette fiche
+          <a class="lien_bouton" href="/gestion/historique_modifications/<?=$vue->point->id_point?>">
+            Historique
           </a>&nbsp;
           <?php if (est_autorise($point->id_createur)) { ?>
-            <a class="liens_avec_decoration"
+            <a class="lien_bouton"
                href="<?=$config_wri['lien_forum']?>mcp.php?i=-RefugesInfo-trace-mcp-main_module&id_point=<?=$vue->point->id_point?>"
                title="Trace de la création du point">
               i
@@ -86,7 +86,7 @@
     </p>
 <!--================================= DEMANDE DE MODIFICATION =================================-->
     <div class="noprint bloc_liens_centre">
-      <a class="liens_avec_decoration" href="/point_ajout_commentaire/<?=$vue->point->id_point?>?correction=oui">
+      <a class="lien_bouton" href="/point_ajout_commentaire/<?=$vue->point->id_point?>?correction=oui">
         Demander une modification de la fiche
       </a>
     </div>
@@ -228,7 +228,7 @@
 <!--===================================== LIEN AJOUT COMMENTAIRE ====================================-->
   <h5 class="noprint">Informations récentes</h5>
     <div class="noprint bloc_liens_centre">
-      <a class="liens_avec_decoration" href="/point_ajout_commentaire/<?=$vue->point->id_point?>">
+      <a class="lien_bouton" href="/point_ajout_commentaire/<?=$vue->point->id_point?>">
         Ajouter une information et/ou une photo
       </a>
     </div>
