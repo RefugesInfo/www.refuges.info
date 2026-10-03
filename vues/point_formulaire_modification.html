@@ -16,7 +16,7 @@
 
   <form class="wri" id="form_point" method="post" action="/point_modification">
     <div>
-      <?php foreach ($vue->champs->boutons as $bouton) { ?> <button type="<?=$bouton->type?>" name="<?=$bouton->nom?>" value="<?=$bouton->valeur?>" onclick="choix='<?=$bouton->valeur?>'">
+      <?php foreach ($vue->champs->boutons as $bouton) { ?> <button class="<?=$bouton->classe ?? ''?>" type="<?=$bouton->type?>" name="<?=$bouton->nom?>" value="<?=$bouton->valeur?>" onclick="choix='<?=$bouton->valeur?>'">
       <?=$bouton->label?>
       </button>
       <?php } ?>
@@ -173,7 +173,7 @@
 
     <fieldset>
       <?php foreach ($vue->champs->boutons as $bouton) { ?>
-        <button type="<?=$bouton->type?>" name="<?=$bouton->nom?>" value="<?=$bouton->valeur?>">
+        <button class="<?=$bouton->classe ?? ''?>" type="<?=$bouton->type?>" name="<?=$bouton->nom?>" value="<?=$bouton->valeur?>">
           <?=$bouton->label?>
         </button>
       <?php } ?>

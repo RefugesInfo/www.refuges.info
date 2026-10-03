@@ -59,6 +59,7 @@ if ( !empty($_REQUEST["id_point"]) )
       $bouton_suppr->type = "submit";
       $bouton_suppr->valeur = "supprimer";
       $bouton_suppr->label = "Suppression de la fiche";
+      $bouton_suppr->classe = "bouton-supprimer"; // rouge, voir style_formulaire.css
     }
 
     //cosmétique
