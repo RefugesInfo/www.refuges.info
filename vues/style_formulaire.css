@@ -14,8 +14,8 @@
 #form_point select,
 #form_point textarea,
 form#comment input[type=text],
-form#comment.moderation input[type=datetime-local],
-form#comment.moderation select,
+form#comment.modification_commentaire input[type=datetime-local],
+form#comment.modification_commentaire select,
 form#comment .textarea_large {
   border: 1.5px solid var(--couleur_decoration_titres);
   border-radius: 7px;
@@ -33,8 +33,8 @@ form#comment .textarea_large {
 #form_point select:focus,
 #form_point textarea:focus,
 form#comment input[type=text]:focus,
-form#comment.moderation input[type=datetime-local]:focus,
-form#comment.moderation select:focus,
+form#comment.modification_commentaire input[type=datetime-local]:focus,
+form#comment.modification_commentaire select:focus,
 form#comment .textarea_large:focus {
   outline: none;
   border-color: var(--couleur_lien);
@@ -46,7 +46,7 @@ form#comment .textarea_large:focus {
 #form_point button,
 form#comment input[type=submit],
 form#comment input[type=reset],
-form#comment.moderation button,
+form#comment.modification_commentaire button,
 form#cree_point input[type=submit] {
   border-radius: 7px;
   padding: 0.5em 1.6em;
@@ -64,7 +64,7 @@ form#cree_point input[type=submit] {
 #form_point button:hover,
 form#comment input[type=submit]:hover,
 form#comment input[type=reset]:hover,
-form#comment.moderation button:hover,
+form#comment.modification_commentaire button:hover,
 form#cree_point input[type=submit]:hover {
   opacity: 0.82;
   transform: translateY(-1px);
@@ -73,7 +73,7 @@ form#cree_point input[type=submit]:hover {
 #form_point button:active,
 form#comment input[type=submit]:active,
 form#comment input[type=reset]:active,
-form#comment.moderation button:active,
+form#comment.modification_commentaire button:active,
 form#cree_point input[type=submit]:active {
   transform: translateY(0);
 }
@@ -83,7 +83,7 @@ form#cree_point input[type=submit]:active {
 form#form_point .booleen label,
 form#comment label[for=demande_correction],
 form#comment .pilule_fichier,
-form#comment.moderation .rotation label,
+form#comment.modification_commentaire .rotation label,
 form#cree_point .booleen label {
   display: inline-flex;
   align-items: center;
@@ -104,7 +104,7 @@ form#cree_point .booleen label {
 form#form_point .booleen label:hover,
 form#comment label[for=demande_correction]:hover,
 form#comment .pilule_fichier:hover,
-form#comment.moderation .rotation label:hover,
+form#comment.modification_commentaire .rotation label:hover,
 form#cree_point .booleen label:hover {
   border-color: var(--couleur_lien);
   background: color-mix(in srgb, var(--couleur_legende) 70%, transparent);
@@ -615,11 +615,11 @@ form#cree_point .booleen input[type=radio]:focus-visible + label {
 
 
 /* ================================================================
-   5. Formulaire de modification d'un commentaire (form#comment.moderation)
+   5. Formulaire de modification d'un commentaire (form#comment.modification_commentaire)
    Réutilise le style de form#comment (champs, pilules, sélecteur de photo)
    ================================================================ */
 
-form#comment.moderation > fieldset {
+form#comment.modification_commentaire > fieldset {
   border: 1.5px solid var(--couleur_decoration_titres);
   border-radius: 10px;
   padding: 0.9em 1.1em;
@@ -629,17 +629,17 @@ form#comment.moderation > fieldset {
 }
 
 /* Un fieldset ne rétrécit pas sous la largeur de son contenu par défaut : on l'autorise, et les champs ne dépassent pas */
-form#comment.moderation > fieldset {
+form#comment.modification_commentaire > fieldset {
   min-width: 0;
 }
 
-form#comment.moderation select,
-form#comment.moderation input[type=datetime-local],
-form#comment.moderation input[type=text] {
+form#comment.modification_commentaire select,
+form#comment.modification_commentaire input[type=datetime-local],
+form#comment.modification_commentaire input[type=text] {
   max-width: 100%;
 }
 
-form#comment.moderation > fieldset > legend {
+form#comment.modification_commentaire > fieldset > legend {
   font-weight: bold;
   font-size: 0.95em;
   padding: 0 0.3em;
@@ -647,15 +647,15 @@ form#comment.moderation > fieldset > legend {
 }
 
 /* Le premier bloc suit directement le titre : pas de marge haute en plus */
-form#comment.moderation > fieldset:first-of-type {
+form#comment.modification_commentaire > fieldset:first-of-type {
   margin-top: 0.3em;
 }
 
-form#comment.moderation > fieldset > p:first-of-type { margin-top: 0; }
-form#comment.moderation > fieldset > p:last-child { margin-bottom: 0; }
+form#comment.modification_commentaire > fieldset > p:first-of-type { margin-top: 0; }
+form#comment.modification_commentaire > fieldset > p:last-child { margin-bottom: 0; }
 
 /* Annule les floats/largeurs hérités de style_pages.css (form.wri) */
-form#comment.moderation label {
+form#comment.modification_commentaire label {
   float: none;
   width: auto;
   display: inline-block;
@@ -663,7 +663,7 @@ form#comment.moderation label {
 }
 
 /* Bouton Entrée par défaut : présent pour le navigateur, invisible */
-form#comment.moderation .bouton_par_defaut {
+form#comment.modification_commentaire .bouton_par_defaut {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -675,18 +675,18 @@ form#comment.moderation .bouton_par_defaut {
 }
 
 /* Bouton secondaire (contour) */
-form#comment.moderation button.secondaire {
+form#comment.modification_commentaire button.secondaire {
   background: transparent;
   color: var(--couleur_lien);
 }
 
-form#comment.moderation button.secondaire:hover {
+form#comment.modification_commentaire button.secondaire:hover {
   background: color-mix(in srgb, var(--couleur_lien) 10%, transparent);
   opacity: 1;
 }
 
 /* Case à cocher en pilule (Supprimer la photo) : pilule pleine quand cochée */
-form#comment.moderation input.case_pilule {
+form#comment.modification_commentaire input.case_pilule {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -698,7 +698,7 @@ form#comment.moderation input.case_pilule {
   border: 0;
 }
 
-form#comment.moderation input.case_pilule + label {
+form#comment.modification_commentaire input.case_pilule + label {
   display: inline-flex;
   align-items: center;
   gap: 0.4em;
@@ -713,33 +713,33 @@ form#comment.moderation input.case_pilule + label {
   transition: background 0.15s, border-color 0.15s, color 0.15s;
 }
 
-form#comment.moderation input.case_pilule + label::before {
+form#comment.modification_commentaire input.case_pilule + label::before {
   content: '☐';
 }
 
-form#comment.moderation input.case_pilule:checked + label {
+form#comment.modification_commentaire input.case_pilule:checked + label {
   background: var(--couleur_lien);
   border-color: var(--couleur_lien);
   color: white;
 }
 
-form#comment.moderation input.case_pilule:checked + label::before {
+form#comment.modification_commentaire input.case_pilule:checked + label::before {
   content: '☑';
 }
 
-form#comment.moderation input.case_pilule:focus-visible + label {
+form#comment.modification_commentaire input.case_pilule:focus-visible + label {
   outline: 2px solid var(--couleur_lien);
   outline-offset: 2px;
 }
 
 /* Supprimer la photo : rouge, comme le bouton de suppression */
-form#comment.moderation input#supprimer_photo:checked + label {
+form#comment.modification_commentaire input#supprimer_photo:checked + label {
   background: #c0392b;
   border-color: #c0392b;
 }
 
 /* Boutons du bas : Enregistrer et Supprimer côte à côte (comme le formulaire de fiche) */
-form#comment.moderation .actions_finales {
+form#comment.modification_commentaire .actions_finales {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5em;
@@ -748,31 +748,31 @@ form#comment.moderation .actions_finales {
 }
 
 /* Bouton de transfert vers une fiche et son champ de numéro : restent ensemble à la ligne */
-form#comment.moderation .groupe_transfert {
+form#comment.modification_commentaire .groupe_transfert {
   display: inline-flex;
   align-items: center;
   gap: 0.3em;
 }
 
 /* Bouton rouge de suppression (même rouge que .bouton-supprimer du formulaire de fiche) */
-form#comment.moderation button.danger {
+form#comment.modification_commentaire button.danger {
   background: #c0392b;
   border-color: #c0392b;
 }
 
 /* Rotation : pilules avec l'image de la flèche, radio natif masqué */
-form#comment.moderation .rotation {
+form#comment.modification_commentaire .rotation {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 0.6em;
 }
 
-form#comment.moderation .rotation label {
+form#comment.modification_commentaire .rotation label {
   margin-right: 0;
 }
 
-form#comment.moderation .rotation input[type=radio] {
+form#comment.modification_commentaire .rotation input[type=radio] {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -784,18 +784,18 @@ form#comment.moderation .rotation input[type=radio] {
   border: 0;
 }
 
-form#comment.moderation .rotation label:has(input:checked) {
+form#comment.modification_commentaire .rotation label:has(input:checked) {
   background: var(--couleur_lien);
   border-color: var(--couleur_lien);
   color: white;
 }
 
-form#comment.moderation .rotation label:has(input:focus-visible) {
+form#comment.modification_commentaire .rotation label:has(input:focus-visible) {
   outline: 2px solid var(--couleur_lien);
   outline-offset: 2px;
 }
 
-form#comment.moderation .rotation .fleche_rotation {
+form#comment.modification_commentaire .rotation .fleche_rotation {
   font-size: 1.3em;
   line-height: 1;
 }

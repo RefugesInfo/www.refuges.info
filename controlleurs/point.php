@@ -143,7 +143,7 @@ else // le point est valide
     if (est_autorise($commentaire->id_createur_commentaire))
     {
       $commentaire->lien_commentaire =
-        '/gestion/moderation?id_point_retour='.$commentaire->id_point.
+        '/commentaire_formulaire_modification?id_point_retour='.$commentaire->id_point.
         '&amp;id_commentaire='.$commentaire->id_commentaire;
       $commentaire->texte_lien_commentaire = 'Modifier';
     }

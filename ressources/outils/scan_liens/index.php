@@ -147,7 +147,7 @@ while ($nb > 0 && $row = $db->sql_fetchrow($result)) {
 				if ($row['id_commentaire'])
 					echo "Commentaire de {$row['auteur_commentaire']} à examiner :
 					<a target='_BLANK' title='Voir le commentaire' href='{"/"}point/{$row['id_point']}#C{$row['id_commentaire']}'>voir</a> ou
-					<a target='_BLANK' title='Modérer le commentaire' href='{"/"}gestion/moderation?id_point_retour={$row['id_point']}&id_commentaire={$row['id_commentaire']}'>modérer</a> le commentaire<br/>";
+					<a target='_BLANK' title='Modérer le commentaire' href='{"/"}commentaire_formulaire_modification?id_point_retour={$row['id_point']}&id_commentaire={$row['id_commentaire']}'>modérer</a> le commentaire<br/>";
 
 				$result_ip = $db->sql_query("
 					SELECT poster_ip

@@ -1,0 +1,13 @@
+<?php
+// Bloc HTML affichant le résultat de la modification d'un commentaire
+// $vue contient les données passées par le fichier PHP
+?>
+<div class="contenu">
+  <h3>Modification du commentaire n°<?=$commentaire->id_commentaire?></h3>
+  <?php if (!empty($vue->retour->message)) { ?>
+    <p><?=$vue->retour->message?></p>
+  <?php } ?>
+  <p>
+    <a href="<?=lien_point($vue->point??0)?>">Retourner à la fiche : <?=$vue->point->nom??''?></a>
+  </p>
+</div>

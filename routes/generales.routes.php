@@ -48,6 +48,8 @@ switch ($controlleur->url_decoupee[0])
   case "wiki" :
   case "nouvelles" :
   case "point_ajout_commentaire" :
+  case "commentaire_formulaire_modification" :
+  case "commentaire_modification" :
   case "point_recherche" :
   case "avis_internaute_commentaire" :
   case "formulaire_exportations" :
