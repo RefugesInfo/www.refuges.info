@@ -134,15 +134,8 @@ $bouton_valider->nom = "action";
 $bouton_valider->type = "submit";
 $bouton_valider->valeur = $bouton_valider->label = $vue->verbe;
 
-$bouton_reset = new stdClass;
-$bouton_reset->nom = "reset";
-$bouton_reset->type = "reset";
-$bouton_reset->valeur = "Recommencer";
-$bouton_reset->label = "Recommencer";
-
 // Gestion de l'ordre des boutons modifier/valider/supprimer
 $vue->champs->boutons->valider=$bouton_valider;
-$vue->champs->boutons->reset=$bouton_reset;
 
 if (!empty($bouton_suppr))
   $vue->champs->boutons->suppr=$bouton_suppr;

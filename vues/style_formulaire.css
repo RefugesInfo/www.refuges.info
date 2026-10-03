@@ -78,18 +78,6 @@ form#cree_point input[type=submit]:active {
   transform: translateY(0);
 }
 
-/* Bouton secondaire (contour) */
-
-#form_point button[value=reset] {
-  background: transparent;
-  color: var(--couleur_lien);
-}
-
-#form_point button[value=reset]:hover {
-  background: color-mix(in srgb, var(--couleur_lien) 10%, transparent);
-  transform: translateY(-1px);
-}
-
 /* --- Style pilule partagé --- */
 
 form#form_point .booleen label,
