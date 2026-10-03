@@ -5,7 +5,7 @@
   <?php } else { ?>
     <p>Vous entrez dans la zone de modification des commentaires qui va vous permettre de modifier un commentaire, de le déplacer vers le forum dans la section correspondant au point ou le transférer sur une autre fiche du site.</p>
 
-    <form method="POST">
+    <form method="POST" enctype="multipart/form-data">
       <h4>le commentaire est :</h4>
       <br/>
       <label>Date:
@@ -28,6 +28,12 @@
       <br/>
 
       <textarea name="texte" rows="10" cols="100"><?=protege($commentaire->texte??'')?></textarea>
+      <br/><br/>
+
+      <label>
+        <?= $commentaire->photo_existe==1 ? 'Remplacer la photo par :' : 'Ajouter une photo :' ?>
+        <input type="file" name="comment_photo" accept="image/*" />
+      </label>
       <br/><br/>
 
       <?php if ($commentaire->photo_existe==1) { ?>

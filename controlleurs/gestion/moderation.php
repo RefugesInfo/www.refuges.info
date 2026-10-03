@@ -60,6 +60,10 @@ else
 
         $commentaire->rotation = $_REQUEST['rotation'] ?? Null;
 
+        // Remplacement de la photo (inutile si on demande justement à la supprimer) : la fonction détecte que c'est une nouvelle photo et refait les versions réduite et vignette
+        if ($_REQUEST['type'] != 'suppression_photo' and is_uploaded_file($_FILES['comment_photo']['tmp_name'] ?? ''))
+          $commentaire->photo['originale']=$_FILES['comment_photo']['tmp_name'];
+
         // On applique toutes les modifications, la fonction s'occupant de retourner une éventuelle erreur et un message en testant presque tous les cas possible (point inexistant, commentaire vide, ...)
         $vue->retour=modification_ajout_commentaire($commentaire);
 

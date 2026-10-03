@@ -313,8 +313,10 @@ function modification_ajout_commentaire($commentaire)
   else
     $mode="ajout";
 
-  // On ne souhaite traiter la photo (redimensionnement, vignette) que si celle-ci est valide et que l'on est bien dans le mode d'ajout d'un commentaire
-  $traitement_photo=($photo_valide and $mode=="ajout");
+  // On ne souhaite traiter la photo (redimensionnement, vignette) que si celle-ci est valide et que c'est une nouvelle photo :
+  // soit on ajoute un commentaire, soit on en modifie un en lui fournissant une photo différente de celle qu'il a déjà (remplacement)
+  // (un commentaire chargé par infos_commentaire() a déjà le chemin de sa photo existante dans ->photo['originale'], ce n'est pas un remplacement)
+  $traitement_photo=($photo_valide and ($mode=="ajout" or $commentaire->photo['originale']!==($commentaire_avant_modification->photo['originale']??null)));
 
   // Le but de ce bout est de récupérer la date (données exif) de prise de la photo que l'on doit ajouter
   if ($traitement_photo)
@@ -333,7 +335,7 @@ function modification_ajout_commentaire($commentaire)
   }
 
   // Rotation des photos réduite (la photo originale du client n'est pas touchée, ça peut être discutable, mais avec les tags exif d'orientation, j'ai eu des gags), (2023 utilisée uniquement par les modérateurs, donc a posteriori de l'ajout)
-  if (!empty($commentaire->rotation) and $mode=="modification" )
+  if (!empty($commentaire->rotation) and $mode=="modification" and !$traitement_photo) // inutile de tourner une photo qui va être remplacée
   {
     $image=imagecreatefromstring(file_get_contents($commentaire_avant_modification->photo['reduite']??'')); // on récupère la réduite, peut importe son format
     $image = imagerotate ($image, $commentaire->rotation, 0); // On la fait tourner
@@ -355,6 +357,9 @@ function modification_ajout_commentaire($commentaire)
   isset($commentaire->raison_demande_correction) ? $champs_sql['raison_demande_correction']=$pdo->quote($commentaire->raison_demande_correction):false;
   is_numeric($commentaire->demande_correction) ? $champs_sql['demande_correction']=$commentaire->demande_correction:false;
   isset($commentaire->date_photo) ? $champs_sql['date_photo']=$pdo->quote($commentaire->date_photo):false;
+  // Remplacement de photo : si la nouvelle n'a pas de date exif, on ne garde pas celle de l'ancienne
+  if ($traitement_photo and $mode=="modification" and !isset($commentaire->date_photo))
+    $champs_sql['date_photo']='NULL';
 
   // fait-on un update ou un insert ?
   if ($mode=="modification")
@@ -387,6 +392,12 @@ function modification_ajout_commentaire($commentaire)
   // Normalement, tout est bon ici, il ne nous reste plus qu'a gérer la photo ajoutée
   if ($traitement_photo && !empty($commentaire->id_commentaire))
   {
+    // Remplacement : on supprime les fichiers de l'ancienne photo (l'extension de l'originale peut changer, elle ne serait pas écrasée)
+    if ($mode=="modification")
+      foreach ($commentaire_avant_modification->photo??[] as $ancienne_photo)
+        if (is_file($ancienne_photo))
+          unlink($ancienne_photo);
+
     //2023 : on accepte maintenant plusieurs format possible, on garde donc une trace dans l'extension du format d'origine (on pourrait faire sans extension, mais l'intuition me dit qu'il vaut p'tet mieux garder ça
     $choix_extension_fichier=str_replace("image/","",image_type_to_mime_type($format_photo));
 
