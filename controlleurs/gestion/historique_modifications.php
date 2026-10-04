@@ -1,4 +1,4 @@
-<?php
+  <?php
 /***
 Indique de manière brutale (print_r) les dernières modifications ayant lieu sur les points de la base
 pas super lisible, mais c'est mieux que rien en attendant un super wiki de versionning des fiches de points
@@ -21,8 +21,8 @@ if (!empty($controlleur->url_decoupee[2]) and est_entier_positif($controlleur->u
 if (!empty($_GET['id_user']) and est_entier_positif($_GET['id_user']))
   $condition_point.=" AND id_user=".$_GET['id_user'];
 
-if (!empty($_GET['type_modification']) and ($_GET['type_modification']=='suppression point'))
-  $condition_point.=" AND type_modification='suppression'";
+if (!empty($_GET['type_modification']))
+  $condition_point.=" AND type_modification=".$pdo->quote($_GET['type_modification']);
 
 $limite=100;
 if (!empty($_GET['limite']) and est_entier_positif($_GET['limite']))
