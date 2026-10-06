@@ -54,7 +54,7 @@ header ('Content-disposition: filename='.$_GET['nom'].'.svg');
 include ('../../includes/config.php');
 include ('../../includes/entetes_http.php');
 headers_cors_par_default();
-headers_cache_api($_GET['cache']??10000);
+headers_cache_api($_GET['cache']??86400);
 // Les autres headers, notamment 404 sont générés lors de l'include
 
 // Un nom vide ou sans aucun élément reconnaissable ne remplissait ni $images ni
