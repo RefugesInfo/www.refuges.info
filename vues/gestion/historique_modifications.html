@@ -39,17 +39,17 @@
       </div>
       <div class="bloc_avant">
         <h4>Avant</h4>
-        <?=nl2br(protege($modification->texte_avant))?>
-        <?php if ($modification->texte_avant_suite) { ?>
+        <?=$modification->html_avant?>
+        <?php if ($modification->html_avant_suite) { ?>
           <details>
             <summary>voir +</summary>
-            <?=nl2br(protege($modification->texte_avant_suite))?>
+            <?=$modification->html_avant_suite?>
           </details>
         <?php } ?>
       </div>
       <div class="bloc_apres">
         <h4>Après</h4>
-        <?=nl2br(protege($modification->texte_apres))?>
+        <?=$modification->html_apres?>
       </div>
     </div>
   <?php } ?>

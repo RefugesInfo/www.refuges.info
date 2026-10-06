@@ -54,3 +54,9 @@ form.filtres_historique button {
     border-top: 1px solid black;
   }
 }
+
+/* Partie modifiée d'un champ texte (remark, acces, proprio) */
+.modification_historique b.modif {
+  color: #c0392b;
+  font-weight: bold;
+}
