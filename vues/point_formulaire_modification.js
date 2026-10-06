@@ -58,7 +58,7 @@ function deplacerMarqueur(ll) {
   champsPositionEls[0].value =
     '{"type":"Point","coordinates":[' +
     champsPositionEls[1].value + ',' + champsPositionEls[2].value +
-    ']}"';
+    ']}';
 }
 
 // Réponse aux changement de champs input
