@@ -84,7 +84,7 @@ $conditions->centre_du_cercle : la géométrie d'un point au format WKB (en 2025
 $conditions->avec_liste_polygones=True : l'objet retourné dispose d'une propriété polygones, un array de tous les polygones auquels le point appartient.
 
 $conditions->depuis : fiches (point & commentaire) modifiés depuis la date epoch
-$conditions->avec_infos_fiche=True : Rend les informations liées à la fiche (proprio, accés, remarques, état, ...)
+$conditions->avec_infos_fiche=True : Rend les informations liées à la fiche (proprietaires, accés, remarques, état, ...)
 $conditions->avec_infos_complementaires=True : Rend les informations complémentaires
 $conditions->avec_infos_creation=True : Rend les dates de création et de modification (le modérateur de la fiche reste une donnée interne, non exposée).
 
@@ -520,7 +520,7 @@ function infos_points($conditions)
         ];
         $properties->proprio = [
           'nom' => $point->equivalent_proprio,
-          'valeur' => $point->proprio,
+          'valeur' => $point->proprietaires,
         ];
         $properties->places = [
           'nom' => $point->equivalent_places,

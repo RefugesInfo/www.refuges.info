@@ -143,7 +143,7 @@ if (!empty($bouton_suppr))
 //3 Champs text area similaires, on fait une boucle
 // tous les points n'ont pas forcément un propriétaire ( grotte, point d'eau, ... )
 if ( !empty($point->equivalent_proprio) )
-  $textes_area[$point->equivalent_proprio]="proprio";
+  $textes_area[$point->equivalent_proprio]="proprietaires";
 
 //ils ont en revanche tous un accès et un champ remarques
 $textes_area["accès"]="acces";

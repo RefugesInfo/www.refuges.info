@@ -335,7 +335,7 @@ foreach ($points_bruts as $i=>$point) {
 
       $description.=$point->remarques."\n";
       $description.=$point->acces."\n";
-      $description.=$point->proprio."\n";
+      $description.=$point->proprietaires."\n";
       $point_final->description['valeur']=$description;
     }
 

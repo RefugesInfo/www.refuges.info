@@ -51,7 +51,7 @@ else // le point est valide
   $vue->point=$point;
   $vue->nom_createur = protege($point->nom_createur);
   $vue->nom=protege($point->nom);
-  $vue->proprio=bbcode2html($point->proprio);
+  $vue->proprietaires=bbcode2html($point->proprietaires);
   $vue->acces=bbcode2html($point->acces);
   $vue->remarques=bbcode2html($point->remarques);
   $vue->nom_debut_majuscule = protege(mb_ucfirst($point->nom));
