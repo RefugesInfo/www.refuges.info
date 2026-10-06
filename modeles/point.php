@@ -86,9 +86,9 @@ $conditions->avec_liste_polygones=True : l'objet retourné dispose d'une propri�
 $conditions->depuis : fiches (point & commentaire) modifiés depuis la date epoch
 $conditions->avec_infos_fiche=True : Rend les informations liées à la fiche (proprio, accés, remarques, état, ...)
 $conditions->avec_infos_complementaires=True : Rend les informations complémentaires
-$conditions->avec_infos_creation=True : Rend les informations liées au créateur, date de création et modification.
+$conditions->avec_infos_creation=True : Rend les dates de création et de modification (le modérateur de la fiche reste une donnée interne, non exposée).
 
-$conditions->id_createur : Dont le modérateur actuel de fiche et l'utilisation d'id id_createur
+$conditions->id_moderateur : Dont le modérateur actuel de fiche et l'utilisation d'id id_moderateur
 $conditions->topic_id : Dont le topic du forum est celui-ci (permet d'avoir un lien retour du forum du point vers la fiche)
 
 Cette fonction contrôle du mieux qu'elle peut les paramètres qu'elle reçoit, certains viennent directement d'une URL !
@@ -239,11 +239,11 @@ function infos_points($conditions)
       return erreur("Vous avez demandé une précision pour les coordonnées gps, qui est invalide :".$conditions->precision_gps);
 
   //quel(s) modérateur(s) de fiche ?
-  if( !empty($conditions->id_createur) )
-    if (!verif_multiples_entiers($conditions->id_createur))
-      return erreur("Le paramètre donné pour les ids de modérateurs de fiche n'est pas valide, reçu : $conditions->id_createur");
+  if( !empty($conditions->id_moderateur) )
+    if (!verif_multiples_entiers($conditions->id_moderateur))
+      return erreur("Le paramètre donné pour les ids de modérateurs de fiche n'est pas valide, reçu : $conditions->id_moderateur");
     else
-      $conditions_sql .= "\n\tAND points.id_createur IN ($conditions->id_createur)";
+      $conditions_sql .= "\n\tAND points.id_moderateur IN ($conditions->id_moderateur)";
 
   //conditions sur la description (champ remark)
   if( !empty($conditions->description) )
@@ -378,7 +378,7 @@ function infos_points($conditions)
     $query_ids="
       SELECT points.id_point
       FROM
-        type_precision_gps,point_type, points LEFT join phpbb3_users on points.id_createur = phpbb3_users.user_id $tables_en_plus
+        type_precision_gps,point_type, points LEFT join phpbb3_users on points.id_moderateur = phpbb3_users.user_id $tables_en_plus
       WHERE
         points.id_type_precision_gps=type_precision_gps.id_type_precision_gps
         AND points.id_point_type=point_type.id_point_type
@@ -424,7 +424,7 @@ function infos_points($conditions)
       $champs_polygones
       $champs_en_plus
     FROM
-      type_precision_gps,point_type, points LEFT join phpbb3_users on points.id_createur = phpbb3_users.user_id $tables_en_plus
+      type_precision_gps,point_type, points LEFT join phpbb3_users on points.id_moderateur = phpbb3_users.user_id $tables_en_plus
     WHERE
       points.id_type_precision_gps=type_precision_gps.id_type_precision_gps
       AND points.id_point_type=point_type.id_point_type
@@ -505,20 +505,6 @@ function infos_points($conditions)
 
       if (!empty($conditions->avec_infos_creation)) // Conditionnel car couteux en temps
       {
-        $properties->createur['id'] = $point->id_createur;
-
-        // info sur le modérateur actuel de la fiche (authentifié ou non)
-        if ($point->id_createur==0) // non authentifié
-            $properties->createur['nom']=$point->nom_createur;
-        else
-        {
-          $utilisateur=infos_utilisateur($point->id_createur);
-          if (!empty($utilisateur->erreur)) // Aïe, le point référence un utilisateur qui n'existe plus
-            $properties->createur['nom'] = "Utilisateur supprimé";
-          else
-            $properties->createur['nom'] = infos_utilisateur($point->id_createur)->username;
-        }
-
         $properties->date = [
           'creation' => $point->date_creation,
           'derniere_modif' => $point->date_derniere_modification,
@@ -594,7 +580,7 @@ function infos_points($conditions)
       }
 
       //  phpBB intègre un nom d'utilisateur dans sa base après avoir passé un htmlentities pour les users connectés, je réalise l'opération inverse
-      if (!empty($point->id_createur) and !empty($point->nom_createur) )
+      if (!empty($point->id_moderateur) and !empty($point->nom_createur) )
         $point->nom_createur=html_entity_decode($point->nom_createur);
     }
     elseif (est_entier_positif($point->id_polygone))
@@ -908,13 +894,13 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
   }
   else  // INSERT
   {
-    $id_createur = $point->id_createur ?? 0;
+    $id_moderateur = $point->id_moderateur ?? 0;
     // On appelle la fonction du forum qui crée un topic dans le forum refuges
     $r = forum_submit_post ([
       'action' => 'post',
       'forum_id' => $config_wri['forum_refuges'],
       'topic_title' => mb_ucfirst($point->nom),
-      'topic_poster' => $id_createur, // Vaut 0 si c'est un anonyme, sinon l'id de la personne connectée
+      'topic_poster' => $id_moderateur, // Vaut 0 si c'est un anonyme, sinon l'id de la personne connectée
     ]);
     if (!$r['topic_id'])
       return erreur( "Erreur création forum point<br/>".var_export($r,true) );
@@ -938,7 +924,7 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
     ];
     extract($phpbb_dispatcher->trigger_event('refugesinfo.ajout_point', compact($vars)));
 
-    historisation_modification(null,$point,'creation point',$id_createur);
+    historisation_modification(null,$point,'creation point',$id_moderateur);
   }
 
   // on retourne l'id du point (surtout utile si création)

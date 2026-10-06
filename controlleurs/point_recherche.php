@@ -28,7 +28,7 @@ if (!empty($_REQUEST))
   $conditions->altitude_maximum = $_REQUEST['altitude_maximum'] ?? '';
   $conditions->chauffage = $_REQUEST['chauffage'] ?? '';
   $conditions->precision_gps = $_REQUEST['precision_gps'] ?? '';
-  $conditions->id_createur = $_REQUEST['id_createur'] ?? '';
+  $conditions->id_moderateur = $_REQUEST['id_moderateur'] ?? '';
   $conditions->ouvert = $_REQUEST['ouvert'] ?? '';
   $conditions->limite = $_REQUEST['limite'] ?? $config_wri['points_maximum_recherche']; // Par défaut, on compte sur le formulaire pour être raisonnable et passer le paramètre du nombre max, mais si jamais il n'y est pas, voici la limite haute de sécurité
   $conditions->uniquement_points_caches = $_REQUEST['uniquement_points_caches'] ?? False;

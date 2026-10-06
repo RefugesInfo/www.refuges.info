@@ -45,7 +45,7 @@ if ( !empty($_REQUEST["id_point"]) )
   }
 
   // Soit on est avec un modérateur global ou de cette fiche
-  if ( est_autorise($point->id_createur) )
+  if ( est_autorise($point->id_moderateur) )
   {
     /* boutton "supprimer" uniquement pour les modérateurs globaux
        sly 09/2025 : A DÉBATTRE, Voulons nous interdire la suppression d'une fiche à son auteur ? je peux comprendre que dans le cas du gérant de gîte excédé par les commentaires peu glorieux, il puisse être tenté de supprimer la fiche ce que nous ne voulons peut-être pas, mais pour celui qui ajoute une fiche de cabane, constate après coup qu'il s'est trompé, il ne peut alors, sans l'aide de modérateurs, supprimer et recommencer ?
@@ -99,7 +99,7 @@ elseif ( !empty($_REQUEST["id_point_type"]))
   // on force l'id du point à vide histoire de ne pas modifier le modèle
   unset($point->id_point);
   // et pareil pour le modérateur actuel du point qui sera alors choisi directement car l'utilisateur est authentifié (ou pas, mais alors ça sera 0)
-  unset($point->id_createur);
+  unset($point->id_moderateur);
   // et on retire le flag "est un modèle" car on s'est servit du modèle, mais ce n'en est plus un
   unset($point->modele);
 

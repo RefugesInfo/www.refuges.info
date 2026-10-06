@@ -28,7 +28,7 @@ if (!est_moderateur())
 {
   require_once ('point.php');
   $point_filtre = $id_point_filtre ? infos_point($id_point_filtre) : null;
-  if (empty($point_filtre) or !empty($point_filtre->erreur) or !est_autorise($point_filtre->id_createur))
+  if (empty($point_filtre) or !empty($point_filtre->erreur) or !est_autorise($point_filtre->id_moderateur))
   {
     $vue->http_status_code = 403;
     $vue->type = "page_simple";

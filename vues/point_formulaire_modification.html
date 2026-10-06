@@ -81,12 +81,12 @@
 
       <?php if (est_moderateur() and !empty($vue->point->id_point)) { ?>
         <label>Modérateur de cette fiche:
-          <select name='id_createur'>
-            <option value="0" <?=(0==$vue->point->id_createur)? 'selected="selected"' : '' ;?>>
+          <select name='id_moderateur'>
+            <option value="0" <?=(0==$vue->point->id_moderateur)? 'selected="selected"' : '' ;?>>
               Anonyme/Aucun
             </option>
             <?php foreach ($vue->utilisateurs AS $utilisateur) { ?>
-              <option value="<?=$utilisateur->user_id?>" <?=($utilisateur->user_id==$vue->point->id_createur)? 'selected="selected"' : '' ;?>>
+              <option value="<?=$utilisateur->user_id?>" <?=($utilisateur->user_id==$vue->point->id_moderateur)? 'selected="selected"' : '' ;?>>
                 <?=$utilisateur->username?>
               </option>
             <?php } ?>

@@ -52,7 +52,7 @@ switch( $_REQUEST["action"]??'' )
     $point=preparation_point();
 
     if (est_connecte())
-      $point->id_createur=$infos_identification->user_id;
+      $point->id_moderateur=$infos_identification->user_id;
 
     $retour = modification_ajout_point($point,$infos_identification->user_id);
     gestion_retour($retour,$vue);
@@ -60,12 +60,12 @@ switch( $_REQUEST["action"]??'' )
     break;
 
   case 'Modifier' :
-    $ancien_point=infos_point($_REQUEST['id_point'],True,false); // Uniquement pour récupérer l'id_createur car tout le reste est dans $_REQUEST
+    $ancien_point=infos_point($_REQUEST['id_point'],True,false); // Uniquement pour récupérer l'id_moderateur car tout le reste est dans $_REQUEST
     $point=preparation_point();
     $point->topic_id=$ancien_point->topic_id;
 
     // modification uniquement si modérateur global ou modérateur de cette fiche
-    if ( est_autorise($ancien_point->id_createur) )
+    if ( est_autorise($ancien_point->id_moderateur) )
     {
       $retour = modification_ajout_point($point,$infos_identification->user_id);
       gestion_retour($retour,$vue);
@@ -76,9 +76,9 @@ switch( $_REQUEST["action"]??'' )
     break;
 
   case 'supprimer':
-    $ancien_point=infos_point($_REQUEST['id_point'],True,false); // Uniquement pour récupérer l'id_createur car tout le reste est dans $_REQUEST
+    $ancien_point=infos_point($_REQUEST['id_point'],True,false); // Uniquement pour récupérer l'id_moderateur car tout le reste est dans $_REQUEST
 
-    if ( est_autorise($ancien_point->id_createur ?? 0) )
+    if ( est_autorise($ancien_point->id_moderateur ?? 0) )
     {
       $point=infos_point($_REQUEST['id_point'],True);
       $resultat_suppression=suppression_point($point,$infos_identification->user_id);

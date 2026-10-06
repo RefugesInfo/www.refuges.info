@@ -25,7 +25,7 @@
       </strong>
     <?php }
     // Si les droits sont suffisants, lien de modification
-    if (est_autorise($point->id_createur)) { ?>
+    if (est_autorise($point->id_moderateur)) { ?>
       <div class="noprint bloc_liens_centre">
         <p><b>
           <a class="lien_bouton" href="/point_formulaire_modification?id_point=<?=$vue->point->id_point?>">
@@ -34,7 +34,7 @@
           <a class="lien_bouton" href="/gestion/historique_modifications/<?=$vue->point->id_point?>">
             Historique
           </a>&nbsp;
-          <?php if (est_autorise($point->id_createur)) { ?>
+          <?php if (est_autorise($point->id_moderateur)) { ?>
             <a class="lien_bouton"
                href="<?=$config_wri['lien_forum']?>mcp.php?i=-RefugesInfo-trace-mcp-main_module&id_point=<?=$vue->point->id_point?>"
                title="Trace de la création du point">
@@ -188,9 +188,9 @@
 
       // modérateur de fiche
       if ($vue->nom_createur!="") { ?>
-        <?php if ($vue->point->id_createur != 0) { ?>
+        <?php if ($vue->point->id_moderateur != 0) { ?>
           Modérateur actuel de cette fiche:
-          <a href="<?=$config_wri['fiche_utilisateur'].$vue->point->id_createur?>">
+          <a href="<?=$config_wri['fiche_utilisateur'].$vue->point->id_moderateur?>">
             <?=$vue->nom_createur?>
           </a>
         <?php } else { ?>
@@ -255,7 +255,7 @@
           <div class="bloc_liens_haut_droit">
           <a class="liens_avec_decoration" href="<?=$commentaire->lien_commentaire?>">
             <?=$commentaire->texte_lien_commentaire?></a>
-            <?php if (est_autorise($point->id_createur)) { ?>
+            <?php if (est_autorise($point->id_moderateur)) { ?>
               <a class="liens_avec_decoration"
                 href="<?=$config_wri['lien_forum']?>mcp.php?i=-RefugesInfo-trace-mcp-main_module&id_commentaire=<?=$commentaire->id_commentaire?>"
                 title="Trace de la création du commentaire">

@@ -45,7 +45,7 @@ Cette notion de mutation des propriétés des points (icones, champs) est géré
 * id_point_type, un lien vers la table point_type (refuge ou abri ou ...)
 * auteur_derniere_modification (le nom de l'auteur qui l'a créé si celui ci est anonyme)
 et/ou
-* id_createur, l'id de l'utilisateur qui est modérateur de cette fiche (il peut la modifier), par défaut, lors de la création, c'est celui qui la créé qui devient id_createur
+* id_moderateur, l'id de l'utilisateur qui est modérateur de cette fiche (il peut la modifier), par défaut, lors de la création, c'est celui qui la créé qui devient id_moderateur
 * places : un champs qui indique le nombre de places prévues pour dormir.
   s'il s'agit d'un entier c'est le nombre de place
   si vaut NULL c'est que cette information n'est pas connue

@@ -214,7 +214,6 @@ $filtre['complet'] = array_merge($filtre['simple'], [
   'etat' => true,
   // Nouveaux
   'date' => true,
-  'createur' => true,
   'proprio' => true,
   'acces' => true,
   'remarque' => true,
