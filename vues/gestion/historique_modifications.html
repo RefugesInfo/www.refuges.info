@@ -80,12 +80,23 @@ form.filtres_historique button {
           $modification->point_apres->nom_polygone ??
           'Erreur:Aucun nom?';
 
-        $point_avant = $modification->point_avant;
-        foreach ($point_avant as $propriete => $valeur)
-          if (!$valeur)
-            unset($point_avant->$propriete);
         $point_apres = $modification->point_apres;
-        unset ($point_avant->geom);
+        $avant_complet = (array) $modification->point_avant;
+        unset ($avant_complet['geom']);
+
+        // Pour une modification, "apres" ne contient que les propriétés changées, "avant" toutes celles du formulaire.
+        // On affiche d'abord uniquement ce qui a changé, le reste de l'état d'avant est dans un "voir +"
+        $avant_change = $avant_complet;
+        $avant_reste = [];
+        if (!empty((array) $point_apres) and !empty($avant_complet))
+        {
+          $avant_change = array_intersect_key($avant_complet, (array) $point_apres);
+          $avant_reste = array_diff_key($avant_complet, $avant_change);
+        }
+        // Dans la partie dépliée (et pour les créations/suppressions), on masque les valeurs vides
+        $avant_reste = array_filter($avant_reste);
+        if (empty((array) $point_apres))
+          $avant_change = array_filter($avant_change);
       $ppambules = ["stdClass Object\n(\n","\n)\n",")\n"];
       ?>
       <tr>
@@ -99,7 +110,14 @@ form.filtres_historique button {
           <?php } ?>
           <br/>du <?=$modification->date?><br/>
           par <?=$modification->moderateur?></td>
-        <td><?=nl2br(protege(str_replace($ppambules,"",print_r($point_avant,true))))?></td>
+        <td><?=nl2br(protege(str_replace($ppambules,"",print_r((object) $avant_change,true))))?>
+          <?php if ($avant_reste) { ?>
+            <details>
+              <summary>voir +</summary>
+              <?=nl2br(protege(str_replace($ppambules,"",print_r((object) $avant_reste,true))))?>
+            </details>
+          <?php } ?>
+        </td>
         <td><?=nl2br(protege(str_replace($ppambules,"",print_r($point_apres,true))))?></td>
       </tr>
     <?php } ?>
