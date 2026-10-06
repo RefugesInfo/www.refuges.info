@@ -53,7 +53,7 @@ else // le point est valide
   $vue->nom=protege($point->nom);
   $vue->proprio=bbcode2html($point->proprio);
   $vue->acces=bbcode2html($point->acces);
-  $vue->remark=bbcode2html($point->remark);
+  $vue->remarques=bbcode2html($point->remarques);
   $vue->nom_debut_majuscule = protege(mb_ucfirst($point->nom));
   $vue->lien_wiki_explication_type=lien_wiki("fiche-".replace_url($point->nom_type));
   $vue->lien_wiki_explication_geo=lien_wiki("geo-uri");

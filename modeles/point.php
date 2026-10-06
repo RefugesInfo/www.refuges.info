@@ -245,9 +245,9 @@ function infos_points($conditions)
     else
       $conditions_sql .= "\n\tAND points.id_moderateur IN ($conditions->id_moderateur)";
 
-  //conditions sur la description (champ remark)
+  //conditions sur la description (champ remarques)
   if( !empty($conditions->description) )
-    $conditions_sql.="\n\tAND points.remark ILIKE ".$pdo->quote('%'.$conditions->description.'%');
+    $conditions_sql.="\n\tAND points.remarques ILIKE ".$pdo->quote('%'.$conditions->description.'%');
 
   if (!empty($conditions->uniquement_points_caches))
   {
@@ -528,7 +528,7 @@ function infos_points($conditions)
         ];
         $properties->remarque = [
           'nom' => 'Remarque',
-          'valeur' => $point->remark,
+          'valeur' => $point->remarques,
         ];
         $properties->acces = [
           'nom' => 'Accès',

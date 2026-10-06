@@ -333,7 +333,7 @@ foreach ($points_bruts as $i=>$point) {
       if (!empty($point->equivalent_places_matelas) and !empty($point->places_matelas))
         $description.=$point->equivalent_places_matelas.": ".$point->places_matelas."\n";
 
-      $description.=$point->remark."\n";
+      $description.=$point->remarques."\n";
       $description.=$point->acces."\n";
       $description.=$point->proprio."\n";
       $point_final->description['valeur']=$description;

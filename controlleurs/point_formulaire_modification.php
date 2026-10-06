@@ -147,7 +147,7 @@ if ( !empty($point->equivalent_proprio) )
 
 //ils ont en revanche tous un accès et un champ remarques
 $textes_area["accès"]="acces";
-$textes_area["remarques"]="remark";
+$textes_area["remarques"]="remarques";
 
 /******** Les champs libres *****************/
 foreach ($textes_area as $libelle => $nom_variable)
