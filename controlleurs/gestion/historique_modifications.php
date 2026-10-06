@@ -67,7 +67,7 @@ if (! ($res = $pdo->query($query_log_modification)))
   return erreur("Requête en erreur, impossible d'afficher l'historique de modifications",$query_log_modification);
 
 // Champs texte pour lesquels on met en évidence, mot par mot, ce qui a changé ('remark' et 'proprio' : anciens noms, restés dans les anciennes lignes)
-$champs_texte_compares = ['remarques', 'remark', 'acces', 'proprietaires', 'proprio'];
+$champs_texte_compares = ['nom', 'remarques', 'remark', 'acces', 'proprietaires', 'proprio'];
 
 // Compare deux textes mot par mot (plus longue sous-suite commune) et retourne le html des deux, la partie modifiée en <b class="modif">
 $diff_mots = function ($texte_avant, $texte_apres)
