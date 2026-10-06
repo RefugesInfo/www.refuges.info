@@ -48,6 +48,13 @@ $query_log_modification="select *,date_modification::timestamp(0) as date from h
 if (! ($res = $pdo->query($query_log_modification)))
   return erreur("Requête en erreur, impossible d'afficher l'historique de modifications",$query_log_modification);
 
+// Liste des propriétés sous forme de texte brut, une par ligne
+$texte_proprietes = function ($proprietes)
+{
+  $ppambules = ["stdClass Object\n(\n","\n)\n",")\n"];
+  return str_replace($ppambules, "", print_r((object) $proprietes, true));
+};
+
 while ($modification_point = $res->fetch()) {
   // Si authentifié, on indique qui a fait la modif
   if ($modification_point->id_user!=0)
@@ -69,7 +76,28 @@ while ($modification_point = $res->fetch()) {
   $point_avant=unserialize($modification_point->avant);
   $point_apres=unserialize($modification_point->apres);
   $modification_point->moderateur=$utilisateur->username??'';
-  $modification_point->point_avant=$point_avant;
-  $modification_point->point_apres=$point_apres;
+
+  $modification_point->nom = $point_avant->nom ?? $point_avant->nom_polygone ??
+    $point_apres->nom ?? $point_apres->nom_polygone ?? 'Erreur:Aucun nom?';
+
+  // Pour une modification, "apres" ne contient que les propriétés changées, "avant" toutes celles du formulaire.
+  // On affiche d'abord uniquement ce qui a changé, le reste de l'état d'avant est dans un "voir +"
+  $avant_complet = (array) $point_avant;
+  unset($avant_complet['geom']);
+  $avant_change = $avant_complet;
+  $avant_reste = [];
+  if (!empty((array) $point_apres) and !empty($avant_complet))
+  {
+    $avant_change = array_intersect_key($avant_complet, (array) $point_apres);
+    $avant_reste = array_diff_key($avant_complet, $avant_change);
+  }
+  // Dans la partie dépliée (et pour les créations/suppressions), on masque les valeurs vides
+  $avant_reste = array_filter($avant_reste);
+  if (empty((array) $point_apres))
+    $avant_change = array_filter($avant_change);
+
+  $modification_point->texte_avant = $texte_proprietes($avant_change);
+  $modification_point->texte_avant_suite = $texte_proprietes($avant_reste);
+  $modification_point->texte_apres = $texte_proprietes($point_apres);
   $vue->modifications_points[]=$modification_point;
 }

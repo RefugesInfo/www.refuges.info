@@ -50,52 +50,27 @@ th:last-child {
       <th>Après</th>
     </tr>
     <?php if (isset($vue->modifications_points))
-      foreach ($vue->modifications_points as $modification) {
-        $nom = $modification->point_avant->nom ??
-          $modification->point_avant->nom_polygone ??
-          $modification->point_apres->nom ??
-          $modification->point_apres->nom_polygone ??
-          'Erreur:Aucun nom?';
-
-        $point_apres = $modification->point_apres;
-        $avant_complet = (array) $modification->point_avant;
-        unset ($avant_complet['geom']);
-
-        // Pour une modification, "apres" ne contient que les propriétés changées, "avant" toutes celles du formulaire.
-        // On affiche d'abord uniquement ce qui a changé, le reste de l'état d'avant est dans un "voir +"
-        $avant_change = $avant_complet;
-        $avant_reste = [];
-        if (!empty((array) $point_apres) and !empty($avant_complet))
-        {
-          $avant_change = array_intersect_key($avant_complet, (array) $point_apres);
-          $avant_reste = array_diff_key($avant_complet, $avant_change);
-        }
-        // Dans la partie dépliée (et pour les créations/suppressions), on masque les valeurs vides
-        $avant_reste = array_filter($avant_reste);
-        if (empty((array) $point_apres))
-          $avant_change = array_filter($avant_change);
-      $ppambules = ["stdClass Object\n(\n","\n)\n",")\n"];
-      ?>
+      foreach ($vue->modifications_points as $modification) { ?>
       <tr>
         <td><?=ucfirst($modification->type_modification)?> du/de là <br/>
           <?php if (!empty($modification->lien_point)) { ?>
           <a href="<?=$modification->lien_point?>">
-            <b><?=$nom?></b>
+            <b><?=$modification->nom?></b>
           </a>
           <?php }  else { ?>
-            <b><?=$nom?></b>
+            <b><?=$modification->nom?></b>
           <?php } ?>
           <br/>du <?=$modification->date?><br/>
           par <?=$modification->moderateur?></td>
-        <td><?=nl2br(protege(str_replace($ppambules,"",print_r((object) $avant_change,true))))?>
-          <?php if ($avant_reste) { ?>
+        <td><?=nl2br(protege($modification->texte_avant))?>
+          <?php if ($modification->texte_avant_suite) { ?>
             <details>
               <summary>voir +</summary>
-              <?=nl2br(protege(str_replace($ppambules,"",print_r((object) $avant_reste,true))))?>
+              <?=nl2br(protege($modification->texte_avant_suite))?>
             </details>
           <?php } ?>
         </td>
-        <td><?=nl2br(protege(str_replace($ppambules,"",print_r($point_apres,true))))?></td>
+        <td><?=nl2br(protege($modification->texte_apres))?></td>
       </tr>
     <?php } ?>
   </table>
