@@ -23,6 +23,21 @@ if (est_entier_positif($id_point_filtre))
 else
   $id_point_filtre='';
 
+// Hors modérateurs globaux, seul le modérateur actuel de la fiche (voir est_autorise) peut consulter l'historique, et uniquement celui de sa fiche
+if (!est_moderateur())
+{
+  require_once ('point.php');
+  $point_filtre = $id_point_filtre ? infos_point($id_point_filtre) : null;
+  if (empty($point_filtre) or !empty($point_filtre->erreur) or !est_autorise($point_filtre->id_createur))
+  {
+    $vue->http_status_code = 403;
+    $vue->type = "page_simple";
+    $vue->titre = "Erreur 403 : droits insuffisants";
+    $vue->contenu = "L'historique n'est consultable que par les modérateurs, ou par le modérateur de la fiche pour l'historique de sa fiche, êtes vous bien connecté ?";
+    return;
+  }
+}
+
 
 if (!empty($_GET['id_user']) and est_entier_positif($_GET['id_user']))
   $condition_point.=" AND id_user=".$_GET['id_user'];
@@ -35,13 +50,16 @@ if (!empty($_GET['limite']) and est_entier_positif($_GET['limite']))
   $limite=$_GET['limite'];
 
 // Valeurs proposées par le mini formulaire de filtrage en haut de page
+// Les listes de choix du formulaire se limitent à la fiche si on en regarde une seule
+$condition_liste=$id_point_filtre ? " WHERE id_point=$id_point_filtre" : "";
+$condition_liste_h=$id_point_filtre ? " WHERE h.id_point=$id_point_filtre" : "";
 $vue->filtres=new stdClass();
 $vue->filtres->id_point=$id_point_filtre;
 $vue->filtres->id_user=$_GET['id_user'] ?? '';
 $vue->filtres->type_modification=$_GET['type_modification'] ?? '';
 $vue->filtres->limite=$limite;
-$vue->filtres->types=$pdo->query("SELECT DISTINCT type_modification FROM historique_modifications_points ORDER BY 1")->fetchAll(PDO::FETCH_COLUMN);
-$vue->filtres->utilisateurs=$pdo->query("SELECT DISTINCT h.id_user, u.username FROM historique_modifications_points h JOIN phpbb3_users u ON u.user_id=h.id_user ORDER BY u.username")->fetchAll();
+$vue->filtres->types=$pdo->query("SELECT DISTINCT type_modification FROM historique_modifications_points$condition_liste ORDER BY 1")->fetchAll(PDO::FETCH_COLUMN);
+$vue->filtres->utilisateurs=$pdo->query("SELECT DISTINCT h.id_user, u.username FROM historique_modifications_points h JOIN phpbb3_users u ON u.user_id=h.id_user$condition_liste_h ORDER BY u.username")->fetchAll();
 
 $query_log_modification="select *,date_modification::timestamp(0) as date from historique_modifications_points$condition_point order by date_modification desc LIMIT $limite";
 

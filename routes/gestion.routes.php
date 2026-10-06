@@ -23,7 +23,8 @@ switch ($controlleur->url_decoupee[1]) {
   case 'commentaires_attente_correction':
   case 'historique_modifications':
   case 'historique_envoi_emails':
-    if (est_moderateur())
+    // L'historique est aussi ouvert au modérateur d'une fiche (pour sa fiche seulement), c'est le contrôleur qui affine ce droit
+    if (est_moderateur() or ($controlleur->url_decoupee[1]=='historique_modifications' and est_connecte()))
       $controlleur->type = 'gestion/'.$controlleur->url_decoupee[1];
     else
     {
