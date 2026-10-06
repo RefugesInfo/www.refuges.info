@@ -34,6 +34,12 @@ function historisation_modification($point_avant,$point_apres,$type_operation="m
   {
     // le point après modification existe, on stockera d'utile que les propriété
     // qui ont été passée par le formulaire (moins lourd)
+    // En cas de création (pas d'état avant), on mémorise tout ce qui a été créé, sauf les listes de polygones, lourdes à l'écran
+    if (!isset($point_avant))
+      foreach ($point_apres as $propriete => $valeur)
+        if ($propriete!='polygones')
+          $point_apres_simple->$propriete=$valeur;
+
     foreach ($point_apres as $propriete => $valeur)
     {
       if (isset($point_avant->$propriete))

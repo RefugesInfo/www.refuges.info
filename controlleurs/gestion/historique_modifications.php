@@ -118,7 +118,7 @@ while ($modification_point = $res->fetch()) {
 
   // si cela concerne un point du site, on fait un lien vers lui pour se simplifier la consultation
   $lien_de_base="";
-  if (in_array($modification_point->type_modification, array ("modification point","création point","suppression point")))
+  if (in_array($modification_point->type_modification, array ("modification point","creation point","création point","suppression point")))
     $lien_de_base="point";
 
   if (in_array($modification_point->type_modification, array ("modification polygone","suppression polygone")))
@@ -132,7 +132,7 @@ while ($modification_point = $res->fetch()) {
   $modification_point->moderateur=$utilisateur->username??'';
 
   $modification_point->nom = $point_avant->nom ?? $point_avant->nom_polygone ??
-    $point_apres->nom ?? $point_apres->nom_polygone ?? 'Erreur:Aucun nom?';
+    $point_apres->nom ?? $point_apres->nom_polygone ?? ($modification_point->id_point ? "Fiche n°$modification_point->id_point" : 'Erreur:Aucun nom?');
 
   // Pour une modification, "apres" ne contient que les propriétés changées, "avant" toutes celles du formulaire.
   // On affiche d'abord uniquement ce qui a changé, le reste de l'état d'avant est dans un "voir +"
@@ -149,6 +149,13 @@ while ($modification_point = $res->fetch()) {
   $avant_reste = array_filter($avant_reste);
   if (empty((array) $point_apres))
     $avant_change = array_filter($avant_change);
+
+  // Pour une création, "apres" contient tout : on masque aussi les valeurs vides et la géométrie brute
+  if (empty($avant_complet) and is_object($point_apres))
+  {
+    unset($point_apres->geom);
+    $point_apres = array_filter((array) $point_apres);
+  }
 
   // Mise en évidence de la partie modifiée des champs texte
   $diff_avant = [];
