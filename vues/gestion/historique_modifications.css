@@ -1,0 +1,23 @@
+/* Mini formulaire de filtres de /gestion/historique_modifications */
+form.filtres_historique {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5em 1em;
+  align-items: end;
+  margin-bottom: 1em;
+}
+
+form.filtres_historique label {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.9em;
+}
+
+form.filtres_historique button {
+  background: var(--couleur_lien);
+  color: white;
+  border: 0;
+  border-radius: 4px;
+  padding: 0.4em 1em;
+  cursor: pointer;
+}

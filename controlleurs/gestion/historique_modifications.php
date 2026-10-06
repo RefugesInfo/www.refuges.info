@@ -9,6 +9,8 @@ sly 2022: bonne solution ou pas, pour l'instant, on a que ça ! Alors j'ajoute q
 sly 2025: grand classique du "vu que ça marche, pourquoi changer", j'ajoute encore des fonctions...
 ***/
 
+add_lib('gestion/historique_modifications.css');
+
 require_once ('mise_en_forme_texte.php');
 require_once ('utilisateur.php');
 
