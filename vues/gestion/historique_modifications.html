@@ -1,22 +1,3 @@
-<style>
-table, td, th {
-  border: 1px solid black;
-}
-
-table {
-  border-collapse: collapse;
-  width: 100%;
-}
-
-th {
-  height: 30px;
-}
-
-th:last-child {
-  text-align: left;
-}
-</style>
-
 <div class="contenu">
   <form class="filtres_historique" method="GET" action="/gestion/historique_modifications">
     <label>Fiche n°
@@ -43,35 +24,33 @@ th:last-child {
     </label>
     <button type="submit">Filtrer</button>
   </form>
-  <table>
-    <tr>
-      <th>Info modif</th>
-      <th>Avant</th>
-      <th>Après</th>
-    </tr>
-    <?php if (isset($vue->modifications_points))
-      foreach ($vue->modifications_points as $modification) { ?>
-      <tr>
-        <td><?=ucfirst($modification->type_modification)?> du/de là <br/>
-          <?php if (!empty($modification->lien_point)) { ?>
-          <a href="<?=$modification->lien_point?>">
-            <b><?=$modification->nom?></b>
-          </a>
-          <?php }  else { ?>
-            <b><?=$modification->nom?></b>
-          <?php } ?>
-          <br/>du <?=$modification->date?><br/>
-          par <?=$modification->moderateur?></td>
-        <td><?=nl2br(protege($modification->texte_avant))?>
-          <?php if ($modification->texte_avant_suite) { ?>
-            <details>
-              <summary>voir +</summary>
-              <?=nl2br(protege($modification->texte_avant_suite))?>
-            </details>
-          <?php } ?>
-        </td>
-        <td><?=nl2br(protege($modification->texte_apres))?></td>
-      </tr>
-    <?php } ?>
-  </table>
+  <?php if (isset($vue->modifications_points))
+    foreach ($vue->modifications_points as $modification) { ?>
+    <div class="modification_historique">
+      <div class="bloc_info">
+        <?=ucfirst($modification->type_modification)?> du/de là <br/>
+        <?php if (!empty($modification->lien_point)) { ?>
+          <a href="<?=$modification->lien_point?>"><b><?=$modification->nom?></b></a>
+        <?php } else { ?>
+          <b><?=$modification->nom?></b>
+        <?php } ?>
+        <br/>du <?=$modification->date?><br/>
+        par <?=$modification->moderateur?>
+      </div>
+      <div class="bloc_avant">
+        <h4>Avant</h4>
+        <?=nl2br(protege($modification->texte_avant))?>
+        <?php if ($modification->texte_avant_suite) { ?>
+          <details>
+            <summary>voir +</summary>
+            <?=nl2br(protege($modification->texte_avant_suite))?>
+          </details>
+        <?php } ?>
+      </div>
+      <div class="bloc_apres">
+        <h4>Après</h4>
+        <?=nl2br(protege($modification->texte_apres))?>
+      </div>
+    </div>
+  <?php } ?>
 </div>
