@@ -619,7 +619,7 @@ form#cree_point .booleen input[type=radio]:focus-visible + label {
    Réutilise le style de form#comment (champs, pilules, sélecteur de photo)
    ================================================================ */
 
-form#comment.modification_commentaire > fieldset {
+form#comment.modification_commentaire fieldset {
   border: 1.5px solid var(--couleur_decoration_titres);
   border-radius: 10px;
   padding: 0.9em 1.1em;
@@ -629,7 +629,7 @@ form#comment.modification_commentaire > fieldset {
 }
 
 /* Un fieldset ne rétrécit pas sous la largeur de son contenu par défaut : on l'autorise, et les champs ne dépassent pas */
-form#comment.modification_commentaire > fieldset {
+form#comment.modification_commentaire fieldset {
   min-width: 0;
 }
 
@@ -639,7 +639,7 @@ form#comment.modification_commentaire input[type=text] {
   max-width: 100%;
 }
 
-form#comment.modification_commentaire > fieldset > legend {
+form#comment.modification_commentaire fieldset > legend {
   font-weight: bold;
   font-size: 0.95em;
   padding: 0 0.3em;
@@ -647,12 +647,30 @@ form#comment.modification_commentaire > fieldset > legend {
 }
 
 /* Le premier bloc suit directement le titre : pas de marge haute en plus */
-form#comment.modification_commentaire > fieldset:first-of-type {
+form#comment.modification_commentaire .texte_et_photo {
   margin-top: 0.3em;
 }
 
-form#comment.modification_commentaire > fieldset > p:first-of-type { margin-top: 0; }
-form#comment.modification_commentaire > fieldset > p:last-child { margin-bottom: 0; }
+/* Texte et photo : l'un au-dessus de l'autre, côte à côte quand l'écran est assez large */
+form#comment.modification_commentaire .texte_et_photo > fieldset {
+  margin: 0 0 0.6em;
+}
+
+@media (min-width: 55em) {
+  form#comment.modification_commentaire .texte_et_photo {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    gap: 0 1em;
+    margin-bottom: 0.6em;
+  }
+
+  form#comment.modification_commentaire .texte_et_photo > fieldset {
+    margin-bottom: 0;
+  }
+}
+
+form#comment.modification_commentaire fieldset > p:first-of-type { margin-top: 0; }
+form#comment.modification_commentaire fieldset > p:last-child { margin-bottom: 0; }
 
 /* Annule les floats/largeurs hérités de style_pages.css (form.wri) */
 form#comment.modification_commentaire label {

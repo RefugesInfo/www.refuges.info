@@ -6,46 +6,48 @@
     <!-- Bouton par défaut (touche Entrée dans un champ) : doit rester le premier bouton du formulaire -->
     <button name="type" value="modification" type="submit" class="bouton_par_defaut" tabindex="-1" aria-hidden="true">Modifier</button>
 
-    <fieldset>
-      <legend>Texte</legend>
-      <textarea class="textarea_large" name="texte"><?=protege($commentaire->texte??'')?></textarea>
-    </fieldset>
+    <div class="texte_et_photo">
+      <fieldset>
+        <legend>Texte</legend>
+        <textarea class="textarea_large" name="texte"><?=protege($commentaire->texte??'')?></textarea>
+      </fieldset>
 
-    <fieldset>
-      <legend>Photo</legend>
-      <?php if ($commentaire->photo_existe==1) { ?>
+      <fieldset>
+        <legend>Photo</legend>
+        <?php if ($commentaire->photo_existe==1) { ?>
+          <p>
+            <img
+              src="<?=$commentaire->lien_photo['reduite']??''?>"
+              alt="photo liée au commentaire"
+              width="250px" />
+          </p>
+        <?php } ?>
         <p>
-          <img
-            src="<?=$commentaire->lien_photo['reduite']??''?>"
-            alt="photo liée au commentaire"
-            width="250px" />
+          <span class="zone_depot_fichier" id="zone_depot_photo">
+            <input type="file" id="comment_photo" name="comment_photo" accept="image/*" class="entree_fichier_masquee" />
+            <label for="comment_photo" class="pilule_fichier">
+              <span class="pilule_fichier_texte"><?= $commentaire->photo_existe==1 ? 'Remplacer la photo' : 'Ajouter une photo' ?></span>
+            </label>
+            <img class="apercu_photo" alt="Aperçu de la photo choisie" />
+            <span class="nom_fichier_choisi"></span>
+          </span>
+          <i class="texte-tout-petit">format <?=$config_wri['texte_des_formats_photo_autorisee']?></i>
         </p>
-      <?php } ?>
-      <p>
-        <span class="zone_depot_fichier" id="zone_depot_photo">
-          <input type="file" id="comment_photo" name="comment_photo" accept="image/*" class="entree_fichier_masquee" />
-          <label for="comment_photo" class="pilule_fichier">
-            <span class="pilule_fichier_texte"><?= $commentaire->photo_existe==1 ? 'Remplacer la photo' : 'Ajouter une photo' ?></span>
-          </label>
-          <img class="apercu_photo" alt="Aperçu de la photo choisie" />
-          <span class="nom_fichier_choisi"></span>
-        </span>
-        <i class="texte-tout-petit">format <?=$config_wri['texte_des_formats_photo_autorisee']?></i>
-      </p>
-      <?php if ($commentaire->photo_existe==1) { ?>
-        <p class="rotation">
-          <span>Rotation :</span>
-          <label><input type="radio" name="rotation" value="0" checked="checked">aucune</label>
-          <label><input type="radio" name="rotation" value="90"><span class="fleche_rotation" aria-hidden="true">↶</span> 90° à gauche</label>
-          <label><input type="radio" name="rotation" value="270"><span class="fleche_rotation" aria-hidden="true">↷</span> 90° à droite</label>
-          <label><input type="radio" name="rotation" value="180"><span class="fleche_rotation" aria-hidden="true">↻</span> 180°</label>
-        </p>
-        <p>
-          <input type="checkbox" id="supprimer_photo" name="supprimer_photo" value="1" class="case_pilule" />
-          <label for="supprimer_photo">Supprimer la photo</label>
-        </p>
-      <?php } ?>
-    </fieldset>
+        <?php if ($commentaire->photo_existe==1) { ?>
+          <p class="rotation">
+            <span>Rotation :</span>
+            <label><input type="radio" name="rotation" value="0" checked="checked">aucune</label>
+            <label><input type="radio" name="rotation" value="90"><span class="fleche_rotation" aria-hidden="true">↶</span> 90° à gauche</label>
+            <label><input type="radio" name="rotation" value="270"><span class="fleche_rotation" aria-hidden="true">↷</span> 90° à droite</label>
+            <label><input type="radio" name="rotation" value="180"><span class="fleche_rotation" aria-hidden="true">↻</span> 180°</label>
+          </p>
+          <p>
+            <input type="checkbox" id="supprimer_photo" name="supprimer_photo" value="1" class="case_pilule" />
+            <label for="supprimer_photo">Supprimer la photo</label>
+          </p>
+        <?php } ?>
+      </fieldset>
+    </div>
 
     <fieldset>
       <legend>Date et auteur</legend>
