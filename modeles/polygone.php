@@ -256,7 +256,7 @@ modification de paramètres de massifs
 *********************************************/
 function edit_info_polygone()
 {
-    global $pdo;
+    global $pdo, $user;
 
     // On échappe les simples quotes
     $article_partitif = str_replace ("'", "''", $_POST['article_partitif']??'');
@@ -296,7 +296,7 @@ function edit_info_polygone()
     $polygone_apres->article_partitif = $article_partitif;
     $polygone_apres->id_polygone_type = $_POST['id_polygone_type'];
 
-    historisation_modification($polygone_avant,$polygone_apres,'modification polygone');
+    historisation_modification($polygone_avant,$polygone_apres,'modification polygone',$user->data['user_id']);
 
     $query_update = "UPDATE polygones SET "
         ."article_partitif = '$article_partitif', "
@@ -353,7 +353,7 @@ function edit_info_polygone()
     $polygone_apres->article_partitif = $article_partitif;
     $polygone_apres->id_polygone_type = $_POST['id_polygone_type']??1;
 
-    historisation_modification(null,$polygone_apres,'création polygone');
+    historisation_modification(null,$polygone_apres,'création polygone',$user->data['user_id']);
 
     // Et donc, on va voir ce polygone
     return $new_poly->id_polygone;
@@ -363,7 +363,7 @@ function edit_info_polygone()
   {
     // Historisation de la suppression dans la table des historique des points
     $polygone_avant = infos_polygone($_POST['id_polygone'],false,false,true); // Avec geom
-    historisation_modification($polygone_avant,null,'suppression polygone');
+    historisation_modification($polygone_avant,null,'suppression polygone',$user->data['user_id']);
 
     $query_delate = "DELETE FROM polygones WHERE id_polygone = {$_POST['id_polygone']}";
     $res = $pdo->query($query_delate);
