@@ -2,7 +2,7 @@
 /* global controlesComuns, positionMemoryControl, positionMemoryArray */
 
 const map = L.map('carte-accueil'),
-  tileLayers = couchesDeFond('<?=json_encode($config_wri["mapKeys"])?>'),
+  tileLayers = couchesDeFond(<?=json_encode($config_wri["mapKeys"])?>),
   overlays = {},
   vectorCluster = L.markerClusterGroup({
     spiderfyOnMaxZoom: true, // Overlapping markers will spiderfy when clicked

@@ -4,7 +4,7 @@
 const map = L.map('carte-point');
 
 // Couches tuilées
-const tileLayers = couchesDeFond('<?=json_encode($config_wri["mapKeys"])?>');
+const tileLayers = couchesDeFond(<?=json_encode($config_wri["mapKeys"])?>);
 
 // Chargement du fond de carte actif
 positionMemoryControl(map);

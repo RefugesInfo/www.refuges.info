@@ -18,7 +18,7 @@ function afficheEtSet(el, affiche, valeur) {
 const map = L.map('carte-saisie');
 
 // Couches tuilées
-const tileLayers = couchesDeFond('<?=json_encode($config_wri["mapKeys"])?>');
+const tileLayers = couchesDeFond(<?=json_encode($config_wri["mapKeys"])?>);
 
 // Chargement du fond de carte actif
 positionMemoryControl(map);
