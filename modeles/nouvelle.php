@@ -121,7 +121,8 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
 
       // FIXME sly: franchement, je ne suis pas fier de cette bidouille, d'accord, ça tient en 3 lignes mais c'est pas du tout extensible, il faudrait que les nouvelles acceptent un code du genre forum,points=8-9-7-8,commentaires=7-9 histoire de vraiment sélectionner ce qu'on veut par thèmes
       case "points_d_eau": $conditions->ids_types_point=$conditions->ids_types_point ?? $config_wri['id_point_d_eau'];
-      case "grottes": $conditions->ids_types_point=$conditions->ids_types_point ?? $config_wri['id_grotte'];
+      case "grottes": // ancien nom de abris_naturels, des flux RSS l'utilisent encore
+      case "abris_naturels": $conditions->ids_types_point=$conditions->ids_types_point ?? $config_wri['id_abri_naturel'];
       case "refuges": $conditions->ids_types_point=$conditions->ids_types_point ?? implode(',',$config_wri['tout_type_refuge']);
       case "points":
         $conditions->ordre="points.date_creation DESC";

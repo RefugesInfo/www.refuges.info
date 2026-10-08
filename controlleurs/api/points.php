@@ -37,8 +37,9 @@ $req->depuis = $_REQUEST['depuis'] ?? '';
 $val = new stdClass();
 $val->format_texte = array("bbcode", "texte", "markdown", "html");
 // FIXME sly 2019 : tout ça devrait être récupéré de la base de donnée, ça exite déjà dans point_type, quel dommage de maintenir 2 duplicats ;-(
-$val->type_points = array("cabane", "refuge", "gite", "grotte", "pt_eau", "pt_passage", "batiment_a_explorer");
-$val->type_points_id = array(7, 10, 9, 29, 23, 3, 28);
+$val->type_points = array("cabane", "refuge", "gite", "abri_naturel", "grotte", "pt_eau", "pt_passage", "batiment_a_explorer");
+$val->type_points_id = array(7, 10, 9, 29, 29, 23, 3, 28);
+// "grotte" est l'ancien nom de "abri_naturel", il reste accepté pour ne pas casser les réutilisateurs de l'API
 
 /****************************** VALEURS PAR DÉFAUT - PARAMS FACULTATIFS ******************************/
 

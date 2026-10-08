@@ -37,7 +37,7 @@ La table des commentaires des internautes sur un point de la base
 
 points
 ======
-la table des points du site (refuge, cabanes, grottes, ...)
+la table des points du site (refuge, cabanes, abris naturels, ...)
 A noter qu'une seule table regroupe tous les points quels qu'ils soient, même s'ils ne partagent pas forcément les mêmes champs de description, il est donc normal par exemple
 de trouver un nombre de place vide pour un point d'eau.
 Cette notion de mutation des propriétés des points (icones, champs) est géré par la table point_type

@@ -53,7 +53,7 @@ $config_wri['correspondance_type_icone'] = [
   'passage-delicat' => 'triangle_a33.10',
   'point-d-eau' => 'pointdeau',
   'refuge-garde' => 'cabane_red',
-  'grotte' => 'arc_lightgrey_black_manqueunmur',
+  'abri-naturel' => 'arc_lightgrey_black_manqueunmur',
 ];
 
 
@@ -120,14 +120,14 @@ $config_wri['id_gite_etape']=9;
 $config_wri['id_refuge_garde']=10;
 $config_wri['id_point_d_eau']=23;
 $config_wri['id_batiment_a_investiguer']=28;
-$config_wri['id_grotte']=29;
+$config_wri['id_abri_naturel']=29;
 
 // Catégorie "tout type de refuges" ( ce sont les ids des refuges gardés, non gardés, gîtes)
 // certes une gestion par catégorie directement dans la base serait préférable, mais en 2024 on a 1 seules catégorie donc, bon...
 $config_wri['tout_type_refuge']=array($config_wri['id_cabane_non_gardee'],$config_wri['id_gite_etape'],$config_wri['id_refuge_garde']);
 
-// Catégorie "tout type d'abris, pareil qu'avant, les grottes en plus
-$config_wri['tout_type_d_abri']=array_merge($config_wri['tout_type_refuge'],array($config_wri['id_grotte']));
+// Catégorie "tout type d'abris, pareil qu'avant, les abris naturels en plus
+$config_wri['tout_type_d_abri']=array_merge($config_wri['tout_type_refuge'],array($config_wri['id_abri_naturel']));
 
 //là aussi ça parait crétin de stocker ça en dur, alors qu'il y a bien une technique pour lister dynamiquement le nom des champs, et ben, allez savoir pourquoi, chez postgres, cette méthode bouffe ~10ms !! Vu que je m'en sers plusieurs fois en plus, quitte à en arriver là, je l'écris ici et zou
 //pensez à ajouter vous même à la main "geom" si vous voulez la géométrie, car c'est justement là le but de ne pas mettre "*" : éviter de récupérer la géométrie pour rien

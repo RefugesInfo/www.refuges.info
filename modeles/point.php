@@ -548,7 +548,7 @@ function infos_points($conditions)
         foreach ($champs as $champ)
         {
           $champ_equivalent = "equivalent_$champ";
-          // Si ce champs est vide, c'est que cet élément ne s'applique pas à ce type de point (exemple: une cheminée pour une grotte)
+          // Si ce champs est vide, c'est que cet élément ne s'applique pas à ce type de point (exemple: une cheminée pour un abri naturel)
           if ($point->$champ_equivalent!="")
           {
             $val = [
