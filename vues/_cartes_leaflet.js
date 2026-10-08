@@ -119,6 +119,15 @@ function couchesDeFond(layerKeys) {
         maxZoom: 22,
         attribution: '<a href="https://www.mapbox.com/"> Mapbox</a>',
       }),
+    'Photo IGN': new IGNTileLayer(
+      'https://data.geopf.fr/wmts?', {
+        layer: 'ORTHOIMAGERY.ORTHOPHOTOS',
+      }),
+    'Photo ArcGIS': L.tileLayer(
+      'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+        maxZoom: 19,
+        attribution: '<a href="https://www.arcgis.com/"> ArcGIS (Esri)</a>',
+      }),
     'Photo Google': L.tileLayer(
       'https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
         subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
