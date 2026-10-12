@@ -55,6 +55,11 @@ if ($res = $pdo->query($query_date_modification_feature))
 // Bandeau d'informations masquable
 $vue->bandeau_info=wiki_page_brut('bandeau'); // Attention, wiki_page_brut récupère aussi l'info ->date !
 $vue->bandeau_info->contenu = wiki_page_html('bandeau');
+// Le bandeau n'est affiché que si la page wiki "bandeau" contient quelque chose
+// (ignore les [c]commentaires[/c], les balises vides et la page inexistante)
+$vue->bandeau_info->actif =
+  empty($vue->bandeau_info->erreur) and
+  trim(strip_tags($vue->bandeau_info->contenu, '<img>')) !== '';
 $vue->bandeau_info->cookie=$_COOKIE['bandeau_info'] ?? '';
 $vue->bandeau_info->new_cookie_expire=
   gmdate('r', time() + 24 * 3600 * (

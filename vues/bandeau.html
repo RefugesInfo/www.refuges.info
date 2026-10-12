@@ -311,8 +311,8 @@
 
 <div id="scrolable">
   <?php if (
-      (($vue->bandeau_info->cookie ?? '') !== ($vue->bandeau_info->date ?? '')) and
-      $config_wri['affichage_bandeau_info']
+      ($vue->bandeau_info->actif ?? false) and
+      (($vue->bandeau_info->cookie ?? '') !== ($vue->bandeau_info->date ?? ''))
     ) { ?>
     <div class="bandeau-info">
       <?=$vue->bandeau_info->contenu??''?>
@@ -320,7 +320,7 @@
       <a onclick="masqueBandeauInfo()"
         title="Masquer la barre d'informations"
         style="">
-        <span class="edit-info">👁</span> Masquer
+        Masquer
       </a>
       <?php if (est_moderateur()) { ?>
         <a href="/wiki/bandeau?form_modifier=1"
