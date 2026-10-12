@@ -58,8 +58,12 @@ $vue->bandeau_info->contenu = wiki_page_html('bandeau');
 // Le bandeau n'est affiché que si la page wiki "bandeau" contient quelque chose
 // (ignore les [c]commentaires[/c], les balises vides et la page inexistante)
 $vue->bandeau_info->actif =
-  empty($vue->bandeau_info->erreur) and
-  trim(strip_tags($vue->bandeau_info->contenu, '<img>')) !== '';
+  empty($vue->bandeau_info->erreur) &&
+  // &nbsp; (doubles espaces convertis par bbcode2html) et retours ligne ne comptent pas
+  preg_replace(
+    '/[\s\x{00A0}]+/u', '',
+    html_entity_decode(strip_tags($vue->bandeau_info->contenu, '<img>'))
+  ) !== '';
 $vue->bandeau_info->cookie=$_COOKIE['bandeau_info'] ?? '';
 $vue->bandeau_info->new_cookie_expire=
   gmdate('r', time() + 24 * 3600 * (
