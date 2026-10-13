@@ -51,9 +51,24 @@ else // le point est valide
   $vue->point=$point;
   $vue->nom_createur = protege($point->nom_createur);
   $vue->nom=protege($point->nom);
-  $vue->proprietaires=bbcode2html($point->proprietaires);
-  $vue->acces=bbcode2html($point->acces);
-  $vue->remarques=bbcode2html($point->remarques);
+  // Pilote multi-langue : ?langue=en affiche les traductions disponibles (repli sur le français).
+  // Uniquement ici, dans la page d'affichage : le formulaire de modification ne doit jamais recevoir un texte traduit
+  $trad = array();
+  $id = (int)$point->id_point;
+  $res = $pdo->query("SELECT type_objet,id_objet,champ,texte FROM traductions
+    WHERE langue='en' AND texte IS NOT NULL AND (
+      (type_objet='point' AND id_objet=$id) OR
+      (type_objet='commentaire' AND id_objet IN (SELECT id_commentaire FROM commentaires WHERE id_point=$id)))");
+  foreach ($res as $r)
+    $trad[$r->type_objet][$r->id_objet][$r->champ] = $r->texte;
+  $vue->traduction_disponible = !empty($trad);
+  $vue->langue_affichee = (($_GET['langue'] ?? '') === 'en') ? 'en' : '';
+  if (!$vue->langue_affichee)
+    $trad = array();
+
+  $vue->proprietaires=bbcode2html($trad['point'][$id]['proprietaires'] ?? $point->proprietaires);
+  $vue->acces=bbcode2html($trad['point'][$id]['acces'] ?? $point->acces);
+  $vue->remarques=bbcode2html($trad['point'][$id]['remarques'] ?? $point->remarques);
   $vue->nom_debut_majuscule = protege(mb_ucfirst($point->nom));
   $vue->lien_wiki_explication_type=lien_wiki("fiche-".replace_url($point->nom_type));
   $vue->lien_wiki_explication_geo=lien_wiki("geo-uri");
@@ -137,6 +152,8 @@ else // le point est valide
   $vue->commentaires = infos_commentaires ($conditions_commentaires);
 
   foreach ($vue->commentaires AS $commentaire) {
+    if (isset($trad['commentaire'][$commentaire->id_commentaire]['texte']))
+      $commentaire->texte_affichage=bbcode2html($trad['commentaire'][$commentaire->id_commentaire]['texte'],FALSE,FALSE);
     // DOM 02/2026 déplacé depuis modele/commentaires sur remarque de Sly
     // Formatage des données et affichage d'un commentaire de la fiche d'un point
     // ici le lien pour modérer ce commentaire si on est modérateur ou auteur du commentaire

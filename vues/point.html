@@ -53,6 +53,12 @@
       <strong>(<?=$vue->annonce_fermeture?>)</strong>
       <?php } ?>
     </h1>
+    <?php if ($vue->traduction_disponible) { ?>
+      <p class="noprint">
+        <?=$vue->langue_affichee ? '<a href="?">Français</a> | <b>English</b>' : '<b>Français</b> | <a href="?langue=en">English</a>'?>
+        <?php if ($vue->langue_affichee) { ?> <em>Automatic translation (pilot): the French original is authoritative.</em><?php } ?>
+      </p>
+    <?php } ?>
   </div>
 <!--============================================ CARTE ============================================-->
     <?php // Veut-on une carte point ? (oui sauf cas des coordonnées inconnues
