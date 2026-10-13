@@ -61,6 +61,19 @@ Les toponymes restent en français : *col de Pré Lang*, *pas de la Coche*, *com
 | col | col / pass | nom propre : « col de … » conservé ; nom commun : *pass* | ✅ |
 | tag, graffiti | graffiti | rejeté : *tag* | ✅ |
 | hors-piste, piste | off-piste, slope / track | selon le contexte | ⏳ |
+| bergerie | sheepfold | bâtiment du berger ; « bergerie » seul ne devient jamais *refuge* | ⏳ |
+| loir | dormouse | (edible dormouse) ; très fréquent dans les commentaires de cabanes | ⏳ |
+| lérot | garden dormouse | ≠ loir | ⏳ |
+| muscardin | hazel dormouse | | ⏳ |
+| bachal | bachal (water trough) | terme régional ; glose entre parenthèses à la première occurrence de chaque texte | ⏳ |
+| abreuvoir, bac | trough, drinking trough | | ⏳ |
+| patou | patou (livestock guardian dog) | glose à la première occurrence | ⏳ |
+| brame | stag rut (brame) | | ⏳ |
+| éco-garde, écogarde | eco-ranger | agents du Département / du Parc ; « garde du parc » = *park ranger* | ⏳ |
+| lapiaz | limestone pavement (lapiaz) | | ⏳ |
+| névé | snowfield | | ⏳ |
+| livre d'or, cahier de cabane | guestbook / hut book | selon le contexte | ⏳ |
+| Tous à Poêle | Tous à Poêle | nom d'association, conservé | ✅ |
 
 ## Mot générique désignant le bâtiment de la fiche
 
@@ -80,6 +93,8 @@ le bâtiment dont parle la fiche, quel que soit son type exact :
 - « refuge d'hiver » dans la fiche d'un refuge gardé = la partie ouverte hors gardiennage, pas un refuge séparé.
 - Numéros de téléphone français : laisser tels quels, ne pas ajouter d'indicatif.
 - « Merci à <pseudo> » : *Thanks to <pseudo>*, pseudo inchangé.
+- Beaucoup de « refuge de <lieu> » sont en réalité des cabanes non gardées : nom propre conservé en français, jamais *alpine hut*.
+- Textes en doublon ou légendes de photo très courtes (« Vue générale. ») : traduits tels quels, la légende n'a de sens qu'avec la photo.
 
 ## Exemples du pilote (fiches 24 et 32, à valider)
 
