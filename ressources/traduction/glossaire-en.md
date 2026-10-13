@@ -72,7 +72,7 @@ Les toponymes restent en français : *col de Pré Lang*, *pas de la Coche*, *com
 | éco-garde, écogarde | eco-ranger | agents du Département / du Parc ; « garde du parc » = *park ranger* | ⏳ |
 | lapiaz | limestone pavement (lapiaz) | | ⏳ |
 | névé | snowfield | | ⏳ |
-| livre d'or, cahier de cabane | guestbook / hut book | selon le contexte | ⏳ |
+| livre d'or, cahier de cabane, livre de cabane | guestbook | toujours *guestbook*, jamais *hut book* | ✅ |
 | Tous à Poêle | Tous à Poêle | nom d'association, conservé | ✅ |
 
 ## Mot générique désignant le bâtiment de la fiche
