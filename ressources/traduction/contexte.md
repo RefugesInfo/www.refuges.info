@@ -43,6 +43,11 @@ Le texte original reste en base dans sa table d'origine ; les traductions vont d
 9. **Ne rien ajouter** : pas de « Translation: », pas de commentaire du traducteur dans le texte.
 10. **Passages inintelligibles ou ambigus** : traduire au plus près, ne pas deviner.
 
+## Doublons et textes très courts
+
+Les commentaires identiques ou quasi (reposts, légendes de photo répétées) sont **traduits comme les autres** :
+pas de dédoublonnage, le volume concerné est négligeable.
+
 ## Données personnelles (décision du 2026-10-13, à revoir)
 
 Les adresses e-mail, numéros de téléphone, noms de gardiens et autres informations de contact présents dans un
