@@ -43,6 +43,14 @@ Le texte original reste en base dans sa table d'origine ; les traductions vont d
 9. **Ne rien ajouter** : pas de « Translation: », pas de commentaire du traducteur dans le texte.
 10. **Passages inintelligibles ou ambigus** : traduire au plus près, ne pas deviner.
 
+## Données personnelles (décision du 2026-10-13, à revoir)
+
+Les adresses e-mail, numéros de téléphone, noms de gardiens et autres informations de contact présents dans un
+texte source sont **conservés tels quels** dans la traduction : ils sont déjà publics sur le site et ne sont pas
+filtrés. Cette décision est provisoire. Elle suppose que la suppression ou la modification d'une source entraîne
+celle de ses traductions (voir ci-dessous), sans quoi une donnée personnelle retirée du site resterait dans
+`traductions`.
+
 ## Cycle de vie des traductions (décidé, à implémenter plus tard)
 
 - **Source modifiée** (commentaire ou champ de fiche) : toutes ses traductions, dans toutes les langues, sont
