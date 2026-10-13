@@ -95,6 +95,7 @@ le bâtiment dont parle la fiche, quel que soit son type exact :
 - « Merci à <pseudo> » : *Thanks to <pseudo>*, pseudo inchangé.
 - Beaucoup de « refuge de <lieu> » sont en réalité des cabanes non gardées : nom propre conservé en français, jamais *alpine hut*.
 - Textes en doublon ou légendes de photo très courtes (« Vue générale. ») : traduits tels quels, la légende n'a de sens qu'avec la photo.
+- Hutte / cabane **louable** (tarifs, gardien joignable, type « gîte d'étape » : ex. *Waldhütte Zunzgen*) : ne pas la traduire par *wilderness hut* ; terme à choisir ⏳ (le nom propre reste inchangé).
 
 ## Exemples du pilote (fiches 24 et 32, à valider)
 

@@ -2,7 +2,9 @@
 
 Ce fichier est lu par le script de traduction (et par tout humain qui relit/corrige) : il décrit le site, ce qu'on
 traduit et les règles qui valent quelle que soit la langue cible. Le vocabulaire et le style propres à une langue sont
-dans `glossaire-<langue>.md` (ex. `glossaire-en.md`).
+dans `glossaire-<langue>.md` (ex. `glossaire-en.md`, depuis le français). Pour les textes écrits dans une autre
+langue source, un fichier par langue : `glossaire-<source>-en.md` (`glossaire-de-en.md`, `glossaire-it-en.md`),
+rédigés dans la langue concernée pour être relus par des locuteurs natifs.
 
 ## Le site
 
