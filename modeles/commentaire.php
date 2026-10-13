@@ -524,6 +524,8 @@ function suppression_commentaire($commentaire)
   if (!$success)
     return erreur("Suppression d'un commentaire inexistant",$query_delete);
   else {
+    // Les traductions automatiques de ce commentaire n'ont plus de source (pas de ON DELETE CASCADE : on le fait explicitement)
+    $pdo->exec("DELETE FROM traductions WHERE type_objet='commentaire' AND id_objet=$commentaire->id_commentaire");
     touch_fiches($commentaire);
     return ok("Commentaire supprimé");
   }
