@@ -2,12 +2,12 @@
   <!-- afficher le titre du massif (en mode massif) -->
   <h3 id="titrepage">
     <?php if ( !empty($vue->polygone->id_polygone) ) { ?>
-      Voici les <?=$vue->quoi?>
+      <?=sprintf(_("Voici les %s"), $vue->quoi)?>
       <?php if ($vue->polygone->nom_polygone) { ?>
-        dans <?=$vue->ou?>
+        <?=sprintf(_("dans %s"), $vue->ou)?>
       <?php } ?>
     <?php } elseif ( !empty($vue->contenu->id_polygone_type) ) { ?>
-      Voici tou<?=$vue->contenu->id_polygone_type==11?'te':''?>s les <?=$vue->contenu->type_polygone?>s
+      <?=sprintf($vue->contenu->id_polygone_type==11 ? _("Voici toutes les %ss") : _("Voici tous les %ss"), _($vue->contenu->type_polygone))?>
     <?php } ?>
   </h3>
 </div>
@@ -22,7 +22,7 @@
   <?php if ( empty($vue->contenu) ) { ?>
     <!-- Affichage de points : il n'y a pas de paramètre ?id_polygone_type= -->
     <fieldset>
-      <legend>Points (<a href="<?=lien_wiki('legende_carte')?>">Légende</a>)</legend>
+      <legend><?=_("Points")?> (<a href="<?=lien_wiki('legende_carte')?>"><?=_("Légende")?></a>)</legend>
       <ul>
         <?php if ( !empty($vue->polygone->id_polygone) ) { ?>
           <li>
@@ -30,11 +30,11 @@
               id="select-massif" name="select-massif"
               value="<?=$vue->polygone->id_polygone?>"
             >
-            <label for="select-massif"><?=$vue->polygone->nom_polygone?> uniquement</label>
+            <label for="select-massif"><?=sprintf(_("%s uniquement"), $vue->polygone->nom_polygone)?></label>
           </li><hr/>
         <?php } ?>
         <li>
-          <label for="select-wri">Tout</label>
+          <label for="select-wri"><?=_("Tout")?></label>
           <input type="checkbox" id="select-wri" name="select-wri" value="all">
           <span id="select-wri-status"></span>
         </li>
@@ -57,32 +57,32 @@
                   alt=""
                 >
               <?php } ?>
-              <?=$type_affichable->nom_type?>
+              <?=_($type_affichable->nom_type)?>
             </label>
           </li>
         <?php } ?>
       </ul>
       <hr>
-        <ul>Ctrl+click: nouvel onglet</ul>
-        <ul>Maj+click: nouvelle fenêtre</ul>
+        <ul><?=_("Ctrl+click: nouvel onglet")?></ul>
+        <ul><?=_("Maj+click: nouvelle fenêtre")?></ul>
     </fieldset>
 
     <?php if ( !empty($vue->polygone->id_polygone) ) { ?>
       <fieldset>
-        <legend>Téléchargements</legend>
-        Tous les points refuges.info
-        <?=$vue->polygone->article_partitif?> <?=$vue->polygone->nom_polygone?>
+        <legend><?=_("Téléchargements")?></legend>
+        <?=$config_wri['langue_courante']=='fr' ? 'Tous les points refuges.info '.$vue->polygone->article_partitif.' '.$vue->polygone->nom_polygone
+          : sprintf(_("Tous les points refuges.info dans %s"), $vue->polygone->nom_polygone)?>
         <br/>
         <a href="/api/massif?massif=<?=$vue->polygone->id_polygone?>&nb_points=all&format=gpx"
-          title="Télécharger au format GPX complet">
+          title="<?=_("Télécharger au format GPX complet")?>">
           GPX
         </a> /
         <a href="/api/massif?massif=<?=$vue->polygone->id_polygone?>&nb_points=all&format=gpx_garmin"
-          title="Télécharger au format GPX pour Garmin">
+          title="<?=_("Télécharger au format GPX pour Garmin")?>">
           Garmin
         </a> /
         <a href="/api/massif?massif=<?=$vue->polygone->id_polygone?>&nb_points=all&format=kml"
-          title="Télécharger au format KML">
+          title="<?=_("Télécharger au format KML")?>">
           KML
         </a>
       </fieldset>
@@ -90,50 +90,46 @@
 
     <fieldset>
       <legend>
-        Services (
-        <a href="https://www.openstreetmap.org/copyright"
-          target=_blank title="Points de la base OpensStreetmap ; © OpenStreetMap contributors">
-          OSM
-        </a>
-        ) - disponible seulement pour les zooms forts
+        <?=sprintf(_("Services (%s) - disponible seulement pour les zooms forts"),
+          '<a href="https://www.openstreetmap.org/copyright" target=_blank title="'._("Points de la base OpensStreetmap ; © OpenStreetMap contributors").'">OSM</a>')?>
       </legend>
       <div>
         <ul>
           <li>
-            <label for="select-osm">Tout</label>
+            <label for="select-osm"><?=_("Tout")?></label>
             <input type="checkbox" id="select-osm" name="select-osm" value="all">
             <span id="select-osm-status"></span>
           </li><li>
             <input type="checkbox" name="select-osm" id="City Hall"
               value='["tourism"~"hotel|guest_house|chalet|hostel|apartment"]'>
-            <label for="City Hall">hôtel ou location</label>
+            <label for="City Hall"><?=_("hôtel ou location")?></label>
           </li><li>
             <input type="checkbox" name="select-osm" id="Campground"
               value='["tourism"="camp_site"]'>
-            <label for="Campground">camping</label>
+            <label for="Campground"><?=_("camping")?></label>
           </li><li>
             <input type="checkbox" name="select-osm" id="Drinking Water"
               value='["natural"="spring"]+["amenity"="drinking_water"]'>
-            <label for="Drinking Water">point d'eau</label>
+            <label for="Drinking Water"><?=_("point d'eau")?></label>
           </li><li>
             <input type="checkbox" name="select-osm" id="Shopping Center"
               value='["shop"~"supermarket|convenience"]'>
-            <label for="Shopping Center">alimentation</label>
+            <label for="Shopping Center"><?=_("alimentation")?></label>
           </li><li>
             <input type="checkbox" name="select-osm" id="Parking Area"
               value='["amenity"="parking"]["access"!="private"]'>
-            <label for="Parking Area">parking</label>
+            <label for="Parking Area"><?=_("parking")?></label>
           </li><li>
             <input type="checkbox" name="select-osm" id="Ground Transportation"
               value='["highway"="bus_stop"]'>
-            <label for="Ground Transportation">bus</label>
+            <label for="Ground Transportation"><?=_("bus")?></label>
           </li>
         </ul>
       </div>
     </fieldset>
 
     <fieldset>
-      <legend>Autres sites</legend>
+      <legend><?=_("Autres sites")?></legend>
       <ul>
         <li>
           <input type="checkbox" name="select-prc" id="select-prc">
@@ -144,7 +140,7 @@
             value="hut,shelter,gite,cave,bivouac,camp_site">
           <label for="select-c2c">camptocamp.org</label>
           <span id="select-c2c-status"></span>
-          (seuls les 100 premiers points sont affichés)
+          <?=_("(seuls les 100 premiers points sont affichés)")?>
         </li><li>
           <input type="checkbox"
             name="select-chem" id="select-chem"

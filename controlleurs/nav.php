@@ -84,12 +84,15 @@ if (!empty($id_polygone))
   if (empty($polygone->erreur))
   {
     $vue->quoi=isset($vue->contenu->type_polygone) ?
-      $vue->contenu->type_polygone."s" :
-      "cabanes, refuges et points d'eau";
-    $vue->ou="$polygone->art_def_poly $polygone->type_polygone $polygone->article_partitif $polygone->nom_polygone";
+      _($vue->contenu->type_polygone)."s" :
+      _("cabanes, refuges et points d'eau");
+    if ($config_wri['langue_courante']=='fr')
+      $vue->ou="$polygone->art_def_poly $polygone->type_polygone $polygone->article_partitif $polygone->nom_polygone";
+    else // l'article et le partitif français n'ont pas d'équivalent : "the Vercors massif"
+      $vue->ou=sprintf(_('le %2$s %1$s'), _($polygone->type_polygone), $polygone->nom_polygone);
     $vue->titre=ucfirst(
       ($polygone->nom_polygone ? "$vue->ou : " : "") .
-      "$vue->quoi sur une carte"
+      sprintf(_("%s sur une carte"), $vue->quoi)
     );
   }
   else // On a un problème avec le polygone demandé dans l'url, inutile d'aller plus loin
@@ -127,7 +130,7 @@ if (!empty($id_polygone))
   }
 }
 else
-  $vue->titre="Selecteur de refuges, point d'eau et cabane sur les cartes";
+  $vue->titre=_("Selecteur de refuges, point d'eau et cabane sur les cartes");
 
 $vue->types_point_affichables=types_point_affichables();
 

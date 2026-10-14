@@ -163,13 +163,13 @@ else // le point est valide
       $commentaire->lien_commentaire =
         '/commentaire_formulaire_modification?id_point_retour='.$commentaire->id_point.
         '&amp;id_commentaire='.$commentaire->id_commentaire;
-      $commentaire->texte_lien_commentaire = 'Modifier';
+      $commentaire->texte_lien_commentaire = _('Modifier');
     }
     else
     {
       // l'internaute, en cliquant ici va nous donner ce qu'il pense de ce commentaire
       $commentaire->lien_commentaire = "/avis_internaute_commentaire/$commentaire->id_commentaire/";
-      $commentaire->texte_lien_commentaire = 'Info périmée ?';
+      $commentaire->texte_lien_commentaire = _('Info périmée ?');
     }
   }
 }
