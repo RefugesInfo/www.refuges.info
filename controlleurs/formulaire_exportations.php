@@ -7,7 +7,7 @@ Le traitement proprement dit est dans exportations.php
 require_once ("bdd.php");
 require_once ("meta_donnee.php");
 
-$vue->titre="Téléchargement et exportation de la base refuges.info";
+$vue->titre=_("Téléchargement et exportation de la base refuges.info");
 
 // FIXME sly: à découper en deux fichiers pour plus de lisibilité comme on se "post" les informations à soit même, on vérifie dans quel cas on est
 if (!isset($_REQUEST['validation'])) // rien de valider, formulaire vierge

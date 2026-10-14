@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-14 17:15+0200\n"
+"POT-Creation-Date: 2026-10-14 17:32+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,50 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+msgid "Merci de nous aider, le commentaire et/ou photo suivant(e) :"
+msgstr ""
+
+msgid "Photo du commentaire"
+msgstr ""
+
+msgid "Est :"
+msgstr ""
+
+msgid "Plus d'actualité ou n'a rien à voir avec le point ou n'est pas factuel"
+msgstr ""
+
+msgid "(Voir ce que l'on peut mettre ou ne pas mettre)."
+msgstr ""
+
+msgid ""
+"Ou au contraire très utile : ces informations devraient être rajoutées dans "
+"la fiche en haut."
+msgstr ""
+
+msgid "Une raison pour expliquer ?"
+msgstr ""
+
+msgid "(facultatif)"
+msgstr ""
+
+#, php-format
+msgid "Contre les robots %s s'il vous plait :"
+msgstr ""
+
+msgid "Votre remarque sera transmise en privé aux modérateurs."
+msgstr ""
+
+msgid "Valider mon avis"
+msgstr ""
+
+#, php-format
+msgid "Retour sur %s sans action."
+msgstr ""
+
+#, php-format
+msgid "la fiche de %s"
+msgstr ""
 
 msgid "Utilisateur"
 msgstr ""
@@ -171,6 +215,161 @@ msgid "Masquer la barre d'informations"
 msgstr ""
 
 msgid "Masquer"
+msgstr ""
+
+#, php-format
+msgid "Modifier le commentaire n°%s"
+msgstr ""
+
+msgid "Modifier"
+msgstr ""
+
+msgid "Texte"
+msgstr ""
+
+msgid "Photo"
+msgstr ""
+
+msgid "photo liée au commentaire"
+msgstr ""
+
+msgid "Remplacer la photo"
+msgstr ""
+
+msgid "Ajouter une photo"
+msgstr ""
+
+msgid "Aperçu de la photo choisie"
+msgstr ""
+
+#, php-format
+msgid "format %s"
+msgstr ""
+
+msgid "Rotation :"
+msgstr ""
+
+msgid "aucune"
+msgstr ""
+
+msgid "90° à gauche"
+msgstr ""
+
+msgid "90° à droite"
+msgstr ""
+
+msgid "Supprimer la photo"
+msgstr ""
+
+msgid "Date et auteur"
+msgstr ""
+
+msgid "Date :"
+msgstr ""
+
+msgid "Auteur (si non authentifié) :"
+msgstr ""
+
+msgid "Auteur authentifié :"
+msgstr ""
+
+msgid "Non authentifié"
+msgstr ""
+
+msgid "Transférer vers le forum"
+msgstr ""
+
+msgid "Transférer vers la fiche n°"
+msgstr ""
+
+msgid "Numéro de la fiche de destination"
+msgstr ""
+
+msgid "Supprimer le commentaire"
+msgstr ""
+
+#, php-format
+msgid "Retourner à la fiche : %s"
+msgstr ""
+
+#, php-format
+msgid "Modification du commentaire n°%s"
+msgstr ""
+
+msgid "Options d'exportations"
+msgstr ""
+
+msgid "Veuillez préciser les options des type de points et des massifs voulus"
+msgstr ""
+
+msgid "Choix des points de la base à exporter"
+msgstr ""
+
+msgid "Choix des massifs de la base à exporter"
+msgstr ""
+
+msgid "Choix du format d'exportation"
+msgstr ""
+
+msgid "Obtenir le lien"
+msgstr ""
+
+msgid "Plus de détail sur ces formats"
+msgstr ""
+
+msgid "Lien vers les données demandées"
+msgstr ""
+
+msgid "Voir les détails sur la licence de refuges.info"
+msgstr ""
+
+msgid "Exportation demandée"
+msgstr ""
+
+#, php-format
+msgid "Voici le lien permanent d'accès direct aux données au format \"%s\""
+msgstr ""
+
+msgid "lien vers les données"
+msgstr ""
+
+msgid "Cliquez ici pour télécharger les données"
+msgstr ""
+
+msgid ""
+"Vous n'avez sélectionné aucun type de point ou aucun massif, revenez en "
+"arrière pour compléter le formulaire"
+msgstr ""
+
+msgid ""
+"Veuillez préciser les options de ce que vous voulez et dans quel(s) massif(s)"
+msgstr ""
+
+msgid "Choix des nouvelles à afficher"
+msgstr ""
+
+msgid "Commentaires"
+msgstr ""
+
+msgid "Messages des forums"
+msgstr ""
+
+msgid "Ajouts de refuges et cabanes"
+msgstr ""
+
+msgid "Ajouts de points d'eau"
+msgstr ""
+
+msgid "Ajouts d'abris naturels"
+msgstr ""
+
+msgid "Ajouts de points"
+msgstr ""
+
+msgid "Choix des massifs de la base à restreindre"
+msgstr ""
+
+msgid "Vous demandez vraiment quelque chose de vide ? (Ou alors c'est un bug)"
 msgstr ""
 
 #, php-format
@@ -350,9 +549,6 @@ msgstr ""
 msgid "Abris naturels"
 msgstr ""
 
-msgid "Commentaires"
-msgstr ""
-
 msgid "Tout sauf forum"
 msgstr ""
 
@@ -485,9 +681,6 @@ msgstr ""
 msgid "Ajouter une information et/ou une photo"
 msgstr ""
 
-msgid "Photo"
-msgstr ""
-
 msgid ""
 "Avertissement : Les informations fournies sont indicatives. Elles ne "
 "sauraient engager la responsabilité des gestionnaires ou des rédacteurs dans "
@@ -551,9 +744,6 @@ msgid "facultatif"
 msgstr ""
 
 msgid "Choisir ou déposer une photo"
-msgstr ""
-
-msgid "Aperçu de la photo choisie"
 msgstr ""
 
 #, php-format
@@ -720,6 +910,123 @@ msgid ""
 "ne viennent pas jusqu'ici"
 msgstr ""
 
+msgid ""
+"Aucun champ n'est obligatoire. Cependant, si la requête est trop large, cela "
+"peut prendre un certain temps"
+msgstr ""
+
+msgid "tout ou partie du nom, par exemple 'jasse' ou 'la pra'"
+msgstr ""
+
+msgid "Nom"
+msgstr ""
+
+msgid "type d'hébergement, gîte, cabane ..."
+msgstr ""
+
+msgid "(tous)"
+msgstr ""
+
+msgid ""
+"Polygones (départements, régions, massifs, réserves naturelles, tous les "
+"polygones dans notre base) contenant les points recherchés"
+msgstr ""
+
+msgid "Dans le massif/département/... :"
+msgstr ""
+
+msgid "commencez à écrire..."
+msgstr ""
+
+msgid "exemple: scie, table ..."
+msgstr ""
+
+msgid "Le champ remarques contient"
+msgstr ""
+
+msgid "coché : Avec, décoché: Peu importe"
+msgstr ""
+
+msgid "Attributs divers"
+msgstr ""
+
+msgid "Couvertures"
+msgstr ""
+
+msgid "Eau à moins de 100m"
+msgstr ""
+
+msgid "Forêt à moins de 100m"
+msgstr ""
+
+msgid "Latrines"
+msgstr ""
+
+msgid "Ne manque pas de mur"
+msgstr ""
+
+msgid ""
+"Concerne surtout les cabanes, Il n'y a pas de réservation et des groupes "
+"peuvent toujours venir à l'improviste"
+msgstr ""
+
+msgid "Nombre de places"
+msgstr ""
+
+msgid "Sur matelas"
+msgstr ""
+
+msgid "Restreindre à une altitude en mètres, par exemple 1500 à 2000"
+msgstr ""
+
+msgid "Altitude"
+msgstr ""
+
+msgid "Concerne surtout les cabanes"
+msgstr ""
+
+msgid "Moyen de chauffage"
+msgstr ""
+
+msgid "Poêle ou cheminée"
+msgstr ""
+
+msgid "Cheminée"
+msgstr ""
+
+msgid "Poêle"
+msgstr ""
+
+msgid "Non renseigné"
+msgstr ""
+
+msgid "Résultats"
+msgstr ""
+
+msgid ""
+"Si cette case est cochée, la recherche renvoie tous les résultats sans "
+"limite (attention, cela peut lancer une recherche parfois longue)"
+msgstr ""
+
+#, php-format
+msgid "Limiter aux %s premiers résultats."
+msgstr ""
+
+msgid "Tri montagne (Résultats triés par Zones->Massifs->Réserves)"
+msgstr ""
+
+msgid "Tri administratif (Résultats triés par Pays->Région->Département)"
+msgstr ""
+
+msgid "chercher !"
+msgstr ""
+
+msgid "Rechercher dans les Pyrénées ?"
+msgstr ""
+
+msgid "Compléter votre recherche avec l'excellent site"
+msgstr ""
+
 msgid "Modification d'un point"
 msgstr ""
 
@@ -732,6 +1039,91 @@ msgid "Merci de votre contribution"
 msgstr ""
 
 msgid "Cliquez ici pour voir ou retourner à la fiche"
+msgstr ""
+
+#, php-format
+msgid ""
+"Recherche sur refuges.info (%s points affichés et la limite du nombre de "
+"points a été atteinte)"
+msgstr ""
+
+#, php-format
+msgid "Recherche sur refuges.info (%s points affichés)"
+msgstr ""
+
+#, php-format
+msgid "Aucun point trouvé dans la base de %s"
+msgstr ""
+
+#, php-format
+msgid "Date de dernière modification de cette page : %s"
+msgstr ""
+
+msgid "Erreur 404 : commentaire introuvable"
+msgstr ""
+
+msgid "Merci pour votre aide au tri, "
+msgstr ""
+
+msgid ""
+"Oups ? la lettre anti_robot saisie n'est pas la bonne, utilisez le bouton "
+"\"Retour de votre navigateur pour reprendre la saisie\", ou "
+msgstr ""
+
+msgid "vous pouvez retourner sur : "
+msgstr ""
+
+#, php-format
+msgid "Classement commentaire sur %s"
+msgstr ""
+
+msgid "Erreur 403 : droits insuffisants"
+msgstr ""
+
+#, php-format
+msgid ""
+"Pour modifier le commentaire d'id=%s, soit ça doit être le votre, soit vous "
+"devez être modérateur global, êtes vous bien connecté ?"
+msgstr ""
+
+msgid ""
+"Aucune action demandée, utilisez le formulaire de modification du commentaire"
+msgstr ""
+
+#, php-format
+msgid ""
+"Transfert du commentaire impossible, car le point de destination indique : %s"
+msgstr ""
+
+#, php-format
+msgid "Action inconnue : %s"
+msgstr ""
+
+msgid "Téléchargement et exportation de la base refuges.info"
+msgstr ""
+
+msgid "Paramétrez votre flux RSS"
+msgstr ""
+
+msgid "Obtenir le lien vers le flux RSS"
+msgstr ""
+
+msgid "Choisissez ce que vous souhaitez afficher pour votre page des nouvelles"
+msgstr ""
+
+msgid "Obtenir un lien vers les nouvelles demandées"
+msgstr ""
+
+msgid "flux RSS ou de la page des nouvelles du site Refuges.info"
+msgstr ""
+
+msgid ""
+"Voici le lien vers le Flux RSS demandé, vous pouvez l'ajouter à votre "
+"agrégateur de flux RSS favoris (Clic-droit puis enregistrer sous)"
+msgstr ""
+
+msgid ""
+"Lien vers les nouvelles personnalisées (vous pouvez la placer en marque page)"
 msgstr ""
 
 msgid "Carte et informations sur les refuges, cabanes et abris de montagne"
@@ -754,7 +1146,12 @@ msgstr ""
 msgid "Dernières nouvelles du site et informations ajoutées sur les refuges"
 msgstr ""
 
-msgid "Modifier"
+#, php-format
+msgid "Erreur 403 - Vous n'avez pas les droits d'accès à la page %s"
+msgstr ""
+
+#, php-format
+msgid "Erreur 404 - La page demandée %s est introuvable sur refuges.info"
 msgstr ""
 
 msgid "Info périmée ?"
@@ -834,6 +1231,9 @@ msgstr ""
 msgid "Détruit(e)"
 msgstr ""
 
+msgid "Recherche de points sur refuges.info"
+msgstr ""
+
 msgid "ERREUR: vous n'avez pas rentré la lettre demandée"
 msgstr ""
 
@@ -851,6 +1251,23 @@ msgstr ""
 msgid ""
 "Vous n'êtes pas modérateur du site, vous n'avez pas l'autorisation de la "
 "supprimer"
+msgstr ""
+
+msgid ""
+"(Vous pouvez revenir en arrière avec votre navigateur pour corriger le "
+"problème)"
+msgstr ""
+
+msgid "Recherche sur refuges.info en erreur"
+msgstr ""
+
+#, php-format
+msgid "(%s points affichés et la limite du nombre de points a été atteinte)"
+msgstr ""
+
+msgid ""
+"Votre recherche ne contient aucun critère, il devrait au moins y avoir le "
+"nom (même vide)"
 msgstr ""
 
 #, php-format
@@ -995,6 +1412,9 @@ msgid ""
 "été supprimés"
 msgstr ""
 
+msgid "Cette page du wiki n'existe pas"
+msgstr ""
+
 msgid "abri naturel"
 msgstr ""
 
@@ -1014,9 +1434,6 @@ msgid "cabane non gardée"
 msgstr ""
 
 msgid "Capacité d'accueil"
-msgstr ""
-
-msgid "Cheminée"
 msgstr ""
 
 msgid "Clés à récupérer"
@@ -1040,13 +1457,7 @@ msgstr ""
 msgid "Coordonnées prises sur le terrain"
 msgstr ""
 
-msgid "Couvertures"
-msgstr ""
-
 msgid "département"
-msgstr ""
-
-msgid "Eau à moins de 100m"
 msgstr ""
 
 msgid "Eau à proximité"
@@ -1064,9 +1475,6 @@ msgstr ""
 msgid "Fermée"
 msgstr ""
 
-msgid "Forêt à moins de 100m"
-msgstr ""
-
 msgid "Forêt à proximité"
 msgstr ""
 
@@ -1074,9 +1482,6 @@ msgid "gîte d'étape"
 msgstr ""
 
 msgid "Inutilisable"
-msgstr ""
-
-msgid "Latrines"
 msgstr ""
 
 msgid "Manque un mur"
@@ -1104,9 +1509,6 @@ msgid "Places prévues pour dormir"
 msgstr ""
 
 msgid "Places sur Matelas"
-msgstr ""
-
-msgid "Poêle"
 msgstr ""
 
 msgid "Propriétaire / accessibilité"
@@ -1161,4 +1563,7 @@ msgid "Entrez la lettre <strong>g</strong>"
 msgstr ""
 
 msgid "jpeg, png, bmp ou webp"
+msgstr ""
+
+msgid "kml (googlearth et plusieurs applications smartphone )"
 msgstr ""

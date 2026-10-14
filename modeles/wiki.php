@@ -97,7 +97,7 @@ function wiki_page_brut($page)
 
   $page=$res->fetch();
   if (!$page)
-    return erreur("Cette page du wiki n'existe pas");
+    return erreur(_("Cette page du wiki n'existe pas"));
   return $page;
 }
 

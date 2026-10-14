@@ -9,7 +9,7 @@ require_once ("utilisateur.php");
 
 $conditions_polygones = new stdClass;
 $vue->infos_base = infos_base ();
-$vue->titre = "Recherche de points sur refuges.info";
+$vue->titre = _("Recherche de points sur refuges.info");
 
 $vue->utilisateurs=infos_utilisateurs();
 

@@ -12,59 +12,59 @@
   <!-- =========================== -->
   <h3><?=$vue->titre?></h3>
   <!-- =========================== -->
-  <form class="wri" method="get" action="/point_recherche">
+  <form class="wri" method="get" action="<?=url_langue('/point_recherche')?>">
 
     <!-- ========== PREMIER GROUPE: CRITERES COMMUNS ================= -->
     <fieldset>
-      <legend>Aucun champ n'est obligatoire. Cependant, si la requête est trop large, cela peut prendre un certain temps</legend>
+      <legend><?=_("Aucun champ n'est obligatoire. Cependant, si la requête est trop large, cela peut prendre un certain temps")?></legend>
 
       <fieldset>
         <!--<legend>Critères principaux</legend>-->
         <span class="champs_null_masque">
           <input type="checkbox" name="champs_null[]" value="nom" />
-          <label title="tout ou partie du nom, par exemple 'jasse' ou 'la pra'" >Nom
+          <label title="<?=_("tout ou partie du nom, par exemple 'jasse' ou 'la pra'")?>" ><?=_("Nom")?>
             <input type="text" name="nom"/>
           </label>
         </span>
-        <label title="type d'hébergement, gîte, cabane ...">Type de point
+        <label title="<?=_("type d'hébergement, gîte, cabane ...")?>"><?=_("Type de point")?>
           <select name="id_point_type">
-            <option value="" selected="selected">(tous)</option>
+            <option value="" selected="selected"><?=_("(tous)")?></option>
             <?php if (is_array($vue->infos_base->types_point))
               foreach ($vue->infos_base->types_point AS $t) { ?>
-                <option value="<?=$t->id_point_type?>"><?=$t->nom_type?></option>
+                <option value="<?=$t->id_point_type?>"><?=_($t->nom_type)?></option>
               <?php } ?>
           </select>
         </label>
-        <label title="Polygones (départements, régions, massifs, réserves naturelles, tous les polygones dans notre base) contenant les points recherchés">Dans le massif/département/...  :
+        <label title="<?=_("Polygones (départements, régions, massifs, réserves naturelles, tous les polygones dans notre base) contenant les points recherchés")?>"><?=_("Dans le massif/département/... :")?>
           <div class="autocomplete" style="width:300px;">
-            <input id="inputpolygone" name="nom_polygone" autocomplete="off" placeholder="commencez à écrire...">
+            <input id="inputpolygone" name="nom_polygone" autocomplete="off" placeholder="<?=_("commencez à écrire...")?>">
             <input id="id_polygone" type="hidden" name="id_polygone">
           </div>
         </label>
         <span class="champs_null_masque">
           <input type="checkbox" name="champs_null[]" value="remarques" />
-          <label title="exemple: scie, table ..." >
-            Le champ remarques contient
+          <label title="<?=_("exemple: scie, table ...")?>" >
+            <?=_("Le champ remarques contient")?>
             <input type="text" name="description"/>
           </label>
         </span>
       </fieldset>
       <!-- =========================== -->
       <fieldset>
-        <legend title="coché : Avec, décoché: Peu importe" >Attributs divers</legend>
+        <legend title="<?=_("coché : Avec, décoché: Peu importe")?>" ><?=_("Attributs divers")?></legend>
 
         <span class="champs_null_masque">
           <input type="checkbox" name="champs_null[]" value="couvertures" />
           <label>
             <input type="checkbox" name="champs_trinaires[]" value="couvertures" />
-            Couvertures
+            <?=_("Couvertures")?>
           </label>
         </span>
         <span class="champs_null_masque">
           <input type="checkbox" name="champs_null[]" value="eau_a_proximite" />
           <label>
             <input type="checkbox" name="champs_trinaires[]" value="eau_a_proximite" />
-            Eau à moins de 100m
+            <?=_("Eau à moins de 100m")?>
           </label>
         </span>
 
@@ -72,7 +72,7 @@
           <input type="checkbox" name="champs_null[]" value="bois_a_proximite" />
           <label>
             <input type="checkbox" name="champs_trinaires[]" value="bois_a_proximite" />
-            Forêt à moins de 100m
+            <?=_("Forêt à moins de 100m")?>
           </label>
         </span>
 
@@ -80,18 +80,18 @@
           <input type="checkbox" name="champs_null[]" value="latrines" />
           <label>
             <input type="checkbox" name="champs_trinaires[]" value="latrines" />
-            Latrines
+            <?=_("Latrines")?>
           </label>
         </span>
         <label>
           <input type="checkbox" name="ne_manque_pas_un_mur" value="1" />
-          Ne manque pas de mur
+          <?=_("Ne manque pas de mur")?>
         </label>
 
       </fieldset>
       <!-- =========================== -->
       <fieldset>
-        <legend title="Concerne surtout les cabanes, Il n'y a pas de réservation et des groupes peuvent toujours venir à l'improviste" >Nombre de places</legend>
+        <legend title="<?=_("Concerne surtout les cabanes, Il n'y a pas de réservation et des groupes peuvent toujours venir à l'improviste")?>" ><?=_("Nombre de places")?></legend>
         <label>
           <input type="text" name="places_minimum" maxlength="3" size="3" />
           minimum
@@ -100,13 +100,13 @@
           <input type="text" name="places_maximum" maxlength="3" size="3" />
           maximum
         </label>
-        <legend>Sur matelas</legend>
+        <legend><?=_("Sur matelas")?></legend>
         <input type="text" name="places_matelas_minimum" maxlength="3" size="3" />
         minimum
       </fieldset>
       <!-- =========================== -->
       <fieldset>
-        <legend title="Restreindre à une altitude en mètres, par exemple 1500 à 2000" >Altitude</legend>
+        <legend title="<?=_("Restreindre à une altitude en mètres, par exemple 1500 à 2000")?>" ><?=_("Altitude")?></legend>
         <label>
           <input type="text" name="altitude_minimum" maxlength="4" size="4" />
           minimum
@@ -118,17 +118,17 @@
       </fieldset>
       <!-- =========================== -->
       <fieldset>
-        <legend title="Concerne surtout les cabanes">Moyen de chauffage</legend>
+        <legend title="<?=_("Concerne surtout les cabanes")?>"><?=_("Moyen de chauffage")?></legend>
         <label>
           <input type="radio" name="chauffage" value="chauffage" />
-          Poële ou cheminée
+          <?=_("Poêle ou cheminée")?>
         </label>
 
         <span class="champs_null_masque">
           <input type="checkbox" name="champs_null[]" value="cheminee" />
           <label>
             <input type="radio" name="chauffage" value="cheminee" />
-            Cheminée
+            <?=_("Cheminée")?>
           </label>
         </span>
 
@@ -136,12 +136,12 @@
           <input type="checkbox" name="champs_null[]" value="poele" />
           <label>
             <input type="radio" name="chauffage" value="poele" />
-            Poële
+            <?=_("Poêle")?>
           </label>
         </span>
         <label>
           <input type="radio" name="chauffage" value="" checked="checked" />
-          Non renseigné
+          <?=_("Non renseigné")?>
         </label>
       </fieldset>
       <!-- =========================== -->
@@ -204,24 +204,24 @@
     <?php } ?>
     <!-- ========== TROISIEME GROUPE: RESULTATS ================= -->
     <fieldset>
-      <legend>Résultats</legend>
+      <legend><?=_("Résultats")?></legend>
       <fieldset>
-        <label title="Si cette case est cochée, la recherche renvois tous résultats sans limite (attention, cela peut lancer une recherche parfois longue)">
+        <label title="<?=_("Si cette case est cochée, la recherche renvoie tous les résultats sans limite (attention, cela peut lancer une recherche parfois longue)")?>">
           <input type="checkbox" checked="checked" name="limite" value="<?=$config_wri['points_recherches']?>" />
-          Limiter aux <?=$config_wri['points_recherches']?> premiers résultats.
+          <?=sprintf(_("Limiter aux %s premiers résultats."), $config_wri['points_recherches'])?>
         </label>
           <label>
             <input type="radio" name="condition_categorie_polygone" value="montagnarde" checked="checked" />
-            Tri montagne (Résultats triés par Zones->Massifs->Reserves)
+            <?=_("Tri montagne (Résultats triés par Zones->Massifs->Réserves)")?>
           </label>
           <label>
             <input type="radio" name="condition_categorie_polygone" value="administrative" />
-            Tri administratif (Résultats triés par Pays->Région->Département)
+            <?=_("Tri administratif (Résultats triés par Pays->Région->Département)")?>
           </label>
       </fieldset>
 
       <label>
-        <input type="submit" name="recherche" value="chercher!" />
+        <input type="submit" name="recherche" value="<?=_("chercher !")?>" />
       </label>
       <!--<input type="submit" name="carte" value="Afficher sur une carte (non fonctionnel)" />-->
     </fieldset>
@@ -229,9 +229,9 @@
 
   </form>
   <!-- =========================== -->
-  <h4>Rechercher dans les Pyrénées ?</h4>
+  <h4><?=_("Rechercher dans les Pyrénées ?")?></h4>
   <p>
-    Compléter votre recherche avec l'excellent site
+    <?=_("Compléter votre recherche avec l'excellent site")?>
     <a href="https://www.pyrenees-refuges.com">www.pyrenees-refuges.com</a>
   </p>
   <!-- =========================== -->

@@ -11,7 +11,7 @@ $vue contient les données passées par le fichier PHP
 <div class="contenu">
   <?php // Parcours tous les refuges de la recherche
   if (isset($vue->points)) { ?>
-  <h4>Recherche sur refuges.info (<?=$vue->nombre_points?> points affichés<?php if (isset($vue->limite_atteinte)) { ?><strong> et la limite du nombre de point a été atteinte</strong><?php } ?>)</h4>
+  <h4><?php if (isset($vue->limite_atteinte)) { ?><?=sprintf(_("Recherche sur refuges.info (%s points affichés et la limite du nombre de points a été atteinte)"), $vue->nombre_points)?><?php } else { ?><?=sprintf(_("Recherche sur refuges.info (%s points affichés)"), $vue->nombre_points)?><?php } ?></h4>
 
   <p>
     <div class="table">
@@ -23,9 +23,9 @@ $vue contient les données passées par le fichier PHP
                 <?=ucfirst($point->nom)?>
             </a>
           </b>
-          <?=$point->nom_type?>.
+          <?=_($point->nom_type)?>.
           <?php if ($annonce_fermeture=texte_non_ouverte($point)) { ?>
-            <strong>(<?=$annonce_fermeture?>)</strong>.
+            <strong>(<?=_($annonce_fermeture)?>)</strong>.
           <?php } ?>
           &nbsp;
         </div>
@@ -38,6 +38,6 @@ $vue contient les données passées par le fichier PHP
 
   </p>
   <?php } else { ?>
-    <p>Aucun point trouvé dans la base de <?=$config_wri['nom_hote']?></p>
+    <p><?=sprintf(_("Aucun point trouvé dans la base de %s"), $config_wri['nom_hote'])?></p>
   <?php } ?>
 </div>

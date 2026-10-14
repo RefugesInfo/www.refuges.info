@@ -3,44 +3,44 @@
   <!-- =========================== -->
   <!-- ======= Explications ===== -->
   <h3><?=$vue->titre?></h3>
-  <p>Veuillez préciser les options de ce que vous voulez et dans quel(s) massif(s)</p>
+  <p><?=_("Veuillez préciser les options de ce que vous voulez et dans quel(s) massif(s)")?></p>
   <!-- ======= Formulaire ===== -->
 
-  <form class="wri" id='form_export' method='post' action="/formulaire_rss_et_nouvelles_validation/">
+  <form class="wri" id='form_export' method='post' action="<?=url_langue('/formulaire_rss_et_nouvelles_validation/')?>">
     <fieldset id="types_nouvelles">
-      <legend>Choix des nouvelles à afficher
+      <legend><?=_("Choix des nouvelles à afficher")?>
         <button type='button' onclick="checkboites('types_nouvelles',true); return false;">☒</button>
         <button type='button' onclick="checkboites('types_nouvelles',false); return false;">☐</button>
       </legend>
       <label>
         <input type='checkbox' name='types_de_nouvelles[]' value='commentaires' checked="checked" />
-          Commentaires
+          <?=_("Commentaires")?>
       </label>
       <label>
         <input type='checkbox' name='types_de_nouvelles[]' value='forums' />
-          Messages des forums
+          <?=_("Messages des forums")?>
       </label>
       <label>
         <input type='radio' name='types_de_nouvelles[]' value='refuges' checked="checked" />
-          Ajouts de refuges et cabanes
+          <?=_("Ajouts de refuges et cabanes")?>
       </label>
       <label>
         <input type='radio' name='types_de_nouvelles[]' value='points_d_eau' checked="checked" />
-          Ajouts de points d'eau
+          <?=_("Ajouts de points d'eau")?>
       </label>
       <label>
         <input type='radio' name='types_de_nouvelles[]' value='abris_naturels' checked="checked" />
-          Ajouts d'abris naturels
+          <?=_("Ajouts d'abris naturels")?>
       </label>
       <label>
         <input type='radio' name='types_de_nouvelles[]' value='points' checked="checked" />
-          Ajouts de points
+          <?=_("Ajouts de points")?>
       </label>
     </fieldset>
 
     <!-- Choix des zones massifs -->
     <fieldset id="liste_massifs">
-      <legend>Choix des Massifs de la base à restreindre
+      <legend><?=_("Choix des massifs de la base à restreindre")?>
         <button type='button' onclick="checkboites('liste_massifs',true); return false;">☒</button>
         <button type='button' onclick="checkboites('liste_massifs',false); return false;">☐</button>
       </legend>
@@ -80,6 +80,6 @@
         </fieldset>
         <!-- fin de la derniere zone -->
     </fieldset>
-    <input type='submit' name='choix' value='<?=$vue->titre_bouton?>' />
+    <button type='submit' name='choix' value='<?=$vue->code_bouton?>'><?=$vue->titre_bouton?></button>
   </form>
 </div>

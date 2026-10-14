@@ -12,7 +12,7 @@ if (!empty($commentaire->erreur))
 {
   $vue->http_status_code = 404;
   $vue->type = "page_simple";
-  $vue->titre= "Erreur 404 : commentaire introuvable";
+  $vue->titre= _("Erreur 404 : commentaire introuvable");
   $vue->contenu=$commentaire->message;
 }
 else
@@ -32,20 +32,20 @@ else
       $commentaire->demande_correction=$_REQUEST['demande_correction'];
       $commentaire->raison_demande_correction=$_REQUEST['raison_demande_correction'];
       modification_ajout_commentaire($commentaire);
-      $vue->contenu="Merci pour votre aide au tri, ";
+      $vue->contenu=_("Merci pour votre aide au tri, ");
     }
     else
-      $vue->contenu="Oups ? la lettre anti_robot saisie n'est pas la bonne, utilisez le bouton \"Retour de votre navigateur pour reprendre la saisie\", ou ";
+      $vue->contenu=_("Oups ? la lettre anti_robot saisie n'est pas la bonne, utilisez le bouton \"Retour de votre navigateur pour reprendre la saisie\", ou ");
 
     $vue->lien=$vue->commentaire->lien;
-    $vue->contenu.="vous pouvez retourner sur : ";
-    $vue->titre_lien="la fiche de $commentaire->nom";
-    $vue->titre="Classement commentaire sur $vue->titre_lien";
+    $vue->contenu.=_("vous pouvez retourner sur : ");
+    $vue->titre_lien=sprintf(_("la fiche de %s"), $commentaire->nom);
+    $vue->titre=sprintf(_("Classement commentaire sur %s"), $vue->titre_lien);
   }
   else
   {
     $vue->lien_que_mettre=lien_wiki("que_mettre");
-    $vue->titre="Classement commentaire sur la fiche de $commentaire->nom";
+    $vue->titre=sprintf(_("Classement commentaire sur %s"), sprintf(_("la fiche de %s"), $commentaire->nom));
   }
   $vue->test_anti_robot = !est_connecte();
 }

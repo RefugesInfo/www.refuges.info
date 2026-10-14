@@ -18,7 +18,7 @@ if (!empty($commentaire->erreur))
 {
   $vue->http_status_code = 404;
   $vue->type = "page_simple";
-  $vue->titre= "Erreur 404 : commentaire introuvable";
+  $vue->titre= _("Erreur 404 : commentaire introuvable");
   $vue->contenu=$commentaire->message;
 }
 /*** Ce commentaire existe bel et bien, on vérifie maintenant qu'on a les droits de le modifier ***/
@@ -26,8 +26,8 @@ elseif ( !est_autorise($commentaire->id_createur_commentaire))
 {
   $vue->http_status_code = 403;
   $vue->type = "page_simple";
-  $vue->titre= "Erreur 403 : droit insuffisants";
-  $vue->contenu ="Pour modifier le commentaire d'id=$commentaire->id_commentaire, soit ça doit être le votre, soit vous devez être modérateur global, êtes vous bien connecté ?";
+  $vue->titre= _("Erreur 403 : droits insuffisants");
+  $vue->contenu =sprintf(_("Pour modifier le commentaire d'id=%s, soit ça doit être le votre, soit vous devez être modérateur global, êtes vous bien connecté ?"), $commentaire->id_commentaire);
 }
 else
 {

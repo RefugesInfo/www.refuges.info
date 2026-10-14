@@ -4,12 +4,54 @@ msgid ""
 msgstr ""
 "Project-Id-Version: refuges.info\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-14 17:15+0200\n"
+"POT-Creation-Date: 2026-10-14 17:32+0200\n"
 "Language: en_GB\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Merci de nous aider, le commentaire et/ou photo suivant(e) :"
+msgstr "Thank you for helping us; the following comment and/or photo:"
+
+msgid "Photo du commentaire"
+msgstr "Comment photo"
+
+msgid "Est :"
+msgstr "Is:"
+
+msgid "Plus d'actualité ou n'a rien à voir avec le point ou n'est pas factuel"
+msgstr "No longer current, or has nothing to do with the point, or is not factual"
+
+msgid "(Voir ce que l'on peut mettre ou ne pas mettre)."
+msgstr "(See what can and cannot be put on the site)."
+
+msgid "Ou au contraire très utile : ces informations devraient être rajoutées dans la fiche en haut."
+msgstr "Or on the contrary very useful: this information should be added to the sheet at the top."
+
+msgid "Une raison pour expliquer ?"
+msgstr "A reason to explain?"
+
+msgid "(facultatif)"
+msgstr "(optional)"
+
+#, php-format
+msgid "Contre les robots %s s'il vous plait :"
+msgstr "To block robots: %s, please:"
+
+msgid "Votre remarque sera transmise en privé aux modérateurs."
+msgstr "Your remark will be passed privately to the moderators."
+
+msgid "Valider mon avis"
+msgstr "Submit my opinion"
+
+#, php-format
+msgid "Retour sur %s sans action."
+msgstr "Back to %s without taking any action."
+
+#, php-format
+msgid "la fiche de %s"
+msgstr "the sheet of %s"
 
 msgid "Utilisateur"
 msgstr "User"
@@ -168,6 +210,158 @@ msgstr "Hide the information bar"
 
 msgid "Masquer"
 msgstr "Hide"
+
+#, php-format
+msgid "Modifier le commentaire n°%s"
+msgstr "Edit comment no. %s"
+
+msgid "Modifier"
+msgstr "Edit"
+
+msgid "Texte"
+msgstr "Text"
+
+msgid "Photo"
+msgstr "Photo"
+
+msgid "photo liée au commentaire"
+msgstr "photo attached to the comment"
+
+msgid "Remplacer la photo"
+msgstr "Replace the photo"
+
+msgid "Ajouter une photo"
+msgstr "Add a photo"
+
+msgid "Aperçu de la photo choisie"
+msgstr "Preview of the chosen photo"
+
+#, php-format
+msgid "format %s"
+msgstr "format %s"
+
+msgid "Rotation :"
+msgstr "Rotation:"
+
+msgid "aucune"
+msgstr "none"
+
+msgid "90° à gauche"
+msgstr "90° left"
+
+msgid "90° à droite"
+msgstr "90° right"
+
+msgid "Supprimer la photo"
+msgstr "Delete the photo"
+
+msgid "Date et auteur"
+msgstr "Date and author"
+
+msgid "Date :"
+msgstr "Date:"
+
+msgid "Auteur (si non authentifié) :"
+msgstr "Author (if not authenticated):"
+
+msgid "Auteur authentifié :"
+msgstr "Authenticated author:"
+
+msgid "Non authentifié"
+msgstr "Not authenticated"
+
+msgid "Transférer vers le forum"
+msgstr "Transfer to the forum"
+
+msgid "Transférer vers la fiche n°"
+msgstr "Transfer to sheet no."
+
+msgid "Numéro de la fiche de destination"
+msgstr "Number of the destination sheet"
+
+msgid "Supprimer le commentaire"
+msgstr "Delete the comment"
+
+#, php-format
+msgid "Retourner à la fiche : %s"
+msgstr "Back to the sheet: %s"
+
+#, php-format
+msgid "Modification du commentaire n°%s"
+msgstr "Editing comment no. %s"
+
+msgid "Options d'exportations"
+msgstr "Export options"
+
+msgid "Veuillez préciser les options des type de points et des massifs voulus"
+msgstr "Please specify the options for the types of points and the massifs you want"
+
+msgid "Choix des points de la base à exporter"
+msgstr "Choice of the points of the database to export"
+
+msgid "Choix des massifs de la base à exporter"
+msgstr "Choice of the massifs of the database to export"
+
+msgid "Choix du format d'exportation"
+msgstr "Choice of the export format"
+
+msgid "Obtenir le lien"
+msgstr "Get the link"
+
+msgid "Plus de détail sur ces formats"
+msgstr "More detail on these formats"
+
+msgid "Lien vers les données demandées"
+msgstr "Link to the requested data"
+
+msgid "Voir les détails sur la licence de refuges.info"
+msgstr "See the details of the refuges.info licence"
+
+msgid "Exportation demandée"
+msgstr "Requested export"
+
+#, php-format
+msgid "Voici le lien permanent d'accès direct aux données au format \"%s\""
+msgstr "Here is the permanent direct-access link to the data in the \"%s\" format"
+
+msgid "lien vers les données"
+msgstr "link to the data"
+
+msgid "Cliquez ici pour télécharger les données"
+msgstr "Click here to download the data"
+
+msgid "Vous n'avez sélectionné aucun type de point ou aucun massif, revenez en arrière pour compléter le formulaire"
+msgstr "You have not selected any type of point or any massif; go back to complete the form"
+
+msgid "Veuillez préciser les options de ce que vous voulez et dans quel(s) massif(s)"
+msgstr "Please specify the options for what you want and in which massif(s)"
+
+msgid "Choix des nouvelles à afficher"
+msgstr "Choice of the news to display"
+
+msgid "Commentaires"
+msgstr "Comments"
+
+msgid "Messages des forums"
+msgstr "Forum messages"
+
+msgid "Ajouts de refuges et cabanes"
+msgstr "Additions of alpine huts and wilderness huts"
+
+msgid "Ajouts de points d'eau"
+msgstr "Additions of water points"
+
+msgid "Ajouts d'abris naturels"
+msgstr "Additions of natural shelters"
+
+msgid "Ajouts de points"
+msgstr "Additions of points"
+
+msgid "Choix des massifs de la base à restreindre"
+msgstr "Choice of the massifs of the database to restrict to"
+
+msgid "Vous demandez vraiment quelque chose de vide ? (Ou alors c'est un bug)"
+msgstr "Are you really asking for something empty? (Or else it's a bug)"
 
 #, php-format
 msgid "%s points, %s massifs"
@@ -346,9 +540,6 @@ msgstr "Water points"
 msgid "Abris naturels"
 msgstr "Natural shelters"
 
-msgid "Commentaires"
-msgstr "Comments"
-
 msgid "Tout sauf forum"
 msgstr "Everything except forum"
 
@@ -488,9 +679,6 @@ msgstr "Recent information"
 msgid "Ajouter une information et/ou une photo"
 msgstr "Add some information and/or a photo"
 
-msgid "Photo"
-msgstr "Photo"
-
 msgid ""
 "Avertissement : Les informations fournies sont indicatives. Elles ne "
 "sauraient engager la responsabilité des gestionnaires ou des rédacteurs dans "
@@ -567,9 +755,6 @@ msgstr "optional"
 
 msgid "Choisir ou déposer une photo"
 msgstr "Choose or drop a photo"
-
-msgid "Aperçu de la photo choisie"
-msgstr "Preview of the chosen photo"
 
 #, php-format
 msgid ""
@@ -759,6 +944,115 @@ msgstr ""
 "This procedure makes sure that the 'robots' that roam the Net do not get "
 "this far"
 
+msgid "Aucun champ n'est obligatoire. Cependant, si la requête est trop large, cela peut prendre un certain temps"
+msgstr "No field is compulsory. However, if the query is too broad it may take a while"
+
+msgid "tout ou partie du nom, par exemple 'jasse' ou 'la pra'"
+msgstr "all or part of the name, for example 'jasse' or 'la pra'"
+
+msgid "Nom"
+msgstr "Name"
+
+msgid "type d'hébergement, gîte, cabane ..."
+msgstr "type of accommodation, stage lodging, wilderness hut ..."
+
+msgid "(tous)"
+msgstr "(all)"
+
+msgid "Polygones (départements, régions, massifs, réserves naturelles, tous les polygones dans notre base) contenant les points recherchés"
+msgstr "Polygons (departments, regions, massifs, nature reserves, all the polygons in our database) containing the points being searched for"
+
+msgid "Dans le massif/département/... :"
+msgstr "In the massif/department/... :"
+
+msgid "commencez à écrire..."
+msgstr "start typing..."
+
+msgid "exemple: scie, table ..."
+msgstr "example: saw, table ..."
+
+msgid "Le champ remarques contient"
+msgstr "The remarks field contains"
+
+msgid "coché : Avec, décoché: Peu importe"
+msgstr "ticked: With, unticked: Doesn't matter"
+
+msgid "Attributs divers"
+msgstr "Miscellaneous attributes"
+
+msgid "Couvertures"
+msgstr "Blankets"
+
+msgid "Eau à moins de 100m"
+msgstr "Water within 100 m"
+
+msgid "Forêt à moins de 100m"
+msgstr "Forest within 100 m"
+
+msgid "Latrines"
+msgstr "Latrines"
+
+msgid "Ne manque pas de mur"
+msgstr "No wall missing"
+
+msgid "Concerne surtout les cabanes, Il n'y a pas de réservation et des groupes peuvent toujours venir à l'improviste"
+msgstr "Mostly concerns huts: there is no booking and groups can always turn up unannounced"
+
+msgid "Nombre de places"
+msgstr "Number of places"
+
+msgid "Sur matelas"
+msgstr "On mattresses"
+
+msgid "Restreindre à une altitude en mètres, par exemple 1500 à 2000"
+msgstr "Restrict to an altitude in metres, for example 1500 to 2000"
+
+msgid "Altitude"
+msgstr "Altitude"
+
+msgid "Concerne surtout les cabanes"
+msgstr "Mostly concerns huts"
+
+msgid "Moyen de chauffage"
+msgstr "Means of heating"
+
+msgid "Poêle ou cheminée"
+msgstr "Stove or fireplace"
+
+msgid "Cheminée"
+msgstr "Fireplace"
+
+msgid "Poêle"
+msgstr "Stove"
+
+msgid "Non renseigné"
+msgstr "Not specified"
+
+msgid "Résultats"
+msgstr "Results"
+
+msgid "Si cette case est cochée, la recherche renvoie tous les résultats sans limite (attention, cela peut lancer une recherche parfois longue)"
+msgstr "If this box is ticked, the search returns all results without limit (careful, this can start a sometimes lengthy search)"
+
+#, php-format
+msgid "Limiter aux %s premiers résultats."
+msgstr "Limit to the first %s results."
+
+msgid "Tri montagne (Résultats triés par Zones->Massifs->Réserves)"
+msgstr "Mountain sort (results sorted by Zones->Massifs->Reserves)"
+
+msgid "Tri administratif (Résultats triés par Pays->Région->Département)"
+msgstr "Administrative sort (results sorted by Country->Region->Department)"
+
+msgid "chercher !"
+msgstr "search!"
+
+msgid "Rechercher dans les Pyrénées ?"
+msgstr "Searching in the Pyrenees?"
+
+msgid "Compléter votre recherche avec l'excellent site"
+msgstr "Complete your search with the excellent site"
+
 msgid "Modification d'un point"
 msgstr "Editing a point"
 
@@ -772,6 +1066,80 @@ msgstr "Thank you for your contribution"
 
 msgid "Cliquez ici pour voir ou retourner à la fiche"
 msgstr "Click here to see or go back to the sheet"
+
+#, php-format
+msgid "Recherche sur refuges.info (%s points affichés et la limite du nombre de points a été atteinte)"
+msgstr "Search on refuges.info (%s points shown and the limit on the number of points has been reached)"
+
+#, php-format
+msgid "Recherche sur refuges.info (%s points affichés)"
+msgstr "Search on refuges.info (%s points shown)"
+
+#, php-format
+msgid "Aucun point trouvé dans la base de %s"
+msgstr "No point found in the %s database"
+
+#, php-format
+msgid "Date de dernière modification de cette page : %s"
+msgstr "Date this page was last modified: %s"
+
+msgid "Erreur 404 : commentaire introuvable"
+msgstr "Error 404: comment not found"
+
+msgid "Merci pour votre aide au tri, "
+msgstr "Thank you for your help with the sorting, "
+
+msgid "Oups ? la lettre anti_robot saisie n'est pas la bonne, utilisez le bouton \"Retour de votre navigateur pour reprendre la saisie\", ou "
+msgstr "Oops? The anti-robot letter you entered is not the right one; use your browser's \"Back\" button to go back to the form, or "
+
+msgid "vous pouvez retourner sur : "
+msgstr "you can go back to: "
+
+#, php-format
+msgid "Classement commentaire sur %s"
+msgstr "Comment rating on %s"
+
+msgid "Erreur 403 : droits insuffisants"
+msgstr "Error 403: insufficient rights"
+
+#, php-format
+msgid "Pour modifier le commentaire d'id=%s, soit ça doit être le votre, soit vous devez être modérateur global, êtes vous bien connecté ?"
+msgstr "To edit the comment with id=%s, it must either be yours or you must be a global moderator; are you logged in?"
+
+msgid "Aucune action demandée, utilisez le formulaire de modification du commentaire"
+msgstr "No action requested, use the comment edit form"
+
+#, php-format
+msgid "Transfert du commentaire impossible, car le point de destination indique : %s"
+msgstr "The comment cannot be transferred, because the destination point says: %s"
+
+#, php-format
+msgid "Action inconnue : %s"
+msgstr "Unknown action: %s"
+
+msgid "Téléchargement et exportation de la base refuges.info"
+msgstr "Download and export of the refuges.info database"
+
+msgid "Paramétrez votre flux RSS"
+msgstr "Set up your RSS feed"
+
+msgid "Obtenir le lien vers le flux RSS"
+msgstr "Get the link to the RSS feed"
+
+msgid "Choisissez ce que vous souhaitez afficher pour votre page des nouvelles"
+msgstr "Choose what you want to display on your news page"
+
+msgid "Obtenir un lien vers les nouvelles demandées"
+msgstr "Get a link to the requested news"
+
+msgid "flux RSS ou de la page des nouvelles du site Refuges.info"
+msgstr "RSS feed or news page of the Refuges.info site"
+
+msgid "Voici le lien vers le Flux RSS demandé, vous pouvez l'ajouter à votre agrégateur de flux RSS favoris (Clic-droit puis enregistrer sous)"
+msgstr "Here is the link to the requested RSS feed; you can add it to your favourite RSS reader (right-click then save as)"
+
+msgid "Lien vers les nouvelles personnalisées (vous pouvez la placer en marque page)"
+msgstr "Link to the customised news (you can bookmark it)"
 
 msgid "Carte et informations sur les refuges, cabanes et abris de montagne"
 msgstr ""
@@ -794,8 +1162,13 @@ msgstr "Selector of alpine huts, water points and wilderness huts on the maps"
 msgid "Dernières nouvelles du site et informations ajoutées sur les refuges"
 msgstr "Latest site news and information added about huts"
 
-msgid "Modifier"
-msgstr "Edit"
+#, php-format
+msgid "Erreur 403 - Vous n'avez pas les droits d'accès à la page %s"
+msgstr "Error 403 - You do not have access rights to the page %s"
+
+#, php-format
+msgid "Erreur 404 - La page demandée %s est introuvable sur refuges.info"
+msgstr "Error 404 - The requested page %s cannot be found on refuges.info"
 
 msgid "Info périmée ?"
 msgstr "Out of date?"
@@ -884,6 +1257,9 @@ msgstr "Open"
 msgid "Détruit(e)"
 msgstr "Destroyed"
 
+msgid "Recherche de points sur refuges.info"
+msgstr "Search for points on refuges.info"
+
 msgid "ERREUR: vous n'avez pas rentré la lettre demandée"
 msgstr "ERROR: you did not enter the requested letter"
 
@@ -906,9 +1282,26 @@ msgid ""
 msgstr ""
 "You are not a moderator of the site; you do not have permission to delete it"
 
+msgid "(Vous pouvez revenir en arrière avec votre navigateur pour corriger le problème)"
+msgstr "(You can go back with your browser to fix the problem)"
+
+msgid "Recherche sur refuges.info en erreur"
+msgstr "Search on refuges.info failed"
+
 #, php-format
-msgid "Le commentaire d'id=%s a été demandé mais il n'a pas été trouvé et ce n'est pas normal, je m'arrête là"
-msgstr "Comment id=%s was requested but could not be found, which is not normal, so I am stopping here"
+msgid "(%s points affichés et la limite du nombre de points a été atteinte)"
+msgstr "(%s points shown and the limit on the number of points has been reached)"
+
+msgid "Votre recherche ne contient aucun critère, il devrait au moins y avoir le nom (même vide)"
+msgstr "Your search contains no criteria; there should at least be the name (even if empty)"
+
+#, php-format
+msgid ""
+"Le commentaire d'id=%s a été demandé mais il n'a pas été trouvé et ce n'est "
+"pas normal, je m'arrête là"
+msgstr ""
+"Comment id=%s was requested but could not be found, which is not normal, so "
+"I am stopping here"
 
 #, php-format
 msgid "Le commentaire ne peut être ajouté car : %s"
@@ -918,8 +1311,13 @@ msgid "La photo proposée ne semble pas exister ou ne nous est pas parvenue"
 msgstr "The photo you submitted does not seem to exist or did not reach us"
 
 #, php-format
-msgid "Le fichier proposé ne semble pas contenir une image au format %s, vous pouvez revenir en arrière et retirer la photo, la vérifier ou en fournir une autre."
-msgstr "The file you submitted does not seem to contain an image in the format %s; you can go back and remove the photo, check it or provide another one."
+msgid ""
+"Le fichier proposé ne semble pas contenir une image au format %s, vous "
+"pouvez revenir en arrière et retirer la photo, la vérifier ou en fournir une "
+"autre."
+msgstr ""
+"The file you submitted does not seem to contain an image in the format %s; "
+"you can go back and remove the photo, check it or provide another one."
 
 msgid "Le commentaire ne contient ni photo ni texte, il n'est pas traité"
 msgstr "The comment contains neither a photo nor text, it is not processed"
@@ -964,8 +1362,12 @@ msgid "de"
 msgstr "by"
 
 #, php-format
-msgid "Ce point d'id %s a existé par le passé sur ce site, mais seul un modérateur peut retrouver son historique"
-msgstr "The point with id %s existed in the past on this site, but only a moderator can retrieve its history"
+msgid ""
+"Ce point d'id %s a existé par le passé sur ce site, mais seul un modérateur "
+"peut retrouver son historique"
+msgstr ""
+"The point with id %s existed in the past on this site, but only a moderator "
+"can retrieve its history"
 
 msgid "Identifiant de point invalide"
 msgstr "Invalid point identifier"
@@ -975,7 +1377,9 @@ msgid "Le numéro de point demandé %s est introuvable dans notre base"
 msgstr "The requested point number %s cannot be found in our database"
 
 msgid "Ben ça alors ? on a récupéré plus que 1 point, pas prévu..."
-msgstr "Well, how about that? We got back more than 1 point, which was not expected..."
+msgstr ""
+"Well, how about that? We got back more than 1 point, which was not "
+"expected..."
 
 #, php-format
 msgid "ce %s"
@@ -988,16 +1392,32 @@ msgid "Le nom contient un des caractères non autorisé suivant : [ ] < > ;"
 msgstr "The name contains one of the following forbidden characters: [ ] < > ;"
 
 #, php-format
-msgid "L'emplacement de <a href='/point/%s'>\"%s\"</a> et ses alentours sont privés.<br/> On ne peut pas y référencer de cabane.<br/> Voir : <a href=\"%s\">Définition d'une cabane non gardée</a>.<br/> Laissez-nous un message sur le forum si vous souhaitez en discuter.<br/>"
-msgstr "The location of <a href='/point/%s'>\"%s\"</a> and its surroundings are private.<br/> A hut cannot be listed there.<br/> See: <a href=\"%s\">Definition of a wilderness hut</a>.<br/> Leave us a message on the forum if you would like to discuss it.<br/>"
+msgid ""
+"L'emplacement de <a href='/point/%s'>\"%s\"</a> et ses alentours sont privés."
+"<br/> On ne peut pas y référencer de cabane.<br/> Voir : <a "
+"href=\"%s\">Définition d'une cabane non gardée</a>.<br/> Laissez-nous un "
+"message sur le forum si vous souhaitez en discuter.<br/>"
+msgstr ""
+"The location of <a href='/point/%s'>\"%s\"</a> and its surroundings are "
+"private.<br/> A hut cannot be listed there.<br/> See: <a "
+"href=\"%s\">Definition of a wilderness hut</a>.<br/> Leave us a message on "
+"the forum if you would like to discuss it.<br/>"
 
 #, php-format
-msgid "La latitude du point doit être au format degré décimaux, par exemple : 45.789, la valeur reçue est : %s"
-msgstr "The point's latitude must be in decimal degrees format, for example: 45.789; the value received is: %s"
+msgid ""
+"La latitude du point doit être au format degré décimaux, par exemple : "
+"45.789, la valeur reçue est : %s"
+msgstr ""
+"The point's latitude must be in decimal degrees format, for example: 45.789; "
+"the value received is: %s"
 
 #, php-format
-msgid "La longitude du point doit être au format degré décimaux, par exemple : 45.789, la valeur reçue est : %s"
-msgstr "The point's longitude must be in decimal degrees format, for example: 45.789; the value received is: %s"
+msgid ""
+"La longitude du point doit être au format degré décimaux, par exemple : "
+"45.789, la valeur reçue est : %s"
+msgstr ""
+"The point's longitude must be in decimal degrees format, for example: "
+"45.789; the value received is: %s"
 
 msgid "La latitude du point doit être comprise entre -90 et 90 (degrés)"
 msgstr "The point's latitude must be between -90 and 90 (degrees)"
@@ -1010,22 +1430,39 @@ msgid "L'altitude du point doit être un nombre entier positif, reçu : %s"
 msgstr "The point's altitude must be a positive whole number, received: %s"
 
 #, php-format
-msgid "%sm comme altitude du point, c'est plus que l'Everest, vous avez dû vous tromper ?"
-msgstr "%s m as the point's altitude is more than Everest; you must have made a mistake?"
+msgid ""
+"%sm comme altitude du point, c'est plus que l'Everest, vous avez dû vous "
+"tromper ?"
+msgstr ""
+"%s m as the point's altitude is more than Everest; you must have made a "
+"mistake?"
 
 #, php-format
 msgid "Le nombre de %s doit être un entier supérieur ou égal à 0, reçu : '%s'"
-msgstr "The number of %s must be a whole number greater than or equal to 0, received: '%s'"
+msgstr ""
+"The number of %s must be a whole number greater than or equal to 0, "
+"received: '%s'"
 
 #, php-format
 msgid "Erreur de modification du point : %s"
 msgstr "Error while modifying the point: %s"
 
-msgid "La requête SQL est en erreur, mais nous ne savons pas pourquoi, prévenez nous sur le forum, vous avez trouvé un bug !"
-msgstr "The SQL query failed and we do not know why, please let us know on the forum, you have found a bug!"
+msgid ""
+"La requête SQL est en erreur, mais nous ne savons pas pourquoi, prévenez "
+"nous sur le forum, vous avez trouvé un bug !"
+msgstr ""
+"The SQL query failed and we do not know why, please let us know on the "
+"forum, you have found a bug!"
 
-msgid "La fiche du point, les commentaires, les photos et la zone forum ont bien été supprimés"
-msgstr "The point's sheet, its comments, its photos and its forum area have been deleted"
+msgid ""
+"La fiche du point, les commentaires, les photos et la zone forum ont bien "
+"été supprimés"
+msgstr ""
+"The point's sheet, its comments, its photos and its forum area have been "
+"deleted"
+
+msgid "Cette page du wiki n'existe pas"
+msgstr "This wiki page does not exist"
 
 msgid "abri naturel"
 msgstr "natural shelter"
@@ -1048,9 +1485,6 @@ msgstr "wilderness hut"
 msgid "Capacité d'accueil"
 msgstr "Capacity"
 
-msgid "Cheminée"
-msgstr "Fireplace"
-
 msgid "Clés à récupérer"
 msgstr "Keys to be collected"
 
@@ -1072,14 +1506,8 @@ msgstr "Coordinates picked from aerial photos"
 msgid "Coordonnées prises sur le terrain"
 msgstr "Coordinates taken in the field"
 
-msgid "Couvertures"
-msgstr "Blankets"
-
 msgid "département"
 msgstr "department"
-
-msgid "Eau à moins de 100m"
-msgstr "Water within 100 m"
 
 msgid "Eau à proximité"
 msgstr "Water nearby"
@@ -1096,9 +1524,6 @@ msgstr "Closed to the public"
 msgid "Fermée"
 msgstr "Closed"
 
-msgid "Forêt à moins de 100m"
-msgstr "Forest within 100 m"
-
 msgid "Forêt à proximité"
 msgstr "Forest nearby"
 
@@ -1107,9 +1532,6 @@ msgstr "stage lodging"
 
 msgid "Inutilisable"
 msgstr "Unusable"
-
-msgid "Latrines"
-msgstr "Latrines"
 
 msgid "Manque un mur"
 msgstr "A wall is missing"
@@ -1137,9 +1559,6 @@ msgstr "Intended sleeping places"
 
 msgid "Places sur Matelas"
 msgstr "Places on mattresses"
-
-msgid "Poêle"
-msgstr "Stove"
 
 msgid "Propriétaire / accessibilité"
 msgstr "Owner / accessibility"
@@ -1195,3 +1614,5 @@ msgstr "Enter the letter <strong>g</strong>"
 msgid "jpeg, png, bmp ou webp"
 msgstr "jpeg, png, bmp or webp"
 
+msgid "kml (googlearth et plusieurs applications smartphone )"
+msgstr "kml (Google Earth and several smartphone apps)"

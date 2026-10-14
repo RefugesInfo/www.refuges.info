@@ -3,14 +3,14 @@
 <!-- ======= BARATIN ===== -->
 <h3><?=$vue->titre?></h3> 
     <dl> 
-      <dt>Options d'exportations</dt>
-      <dd>Veuillez préciser les options des type de points et des massifs voulus</dd>
+      <dt><?=_("Options d'exportations")?></dt>
+      <dd><?=_("Veuillez préciser les options des type de points et des massifs voulus")?></dd>
    </dl>
 <!-- ======= FORMULAIRE ===== -->
 
-  <form class="wri" id='form_export' method='post' action="/formulaire_exportations/">
+  <form class="wri" id='form_export' method='post' action="<?=url_langue('/formulaire_exportations/')?>">
     <fieldset id="types_point">
-        <legend>Choix des points de la base a exporter
+        <legend><?=_("Choix des points de la base à exporter")?>
             <button type='button' onclick="checkboites('types_point',true); return false;">☒</button>
             <button type='button' onclick="checkboites('types_point',false); return false;">☐</button>
         </legend>
@@ -18,14 +18,14 @@
         foreach ($vue->types_de_point as $type_point) { ?>
         <label>
            <input type='checkbox' name='id_point_type[]' value='<?=$type_point->id_point_type?>'<?=isset($type_point->checked) ? ' checked="checked"' : ''?> />
-           <?=$type_point->nom_type?>
+           <?=_($type_point->nom_type)?>
         </label>
         <?php }?>
     </fieldset>
     
     <!-- Choix des zones massifs -->
     <fieldset id="liste_massifs">
-        <legend>Choix des Massifs de la base a exporter
+        <legend><?=_("Choix des massifs de la base à exporter")?>
             <button type='button' onclick="checkboites('liste_massifs',true); return false;">☒</button>
             <button type='button' onclick="checkboites('liste_massifs',false); return false;">☐</button>
         </legend>
@@ -67,14 +67,14 @@
     </fieldset>
     <!-- Format d'export, KML GPX ... -->
     <fieldset>
-    <legend>Choix du format d'exportation</legend>
+    <legend><?=_("Choix du format d'exportation")?></legend>
     <select name="format">
     <?php foreach ($config_wri['api_format_points'] as $format => $description) { ?>
-        <option value="<?=$format?>"><?=$description?></option>
+        <option value="<?=$format?>"><?=_($description)?></option>
     <?php } ?>
     </select> 
-    <input type='submit' name='validation' value='Obtenir le lien' />
-    <a href="<?=lien_wiki("format_exportation")?>">Plus de détail sur ces formats</a>
+    <input type='submit' name='validation' value='<?=_("Obtenir le lien")?>' />
+    <a href="<?=lien_wiki("format_exportation")?>"><?=_("Plus de détail sur ces formats")?></a>
     </fieldset>
     
   </form>

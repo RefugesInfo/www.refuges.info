@@ -56,9 +56,9 @@ if (!empty($_REQUEST))
   $points = infos_points ($conditions);
   if (!empty($points->erreur))
   {
-    $vue->contenu=$points->message."<br>(Vous pouvez revenir en arrière avec votre navigateur pour corriger le problème)";
+    $vue->contenu=$points->message."<br>"._("(Vous pouvez revenir en arrière avec votre navigateur pour corriger le problème)");
     $vue->type="page_simple";
-    $vue->titre="Recherche sur refuges.info en Erreur";
+    $vue->titre=_("Recherche sur refuges.info en erreur");
 
   }
   else
@@ -76,12 +76,12 @@ if (!empty($_REQUEST))
     if (!empty($conditions->limite) && $vue->nombre_points == $conditions->limite)
       $vue->limite_atteinte = $conditions->limite;
 
-    $vue->titre="Recherche sur refuges.info ($vue->nombre_points points affichés".(isset($vue->limite_atteinte)?" et la limite du nombre de point a été atteinte":"").")";
+    $vue->titre=sprintf(_("Recherche sur refuges.info (%s points affichés)"), $vue->nombre_points).(isset($vue->limite_atteinte) ? " ".sprintf(_("(%s points affichés et la limite du nombre de points a été atteinte)"), $vue->nombre_points) : "");
   }
 }
 else
 {
-  $vue->contenu="Votre recherche ne contient aucun critère, il devrait au moins y avoir le nom (même vide)";
+  $vue->contenu=_("Votre recherche ne contient aucun critère, il devrait au moins y avoir le nom (même vide)");
   $vue->http_status_code = 404;
   $vue->type="page_simple";
 }

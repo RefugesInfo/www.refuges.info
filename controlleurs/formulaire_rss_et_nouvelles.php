@@ -17,13 +17,15 @@ require_once ("bdd.php");
 
 if (empty($_GET['choix']) or $_GET['choix'] == 'flux_rss' )
 {
-  $vue->titre="Paramétrez votre flux RSS";
-  $vue->titre_bouton="Obtenir le lien vers le flux RSS";
+  $vue->titre=_("Paramétrez votre flux RSS");
+  $vue->titre_bouton=_("Obtenir le lien vers le flux RSS");
+  $vue->code_bouton="flux_rss"; // valeur testée par formulaire_rss_et_nouvelles_validation.php, le libellé est traduit
 }
 else
 {
- $vue->titre="Choisissez ce que vous souhaitez afficher pour votre page des nouvelles";
- $vue->titre_bouton="Obtenir un lien vers les nouvelles demandées";
+ $vue->titre=_("Choisissez ce que vous souhaitez afficher pour votre page des nouvelles");
+ $vue->titre_bouton=_("Obtenir un lien vers les nouvelles demandées");
+ $vue->code_bouton="nouvelles";
 }
 
 $vue->massifs = new stdClass;
