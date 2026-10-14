@@ -162,6 +162,26 @@ body {
   cursor: pointer;
 }
 
+/********** Suggestion de langue **********/
+.suggestion-langue {
+  margin: 0 0.5%;
+  border: 1px solid var(--couleur_decoration_titres);
+  border-radius: 5px;
+  padding: 2px 6px;
+  line-height: normal;
+  font-family: Verdana, Helvetica, Arial, sans-serif;
+  font-size: 16px;
+}
+
+.suggestion-langue[hidden],
+.suggestion-langue span[hidden] {
+  display: none;
+}
+
+.suggestion-langue a {
+  cursor: pointer;
+}
+
 /********** Bandeau info **********/
 .bandeau-info {
   margin: 0 0.5%;

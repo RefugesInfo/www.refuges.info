@@ -322,6 +322,17 @@
 </div>
 
 <div id="scrolable">
+  <?php // Suggestion / confirmation de langue : cachée par défaut, affichée par bandeau.js (côté navigateur : la page reste identique pour tous, robots compris) ?>
+  <div id="suggestion-langue" class="suggestion-langue noprint" hidden>
+    <span id="suggestion-langue-proposition" hidden>
+      This page is also available in English.
+      <a id="suggestion-langue-oui">View in English</a> ·
+      <a id="suggestion-langue-non">Not now</a>
+    </span>
+    <span id="suggestion-langue-bascule" hidden>
+      Switched to English. <a id="suggestion-langue-retour">Back to French (retour au français)</a>
+    </span>
+  </div>
   <?php if (
       ($vue->bandeau_info->actif ?? false) and
       (($vue->bandeau_info->cookie ?? '') !== ($vue->bandeau_info->date ?? ''))
