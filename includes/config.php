@@ -227,6 +227,8 @@ $config_wri['langue']="fr_FR";
 // Multi-langue : la langue d'affichage est portée par l'url (voir routes/generales.routes.php), le français reste la langue par défaut
 // et c'est celle de toutes les urls historiques (liens externes) : /point/91/type/nom/ reste français, /point/91/type/nom/en/ est la version anglaise
 $config_wri['langues_url']=array('en');   // langues d'affichage autres que le français
+$config_wri['noms_langues']=array('fr'=>'Français', 'en'=>'English'); // dans leur propre langue, pour le sélecteur de langue
+$config_wri['liens_langues']=array();     // langue => url de la page courante dans cette langue (rempli par le routeur)
 $config_wri['langue_courante']='fr';
 $config_wri['url_prefixe_langue']='';     // '' ou '/en' : avant le nom de la page (accueil, wiki...)
 $config_wri['url_suffixe_langue']='';     // '' ou 'en/' : après /point/id/type/nom/ et /nav/id/type/nom/

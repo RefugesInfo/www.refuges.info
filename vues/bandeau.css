@@ -144,6 +144,19 @@ body {
   vertical-align: super;
 }
 
+/* Sélecteur de langue : à gauche de la connexion (float:right, placé après dans le html) */
+.menu-langue {
+  float: right;
+  /* Le bloc déroulant est en position absolue : sans ça, son right:0 se calcule par rapport au bandeau entier
+     (comme pour la connexion, qui est le bouton le plus à droite) et il se retrouve sous le menu de connexion */
+  position: relative;
+}
+
+.menu-langue ul {
+  right: 0;
+  border-radius: 10px !important;
+}
+
 .menu-haut *[type=submit],
 .bandeau-info a {
   cursor: pointer;

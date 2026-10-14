@@ -53,15 +53,8 @@
       <strong>(<?=_($vue->annonce_fermeture)?>)</strong>
       <?php } ?>
     </h1>
-    <?php if ($vue->traduction_disponible) { ?>
-      <p class="noprint">
-        <?php if ($vue->langue_affichee) { ?>
-          <a href="<?=$vue->lien_langue['fr']?>">Français</a> | <b>English</b>
-        <?php } else { ?>
-          <b>Français</b> | <a href="<?=$vue->lien_langue['en']?>">English</a>
-        <?php } ?>
-        <?php if ($vue->langue_affichee) { ?> <em><?=_("Traduction automatique (pilote) : l'original en français fait foi.")?></em><?php } ?>
-      </p>
+    <?php if ($vue->langue_affichee and $vue->traduction_disponible) { ?>
+      <p class="noprint"><em><?=_("Traduction automatique (pilote) : l'original en français fait foi.")?></em></p>
     <?php } ?>
   </div>
 <!--============================================ CARTE ============================================-->

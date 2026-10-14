@@ -172,6 +172,18 @@
     <?php } ?>
   </div>
 
+  <div class="menu-langue menu-bouton">
+    🌐<span><?=strtoupper($config_wri['langue_courante'])?></span>
+    <ul>
+      <?php foreach ($config_wri['liens_langues'] as $code => $lien) { ?>
+        <li>
+          <a href="<?=htmlspecialchars($lien)?>" hreflang="<?=$code?>" lang="<?=$code?>" rel="alternate"
+            title="<?=$config_wri['noms_langues'][$code]?>"<?=$code==$config_wri['langue_courante'] ? ' aria-current="true"><b>' : '>'?><?=strtoupper($code)?><?=$code==$config_wri['langue_courante'] ? '</b>' : ''?></a>
+        </li>
+      <?php } ?>
+    </ul>
+  </div>
+
   <div class="menu-liste menu-bouton">
     <ul>
       <li class="menu-bouton" style="order:1">

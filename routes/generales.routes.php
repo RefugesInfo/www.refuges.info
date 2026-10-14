@@ -28,9 +28,11 @@ $controlleur->url_decoupee = explode ('/',$controlleur->url_base);
 //   /wiki/legende_carte/en/ : suffixe en 3ème position (l'indice 2), même principe (la page d'accueil du wiki est /wiki//en/)
 //   /en/  /en/formulaire_exportations ... : préfixe pour toutes les autres pages
 $langue_url = '';
+$segments_neutres = $controlleur->url_decoupee; // url sans marque de langue, pour construire le sélecteur de langue
 if (in_array($controlleur->url_decoupee[0], $config_wri['langues_url'], true))
 {
   $langue_url = array_shift($controlleur->url_decoupee);
+  $segments_neutres = $controlleur->url_decoupee;
   if (!$controlleur->url_decoupee)
     $controlleur->url_decoupee = array('');
   // Pour point, nav et wiki, la forme officielle est le suffixe : une seule url par page (doublons, liens externes)
@@ -48,14 +50,34 @@ elseif (in_array($controlleur->url_decoupee[0], array('point','nav'), true)
 {
   $langue_url = $controlleur->url_decoupee[4];
   array_splice($controlleur->url_decoupee, 4, 1); // les contrôleurs ne voient pas la langue, l'indice 4 reste vide comme avant
+  $segments_neutres = $controlleur->url_decoupee;
 }
 elseif ($controlleur->url_decoupee[0]=='wiki'
   and in_array($controlleur->url_decoupee[2] ?? '', $config_wri['langues_url'], true))
 {
   $langue_url = $controlleur->url_decoupee[2];
   array_splice($controlleur->url_decoupee, 2, 1);
+  $segments_neutres = $controlleur->url_decoupee;
 }
 $controlleur->langue = $langue_url ?: 'fr';
+// Url de la page courante dans chaque langue (sélecteur de langue, hreflang) : même page, autre marque de langue
+$requete = ($_SERVER['QUERY_STRING'] ?? '') !== '' ? '?'.$_SERVER['QUERY_STRING'] : '';
+foreach (array_merge(array('fr'), $config_wri['langues_url']) as $langue_cible)
+{
+  $s = $segments_neutres;
+  if ($langue_cible == 'fr')
+    ;
+  elseif (in_array($s[0], array('point','nav'), true) and count($s) >= 4 and $s[3] !== '')
+    array_splice($s, 4, 0, $langue_cible);
+  elseif ($s[0] == 'wiki')
+  {
+    $s = array_pad($s, 2, '');
+    array_splice($s, 2, 0, $langue_cible);
+  }
+  else
+    array_unshift($s, $langue_cible);
+  $config_wri['liens_langues'][$langue_cible] = '/'.implode('/', $s).$requete;
+}
 if ($langue_url)
 {
   $config_wri['langue_courante'] = $langue_url;

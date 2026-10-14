@@ -63,7 +63,6 @@ else // le point est valide
     $trad[$r->type_objet][$r->id_objet][$r->champ] = $r->texte;
   $vue->traduction_disponible = !empty($trad);
   $vue->langue_affichee = ($controlleur->langue === 'en') ? 'en' : '';
-  $vue->lien_langue = array('fr'=>lien_point($point,true,'fr'), 'en'=>lien_point($point,true,'en'));
   if (!$vue->langue_affichee)
     $trad = array();
 
