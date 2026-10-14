@@ -18,7 +18,8 @@ document.addEventListener('DOMContentLoaded', function () {
     if (entree.files && entree.files.length > 0) {
       var fichier = entree.files[0];
       zone.classList.add('a_un_fichier');
-      texte.textContent = <?=json_encode(_("Changer la photo"))?>;
+      // Texte traduit fourni par la vue (data-texte-changer) : ce fichier est servi tel quel, sans PHP
+      texte.textContent = texte.dataset.texteChanger || 'Changer la photo';
       nomFichier.textContent = fichier.name;
 
       if (fichier.type && fichier.type.indexOf('image/') === 0) {
