@@ -11,10 +11,10 @@ if (!empty($_REQUEST["corrections_faites"]))
     if (!empty($commentaire->erreur))
     {
       $vue->type = "page_simple";
-      $vue->titre= "Erreur de modération";
-      $vue->contenu=$commentaire->message."<br>peut être pouvez-vous essayer de ré-ouvrir ce formulaire : ";
+      $vue->titre= _("Erreur de modération");
+      $vue->contenu=$commentaire->message."<br>"._("peut-être pouvez-vous essayer de ré-ouvrir ce formulaire : ");
       $vue->lien="./commentaires_attente_correction";
-      $vue->titre_lien="Liste des commentaires en attente de correction";
+      $vue->titre_lien=_("Liste des commentaires en attente de correction");
     }
     else {
       $commentaire->demande_correction=0;
@@ -23,7 +23,7 @@ if (!empty($_REQUEST["corrections_faites"]))
       if (!empty($retour->erreur))
       {
         $vue->type = "page_simple";
-        $vue->titre= "Erreur de modération";
+        $vue->titre= _("Erreur de modération");
         $vue->contenu=$retour->erreur;
       }
     }
@@ -38,10 +38,10 @@ $vue->commentaires_attente_correction=infos_commentaires($conditions_attente_cor
 
 // Petit tableau pour afficher le message de cause
 $vue->liste_causes = [
-  1 => "nous signale une modification de fiche à faire",
-  2 => "n'a peut-être pas/plus d'intérêt selon un internaute",
-  3 => "apporte peut-être de l'information à la fiche selon un internaute",
-  4 => "contient un mot pouvant faire penser à une réservation",
-  5 => "concerne un %s et n'a pas été traitée par un modérateur",
+  1 => _("nous signale une modification de fiche à faire"),
+  2 => _("n'a peut-être pas/plus d'intérêt selon un internaute"),
+  3 => _("apporte peut-être de l'information à la fiche selon un internaute"),
+  4 => _("contient un mot pouvant faire penser à une réservation"),
+  5 => _("concerne un %s et n'a pas été traitée par un modérateur"),
 ];
 

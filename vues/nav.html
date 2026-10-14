@@ -160,52 +160,51 @@
     </fieldset>
     <?php if ( !empty($vue->polygone->id_polygone) &&  est_moderateur() ) { ?>
       <fieldset>
-        <legend>Modifications</legend>
+        <legend><?=_("Modifications")?></legend>
         <p><a href="/edit/<?=$vue->polygone->id_polygone?>">
-          Modifier <?=$vue->polygone->art_def_poly?> <?=$vue->polygone->type_polygone?>
-          <?=$vue->polygone->article_partitif?> <?=$vue->polygone->nom_polygone?>
+          <?=$config_wri['langue_courante']=='fr' ? 'Modifier '.$vue->polygone->art_def_poly.' '.$vue->polygone->type_polygone.' '.$vue->polygone->article_partitif.' '.$vue->polygone->nom_polygone
+            : sprintf(_("Modifier %s"), sprintf(_("le %2\$s %1\$s"), _($vue->polygone->type_polygone), $vue->polygone->nom_polygone))?>
         </a></p>
         <p><a href="/edit/<?=$vue->polygone->id_polygone?>#supprimer-massif">
-          Supprimer <?=$vue->polygone->art_def_poly?> <?=$vue->polygone->type_polygone?>
-          <?=$vue->polygone->article_partitif?> <?=$vue->polygone->nom_polygone?>
+          <?=$config_wri['langue_courante']=='fr' ? 'Supprimer '.$vue->polygone->art_def_poly.' '.$vue->polygone->type_polygone.' '.$vue->polygone->article_partitif.' '.$vue->polygone->nom_polygone
+            : sprintf(_("Supprimer %s"), sprintf(_("le %2\$s %1\$s"), _($vue->polygone->type_polygone), $vue->polygone->nom_polygone))?>
         </a></p>
       </fieldset>
     <?php } ?>
   <?php }  ?>
   <?php if ( est_moderateur() ) { ?>
     <fieldset>
-      <legend>Massifs</legend>
+      <legend><?=_("Massifs")?></legend>
       <?php if ( ($_REQUEST['id_polygone_type']??0) != 1 ) { ?>
-        <a href="/nav?id_polygone_type=1">
-          Voir les massifs
+        <a href="<?=url_langue('/nav')?>?id_polygone_type=1">
+          <?=_("Voir les massifs")?>
         </a><hr>
       <?php } ?>
-      Un massif est défini par un polygone qui représente EXACTEMENT le contour du massif.<br/>
-      Un point est réputé appartenir à un massif quand il est STRICTEMENT INCLUS dans le polygone.
+      <?=_("Un massif est défini par un polygone qui représente EXACTEMENT le contour du massif.")?><br/>
+      <?=_("Un point est réputé appartenir à un massif quand il est STRICTEMENT INCLUS dans le polygone.")?>
       <?php if ( ($_REQUEST['id_polygone_type']??0) == 1 ) { ?>
-        <hr><a href="/edit?id_polygone_type=1">
-          Créer un massif
+        <hr><a href="<?=url_langue('/edit')?>?id_polygone_type=1">
+          <?=_("Créer un massif")?>
         </a><hr>
-        Pour modifier ou supprimer un massif, ouvrez-le en édition.
+        <?=_("Pour modifier ou supprimer un massif, ouvrez-le en édition.")?>
       <?php } ?>
     </fieldset>
     <fieldset>
-      <legend>Zones</legend>
+      <legend><?=_("Zones")?></legend>
       <?php if ( ($_REQUEST['id_polygone_type']??0) != 11 ) { ?>
-        <a href="/nav?id_polygone_type=11">
-          Voir les zones
+        <a href="<?=url_langue('/nav')?>?id_polygone_type=11">
+          <?=_("Voir les zones")?>
         </a><hr>
       <?php } ?>
-      Une zone est définie par un polygone qui n'est jamais affiché en tant que tel.<br/>
-      Un massif est réputé appartenir à une zone quand son polygone INTERSECTE celui de la zone.<hr>
-      La zone n'a donc pas besoin d'être très précise : un vague rectangle suffit la plupart du temps
-      du moment qu'il recouvre au moins un bout de chaque massif.<br/>
-      Par contre, si elle déborde sur un massif qui n'a rien à voir, celui-ci sera affiché.
+      <?=_("Une zone est définie par un polygone qui n'est jamais affiché en tant que tel.")?><br/>
+      <?=_("Un massif est réputé appartenir à une zone quand son polygone INTERSECTE celui de la zone.")?><hr>
+      <?=_("La zone n'a donc pas besoin d'être très précise : un vague rectangle suffit la plupart du temps du moment qu'il recouvre au moins un bout de chaque massif.")?><br/>
+      <?=_("Par contre, si elle déborde sur un massif qui n'a rien à voir, celui-ci sera affiché.")?>
       <?php if ( ($_REQUEST['id_polygone_type']??0) == 11 ) { ?>
-        <hr><a href="/edit?id_polygone_type=11">
-          Créer une zone
+        <hr><a href="<?=url_langue('/edit')?>?id_polygone_type=11">
+          <?=_("Créer une zone")?>
         </a><hr>
-        Pour modifier ou supprimer une zone, ouvrez-la en édition.
+        <?=_("Pour modifier ou supprimer une zone, ouvrez-la en édition.")?>
       <?php } ?>
     </fieldset>
   <?php } ?>

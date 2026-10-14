@@ -32,8 +32,8 @@ if (!est_moderateur())
   {
     $vue->http_status_code = 403;
     $vue->type = "page_simple";
-    $vue->titre = "Erreur 403 : droits insuffisants";
-    $vue->contenu = "L'historique n'est consultable que par les modérateurs, ou par le modérateur de la fiche pour l'historique de sa fiche, êtes vous bien connecté ?";
+    $vue->titre = _("Erreur 403 : droits insuffisants");
+    $vue->contenu = _("L'historique n'est consultable que par les modérateurs, ou par le modérateur de la fiche pour l'historique de sa fiche, êtes vous bien connecté ?");
     return;
   }
 }
@@ -132,7 +132,7 @@ while ($modification_point = $res->fetch()) {
   if ($modification_point->id_user!=0)
     $utilisateur=infos_utilisateur($modification_point->id_user);
   elseif (isset($utilisateur))
-    $utilisateur->username="anonyme ?";
+    $utilisateur->username=_("anonyme ?");
 
   // si cela concerne un point du site, on fait un lien vers lui pour se simplifier la consultation
   $lien_de_base="";
@@ -150,7 +150,7 @@ while ($modification_point = $res->fetch()) {
   $modification_point->moderateur=$utilisateur->username??'';
 
   $modification_point->nom = $point_avant->nom ?? $point_avant->nom_polygone ??
-    $point_apres->nom ?? $point_apres->nom_polygone ?? ($modification_point->id_point ? "Fiche n°$modification_point->id_point" : 'Erreur:Aucun nom?');
+    $point_apres->nom ?? $point_apres->nom_polygone ?? ($modification_point->id_point ? sprintf(_("Fiche n°%s"), $modification_point->id_point) : _('Erreur : aucun nom ?'));
 
   // Pour une modification, "apres" ne contient que les propriétés changées, "avant" toutes celles du formulaire.
   // On affiche d'abord uniquement ce qui a changé, le reste de l'état d'avant est dans un "voir +"

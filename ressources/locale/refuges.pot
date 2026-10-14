@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-14 17:32+0200\n"
+"POT-Creation-Date: 2026-10-14 17:41+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -62,6 +62,15 @@ msgstr ""
 msgid "la fiche de %s"
 msgstr ""
 
+msgid "Commentaires à corriger"
+msgstr ""
+
+msgid "Emails en erreur"
+msgstr ""
+
+msgid "Posts édités à vérifier"
+msgstr ""
+
 msgid "Utilisateur"
 msgstr ""
 
@@ -78,6 +87,45 @@ msgid "Messages privés"
 msgstr ""
 
 msgid "Déconnexion"
+msgstr ""
+
+msgid "Commentaires à traiter"
+msgstr ""
+
+msgid "Historique des modifications"
+msgstr ""
+
+#, php-format
+msgid "édition de %s post à traiter"
+msgid_plural "édition de %s posts à traiter"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Historique des traces"
+msgstr ""
+
+msgid "Massifs & zones"
+msgstr ""
+
+msgid "Pré-remplissage des champs lors d'un ajout de point"
+msgstr ""
+
+msgid "Modèles de points"
+msgstr ""
+
+msgid "Liste des contenus spéciaux"
+msgstr ""
+
+msgid "Liste des pages wiki"
+msgstr ""
+
+msgid "Scanner les liens véreux"
+msgstr ""
+
+msgid "Modération du forum"
+msgstr ""
+
+msgid "Administration du forum"
 msgstr ""
 
 msgid "Connexion"
@@ -296,6 +344,221 @@ msgstr ""
 msgid "Modification du commentaire n°%s"
 msgstr ""
 
+msgid "Édition"
+msgstr ""
+
+msgid "Création"
+msgstr ""
+
+msgid "Type :"
+msgstr ""
+
+msgid "Nom :"
+msgstr ""
+
+msgid "Article partitif (max 20 car)"
+msgstr ""
+
+msgid "Il ne doit pas y avoir de ligne pour enregistrer."
+msgstr ""
+
+msgid "Il doit y avoir au moins 1 polygone pour enregistrer."
+msgstr ""
+
+msgid "Enregistrer et rester"
+msgstr ""
+
+msgid "Quitter sans enregistrer"
+msgstr ""
+
+#, php-format
+msgid "L'élément sélectionné est %s"
+msgstr ""
+
+msgid "rouge"
+msgstr ""
+
+#, php-format
+msgid "Les éléments sélectionnables sont %s"
+msgstr ""
+
+msgid "bleus"
+msgstr ""
+
+#, php-format
+msgid "Les éléments en fond sont %s"
+msgstr ""
+
+msgid "noirs"
+msgstr ""
+
+msgid "Modifier un polygone :"
+msgstr ""
+
+#, php-format
+msgid "Cliquer sur un sommet et glisser pour le %s"
+msgstr ""
+
+msgid "déplacer"
+msgstr ""
+
+#, php-format
+msgid "Cliquer le long d'un segment et glisser pour %s"
+msgstr ""
+
+msgid "ajouter un sommet au milieu d'un segment"
+msgstr ""
+
+#, php-format
+msgid "Alt+cliquer sur un sommet pour le %s"
+msgstr ""
+
+msgid "supprimer"
+msgstr ""
+
+#, php-format
+msgid "Ctrl+Alt+cliquer sur un de ses segments pour %s"
+msgstr ""
+
+msgid "supprimer un polygone ou une ligne"
+msgstr ""
+
+#, php-format
+msgid "Un polygone entièrement inclus dans un autre %s"
+msgstr ""
+
+msgid "crée un trou"
+msgstr ""
+
+msgid "Utiliser des lignes pour les éditions complexes :"
+msgstr ""
+
+#, php-format
+msgid "Ctrl+cliquer sur un sommet ou un segment d'un polygone rouge pour le %s"
+msgstr ""
+
+msgid "transformer en ligne"
+msgstr ""
+
+msgid "...puis déplacer l'une des 2 extrémités (rond rouge)"
+msgstr ""
+
+#, php-format
+msgid "Ctrl+cliquer sur une ligne pour la %s"
+msgstr ""
+
+msgid "couper en deux"
+msgstr ""
+
+#, php-format
+msgid ""
+"Déplacer l'extrémité d'une ligne jusqu'à l'extrémité d'une autre ligne pour "
+"les %s"
+msgstr ""
+
+msgid "fusionner"
+msgstr ""
+
+#, php-format
+msgid "Fusionner les 2 extrémités d'une ligne pour la %s"
+msgstr ""
+
+msgid "transformer en polygone"
+msgstr ""
+
+msgid ""
+"Vous devez transformer toutes les lignes en polygones ou les supprimer avant "
+"d'enregistrer"
+msgstr ""
+
+msgid "Créer un polygone :"
+msgstr ""
+
+msgid "Cliquer sur le bouton"
+msgstr ""
+
+#, php-format
+msgid "Cliquer sur l'emplacement du %s"
+msgstr ""
+
+msgid "début"
+msgstr ""
+
+#, php-format
+msgid "Puis sur chaque %s"
+msgstr ""
+
+msgid "sommet à créer"
+msgstr ""
+
+#, php-format
+msgid "Double cliquer sur le %s pour terminer"
+msgstr ""
+
+msgid "dernier sommet"
+msgstr ""
+
+msgid "Créer une ligne :"
+msgstr ""
+
+msgid "Suivre un tracé existant :"
+msgstr ""
+
+#, php-format
+msgid "Pendant la création, placer un sommet sur un %s"
+msgstr ""
+
+msgid "polygone en fond"
+msgstr ""
+
+#, php-format
+msgid "ou charger %s un %s"
+msgstr ""
+
+msgid "fichier de trace"
+msgstr ""
+
+#, php-format
+msgid "...et en %s"
+msgstr ""
+
+msgid "suivre le contour"
+msgstr ""
+
+msgid "Placer un sommet en dehors du tracé suivi pour en sortir"
+msgstr ""
+
+msgid "Suppression"
+msgstr ""
+
+#, php-format
+msgid "Supprimer %s"
+msgstr ""
+
+#, php-format
+msgid "le %2$s %1$s"
+msgstr ""
+
+msgid "(définitif)."
+msgstr ""
+
+#, php-format
+msgid "ATTENTION : Ceci va supprimer définitivement %s"
+msgstr ""
+
+msgid "Aucune restauration ne sera possible"
+msgstr ""
+
+#, php-format
+msgid "Supprimer « %s »"
+msgstr ""
+
+msgid "ou"
+msgstr ""
+
+msgid "Annuler"
+msgstr ""
+
 msgid "Options d'exportations"
 msgstr ""
 
@@ -404,9 +667,6 @@ msgid "Télécharger le fichier"
 msgstr ""
 
 msgid "Télécharger"
-msgstr ""
-
-msgid "ou"
 msgstr ""
 
 msgid "Copier le lien dans le clipboard"
@@ -540,6 +800,68 @@ msgstr ""
 msgid "(seuls les 100 premiers points sont affichés)"
 msgstr ""
 
+msgid "Modifications"
+msgstr ""
+
+#, php-format
+msgid "Modifier %s"
+msgstr ""
+
+msgid "Massifs"
+msgstr ""
+
+msgid "Voir les massifs"
+msgstr ""
+
+msgid ""
+"Un massif est défini par un polygone qui représente EXACTEMENT le contour du "
+"massif."
+msgstr ""
+
+msgid ""
+"Un point est réputé appartenir à un massif quand il est STRICTEMENT INCLUS "
+"dans le polygone."
+msgstr ""
+
+msgid "Créer un massif"
+msgstr ""
+
+msgid "Pour modifier ou supprimer un massif, ouvrez-le en édition."
+msgstr ""
+
+msgid "Zones"
+msgstr ""
+
+msgid "Voir les zones"
+msgstr ""
+
+msgid ""
+"Une zone est définie par un polygone qui n'est jamais affiché en tant que "
+"tel."
+msgstr ""
+
+msgid ""
+"Un massif est réputé appartenir à une zone quand son polygone INTERSECTE "
+"celui de la zone."
+msgstr ""
+
+msgid ""
+"La zone n'a donc pas besoin d'être très précise : un vague rectangle suffit "
+"la plupart du temps du moment qu'il recouvre au moins un bout de chaque "
+"massif."
+msgstr ""
+
+msgid ""
+"Par contre, si elle déborde sur un massif qui n'a rien à voir, celui-ci sera "
+"affiché."
+msgstr ""
+
+msgid "Créer une zone"
+msgstr ""
+
+msgid "Pour modifier ou supprimer une zone, ouvrez-la en édition."
+msgstr ""
+
 msgid "Refuges"
 msgstr ""
 
@@ -570,6 +892,15 @@ msgid ""
 msgstr ""
 
 msgid "Cette fiche est un modèle, elle n'est visible que des modérateurs"
+msgstr ""
+
+msgid "Modification"
+msgstr ""
+
+msgid "Historique"
+msgstr ""
+
+msgid "Trace de la création du point"
 msgstr ""
 
 msgid "Traduction automatique (pilote) : l'original en français fait foi."
@@ -679,6 +1010,9 @@ msgid "Informations récentes"
 msgstr ""
 
 msgid "Ajouter une information et/ou une photo"
+msgstr ""
+
+msgid "Trace de la création du commentaire"
 msgstr ""
 
 msgid ""
@@ -869,9 +1203,6 @@ msgstr ""
 msgid "Informations de base"
 msgstr ""
 
-msgid "Nom :"
-msgstr ""
-
 msgid "Type de point"
 msgstr ""
 
@@ -1000,6 +1331,48 @@ msgstr ""
 msgid "Non renseigné"
 msgstr ""
 
+msgid "Critères uniquement pour les modérateurs"
+msgstr ""
+
+msgid "Méta-informations"
+msgstr ""
+
+msgid "Un positionnement précis est-il indispensable ?"
+msgstr ""
+
+msgid "Provenance des coordonnées GPS :"
+msgstr ""
+
+msgid "(Peu importe)"
+msgstr ""
+
+msgid "Dont le modérateur est :"
+msgstr ""
+
+msgid "Tous"
+msgstr ""
+
+msgid "Le point est fermé/détruit/en ruine"
+msgstr ""
+
+msgid "Que les non utilisables"
+msgstr ""
+
+msgid "Sélectionner les champs avec valeur 'Inconnu', cocher les cases rouges"
+msgstr ""
+
+msgid "Sélectionner champs Inconnus"
+msgstr ""
+
+msgid "Uniquement les points cachés"
+msgstr ""
+
+msgid "Abris dont il manque un mur"
+msgstr ""
+
+msgid "dont il faut récupérer les clés"
+msgstr ""
+
 msgid "Résultats"
 msgstr ""
 
@@ -1055,8 +1428,123 @@ msgstr ""
 msgid "Aucun point trouvé dans la base de %s"
 msgstr ""
 
+msgid "Modifier cette page"
+msgstr ""
+
+msgid "Suppression de cette page sans confirmation :"
+msgstr ""
+
+msgid "pouf !"
+msgstr ""
+
 #, php-format
 msgid "Date de dernière modification de cette page : %s"
+msgstr ""
+
+msgid "Liste des commentaires en attente de modération :"
+msgstr ""
+
+#, php-format
+msgid "Le commentaire du %s"
+msgstr ""
+
+#, php-format
+msgid "par \"%s\" sur %s"
+msgstr ""
+
+#, php-format
+msgid ", raison=%s"
+msgstr ""
+
+msgid "Retirer ceux que j'ai coché de la liste"
+msgstr ""
+
+msgid "Aucun commentaire en attente de modération"
+msgstr ""
+
+msgid ""
+"Liste des 50 derniers emails envoyés depuis le forum qui sont revenus en "
+"erreur"
+msgstr ""
+
+msgid "date"
+msgstr ""
+
+msgid "contenu"
+msgstr ""
+
+msgid "Marquer comme traité"
+msgstr ""
+
+msgid "Fiche n°"
+msgstr ""
+
+msgid "Type de modification"
+msgstr ""
+
+msgid "Nombre maximum"
+msgstr ""
+
+msgid "Filtrer"
+msgstr ""
+
+msgid "du/de la"
+msgstr ""
+
+#, php-format
+msgid "du %s"
+msgstr ""
+
+#, php-format
+msgid "par %s"
+msgstr ""
+
+msgid "Avant"
+msgstr ""
+
+msgid "voir +"
+msgstr ""
+
+msgid "Après"
+msgstr ""
+
+msgid ""
+"Voici la liste de toutes les pages wiki du site, classées par ordre "
+"alphabétique :"
+msgstr ""
+
+msgid "Nom de la page wiki"
+msgstr ""
+
+msgid "dernière modification"
+msgstr ""
+
+msgid "Aucune page wiki sur ce site"
+msgstr ""
+
+msgid "Modification des \"modèles\" de fiche"
+msgstr ""
+
+msgid ""
+"Voici la liste des modèles existants pour les différents points de la base, "
+"chacun pouvant être modifié, exactement comme une fiche normale, sauf qu'ici "
+"il s'agit d'un \"modèle\" sur un point fictif : Il est dans notre base, au "
+"même titre que toutes les autres fiches de points, mais ne sera affiché sur "
+"aucune carte, aucune recherche et rien du tout en fait sauf... comme \"pré-"
+"remplissage\" d'un nouveau point vierge."
+msgstr ""
+
+msgid ""
+"En gros, c'est le contenu par défaut lorsque l'on crée une fiche, dont "
+"l'objectif est d'inciter à indiquer, qu'il y a un poêle, une table, des "
+"couvertures, etc."
+msgstr ""
+
+msgid ""
+"On aurait pu faire autrement bien sûr en écrivant ça à côté de la fiche, "
+"mais j'ai (sly) trouvé l'idée intéressante, et comme avantage collatéral, "
+"quand une fiche apparaît avec toutes les valeurs par défaut, on détecte "
+"rapidement qu'il y a eu un problème et un modérateur peut alors intervenir."
 msgstr ""
 
 msgid "Erreur 404 : commentaire introuvable"
@@ -1099,6 +1587,21 @@ msgstr ""
 msgid "Action inconnue : %s"
 msgstr ""
 
+msgid "Permissions insuffisantes"
+msgstr ""
+
+msgid ""
+"Désolé, mais pour cette opération vous devez être modérateur et être "
+"connecté au forum :"
+msgstr ""
+
+#, php-format
+msgid "Modification %s"
+msgstr ""
+
+msgid "Création d'un polygone"
+msgstr ""
+
 msgid "Téléchargement et exportation de la base refuges.info"
 msgstr ""
 
@@ -1130,10 +1633,6 @@ msgid "Carte et informations sur les refuges, cabanes et abris de montagne"
 msgstr ""
 
 msgid "cabanes, refuges et points d'eau"
-msgstr ""
-
-#, php-format
-msgid "le %2$s %1$s"
 msgstr ""
 
 #, php-format
@@ -1179,14 +1678,6 @@ msgid "Suppression de la fiche"
 msgstr ""
 
 msgid "Modification d'un point dans refuges.info"
-msgstr ""
-
-msgid "Permissions insuffisantes"
-msgstr ""
-
-msgid ""
-"Désolé, mais pour cette opération vous devez être modérateur et être "
-"connecté au forum :"
 msgstr ""
 
 msgid "Connexion forum"
@@ -1268,6 +1759,53 @@ msgstr ""
 msgid ""
 "Votre recherche ne contient aucun critère, il devrait au moins y avoir le "
 "nom (même vide)"
+msgstr ""
+
+msgid ""
+"Toutefois, vous pouvez la créer si besoin car vous êtes modérateur, en : "
+msgstr ""
+
+msgid "cliquant ici"
+msgstr ""
+
+msgid "Erreur de modération"
+msgstr ""
+
+msgid "peut-être pouvez-vous essayer de ré-ouvrir ce formulaire : "
+msgstr ""
+
+msgid "Liste des commentaires en attente de correction"
+msgstr ""
+
+msgid "nous signale une modification de fiche à faire"
+msgstr ""
+
+msgid "n'a peut-être pas/plus d'intérêt selon un internaute"
+msgstr ""
+
+msgid "apporte peut-être de l'information à la fiche selon un internaute"
+msgstr ""
+
+msgid "contient un mot pouvant faire penser à une réservation"
+msgstr ""
+
+#, php-format
+msgid "concerne un %s et n'a pas été traitée par un modérateur"
+msgstr ""
+
+msgid ""
+"L'historique n'est consultable que par les modérateurs, ou par le modérateur "
+"de la fiche pour l'historique de sa fiche, êtes vous bien connecté ?"
+msgstr ""
+
+msgid "anonyme ?"
+msgstr ""
+
+#, php-format
+msgid "Fiche n°%s"
+msgstr ""
+
+msgid "Erreur : aucun nom ?"
 msgstr ""
 
 #, php-format
@@ -1413,6 +1951,11 @@ msgid ""
 msgstr ""
 
 msgid "Cette page du wiki n'existe pas"
+msgstr ""
+
+msgid ""
+", vous devez être un modérateur du site, pour accéder à cette page, êtes "
+"vous bien connecté ?"
 msgstr ""
 
 msgid "abri naturel"
@@ -1566,4 +2109,22 @@ msgid "jpeg, png, bmp ou webp"
 msgstr ""
 
 msgid "kml (googlearth et plusieurs applications smartphone )"
+msgstr ""
+
+msgid "modification point"
+msgstr ""
+
+msgid "creation point"
+msgstr ""
+
+msgid "création point"
+msgstr ""
+
+msgid "suppression point"
+msgstr ""
+
+msgid "modification polygone"
+msgstr ""
+
+msgid "suppression polygone"
 msgstr ""

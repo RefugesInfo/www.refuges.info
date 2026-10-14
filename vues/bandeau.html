@@ -4,13 +4,13 @@
       👨<span><?=$infos_identification->username??''?></span>
         <?php if ( est_moderateur()) {
           if( $vue->demande_correction) { ?>
-            <span title="Commentaires à corriger">⭐</span>
+            <span title="<?=_("Commentaires à corriger")?>">⭐</span>
           <?php }
           if( $vue->email_en_erreur) { ?>
-            <span title="Emails en erreur">🌙</span>
+            <span title="<?=_("Emails en erreur")?>">🌙</span>
           <?php }
           if( $vue->posts_edit) { ?>
-            <span title="Posts édités à vérifier" class="edit-posts">☄</span>
+            <span title="<?=_("Posts édités à vérifier")?>" class="edit-posts">☄</span>
           <?php }
         } ?>
       <ul>
@@ -43,13 +43,13 @@
         <?php if (est_moderateur()) { ?>
           <li><hr></li>
           <li>
-            <a href="/gestion/commentaires_attente_correction">
-              <?php if ($vue->demande_correction) { ?>⭐ <?php } ?>Commentaires à traiter
+            <a href="<?=url_langue('/gestion/commentaires_attente_correction')?>">
+              <?php if ($vue->demande_correction) { ?>⭐ <?php } ?><?=_("Commentaires à traiter")?>
             </a>
           </li>
           <li>
-            <a href="/gestion/historique_modifications">
-              Historique des modifications
+            <a href="<?=url_langue('/gestion/historique_modifications')?>">
+              <?=_("Historique des modifications")?>
             </a>
           </li>
           <?php if(isset($vue->posts_edit)) { ?>
@@ -58,55 +58,55 @@
                 <?php if ($vue->posts_edit) { ?>
                   <span class="edit-posts">☄</span>
                 <?php } ?>
-                édition de <?=$vue->posts_edit?> post<?=$vue->posts_edit>1?'s':''?> à traiter
+                <?=sprintf(ngettext("édition de %s post à traiter", "édition de %s posts à traiter", $vue->posts_edit), $vue->posts_edit)?>
               </a>
             </li>
             <li>
               <a href="<?=$config_wri['lien_forum']?>mcp.php?i=-RefugesInfo-trace-mcp-main_module&ext_error=null&browser_operator=!api">
-                Historique des traces
+                <?=_("Historique des traces")?>
               </a>
             </li>
           <?php } ?>
           <li>
-            <a href="/gestion/historique_envoi_emails">
-              <?php if ($vue->email_en_erreur) { ?>🌙 <?php } ?>Emails en erreur
+            <a href="<?=url_langue('/gestion/historique_envoi_emails')?>">
+              <?php if ($vue->email_en_erreur) { ?>🌙 <?php } ?><?=_("Emails en erreur")?>
             </a>
           </li>
           <li>
-            <a href="/nav?id_polygone_type=1">
-              Massifs & zones
+            <a href="<?=url_langue('/nav')?>?id_polygone_type=1">
+              <?=_("Massifs & zones")?>
             </a>
           </li>
           <li>
-            <a href="/gestion/modifier_modeles"
-              title="Pré-remplissage des champs lors d'un ajout de point">
-              Modèles de points
+            <a href="<?=url_langue('/gestion/modifier_modeles')?>"
+              title="<?=_("Pré-remplissage des champs lors d'un ajout de point")?>">
+              <?=_("Modèles de points")?>
             </a>
           </li>
           <li>
             <a href="<?=lien_wiki('contenus_speciaux')?>">
-              Liste des contenus spéciaux
+              <?=_("Liste des contenus spéciaux")?>
             </a>
           </li>
           <li>
-            <a href="/gestion/liste_pages_wiki">
-              Liste des pages wiki
+            <a href="<?=url_langue('/gestion/liste_pages_wiki')?>">
+              <?=_("Liste des pages wiki")?>
             </a>
           </li>
           <li>
             <a href="/ressources/outils/scan_liens">
-              Scanner les liens véreux
+              <?=_("Scanner les liens véreux")?>
             </a>
           </li>
           <li>
             <a href="<?=$config_wri['lien_forum']?>mcp.php?i=main&mode=front">
-              Modération du forum
+              <?=_("Modération du forum")?>
             </a>
           </li>
           <?php if (est_administrateur()) { ?>
             <li>
               <a href="<?=$config_wri['lien_forum']?>adm/index.php?sid=<?=$infos_identification->session_id??''?>">
-                Administration du forum
+                <?=_("Administration du forum")?>
               </a>
             </li>
           <?php }

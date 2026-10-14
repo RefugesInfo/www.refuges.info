@@ -29,7 +29,7 @@ switch ($controlleur->url_decoupee[1]) {
     else
     {
       $vue->http_status_code = 403;
-      $vue->interdit_raison = ", vous devez être un modérateur du site, pour accéder à cette page, êtes vous bien connecté ?";
+      $vue->interdit_raison = _(", vous devez être un modérateur du site, pour accéder à cette page, êtes vous bien connecté ?");
     }
     break;
 

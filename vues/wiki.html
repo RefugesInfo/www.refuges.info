@@ -2,11 +2,11 @@
 <?php // lien modifier, uniquement pour les modérateurs
   if (est_moderateur()) { ?>
     <a href="<?=$config_wri['base_wiki']?><?=$vue->titre?>?form_modifier=1">
-      Modifier cette page
+      <?=_("Modifier cette page")?>
     </a> /
-    Suppression de cette page sans confirmation :
+    <?=_("Suppression de cette page sans confirmation :")?>
     <a href="<?=$config_wri['base_wiki']?><?=$vue->titre?>?supprimer=1">
-      <strong>pouf !</strong>
+      <strong><?=_("pouf !")?></strong>
     </a>
 <?php } ?>
 

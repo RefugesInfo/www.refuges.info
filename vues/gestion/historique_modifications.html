@@ -1,54 +1,54 @@
 <div class="contenu">
-  <form class="filtres_historique" method="GET" action="/gestion/historique_modifications">
-    <label>Fiche n°
+  <form class="filtres_historique" method="GET" action="<?=url_langue('/gestion/historique_modifications')?>">
+    <label><?=_("Fiche n°")?>
       <input type="text" name="id_point" value="<?=protege($vue->filtres->id_point)?>" size="8" />
     </label>
-    <label>Utilisateur
+    <label><?=_("Utilisateur")?>
       <select name="id_user">
-        <option value="">Tous</option>
+        <option value=""><?=_("Tous")?></option>
         <?php foreach ($vue->filtres->utilisateurs as $utilisateur) { ?>
           <option value="<?=$utilisateur->id_user?>"<?=($utilisateur->id_user==$vue->filtres->id_user)?' selected="selected"':''?>><?=protege($utilisateur->username)?></option>
         <?php } ?>
       </select>
     </label>
-    <label>Type de modification
+    <label><?=_("Type de modification")?>
       <select name="type_modification">
-        <option value="">Tous</option>
+        <option value=""><?=_("Tous")?></option>
         <?php foreach ($vue->filtres->types as $type) { ?>
-          <option value="<?=protege($type)?>"<?=($type==$vue->filtres->type_modification)?' selected="selected"':''?>><?=protege(ucfirst($type))?></option>
+          <option value="<?=protege($type)?>"<?=($type==$vue->filtres->type_modification)?' selected="selected"':''?>><?=protege(ucfirst(_($type)))?></option>
         <?php } ?>
       </select>
     </label>
-    <label>Nombre maximum
+    <label><?=_("Nombre maximum")?>
       <input type="text" name="limite" value="<?=(int)$vue->filtres->limite?>" size="5" />
     </label>
-    <button type="submit">Filtrer</button>
+    <button type="submit"><?=_("Filtrer")?></button>
   </form>
   <?php if (isset($vue->modifications_points))
     foreach ($vue->modifications_points as $modification) { ?>
     <div class="modification_historique">
       <div class="bloc_info">
-        <?=ucfirst($modification->type_modification)?> du/de là <br/>
+        <?=ucfirst(_($modification->type_modification))?> <?=_("du/de la")?> <br/>
         <?php if (!empty($modification->lien_point)) { ?>
           <a href="<?=$modification->lien_point?>"><b><?=$modification->nom?></b></a>
         <?php } else { ?>
           <b><?=$modification->nom?></b>
         <?php } ?>
-        <br/>du <?=$modification->date?><br/>
-        par <?=$modification->moderateur?>
+        <br/><?=sprintf(_("du %s"), $modification->date)?><br/>
+        <?=sprintf(_("par %s"), $modification->moderateur)?>
       </div>
       <div class="bloc_avant">
-        <h4>Avant</h4>
+        <h4><?=_("Avant")?></h4>
         <?=$modification->html_avant?>
         <?php if ($modification->html_avant_suite) { ?>
           <details>
-            <summary>voir +</summary>
+            <summary><?=_("voir +")?></summary>
             <?=$modification->html_avant_suite?>
           </details>
         <?php } ?>
       </div>
       <div class="bloc_apres">
-        <h4>Après</h4>
+        <h4><?=_("Après")?></h4>
         <?=$modification->html_apres?>
       </div>
     </div>

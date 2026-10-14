@@ -34,9 +34,9 @@ if (!empty ($contenu_brut->erreur) and $contenu_brut->erreur and empty($_REQUEST
   $vue->titre=$contenu_brut->message;
   if (est_moderateur())
   {
-    $vue->contenu="Toutefois, vous pouvez la créér si besoin car vous êtes modérateur en : ";
+    $vue->contenu=_("Toutefois, vous pouvez la créer si besoin car vous êtes modérateur, en : ");
     $vue->lien=lien_wiki($page)."?form_modifier=1";
-    $vue->titre_lien="Cliquant ici";
+    $vue->titre_lien=_("cliquant ici");
   }
 }
 // Un modérateur a demandé à la modifier

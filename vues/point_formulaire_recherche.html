@@ -152,22 +152,22 @@
       // Champs uniquement pour les modérateurs (des fonctionnalités qui ne leur sont utiles qu'a eux comme chercher les cabannes fermées
       $visible = '';
       if (est_moderateur() ) { ?>
-      <h4>Critères uniquement pour les modérateurs</h4>
+      <h4><?=_("Critères uniquement pour les modérateurs")?></h4>
         <!-- =========================== -->
         <fieldset>
-          <legend>Meta-informations</legend>
-          <label title="Un positionnement précis est-il indispensable ?">Provenance des coordonnéés GPS :
+          <legend><?=_("Méta-informations")?></legend>
+          <label title="<?=_("Un positionnement précis est-il indispensable ?")?>"><?=_("Provenance des coordonnées GPS :")?>
             <select name="precision_gps" >
-              <option value="">(Peu importe)</option>
+              <option value=""><?=_("(Peu importe)")?></option>
               <?php foreach ($vue->infos_base->type_precision AS $p) { ?>
-                <option value="<?=$p->id_type_precision_gps?>"><?=$p->nom_precision_gps?></option>
+                <option value="<?=$p->id_type_precision_gps?>"><?=_($p->nom_precision_gps)?></option>
               <?php } ?>
             </select>
           </label>
-          <label>Dont le modérateur est :
+          <label><?=_("Dont le modérateur est :")?>
             <select name='id_moderateur'>
               <option  value="" selected="selected">
-                  Tous
+                  <?=_("Tous")?>
               </option>
               <?php foreach ($vue->utilisateurs AS $utilisateur) { ?>
                 <option  value="<?=$utilisateur->user_id?>">
@@ -177,28 +177,28 @@
             </select>
           </label>
 
-          <label title="Le point est fermé/détruit/en ruine">
+          <label title="<?=_("Le point est fermé/détruit/en ruine")?>">
             <input type="checkbox" name="ouvert" value="non" />
-            Que les non utilisables
+            <?=_("Que les non utilisables")?>
           </label>
-          <label title="Selectionner les champs avec valeur 'Inconnu', cocher les cases rouges">
+          <label title="<?=_("Sélectionner les champs avec valeur 'Inconnu', cocher les cases rouges")?>">
             <input type="checkbox" onchange="show_boxes('champs_null[]',this.checked);" />
-            Selectionner champs Inconnus
+            <?=_("Sélectionner champs Inconnus")?>
           </label>
           <label>
             <input type="checkbox" name="uniquement_points_caches" value="True"/>
-            Uniquement les points cachés
+            <?=_("Uniquement les points cachés")?>
           </label>
           <span class="champs_null_masque">
             <input type="checkbox" name="champs_null[]" value="manque_un_mur" />
             <label>
               <input type="checkbox" name="champs_trinaires[]" value="manque_un_mur" />
-              Abris dont il manque un mur
+              <?=_("Abris dont il manque un mur")?>
             </label>
           </span>
             <label>
               <input type="checkbox" name="conditions_utilisation" value="cle_a_recuperer" />
-              dont il faut récupérer les clés
+              <?=_("dont il faut récupérer les clés")?>
             </label>
         </fieldset>
     <?php } ?>

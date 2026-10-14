@@ -3,8 +3,8 @@
 
 if (!est_moderateur()) {
   $vue->type="page_simple";
-  $vue->titre="Permissions insuffisantes";
-  $vue->contenu="Désolé, mais pour cette opération vous devez être modérateur et être connecté au forum :";
+  $vue->titre=_("Permissions insuffisantes");
+  $vue->contenu=_("Désolé, mais pour cette opération vous devez être modérateur et être connecté au forum :");
   return "";
 }
 
@@ -21,8 +21,9 @@ if(isset($vue->polygone) && !isset($vue->polygone->nom_polygone))
   $vue->polygone->nom_polygone='Nom';
 
 if (isset($polygone))
-  $vue->titre="Modification $polygone->article_partitif $polygone->type_polygone $polygone->article_partitif $polygone->nom_polygone";
+  $vue->titre=($config_wri['langue_courante']=='fr') ? "Modification $polygone->article_partitif $polygone->type_polygone $polygone->article_partitif $polygone->nom_polygone"
+    : sprintf(_("Modification %s"), sprintf(_("le %2\$s %1\$s"), _($polygone->type_polygone), $polygone->nom_polygone));
 else
-  $vue->titre="Création d'un polygone";
+  $vue->titre=_("Création d'un polygone");
 
 $vue->liste_type_polygone=liste_type_polygone();

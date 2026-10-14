@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: refuges.info\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-14 17:32+0200\n"
+"POT-Creation-Date: 2026-10-14 17:41+0200\n"
 "Language: en_GB\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -21,13 +21,18 @@ msgid "Est :"
 msgstr "Is:"
 
 msgid "Plus d'actualité ou n'a rien à voir avec le point ou n'est pas factuel"
-msgstr "No longer current, or has nothing to do with the point, or is not factual"
+msgstr ""
+"No longer current, or has nothing to do with the point, or is not factual"
 
 msgid "(Voir ce que l'on peut mettre ou ne pas mettre)."
 msgstr "(See what can and cannot be put on the site)."
 
-msgid "Ou au contraire très utile : ces informations devraient être rajoutées dans la fiche en haut."
-msgstr "Or on the contrary very useful: this information should be added to the sheet at the top."
+msgid ""
+"Ou au contraire très utile : ces informations devraient être rajoutées dans "
+"la fiche en haut."
+msgstr ""
+"Or on the contrary very useful: this information should be added to the "
+"sheet at the top."
 
 msgid "Une raison pour expliquer ?"
 msgstr "A reason to explain?"
@@ -53,6 +58,15 @@ msgstr "Back to %s without taking any action."
 msgid "la fiche de %s"
 msgstr "the sheet of %s"
 
+msgid "Commentaires à corriger"
+msgstr "Comments to correct"
+
+msgid "Emails en erreur"
+msgstr "Emails in error"
+
+msgid "Posts édités à vérifier"
+msgstr "Edited posts to check"
+
 msgid "Utilisateur"
 msgstr "User"
 
@@ -70,6 +84,44 @@ msgstr "Private messages"
 
 msgid "Déconnexion"
 msgstr "Log out"
+
+msgid "Commentaires à traiter"
+msgstr "Comments to process"
+
+msgid "Historique des modifications"
+msgstr "History of changes"
+
+msgid "édition de %s post à traiter"
+msgid_plural "édition de %s posts à traiter"
+msgstr[0] "editing of %s post to process"
+msgstr[1] "editing of %s posts to process"
+
+msgid "Historique des traces"
+msgstr "Trace history"
+
+msgid "Massifs & zones"
+msgstr "Massifs & zones"
+
+msgid "Pré-remplissage des champs lors d'un ajout de point"
+msgstr "Pre-filling of the fields when a point is added"
+
+msgid "Modèles de points"
+msgstr "Point templates"
+
+msgid "Liste des contenus spéciaux"
+msgstr "List of special contents"
+
+msgid "Liste des pages wiki"
+msgstr "List of wiki pages"
+
+msgid "Scanner les liens véreux"
+msgstr "Scan for dodgy links"
+
+msgid "Modération du forum"
+msgstr "Forum moderation"
+
+msgid "Administration du forum"
+msgstr "Forum administration"
 
 msgid "Connexion"
 msgstr "Log in"
@@ -290,11 +342,223 @@ msgstr "Back to the sheet: %s"
 msgid "Modification du commentaire n°%s"
 msgstr "Editing comment no. %s"
 
+msgid "Édition"
+msgstr "Editing"
+
+msgid "Création"
+msgstr "Creation"
+
+msgid "Type :"
+msgstr "Type:"
+
+msgid "Nom :"
+msgstr "Name:"
+
+msgid "Article partitif (max 20 car)"
+msgstr "Partitive article (max 20 characters)"
+
+msgid "Il ne doit pas y avoir de ligne pour enregistrer."
+msgstr "There must be no line in order to save."
+
+msgid "Il doit y avoir au moins 1 polygone pour enregistrer."
+msgstr "There must be at least 1 polygon in order to save."
+
+msgid "Enregistrer et rester"
+msgstr "Save and stay"
+
+msgid "Quitter sans enregistrer"
+msgstr "Leave without saving"
+
+#, php-format
+msgid "L'élément sélectionné est %s"
+msgstr "The selected element is %s"
+
+msgid "rouge"
+msgstr "red"
+
+#, php-format
+msgid "Les éléments sélectionnables sont %s"
+msgstr "The selectable elements are %s"
+
+msgid "bleus"
+msgstr "blue"
+
+#, php-format
+msgid "Les éléments en fond sont %s"
+msgstr "The background elements are %s"
+
+msgid "noirs"
+msgstr "black"
+
+msgid "Modifier un polygone :"
+msgstr "Modify a polygon:"
+
+#, php-format
+msgid "Cliquer sur un sommet et glisser pour le %s"
+msgstr "Click on a vertex and drag to %s it"
+
+msgid "déplacer"
+msgstr "move"
+
+#, php-format
+msgid "Cliquer le long d'un segment et glisser pour %s"
+msgstr "Click along a segment and drag to %s"
+
+msgid "ajouter un sommet au milieu d'un segment"
+msgstr "add a vertex in the middle of a segment"
+
+#, php-format
+msgid "Alt+cliquer sur un sommet pour le %s"
+msgstr "Alt+click on a vertex to %s it"
+
+msgid "supprimer"
+msgstr "delete"
+
+#, php-format
+msgid "Ctrl+Alt+cliquer sur un de ses segments pour %s"
+msgstr "Ctrl+Alt+click on one of its segments to %s"
+
+msgid "supprimer un polygone ou une ligne"
+msgstr "delete a polygon or a line"
+
+#, php-format
+msgid "Un polygone entièrement inclus dans un autre %s"
+msgstr "A polygon entirely inside another one %s"
+
+msgid "crée un trou"
+msgstr "creates a hole"
+
+msgid "Utiliser des lignes pour les éditions complexes :"
+msgstr "Using lines for complex edits:"
+
+#, php-format
+msgid "Ctrl+cliquer sur un sommet ou un segment d'un polygone rouge pour le %s"
+msgstr "Ctrl+click on a vertex or a segment of a red polygon to %s it"
+
+msgid "transformer en ligne"
+msgstr "turn it into a line"
+
+msgid "...puis déplacer l'une des 2 extrémités (rond rouge)"
+msgstr "...then move one of the 2 ends (red circle)"
+
+#, php-format
+msgid "Ctrl+cliquer sur une ligne pour la %s"
+msgstr "Ctrl+click on a line to %s it"
+
+msgid "couper en deux"
+msgstr "cut it in two"
+
+#, php-format
+msgid "Déplacer l'extrémité d'une ligne jusqu'à l'extrémité d'une autre ligne pour les %s"
+msgstr "Move the end of a line to the end of another line to %s them"
+
+msgid "fusionner"
+msgstr "merge"
+
+#, php-format
+msgid "Fusionner les 2 extrémités d'une ligne pour la %s"
+msgstr "Merge the 2 ends of a line to %s it"
+
+msgid "transformer en polygone"
+msgstr "turn it into a polygon"
+
+msgid "Vous devez transformer toutes les lignes en polygones ou les supprimer avant d'enregistrer"
+msgstr "You must turn all the lines into polygons or delete them before saving"
+
+msgid "Créer un polygone :"
+msgstr "Create a polygon:"
+
+msgid "Cliquer sur le bouton"
+msgstr "Click on the button"
+
+#, php-format
+msgid "Cliquer sur l'emplacement du %s"
+msgstr "Click on the location of the %s"
+
+msgid "début"
+msgstr "start"
+
+#, php-format
+msgid "Puis sur chaque %s"
+msgstr "Then on each %s"
+
+msgid "sommet à créer"
+msgstr "vertex to create"
+
+#, php-format
+msgid "Double cliquer sur le %s pour terminer"
+msgstr "Double-click on the %s to finish"
+
+msgid "dernier sommet"
+msgstr "last vertex"
+
+msgid "Créer une ligne :"
+msgstr "Create a line:"
+
+msgid "Suivre un tracé existant :"
+msgstr "Following an existing outline:"
+
+#, php-format
+msgid "Pendant la création, placer un sommet sur un %s"
+msgstr "While creating, place a vertex on a %s"
+
+msgid "polygone en fond"
+msgstr "background polygon"
+
+#, php-format
+msgid "ou charger %s un %s"
+msgstr "or load %s a %s"
+
+msgid "fichier de trace"
+msgstr "track file"
+
+#, php-format
+msgid "...et en %s"
+msgstr "...and %s"
+
+msgid "suivre le contour"
+msgstr "follow the outline"
+
+msgid "Placer un sommet en dehors du tracé suivi pour en sortir"
+msgstr "Place a vertex outside the followed outline to leave it"
+
+msgid "Suppression"
+msgstr "Deletion"
+
+#, php-format
+msgid "Supprimer %s"
+msgstr "Delete %s"
+
+#, php-format
+msgid "le %2$s %1$s"
+msgstr "the %2$s %1$s"
+
+msgid "(définitif)."
+msgstr "(permanent)."
+
+#, php-format
+msgid "ATTENTION : Ceci va supprimer définitivement %s"
+msgstr "WARNING: This will permanently delete %s"
+
+msgid "Aucune restauration ne sera possible"
+msgstr "No restoration will be possible"
+
+#, php-format
+msgid "Supprimer « %s »"
+msgstr "Delete “%s”"
+
+msgid "ou"
+msgstr "or"
+
+msgid "Annuler"
+msgstr "Cancel"
+
 msgid "Options d'exportations"
 msgstr "Export options"
 
 msgid "Veuillez préciser les options des type de points et des massifs voulus"
-msgstr "Please specify the options for the types of points and the massifs you want"
+msgstr ""
+"Please specify the options for the types of points and the massifs you want"
 
 msgid "Choix des points de la base à exporter"
 msgstr "Choice of the points of the database to export"
@@ -322,7 +586,8 @@ msgstr "Requested export"
 
 #, php-format
 msgid "Voici le lien permanent d'accès direct aux données au format \"%s\""
-msgstr "Here is the permanent direct-access link to the data in the \"%s\" format"
+msgstr ""
+"Here is the permanent direct-access link to the data in the \"%s\" format"
 
 msgid "lien vers les données"
 msgstr "link to the data"
@@ -330,10 +595,15 @@ msgstr "link to the data"
 msgid "Cliquez ici pour télécharger les données"
 msgstr "Click here to download the data"
 
-msgid "Vous n'avez sélectionné aucun type de point ou aucun massif, revenez en arrière pour compléter le formulaire"
-msgstr "You have not selected any type of point or any massif; go back to complete the form"
+msgid ""
+"Vous n'avez sélectionné aucun type de point ou aucun massif, revenez en "
+"arrière pour compléter le formulaire"
+msgstr ""
+"You have not selected any type of point or any massif; go back to complete "
+"the form"
 
-msgid "Veuillez préciser les options de ce que vous voulez et dans quel(s) massif(s)"
+msgid ""
+"Veuillez préciser les options de ce que vous voulez et dans quel(s) massif(s)"
 msgstr "Please specify the options for what you want and in which massif(s)"
 
 msgid "Choix des nouvelles à afficher"
@@ -396,9 +666,6 @@ msgstr "Download the file"
 
 msgid "Télécharger"
 msgstr "Download"
-
-msgid "ou"
-msgstr "or"
 
 msgid "Copier le lien dans le clipboard"
 msgstr "Copy the link to the clipboard"
@@ -531,6 +798,55 @@ msgstr "Other sites"
 msgid "(seuls les 100 premiers points sont affichés)"
 msgstr "(only the first 100 points are shown)"
 
+msgid "Modifications"
+msgstr "Modifications"
+
+#, php-format
+msgid "Modifier %s"
+msgstr "Edit %s"
+
+msgid "Massifs"
+msgstr "Massifs"
+
+msgid "Voir les massifs"
+msgstr "See the massifs"
+
+msgid "Un massif est défini par un polygone qui représente EXACTEMENT le contour du massif."
+msgstr "A massif is defined by a polygon that represents EXACTLY the outline of the massif."
+
+msgid "Un point est réputé appartenir à un massif quand il est STRICTEMENT INCLUS dans le polygone."
+msgstr "A point is deemed to belong to a massif when it is STRICTLY INSIDE the polygon."
+
+msgid "Créer un massif"
+msgstr "Create a massif"
+
+msgid "Pour modifier ou supprimer un massif, ouvrez-le en édition."
+msgstr "To edit or delete a massif, open it in edit mode."
+
+msgid "Zones"
+msgstr "Zones"
+
+msgid "Voir les zones"
+msgstr "See the zones"
+
+msgid "Une zone est définie par un polygone qui n'est jamais affiché en tant que tel."
+msgstr "A zone is defined by a polygon that is never displayed as such."
+
+msgid "Un massif est réputé appartenir à une zone quand son polygone INTERSECTE celui de la zone."
+msgstr "A massif is deemed to belong to a zone when its polygon INTERSECTS the zone's polygon."
+
+msgid "La zone n'a donc pas besoin d'être très précise : un vague rectangle suffit la plupart du temps du moment qu'il recouvre au moins un bout de chaque massif."
+msgstr "The zone therefore does not need to be very precise: a rough rectangle is enough most of the time as long as it covers at least a bit of each massif."
+
+msgid "Par contre, si elle déborde sur un massif qui n'a rien à voir, celui-ci sera affiché."
+msgstr "On the other hand, if it spills over onto an unrelated massif, that massif will be displayed."
+
+msgid "Créer une zone"
+msgstr "Create a zone"
+
+msgid "Pour modifier ou supprimer une zone, ouvrez-la en édition."
+msgstr "To edit or delete a zone, open it in edit mode."
+
 msgid "Refuges"
 msgstr "Huts"
 
@@ -562,6 +878,15 @@ msgstr "This page is hidden from the public, it is only visible to moderators"
 
 msgid "Cette fiche est un modèle, elle n'est visible que des modérateurs"
 msgstr "This page is a template, it is only visible to moderators"
+
+msgid "Modification"
+msgstr "Edit"
+
+msgid "Historique"
+msgstr "History"
+
+msgid "Trace de la création du point"
+msgstr "Trace of the point's creation"
 
 msgid "Traduction automatique (pilote) : l'original en français fait foi."
 msgstr "Automatic translation (pilot): the French original is authoritative."
@@ -678,6 +1003,9 @@ msgstr "Recent information"
 
 msgid "Ajouter une information et/ou une photo"
 msgstr "Add some information and/or a photo"
+
+msgid "Trace de la création du commentaire"
+msgstr "Trace of the comment's creation"
 
 msgid ""
 "Avertissement : Les informations fournies sont indicatives. Elles ne "
@@ -901,9 +1229,6 @@ msgstr "Altitude (metres):"
 msgid "Informations de base"
 msgstr "Basic information"
 
-msgid "Nom :"
-msgstr "Name:"
-
 msgid "Type de point"
 msgstr "Type of point"
 
@@ -944,8 +1269,12 @@ msgstr ""
 "This procedure makes sure that the 'robots' that roam the Net do not get "
 "this far"
 
-msgid "Aucun champ n'est obligatoire. Cependant, si la requête est trop large, cela peut prendre un certain temps"
-msgstr "No field is compulsory. However, if the query is too broad it may take a while"
+msgid ""
+"Aucun champ n'est obligatoire. Cependant, si la requête est trop large, cela "
+"peut prendre un certain temps"
+msgstr ""
+"No field is compulsory. However, if the query is too broad it may take a "
+"while"
 
 msgid "tout ou partie du nom, par exemple 'jasse' ou 'la pra'"
 msgstr "all or part of the name, for example 'jasse' or 'la pra'"
@@ -959,8 +1288,12 @@ msgstr "type of accommodation, stage lodging, wilderness hut ..."
 msgid "(tous)"
 msgstr "(all)"
 
-msgid "Polygones (départements, régions, massifs, réserves naturelles, tous les polygones dans notre base) contenant les points recherchés"
-msgstr "Polygons (departments, regions, massifs, nature reserves, all the polygons in our database) containing the points being searched for"
+msgid ""
+"Polygones (départements, régions, massifs, réserves naturelles, tous les "
+"polygones dans notre base) contenant les points recherchés"
+msgstr ""
+"Polygons (departments, regions, massifs, nature reserves, all the polygons "
+"in our database) containing the points being searched for"
 
 msgid "Dans le massif/département/... :"
 msgstr "In the massif/department/... :"
@@ -995,8 +1328,12 @@ msgstr "Latrines"
 msgid "Ne manque pas de mur"
 msgstr "No wall missing"
 
-msgid "Concerne surtout les cabanes, Il n'y a pas de réservation et des groupes peuvent toujours venir à l'improviste"
-msgstr "Mostly concerns huts: there is no booking and groups can always turn up unannounced"
+msgid ""
+"Concerne surtout les cabanes, Il n'y a pas de réservation et des groupes "
+"peuvent toujours venir à l'improviste"
+msgstr ""
+"Mostly concerns huts: there is no booking and groups can always turn up "
+"unannounced"
 
 msgid "Nombre de places"
 msgstr "Number of places"
@@ -1028,11 +1365,57 @@ msgstr "Stove"
 msgid "Non renseigné"
 msgstr "Not specified"
 
+msgid "Critères uniquement pour les modérateurs"
+msgstr "Criteria for moderators only"
+
+msgid "Méta-informations"
+msgstr "Meta-information"
+
+msgid "Un positionnement précis est-il indispensable ?"
+msgstr "Is a precise position essential?"
+
+msgid "Provenance des coordonnées GPS :"
+msgstr "Source of the GPS coordinates:"
+
+msgid "(Peu importe)"
+msgstr "(Doesn't matter)"
+
+msgid "Dont le modérateur est :"
+msgstr "Whose moderator is:"
+
+msgid "Tous"
+msgstr "All"
+
+msgid "Le point est fermé/détruit/en ruine"
+msgstr "The point is closed/destroyed/in ruins"
+
+msgid "Que les non utilisables"
+msgstr "Only the unusable ones"
+
+msgid "Sélectionner les champs avec valeur 'Inconnu', cocher les cases rouges"
+msgstr "Select the fields with the value 'Unknown', tick the red boxes"
+
+msgid "Sélectionner champs Inconnus"
+msgstr "Select Unknown fields"
+
+msgid "Uniquement les points cachés"
+msgstr "Hidden points only"
+
+msgid "Abris dont il manque un mur"
+msgstr "Shelters with a missing wall"
+
+msgid "dont il faut récupérer les clés"
+msgstr "whose keys must be collected"
+
 msgid "Résultats"
 msgstr "Results"
 
-msgid "Si cette case est cochée, la recherche renvoie tous les résultats sans limite (attention, cela peut lancer une recherche parfois longue)"
-msgstr "If this box is ticked, the search returns all results without limit (careful, this can start a sometimes lengthy search)"
+msgid ""
+"Si cette case est cochée, la recherche renvoie tous les résultats sans "
+"limite (attention, cela peut lancer une recherche parfois longue)"
+msgstr ""
+"If this box is ticked, the search returns all results without limit "
+"(careful, this can start a sometimes lengthy search)"
 
 #, php-format
 msgid "Limiter aux %s premiers résultats."
@@ -1068,8 +1451,12 @@ msgid "Cliquez ici pour voir ou retourner à la fiche"
 msgstr "Click here to see or go back to the sheet"
 
 #, php-format
-msgid "Recherche sur refuges.info (%s points affichés et la limite du nombre de points a été atteinte)"
-msgstr "Search on refuges.info (%s points shown and the limit on the number of points has been reached)"
+msgid ""
+"Recherche sur refuges.info (%s points affichés et la limite du nombre de "
+"points a été atteinte)"
+msgstr ""
+"Search on refuges.info (%s points shown and the limit on the number of "
+"points has been reached)"
 
 #, php-format
 msgid "Recherche sur refuges.info (%s points affichés)"
@@ -1079,9 +1466,107 @@ msgstr "Search on refuges.info (%s points shown)"
 msgid "Aucun point trouvé dans la base de %s"
 msgstr "No point found in the %s database"
 
+msgid "Modifier cette page"
+msgstr "Edit this page"
+
+msgid "Suppression de cette page sans confirmation :"
+msgstr "Deletion of this page without confirmation:"
+
+msgid "pouf !"
+msgstr "poof!"
+
 #, php-format
 msgid "Date de dernière modification de cette page : %s"
 msgstr "Date this page was last modified: %s"
+
+msgid "Liste des commentaires en attente de modération :"
+msgstr "List of comments awaiting moderation:"
+
+#, php-format
+msgid "Le commentaire du %s"
+msgstr "The comment of %s"
+
+#, php-format
+msgid "par \"%s\" sur %s"
+msgstr "by \"%s\" on %s"
+
+#, php-format
+msgid ", raison=%s"
+msgstr ", reason=%s"
+
+msgid "Retirer ceux que j'ai coché de la liste"
+msgstr "Remove those I ticked from the list"
+
+msgid "Aucun commentaire en attente de modération"
+msgstr "No comment awaiting moderation"
+
+msgid "Liste des 50 derniers emails envoyés depuis le forum qui sont revenus en erreur"
+msgstr "List of the last 50 emails sent from the forum that bounced"
+
+msgid "date"
+msgstr "date"
+
+msgid "contenu"
+msgstr "content"
+
+msgid "Marquer comme traité"
+msgstr "Mark as processed"
+
+msgid "Fiche n°"
+msgstr "Sheet no."
+
+msgid "Type de modification"
+msgstr "Type of change"
+
+msgid "Nombre maximum"
+msgstr "Maximum number"
+
+msgid "Filtrer"
+msgstr "Filter"
+
+msgid "du/de la"
+msgstr "of the"
+
+#, php-format
+msgid "du %s"
+msgstr "on %s"
+
+#, php-format
+msgid "par %s"
+msgstr "by %s"
+
+msgid "Avant"
+msgstr "Before"
+
+msgid "voir +"
+msgstr "see more"
+
+msgid "Après"
+msgstr "After"
+
+msgid "Voici la liste de toutes les pages wiki du site, classées par ordre alphabétique :"
+msgstr "Here is the list of all the wiki pages of the site, in alphabetical order:"
+
+msgid "Nom de la page wiki"
+msgstr "Wiki page name"
+
+msgid "dernière modification"
+msgstr "last modified"
+
+msgid "Aucune page wiki sur ce site"
+msgstr "No wiki page on this site"
+
+msgid "Modification des \"modèles\" de fiche"
+msgstr "Editing the sheet \"templates\""
+
+msgid "Voici la liste des modèles existants pour les différents points de la base, chacun pouvant être modifié, exactement comme une fiche normale, sauf qu'ici il s'agit d'un \"modèle\" sur un point fictif : Il est dans notre base, au même titre que toutes les autres fiches de points, mais ne sera affiché sur aucune carte, aucune recherche et rien du tout en fait sauf... comme \"pré-remplissage\" d'un nouveau point vierge."
+msgstr "Here is the list of the existing templates for the various types of points in the database, each of which can be edited exactly like a normal sheet, except that here it is a \"template\" on a fictitious point: it is in our database like all the other point sheets, but it will be displayed on no map, no search and nothing at all, except... as a \"pre-fill\" for a new blank point."
+
+msgid "En gros, c'est le contenu par défaut lorsque l'on crée une fiche, dont l'objectif est d'inciter à indiquer, qu'il y a un poêle, une table, des couvertures, etc."
+msgstr "Basically, this is the default content when a sheet is created, whose aim is to prompt people to say that there is a stove, a table, blankets, etc."
+
+msgid "On aurait pu faire autrement bien sûr en écrivant ça à côté de la fiche, mais j'ai (sly) trouvé l'idée intéressante, et comme avantage collatéral, quand une fiche apparaît avec toutes les valeurs par défaut, on détecte rapidement qu'il y a eu un problème et un modérateur peut alors intervenir."
+msgstr "We could of course have done it differently by writing this next to the sheet, but I (sly) found the idea interesting, and as a side benefit, when a sheet appears with all the default values, we quickly detect that there was a problem and a moderator can then step in."
 
 msgid "Erreur 404 : commentaire introuvable"
 msgstr "Error 404: comment not found"
@@ -1089,8 +1574,12 @@ msgstr "Error 404: comment not found"
 msgid "Merci pour votre aide au tri, "
 msgstr "Thank you for your help with the sorting, "
 
-msgid "Oups ? la lettre anti_robot saisie n'est pas la bonne, utilisez le bouton \"Retour de votre navigateur pour reprendre la saisie\", ou "
-msgstr "Oops? The anti-robot letter you entered is not the right one; use your browser's \"Back\" button to go back to the form, or "
+msgid ""
+"Oups ? la lettre anti_robot saisie n'est pas la bonne, utilisez le bouton "
+"\"Retour de votre navigateur pour reprendre la saisie\", ou "
+msgstr ""
+"Oops? The anti-robot letter you entered is not the right one; use your "
+"browser's \"Back\" button to go back to the form, or "
 
 msgid "vous pouvez retourner sur : "
 msgstr "you can go back to: "
@@ -1103,19 +1592,43 @@ msgid "Erreur 403 : droits insuffisants"
 msgstr "Error 403: insufficient rights"
 
 #, php-format
-msgid "Pour modifier le commentaire d'id=%s, soit ça doit être le votre, soit vous devez être modérateur global, êtes vous bien connecté ?"
-msgstr "To edit the comment with id=%s, it must either be yours or you must be a global moderator; are you logged in?"
+msgid ""
+"Pour modifier le commentaire d'id=%s, soit ça doit être le votre, soit vous "
+"devez être modérateur global, êtes vous bien connecté ?"
+msgstr ""
+"To edit the comment with id=%s, it must either be yours or you must be a "
+"global moderator; are you logged in?"
 
-msgid "Aucune action demandée, utilisez le formulaire de modification du commentaire"
+msgid ""
+"Aucune action demandée, utilisez le formulaire de modification du commentaire"
 msgstr "No action requested, use the comment edit form"
 
 #, php-format
-msgid "Transfert du commentaire impossible, car le point de destination indique : %s"
-msgstr "The comment cannot be transferred, because the destination point says: %s"
+msgid ""
+"Transfert du commentaire impossible, car le point de destination indique : %s"
+msgstr ""
+"The comment cannot be transferred, because the destination point says: %s"
 
 #, php-format
 msgid "Action inconnue : %s"
 msgstr "Unknown action: %s"
+
+msgid "Permissions insuffisantes"
+msgstr "Insufficient permissions"
+
+msgid ""
+"Désolé, mais pour cette opération vous devez être modérateur et être "
+"connecté au forum :"
+msgstr ""
+"Sorry, but for this operation you must be a moderator and be logged in to "
+"the forum:"
+
+#, php-format
+msgid "Modification %s"
+msgstr "Editing %s"
+
+msgid "Création d'un polygone"
+msgstr "Creating a polygon"
 
 msgid "Téléchargement et exportation de la base refuges.info"
 msgstr "Download and export of the refuges.info database"
@@ -1135,10 +1648,15 @@ msgstr "Get a link to the requested news"
 msgid "flux RSS ou de la page des nouvelles du site Refuges.info"
 msgstr "RSS feed or news page of the Refuges.info site"
 
-msgid "Voici le lien vers le Flux RSS demandé, vous pouvez l'ajouter à votre agrégateur de flux RSS favoris (Clic-droit puis enregistrer sous)"
-msgstr "Here is the link to the requested RSS feed; you can add it to your favourite RSS reader (right-click then save as)"
+msgid ""
+"Voici le lien vers le Flux RSS demandé, vous pouvez l'ajouter à votre "
+"agrégateur de flux RSS favoris (Clic-droit puis enregistrer sous)"
+msgstr ""
+"Here is the link to the requested RSS feed; you can add it to your favourite "
+"RSS reader (right-click then save as)"
 
-msgid "Lien vers les nouvelles personnalisées (vous pouvez la placer en marque page)"
+msgid ""
+"Lien vers les nouvelles personnalisées (vous pouvez la placer en marque page)"
 msgstr "Link to the customised news (you can bookmark it)"
 
 msgid "Carte et informations sur les refuges, cabanes et abris de montagne"
@@ -1147,10 +1665,6 @@ msgstr ""
 
 msgid "cabanes, refuges et points d'eau"
 msgstr "wilderness huts, alpine huts and water points"
-
-#, php-format
-msgid "le %2$s %1$s"
-msgstr "the %2$s %1$s"
 
 #, php-format
 msgid "%s sur une carte"
@@ -1198,16 +1712,6 @@ msgstr "Delete the sheet"
 
 msgid "Modification d'un point dans refuges.info"
 msgstr "Editing a point on refuges.info"
-
-msgid "Permissions insuffisantes"
-msgstr "Insufficient permissions"
-
-msgid ""
-"Désolé, mais pour cette opération vous devez être modérateur et être "
-"connecté au forum :"
-msgstr ""
-"Sorry, but for this operation you must be a moderator and be logged in to "
-"the forum:"
 
 msgid "Connexion forum"
 msgstr "Forum login"
@@ -1282,7 +1786,9 @@ msgid ""
 msgstr ""
 "You are not a moderator of the site; you do not have permission to delete it"
 
-msgid "(Vous pouvez revenir en arrière avec votre navigateur pour corriger le problème)"
+msgid ""
+"(Vous pouvez revenir en arrière avec votre navigateur pour corriger le "
+"problème)"
 msgstr "(You can go back with your browser to fix the problem)"
 
 msgid "Recherche sur refuges.info en erreur"
@@ -1290,10 +1796,59 @@ msgstr "Search on refuges.info failed"
 
 #, php-format
 msgid "(%s points affichés et la limite du nombre de points a été atteinte)"
-msgstr "(%s points shown and the limit on the number of points has been reached)"
+msgstr ""
+"(%s points shown and the limit on the number of points has been reached)"
 
-msgid "Votre recherche ne contient aucun critère, il devrait au moins y avoir le nom (même vide)"
-msgstr "Your search contains no criteria; there should at least be the name (even if empty)"
+msgid ""
+"Votre recherche ne contient aucun critère, il devrait au moins y avoir le "
+"nom (même vide)"
+msgstr ""
+"Your search contains no criteria; there should at least be the name (even if "
+"empty)"
+
+msgid "Toutefois, vous pouvez la créer si besoin car vous êtes modérateur, en : "
+msgstr "However, you can create it if needed because you are a moderator, by "
+
+msgid "cliquant ici"
+msgstr "clicking here"
+
+msgid "Erreur de modération"
+msgstr "Moderation error"
+
+msgid "peut-être pouvez-vous essayer de ré-ouvrir ce formulaire : "
+msgstr "perhaps you could try to reopen this form: "
+
+msgid "Liste des commentaires en attente de correction"
+msgstr "List of comments awaiting correction"
+
+msgid "nous signale une modification de fiche à faire"
+msgstr "tells us of a sheet change to be made"
+
+msgid "n'a peut-être pas/plus d'intérêt selon un internaute"
+msgstr "may no longer be of interest according to an internet user"
+
+msgid "apporte peut-être de l'information à la fiche selon un internaute"
+msgstr "may bring information to the sheet according to an internet user"
+
+msgid "contient un mot pouvant faire penser à une réservation"
+msgstr "contains a word that may suggest a booking"
+
+#, php-format
+msgid "concerne un %s et n'a pas été traitée par un modérateur"
+msgstr "concerns a %s and has not been processed by a moderator"
+
+msgid "L'historique n'est consultable que par les modérateurs, ou par le modérateur de la fiche pour l'historique de sa fiche, êtes vous bien connecté ?"
+msgstr "The history can only be viewed by moderators, or by the moderator of a sheet for the history of their own sheet; are you logged in?"
+
+msgid "anonyme ?"
+msgstr "anonymous?"
+
+#, php-format
+msgid "Fiche n°%s"
+msgstr "Sheet no. %s"
+
+msgid "Erreur : aucun nom ?"
+msgstr "Error: no name?"
 
 #, php-format
 msgid ""
@@ -1464,6 +2019,9 @@ msgstr ""
 msgid "Cette page du wiki n'existe pas"
 msgstr "This wiki page does not exist"
 
+msgid ", vous devez être un modérateur du site, pour accéder à cette page, êtes vous bien connecté ?"
+msgstr ", you must be a moderator of the site to access this page; are you logged in?"
+
 msgid "abri naturel"
 msgstr "natural shelter"
 
@@ -1616,3 +2174,21 @@ msgstr "jpeg, png, bmp or webp"
 
 msgid "kml (googlearth et plusieurs applications smartphone )"
 msgstr "kml (Google Earth and several smartphone apps)"
+
+msgid "modification point"
+msgstr "point modification"
+
+msgid "creation point"
+msgstr "point creation"
+
+msgid "création point"
+msgstr "point creation"
+
+msgid "suppression point"
+msgstr "point deletion"
+
+msgid "modification polygone"
+msgstr "polygon modification"
+
+msgid "suppression polygone"
+msgstr "polygon deletion"
