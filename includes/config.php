@@ -224,6 +224,13 @@ setlocale(LC_TIME, "fr_FR.UTF-8"); // Pour avoir les affichage de date en french
 // Pour l'instant, en statique mais le jour ou on passera en multi-langue, on pourra ici choisir les chaines de caractères générées (en 2024 les dates inclus les jours et mois en français
 $config_wri['langue']="fr_FR";
 
+// Multi-langue : la langue d'affichage est portée par l'url (voir routes/generales.routes.php), le français reste la langue par défaut
+// et c'est celle de toutes les urls historiques (liens externes) : /point/91/type/nom/ reste français, /point/91/type/nom/en/ est la version anglaise
+$config_wri['langues_url']=array('en');   // langues d'affichage autres que le français
+$config_wri['langue_courante']='fr';
+$config_wri['url_prefixe_langue']='';     // '' ou '/en' : avant le nom de la page (accueil, wiki...)
+$config_wri['url_suffixe_langue']='';     // '' ou 'en/' : après /point/id/type/nom/ et /nav/id/type/nom/
+
 // Timezone par défaut pour choisir l'affichage des dates+heures
 $config_wri['timezone']='Europe/Paris';
 

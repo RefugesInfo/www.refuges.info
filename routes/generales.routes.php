@@ -22,6 +22,47 @@ $controlleur->url_base=str_replace('RACINE'."/",'','RACINE'.$sans_parametres[0])
 //DOM ajout de RACINE évite d'enlever tous les / quand sous_dossier_installation = /
 $controlleur->url_decoupee = explode ('/',$controlleur->url_base);
 
+// Langue d'affichage portée par l'url (le français = aucune marque, pour garder les urls historiques) :
+//   /point/91/type/nom/en/  et  /nav/5257/massif/nom/en/ : suffixe, toujours en 5ème position (l'indice 4) pour ne jamais
+//                                                          être confondu avec le nom d'une fiche (indice 3)
+//   /wiki/legende_carte/en/ : suffixe en 3ème position (l'indice 2), même principe (la page d'accueil du wiki est /wiki//en/)
+//   /en/  /en/formulaire_exportations ... : préfixe pour toutes les autres pages
+$langue_url = '';
+if (in_array($controlleur->url_decoupee[0], $config_wri['langues_url'], true))
+{
+  $langue_url = array_shift($controlleur->url_decoupee);
+  if (!$controlleur->url_decoupee)
+    $controlleur->url_decoupee = array('');
+  // Pour point, nav et wiki, la forme officielle est le suffixe : une seule url par page (doublons, liens externes)
+  $suffixe = ($controlleur->url_decoupee[0]=='wiki') ? array_slice($controlleur->url_decoupee, 0, 2)
+    : (in_array($controlleur->url_decoupee[0], array('point','nav'), true) ? array_slice($controlleur->url_decoupee, 0, 4) : array());
+  if ($suffixe and isset($suffixe[count($suffixe)-1]) and $suffixe[count($suffixe)-1] !== ''
+    and count($suffixe) == (($suffixe[0]=='wiki') ? 2 : 4))
+  {
+    header('Location: /'.implode('/', $suffixe).'/'.$langue_url.'/'.(isset($_SERVER['QUERY_STRING']) && $_SERVER['QUERY_STRING']!=='' ? '?'.$_SERVER['QUERY_STRING'] : ''), true, 301);
+    exit();
+  }
+}
+elseif (in_array($controlleur->url_decoupee[0], array('point','nav'), true)
+  and in_array($controlleur->url_decoupee[4] ?? '', $config_wri['langues_url'], true))
+{
+  $langue_url = $controlleur->url_decoupee[4];
+  array_splice($controlleur->url_decoupee, 4, 1); // les contrôleurs ne voient pas la langue, l'indice 4 reste vide comme avant
+}
+elseif ($controlleur->url_decoupee[0]=='wiki'
+  and in_array($controlleur->url_decoupee[2] ?? '', $config_wri['langues_url'], true))
+{
+  $langue_url = $controlleur->url_decoupee[2];
+  array_splice($controlleur->url_decoupee, 2, 1);
+}
+$controlleur->langue = $langue_url ?: 'fr';
+if ($langue_url)
+{
+  $config_wri['langue_courante'] = $langue_url;
+  $config_wri['url_prefixe_langue'] = '/'.$langue_url;
+  $config_wri['url_suffixe_langue'] = $langue_url.'/';
+}
+
 // Par défaut, on veut un en-tête et pied de page html, => $vue->type.html sera affiché avec ce qui va bien autour
 // mais dans de rare cas (point-json) on ne veut pas => On remplacera $vue->template par le fichier tout seul
 $vue->template='_page.html';
