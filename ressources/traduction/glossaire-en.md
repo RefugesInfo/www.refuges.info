@@ -28,11 +28,11 @@ Les toponymes restent en français : *col de Pré Lang*, *pas de la Coche*, *com
 | Français | Anglais | Note | Statut |
 |---|---|---|---|
 | refuge | alpine hut | rejeté : *refuge*. Toujours en minuscules (majuscule seulement en début de phrase) | ✅ |
-| refuge gardé | alpine hut | rejeté : *staffed refuge*. Même terme que « refuge » : la distinction gardé / non gardé est à préciser (ex. *staffed alpine hut*) | ⏳ |
-| non gardé | unstaffed | | ✅ |
+| refuge gardé | alpine hut | rejeté : *staffed refuge*, *staffed alpine hut* (redondant : *alpine hut* est implicitement gardé) | ✅ |
+| non gardé | (voir cabane non gardée) | « cabane non gardée », « refuge non gardé », « abri non gardé » désignant un bâtiment ouvert à tous : **wilderness hut**, jamais *unstaffed alpine hut*, *unstaffed hut* ni *unstaffed wilderness hut* (redondant). *unstaffed* seul reste correct pour « hors gardiennage » (*open unstaffed in winter*) | ✅ |
 | cabane | wilderness hut | rejeté : *hut* seul. *hut* existe en anglais, mais dans le contexte du site il ne doit presque jamais se produire : « cabane » (même employé seul) se traduit toujours par *wilderness hut* | ✅ |
-| cabane non gardée | wilderness hut | rejeté : *unstaffed hut*. Toujours en minuscules (majuscule seulement en début de phrase) | ✅ |
-| gîte (d'étape) | Stage lodging | rejeté : *gîte* conservé. Choix de sly ; doute : calque de « étape », alternatives *mountain hostel*, *walkers' hostel* | ⏳ |
+| cabane non gardée | wilderness hut | rejeté : *unstaffed hut*, *unstaffed wilderness hut*, *unstaffed alpine hut* (décision de sly 2026-10-14). *wilderness hut* est déjà non gardée. Toujours en minuscules (majuscule seulement en début de phrase) | ✅ |
+| gîte (d'étape) | stage lodging | rejeté : *gîte* conservé. Décision de sly (2026-10-14) : sur refuges.info tous les gîtes sont des gîtes d'étape, sauf rare exception de contexte. Minuscules (*Stage lodging* seulement en début de phrase), pluriel *stage lodgings*. **Conservés tels quels** : les noms propres (« gîte de Prapic », « Gîte d'étape Le Refuge d'Archiane ») et les autres sens (gîte rural / *holiday gîte*, gîte de vacances) | ✅ |
 | habert | habert | terme savoyard/vercors, conservé tel quel | ✅ |
 | abri | shelter | | ✅ |
 | abri naturel | natural shelter | | ✅ |

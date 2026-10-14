@@ -496,7 +496,7 @@ msgid "Forêt à proximité"
 msgstr "Forest nearby"
 
 msgid "gîte d'étape"
-msgstr "gîte"
+msgstr "stage lodging"
 
 msgid "Inutilisable"
 msgstr "Unusable"
