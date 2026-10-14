@@ -51,6 +51,7 @@ Les toponymes restent en français : *col de Pré Lang*, *pas de la Coche*, *com
 | source | spring | | ✅ |
 | fontaine | fountain | | ✅ |
 | clef, clé | key | | ✅ |
+| massif (groupe de montagnes) | mountain range | décision de sly (2026-10-14) : on ne dit pas *massif* en anglais courant. Noms propres conservés (*Massif Central*), « massif des Écrins » → *the Écrins mountain range* | ✅ |
 | commune | municipality | « Commune de X » → « Municipality of X » | ✅ |
 | mairie | town hall | | ✅ |
 | Parc du Vercors | Parc du Vercors | rejeté : *Vercors Park*. Conservé en français (toponyme) | ✅ |

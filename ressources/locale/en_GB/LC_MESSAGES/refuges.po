@@ -101,7 +101,7 @@ msgid "Historique des traces"
 msgstr "Trace history"
 
 msgid "Massifs & zones"
-msgstr "Massifs & zones"
+msgstr "Mountain ranges & zones"
 
 msgid "Pré-remplissage des champs lors d'un ajout de point"
 msgstr "Pre-filling of the fields when a point is added"
@@ -566,13 +566,13 @@ msgstr "Export options"
 
 msgid "Veuillez préciser les options des type de points et des massifs voulus"
 msgstr ""
-"Please specify the options for the types of points and the massifs you want"
+"Please specify the options for the types of points and the mountain ranges you want"
 
 msgid "Choix des points de la base à exporter"
 msgstr "Choice of the points of the database to export"
 
 msgid "Choix des massifs de la base à exporter"
-msgstr "Choice of the massifs of the database to export"
+msgstr "Choice of the mountain ranges of the database to export"
 
 msgid "Choix du format d'exportation"
 msgstr "Choice of the export format"
@@ -607,12 +607,12 @@ msgid ""
 "Vous n'avez sélectionné aucun type de point ou aucun massif, revenez en "
 "arrière pour compléter le formulaire"
 msgstr ""
-"You have not selected any type of point or any massif; go back to complete "
+"You have not selected any type of point or any mountain range; go back to complete "
 "the form"
 
 msgid ""
 "Veuillez préciser les options de ce que vous voulez et dans quel(s) massif(s)"
-msgstr "Please specify the options for what you want and in which massif(s)"
+msgstr "Please specify the options for what you want and in which mountain range(s)"
 
 msgid "Choix des nouvelles à afficher"
 msgstr "Choice of the news to display"
@@ -636,14 +636,14 @@ msgid "Ajouts de points"
 msgstr "Additions of points"
 
 msgid "Choix des massifs de la base à restreindre"
-msgstr "Choice of the massifs of the database to restrict to"
+msgstr "Choice of the mountain ranges of the database to restrict to"
 
 msgid "Vous demandez vraiment quelque chose de vide ? (Ou alors c'est un bug)"
 msgstr "Are you really asking for something empty? (Or else it's a bug)"
 
 #, php-format
 msgid "%s points, %s massifs"
-msgstr "%s points, %s massifs"
+msgstr "%s points, %s mountain ranges"
 
 msgid "Cliquer sur un cluster pour dissocier les points proches."
 msgstr "Click on a cluster to separate the nearby points."
@@ -718,7 +718,7 @@ msgstr "on"
 
 #, php-format
 msgid "dans le massif %s"
-msgstr "in the %s massif"
+msgstr "in the %s mountain range"
 
 #, php-format
 msgid "Les %s derniers commentaires dans refuges.info"
@@ -814,30 +814,30 @@ msgid "Modifier %s"
 msgstr "Edit %s"
 
 msgid "Massifs"
-msgstr "Massifs"
+msgstr "Mountain ranges"
 
 msgid "Voir les massifs"
-msgstr "See the massifs"
+msgstr "See the mountain ranges"
 
 msgid ""
 "Un massif est défini par un polygone qui représente EXACTEMENT le contour du "
 "massif."
 msgstr ""
-"A massif is defined by a polygon that represents EXACTLY the outline of the "
-"massif."
+"A mountain range is defined by a polygon that represents EXACTLY the outline of the "
+"mountain range."
 
 msgid ""
 "Un point est réputé appartenir à un massif quand il est STRICTEMENT INCLUS "
 "dans le polygone."
 msgstr ""
-"A point is deemed to belong to a massif when it is STRICTLY INSIDE the "
+"A point is deemed to belong to a mountain range when it is STRICTLY INSIDE the "
 "polygon."
 
 msgid "Créer un massif"
-msgstr "Create a massif"
+msgstr "Create a mountain range"
 
 msgid "Pour modifier ou supprimer un massif, ouvrez-le en édition."
-msgstr "To edit or delete a massif, open it in edit mode."
+msgstr "To edit or delete a mountain range, open it in edit mode."
 
 msgid "Zones"
 msgstr "Zones"
@@ -854,7 +854,7 @@ msgid ""
 "Un massif est réputé appartenir à une zone quand son polygone INTERSECTE "
 "celui de la zone."
 msgstr ""
-"A massif is deemed to belong to a zone when its polygon INTERSECTS the "
+"A mountain range is deemed to belong to a zone when its polygon INTERSECTS the "
 "zone's polygon."
 
 msgid ""
@@ -863,13 +863,13 @@ msgid ""
 "massif."
 msgstr ""
 "The zone therefore does not need to be very precise: a rough rectangle is "
-"enough most of the time as long as it covers at least a bit of each massif."
+"enough most of the time as long as it covers at least a bit of each mountain range."
 
 msgid ""
 "Par contre, si elle déborde sur un massif qui n'a rien à voir, celui-ci sera "
 "affiché."
 msgstr ""
-"On the other hand, if it spills over onto an unrelated massif, that massif "
+"On the other hand, if it spills over onto an unrelated mountain range, that mountain range "
 "will be displayed."
 
 msgid "Créer une zone"
@@ -1323,11 +1323,11 @@ msgid ""
 "Polygones (départements, régions, massifs, réserves naturelles, tous les "
 "polygones dans notre base) contenant les points recherchés"
 msgstr ""
-"Polygons (departments, regions, massifs, nature reserves, all the polygons "
+"Polygons (departments, regions, mountain ranges, nature reserves, all the polygons "
 "in our database) containing the points being searched for"
 
 msgid "Dans le massif/département/... :"
-msgstr "In the massif/department/... :"
+msgstr "In the mountain range/department/... :"
 
 msgid "commencez à écrire..."
 msgstr "start typing..."
@@ -1453,7 +1453,7 @@ msgid "Limiter aux %s premiers résultats."
 msgstr "Limit to the first %s results."
 
 msgid "Tri montagne (Résultats triés par Zones->Massifs->Réserves)"
-msgstr "Mountain sort (results sorted by Zones->Massifs->Reserves)"
+msgstr "Mountain sort (results sorted by Zones->Mountain ranges->Reserves)"
 
 msgid "Tri administratif (Résultats triés par Pays->Région->Département)"
 msgstr "Administrative sort (results sorted by Country->Region->Department)"
@@ -2179,7 +2179,7 @@ msgid "Manque un mur"
 msgstr "A wall is missing"
 
 msgid "massif"
-msgstr "massif"
+msgstr "mountain range"
 
 msgid "montagnarde"
 msgstr "mountain"
