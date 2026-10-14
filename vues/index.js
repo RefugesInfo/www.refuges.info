@@ -11,6 +11,12 @@ const map = L.map('carte-accueil'),
   });
   //TODO séparer sélecteur / clusters et faire 2 fonctions générales
 
+// Libellés affichés des couches (traduits par le serveur). L'identité d'une couche reste son nom français : c'est lui qui est
+// mémorisé dans sessionStorage et cherché dans couchesIconesWRI ; on repasse donc du libellé affiché à ce nom (identite).
+const libelles = <?=json_encode($vue->libelles_couches)?>,
+  identite = Object.fromEntries(Object.entries(libelles).map(([fr, traduit]) => [traduit, fr])),
+  libelle = (nom) => libelles[nom] || nom;
+
 // Couches refuges.info de la page 
 if (typeof sessionStorage.checkedLayers !== 'string')
   sessionStorage.checkedLayers = 'Cabane non gardée,Refuge gardé,Gîte d\'étape';
@@ -20,7 +26,7 @@ if (typeof sessionStorage.checkedLayers !== 'string')
 
 // points WRI
 for (const [nom, args] of Object.entries(couchesIconesWRI)) {
-  const icone = '<img src="/images/icones/' + args[1] + '.svg"/> ' + nom, // Libellé de la ligne sélecteur
+  const icone = '<img src="/images/icones/' + args[1] + '.svg"/> ' + libelle(nom), // Libellé de la ligne sélecteur
     layer = new WriPOILayer('https://<?=$_SERVER["SERVER_NAME"]?>', args[0], '<?=$vue->version_features?>'); // Couche affichable
 
   // Il est nécéssaire de grouper les points de chaque couche pour pouvoir les sélectionner indépendament
@@ -41,15 +47,15 @@ for (const [nom, args] of Object.entries(couchesIconesWRI)) {
 }
 
 // Polygones WRI
-overlays['Régions'] = new WriPolygonLayer('https://<?=$_SERVER["SERVER_NAME"]?>', 11, '<?=$vue->version_features?>', true);
-overlays['Massifs'] = new WriPolygonLayer('https://<?=$_SERVER["SERVER_NAME"]?>', 1, '<?=$vue->version_features?>', true);
+overlays[libelle('Régions')] = new WriPolygonLayer('https://<?=$_SERVER["SERVER_NAME"]?>', 11, '<?=$vue->version_features?>', true);
+overlays[libelle('Massifs')] = new WriPolygonLayer('https://<?=$_SERVER["SERVER_NAME"]?>', 1, '<?=$vue->version_features?>', true);
 
 // Couche externe d'itinéraires
-overlays['Itinéraires'] = coucheItineraires;
+overlays[libelle('Itinéraires')] = coucheItineraires;
 
 // Restitution de ces 3 couches si elles sont mémorisése
-for (const [nom, layer] of Object.entries(overlays))
-  if (sessionStorage.checkedLayers.search(nom) !== -1) 
+for (const [affiche, layer] of Object.entries(overlays))
+  if (sessionStorage.checkedLayers.search(identite[affiche] || affiche) !== -1) 
     layer.addTo(map);
 
 // Couches OSM OverPass
@@ -96,7 +102,7 @@ const overlaySelectors = document.querySelectorAll('.leaflet-control-layers-over
 /* eslint-disable-next-line no-unused-vars */
 function copyExportLink() {
   navigator.clipboard.writeText(exportCarteEl.children[1].href)
-    .then(() => alert('Lien d\'exportation copié dans le presse-papier :\n\n' +
+    .then(() => alert(<?=json_encode(_("Lien d'exportation copié dans le presse-papier :"))?> + '\n\n' +
       exportCarteEl.children[1].href));
 }
 
@@ -111,7 +117,8 @@ function addRemoveOverlay() {
 
   // Calcul des couches sélectionnées
   for (const lsInputEl of overlaySelectors) {
-    const nom = lsInputEl.parentElement.lastChild.innerText.trim();
+    const affiche = lsInputEl.parentElement.lastChild.innerText.trim(),
+      nom = identite[affiche] || affiche; // identité (nom français) du libellé affiché
 
     if (lsInputEl.checked) {
       checkedLayersNames.push(nom);

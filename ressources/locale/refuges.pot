@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-14 17:48+0200\n"
+"POT-Creation-Date: 2026-10-14 17:53+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1550,6 +1550,12 @@ msgid ""
 "rapidement qu'il y a eu un problème et un modérateur peut alors intervenir."
 msgstr ""
 
+msgid "Lien d'exportation copié dans le presse-papier :"
+msgstr ""
+
+msgid "Itinéraires"
+msgstr ""
+
 msgid "Erreur 404 : commentaire introuvable"
 msgstr ""
 
@@ -1633,6 +1639,27 @@ msgid ""
 msgstr ""
 
 msgid "Carte et informations sur les refuges, cabanes et abris de montagne"
+msgstr ""
+
+msgid "cabane non gardée"
+msgstr ""
+
+msgid "refuge gardé"
+msgstr ""
+
+msgid "gîte d'étape"
+msgstr ""
+
+msgid "abri naturel"
+msgstr ""
+
+msgid "passage délicat"
+msgstr ""
+
+msgid "bâtiment à investiguer"
+msgstr ""
+
+msgid "Régions"
 msgstr ""
 
 msgid "cabanes, refuges et points d'eau"
@@ -1961,9 +1988,6 @@ msgid ""
 "vous bien connecté ?"
 msgstr ""
 
-msgid "abri naturel"
-msgstr ""
-
 msgid "administrative"
 msgstr ""
 
@@ -1971,12 +1995,6 @@ msgid "Auprès de qui se renseigner / accessibilité"
 msgstr ""
 
 msgid "Autre"
-msgstr ""
-
-msgid "bâtiment à investiguer"
-msgstr ""
-
-msgid "cabane non gardée"
 msgstr ""
 
 msgid "Capacité d'accueil"
@@ -2024,9 +2042,6 @@ msgstr ""
 msgid "Forêt à proximité"
 msgstr ""
 
-msgid "gîte d'étape"
-msgstr ""
-
 msgid "Inutilisable"
 msgstr ""
 
@@ -2040,9 +2055,6 @@ msgid "montagnarde"
 msgstr ""
 
 msgid "Ouverture sur contact préalable"
-msgstr ""
-
-msgid "passage délicat"
 msgstr ""
 
 msgid "pays"
@@ -2061,9 +2073,6 @@ msgid "Propriétaire / accessibilité"
 msgstr ""
 
 msgid "Propriétaires"
-msgstr ""
-
-msgid "refuge gardé"
 msgstr ""
 
 msgid "région"

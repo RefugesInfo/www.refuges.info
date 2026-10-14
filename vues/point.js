@@ -17,7 +17,7 @@ clusterPOI('https://<?=$_SERVER["SERVER_NAME"]?>', '<?=$vue->version_features?>'
 controlesComuns(map).forEach((control) => control.addTo(map));
 
 L.control.layers(tileLayers, {
-  'Itinéraires': coucheItineraires,
+  [<?=json_encode(_("Itinéraires"))?>]: coucheItineraires,
 }).addTo(map);
 
 // Marqueur de position de cabane

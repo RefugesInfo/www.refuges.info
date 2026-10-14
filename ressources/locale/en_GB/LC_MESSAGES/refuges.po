@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: refuges.info\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-14 17:48+0200\n"
+"POT-Creation-Date: 2026-10-14 17:53+0200\n"
 "Language: en_GB\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1629,6 +1629,12 @@ msgstr ""
 "sheet appears with all the default values, we quickly detect that there was "
 "a problem and a moderator can then step in."
 
+msgid "Lien d'exportation copié dans le presse-papier :"
+msgstr "Export link copied to the clipboard:"
+
+msgid "Itinéraires"
+msgstr "Routes"
+
 msgid "Erreur 404 : commentaire introuvable"
 msgstr "Error 404: comment not found"
 
@@ -1723,6 +1729,27 @@ msgstr "Link to the customised news (you can bookmark it)"
 msgid "Carte et informations sur les refuges, cabanes et abris de montagne"
 msgstr ""
 "Map and information on alpine huts, wilderness huts and mountain shelters"
+
+msgid "cabane non gardée"
+msgstr "wilderness hut"
+
+msgid "refuge gardé"
+msgstr "alpine hut"
+
+msgid "gîte d'étape"
+msgstr "stage lodging"
+
+msgid "abri naturel"
+msgstr "natural shelter"
+
+msgid "passage délicat"
+msgstr "tricky passage"
+
+msgid "bâtiment à investiguer"
+msgstr "building to investigate"
+
+msgid "Régions"
+msgstr "Regions"
 
 msgid "cabanes, refuges et points d'eau"
 msgstr "wilderness huts, alpine huts and water points"
@@ -2091,9 +2118,6 @@ msgid ""
 msgstr ""
 ", you must be a moderator of the site to access this page; are you logged in?"
 
-msgid "abri naturel"
-msgstr "natural shelter"
-
 msgid "administrative"
 msgstr "administrative"
 
@@ -2102,12 +2126,6 @@ msgstr "Who to contact / accessibility"
 
 msgid "Autre"
 msgstr "Other"
-
-msgid "bâtiment à investiguer"
-msgstr "building to investigate"
-
-msgid "cabane non gardée"
-msgstr "wilderness hut"
 
 msgid "Capacité d'accueil"
 msgstr "Capacity"
@@ -2154,9 +2172,6 @@ msgstr "Closed"
 msgid "Forêt à proximité"
 msgstr "Forest nearby"
 
-msgid "gîte d'étape"
-msgstr "stage lodging"
-
 msgid "Inutilisable"
 msgstr "Unusable"
 
@@ -2171,9 +2186,6 @@ msgstr "mountain"
 
 msgid "Ouverture sur contact préalable"
 msgstr "Opening on prior contact"
-
-msgid "passage délicat"
-msgstr "tricky passage"
 
 msgid "pays"
 msgstr "country"
@@ -2192,9 +2204,6 @@ msgstr "Owner / accessibility"
 
 msgid "Propriétaires"
 msgstr "Owners"
-
-msgid "refuge gardé"
-msgstr "alpine hut"
 
 msgid "région"
 msgstr "region"
