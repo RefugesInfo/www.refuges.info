@@ -51,7 +51,7 @@ else // le point est valide
   $vue->point=$point;
   $vue->nom_createur = protege($point->nom_createur);
   $vue->nom=protege($point->nom);
-  // Pilote multi-langue : ?langue=en affiche les traductions disponibles (repli sur le français).
+  // Pilote multi-langue : /point/id/type/nom/en/ affiche les traductions disponibles (repli sur le français).
   // Uniquement ici, dans la page d'affichage : le formulaire de modification ne doit jamais recevoir un texte traduit
   $trad = array();
   $id = (int)$point->id_point;
@@ -62,7 +62,8 @@ else // le point est valide
   foreach ($res as $r)
     $trad[$r->type_objet][$r->id_objet][$r->champ] = $r->texte;
   $vue->traduction_disponible = !empty($trad);
-  $vue->langue_affichee = (($_GET['langue'] ?? '') === 'en') ? 'en' : '';
+  $vue->langue_affichee = ($controlleur->langue === 'en') ? 'en' : '';
+  $vue->lien_langue = array('fr'=>lien_point($point,true,'fr'), 'en'=>lien_point($point,true,'en'));
   if (!$vue->langue_affichee)
     $trad = array();
 

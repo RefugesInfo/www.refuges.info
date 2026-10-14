@@ -55,7 +55,11 @@
     </h1>
     <?php if ($vue->traduction_disponible) { ?>
       <p class="noprint">
-        <?=$vue->langue_affichee ? '<a href="?">Français</a> | <b>English</b>' : '<b>Français</b> | <a href="?langue=en">English</a>'?>
+        <?php if ($vue->langue_affichee) { ?>
+          <a href="<?=$vue->lien_langue['fr']?>">Français</a> | <b>English</b>
+        <?php } else { ?>
+          <b>Français</b> | <a href="<?=$vue->lien_langue['en']?>">English</a>
+        <?php } ?>
         <?php if ($vue->langue_affichee) { ?> <em>Automatic translation (pilot): the French original is authoritative.</em><?php } ?>
       </p>
     <?php } ?>
