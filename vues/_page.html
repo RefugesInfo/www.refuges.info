@@ -31,6 +31,15 @@ add_lib('bandeau.css');
     <title><?=$vue->titre ?? ''?></title>
     <link rel="icon" type="image/png" href="<?=$config_wri['url_chemin_icones']?>feu_cabane_porte_oeuil_t384.png">
     <link rel="icon" type="image/svg+xml" href="<?=$config_wri['url_chemin_icones']?>feu_cabane_porte_oeuil_t384.svg">
+    <?php // Versions de la même page dans chaque langue (moteurs de recherche) : une url par langue, le français est la langue par défaut
+    $hote_langues = (isset($_SERVER['HTTPS']) ? 'https' : 'http').'://'.$config_wri['nom_hote'];
+    if (empty($vue->http_status_code)) { ?>
+      <link rel="canonical" href="<?=htmlspecialchars($hote_langues.($config_wri['liens_langues'][$config_wri['langue_courante']] ?? ''))?>">
+      <?php foreach ($config_wri['liens_langues'] as $code => $lien) { ?>
+        <link rel="alternate" hreflang="<?=$code?>" href="<?=htmlspecialchars($hote_langues.$lien)?>">
+      <?php } ?>
+      <link rel="alternate" hreflang="x-default" href="<?=htmlspecialchars($hote_langues.$config_wri['liens_langues']['fr'])?>">
+    <?php } ?>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?php if (isset ($vue->css)) { ?>
       <meta name="viewport" content="width=device-width, user-scalable=no">
