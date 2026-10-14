@@ -26,7 +26,7 @@ add_lib('style_pages.css');
 add_lib('bandeau.css');
 ?>
 <!doctype html>
-<html lang="fr">
+<html lang="<?=$config_wri['langue_courante']?>">
   <head>
     <title><?=$vue->titre ?? ''?></title>
     <link rel="icon" type="image/png" href="<?=$config_wri['url_chemin_icones']?>feu_cabane_porte_oeuil_t384.png">

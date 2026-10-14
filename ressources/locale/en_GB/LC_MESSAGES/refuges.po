@@ -1,0 +1,13 @@
+# Traductions de l'interface de refuges.info : français (msgid) -> anglais britannique
+# Les .po sont les sources, les .mo sont compilés avec : make locale   (ou msgfmt -o refuges.mo refuges.po)
+msgid ""
+msgstr ""
+"Project-Id-Version: refuges.info\n"
+"Language: en_GB\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Traduction automatique (pilote) : l'original en français fait foi."
+msgstr "Automatic translation (pilot): the French original is authoritative."

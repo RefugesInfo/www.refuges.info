@@ -230,6 +230,14 @@ $config_wri['langues_url']=array('en');   // langues d'affichage autres que le f
 $config_wri['langue_courante']='fr';
 $config_wri['url_prefixe_langue']='';     // '' ou '/en' : avant le nom de la page (accueil, wiki...)
 $config_wri['url_suffixe_langue']='';     // '' ou 'en/' : après /point/id/type/nom/ et /nav/id/type/nom/
+// Traductions de l'interface : gettext, le msgid est le texte français (donc le français n'a pas de catalogue et rien ne casse si
+// une traduction manque). Catalogues : ressources/locale/<locale>/LC_MESSAGES/refuges.po (sources) et .mo (compilés, pour PHP)
+$config_wri['chemin_locale']=$config_wri['racine_projet']."ressources/locale/";
+$config_wri['locales_systeme']=array('fr'=>'fr_FR.UTF-8', 'en'=>'en_GB.UTF-8'); // doivent exister sur le serveur (locale -a)
+if (!function_exists('_')) { // extension gettext absente (certains conteneurs de dev) : on affiche le texte français
+  function _($texte) { return $texte; }
+  function ngettext($un, $plusieurs, $n) { return $n==1 ? $un : $plusieurs; }
+}
 
 // Timezone par défaut pour choisir l'affichage des dates+heures
 $config_wri['timezone']='Europe/Paris';

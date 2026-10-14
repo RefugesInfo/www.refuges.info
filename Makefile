@@ -9,7 +9,7 @@ DUMP    := ressources/sql/2026-09-21-jeu-de-donnee-test-avec-la-base-de-refuges.
 
 .DEFAULT_GOAL := help
 
-.PHONY: help up down restart build logs shell db db-load phpbb-url db-dump ps clean
+.PHONY: locale help up down restart build logs shell db db-load phpbb-url db-dump ps clean
 
 help: ## Affiche cette aide
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
@@ -91,3 +91,6 @@ db-dump: ## Régénère le dump de test à partir de la base courante (purgé de
 
 clean: ## Arrête tout et SUPPRIME les données de la base (volume)
 	$(COMPOSE) down -v
+
+locale: ## Compile les traductions de l'interface (ressources/locale/*/LC_MESSAGES/refuges.po -> .mo)
+	for po in ressources/locale/*/LC_MESSAGES/refuges.po; do msgfmt --check -o "$${po%.po}.mo" "$$po"; done

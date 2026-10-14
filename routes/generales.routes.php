@@ -61,7 +61,15 @@ if ($langue_url)
   $config_wri['langue_courante'] = $langue_url;
   $config_wri['url_prefixe_langue'] = '/'.$langue_url;
   $config_wri['url_suffixe_langue'] = $langue_url.'/';
+  $config_wri['langue'] = 'en_GB'; // IntlDateFormatter
+  setlocale(LC_TIME, $config_wri['locales_systeme'][$langue_url] ?? 'fr_FR.UTF-8');
 }
+// gettext : à refaire à chaque requête car les processus PHP-FPM gardent leur locale d'une requête à l'autre.
+// LC_MESSAGES seulement (jamais LC_ALL : le séparateur décimal changerait). Sans catalogue pour la locale (français), _() rend le msgid.
+setlocale(LC_MESSAGES, $config_wri['locales_systeme'][$controlleur->langue] ?? 'fr_FR.UTF-8');
+bindtextdomain('refuges', $config_wri['chemin_locale']);
+bind_textdomain_codeset('refuges', 'UTF-8');
+textdomain('refuges');
 
 // Par défaut, on veut un en-tête et pied de page html, => $vue->type.html sera affiché avec ce qui va bien autour
 // mais dans de rare cas (point-json) on ne veut pas => On remplacera $vue->template par le fichier tout seul

@@ -60,7 +60,7 @@
         <?php } else { ?>
           <b>Français</b> | <a href="<?=$vue->lien_langue['en']?>">English</a>
         <?php } ?>
-        <?php if ($vue->langue_affichee) { ?> <em>Automatic translation (pilot): the French original is authoritative.</em><?php } ?>
+        <?php if ($vue->langue_affichee) { ?> <em><?=_("Traduction automatique (pilote) : l'original en français fait foi.")?></em><?php } ?>
       </p>
     <?php } ?>
   </div>
