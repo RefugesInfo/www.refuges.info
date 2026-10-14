@@ -45,7 +45,7 @@ switch( $_REQUEST["action"]??'' )
     // Il faut soit être identifié, soit avoir rentré la bonne lettre anti-robot
     if ( !est_connecte() AND ($_REQUEST['lettre_securite'] != $config_wri['captcha_reponse']) )
     {
-      $vue->erreur = "ERREUR: vous n'avez pas rentré la lettre demandée";
+      $vue->erreur = _("ERREUR: vous n'avez pas rentré la lettre demandée");
       break; // on sort, on ne passe pas à "modifier" qui est l'action groupée
     }
 
@@ -56,7 +56,7 @@ switch( $_REQUEST["action"]??'' )
 
     $retour = modification_ajout_point($point,$infos_identification->user_id);
     gestion_retour($retour,$vue);
-    $vue->message="Le point a bien été ajouté";
+    $vue->message=_("Le point a bien été ajouté");
     break;
 
   case 'Modifier' :
@@ -69,10 +69,10 @@ switch( $_REQUEST["action"]??'' )
     {
       $retour = modification_ajout_point($point,$infos_identification->user_id);
       gestion_retour($retour,$vue);
-      $vue->message="Le point a bien été modifié";
+      $vue->message=_("Le point a bien été modifié");
     }
     else
-      $vue->erreur="Vous n'êtes ni modérateur global, ni modérateur de cette fiche, vous n'avez pas l'autorisation de la modifier";
+      $vue->erreur=_("Vous n'êtes ni modérateur global, ni modérateur de cette fiche, vous n'avez pas l'autorisation de la modifier");
     break;
 
   case 'supprimer':
@@ -89,7 +89,7 @@ switch( $_REQUEST["action"]??'' )
       break;
     }
     else
-      $vue->erreur="Vous n'êtes pas modérateur du site, vous n'avez pas l'autorisation de la supprimer";
+      $vue->erreur=_("Vous n'êtes pas modérateur du site, vous n'avez pas l'autorisation de la supprimer");
     break;
 }
 

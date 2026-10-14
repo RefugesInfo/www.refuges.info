@@ -1,10 +1,9 @@
 <div class="contenu">
-  <p>Ajouter un commentaire sur la fiche de <a href="<?=$vue->lien_point?>"><?=$vue->nom_point?></a> :</p>
+  <p><?=sprintf(_("Ajouter un commentaire sur la fiche de %s :"), '<a href="'.$vue->lien_point.'">'.$vue->nom_point.'</a>')?></p>
   <?php if (!est_connecte()) { ?>
     <p>
-      Nous remarquons que <strong>vous n'êtes pas connecté</strong> sur le site ou le Forum.
-      Bien que nous autorisions les contributions anonymes, nous vous recommandons de vous connecter sur le forum et/ou de créer un compte
-      afin de pouvoir revenir faire des modifications ultérieures <a href="<?=$config_wri['connexion_forum']?>">Connexion</a>
+      <?=_("Nous remarquons que <strong>vous n'êtes pas connecté</strong> sur le site ou le Forum. Bien que nous autorisions les contributions anonymes, nous vous recommandons de vous connecter sur le forum et/ou de créer un compte afin de pouvoir revenir faire des modifications ultérieures")?>
+      <a href="<?=$config_wri['connexion_forum']?>"><?=_("Connexion")?></a>
     </p>
   <?php } if (!empty($vue->messages->erreur)) { ?>
     <p><strong><?=$vue->messages->message?></strong></p>
@@ -15,30 +14,30 @@
   <div>
     <?php if ($vue->succes_ajout_commentaire) { ?>
       <p class="fade-out">
-        <strong>Votre commentaire a bien été ajouté !</strong> (vous pouvez en ajouter d'autres)
+        <?=_("<strong>Votre commentaire a bien été ajouté !</strong> (vous pouvez en ajouter d'autres)")?>
       </p>
     <?php } ?>
 
-    <form id="comment" method="post" action="/point_ajout_commentaire/<?=$vue->commentaire->id_point?>" enctype="multipart/form-data">
+    <form id="comment" method="post" action="<?=url_langue('/point_ajout_commentaire/'.$vue->commentaire->id_point)?>" enctype="multipart/form-data">
       <textarea class="textarea_large" name="texte"><?=$vue->commentaire->texte_propre ?? ''?></textarea>
-      <a class="lien-mise-en-forme" href="<?=lien_wiki($config_wri['bbcode_wiki_page'])?>">Syntaxe&nbsp;possible</a>
+      <a class="lien-mise-en-forme" href="<?=lien_wiki($config_wri['bbcode_wiki_page'])?>"><?=_("Syntaxe&nbsp;possible")?></a>
       <?php if (!est_connecte()) { ?>
         <p>
-          <label>Auteur:</label>
-          <input type="text" value="<?=$_REQUEST['auteur_commentaire'] ?? ''?>" name="auteur_commentaire" class="input_en_ligne" /><i class="texte-tout-petit">facultatif</i>
+          <label><?=_("Auteur :")?></label>
+          <input type="text" value="<?=$_REQUEST['auteur_commentaire'] ?? ''?>" name="auteur_commentaire" class="input_en_ligne" /><i class="texte-tout-petit"><?=_("facultatif")?></i>
         </p>
       <?php } ?>
       <p>
         <span class="zone_depot_fichier" id="zone_depot_photo">
           <input type="file" id="comment_photo" name="comment_photo" accept="image/*" class="entree_fichier_masquee" />
           <label for="comment_photo" class="pilule_fichier">
-            <span class="pilule_fichier_texte">Choisir ou déposer une photo</span>
+            <span class="pilule_fichier_texte"><?=_("Choisir ou déposer une photo")?></span>
           </label>
-          <img class="apercu_photo" alt="Aperçu de la photo choisie" />
+          <img class="apercu_photo" alt="<?=_("Aperçu de la photo choisie")?>" />
           <span class="nom_fichier_choisi"></span>
         </span>
         <i class="texte-tout-petit">
-          facultatif, format <?=$config_wri['texte_des_formats_photo_autorisee']?> de taille max=<?=getMaximumFileUploadSize()?> La photo doit soit être la votre soit être sous une <a href="<?=lien_wiki("licence")?>">licence compatible</a> (pensez alors à citer son auteur si cela est requis).
+          <?=sprintf(_("facultatif, format %1\$s de taille max=%2\$s La photo doit soit être la votre soit être sous une %3\$s (pensez alors à citer son auteur si cela est requis)."), _($config_wri['texte_des_formats_photo_autorisee']), ($config_wri['langue_courante']=='fr' ? getMaximumFileUploadSize() : str_replace('Mo','MB',getMaximumFileUploadSize())), '<a href="'.lien_wiki("licence").'">'._("licence compatible").'</a>')?>
         </i>        
       </p>
       <p>
@@ -47,62 +46,55 @@
             checked="checked"
           <?php } ?>
         />
-        <label for="demande_correction">Prévenir les modérateurs globaux pour compléter la fiche.</label>
+        <label for="demande_correction"><?=_("Prévenir les modérateurs globaux pour compléter la fiche.")?></label>
         <i class="texte-tout-petit">
-          Votre commentaire sera alors visible de tous immédiatement, mais par la suite un modérateur pourra compléter la fiche et le supprimer ou le garder.
+          <?=_("Votre commentaire sera alors visible de tous immédiatement, mais par la suite un modérateur pourra compléter la fiche et le supprimer ou le garder.")?>
         </i>
       </p>
 
       <?php if (!est_connecte()) { ?>
         <?php if ($vue->erreur_captcha) { ?>
           <p class="erreur_saisie">
-            <strong>Mauvaise lettre !</strong>
-            Merci de recopier la lettre indiquée afin de lutter contre les message indésirables:
-            Il y a eu ici beaucoup de messages laissés par des 'robots' faisant de la publicité pour des sites plus que douteux,
-            du coup, cette manoeuvre a pour but de leur compliquer la tâche.
-            Idéalement, seul un 'humain' saura comprendre ce qu'il faut faire.
-            Nous sommes désolé de cette perte d'ergonomie; Un des objectifs principal du site a toujours été d'être simple et rapide d'utilisation.
+            <?=_("<strong>Mauvaise lettre !</strong> Merci de recopier la lettre indiquée afin de lutter contre les message indésirables: Il y a eu ici beaucoup de messages laissés par des 'robots' faisant de la publicité pour des sites plus que douteux, du coup, cette manoeuvre a pour but de leur compliquer la tâche. Idéalement, seul un 'humain' saura comprendre ce qu'il faut faire. Nous sommes désolé de cette perte d'ergonomie; Un des objectifs principal du site a toujours été d'être simple et rapide d'utilisation.")?>
           </p>
         <?php } ?>
 
         <p>
-          <?=$config_wri['captcha_question']?> :
+          <?=sprintf(_("%s :"), _($config_wri['captcha_question']))?>
           <input type="text" class="input_captcha_court" name="lettre_verification" value="<?=$_REQUEST['lettre_verification'] ?? ''?>"/>
-          <i class="texte-tout-petit">Ceci afin d'éviter les messages indésirables automatiques, désolé.</i>
+          <i class="texte-tout-petit"><?=_("Ceci afin d'éviter les messages indésirables automatiques, désolé.")?></i>
         </p>
       <?php } ?>
 
-      <input type="submit" name="action" value="Envoyer" />
-      <input type="reset" value="Recommencer" />
+      <input type="submit" name="action" value="<?=_("Envoyer")?>" />
+      <input type="reset" value="<?=_("Recommencer")?>" />
     </form>
   </div>
   <br/>
 
-  <h4>Ce que vous pouvez ou non mettre sur le site</h4>
+  <h4><?=_("Ce que vous pouvez ou non mettre sur le site")?></h4>
   <p>
-    Un commentaire sur une fiche a pour but d'être utile à tous et objectif.
-    Si vous désirez poster une appréciation ou une question faites le plutôt sur le <a href="<?=$vue->lien_forum_point?>">forum attaché à <?=$point->article_demonstratif.' '.$point->nom_type?></a>.
+    <?=_("Un commentaire sur une fiche a pour but d'être utile à tous et objectif.")?>
+    <?=sprintf(_("Si vous désirez poster une appréciation ou une question faites le plutôt sur le %s."), '<a href="'.$vue->lien_forum_point.'">'.sprintf(_("forum attaché à %s"), ce_type_de_point($point)).'</a>')?>
   </p>
   <?php if ($point->id_point_type==$config_wri['id_cabane_non_gardee']) { // ce texte fait doublon avec le "que mettre" juste après, mais comme il parait que les gens ne lisent pas si ça dépasse 0 clics... alors en double et en rouge. Mais j'hésite à simplifier ?>
     <p>
-      Il est <strong>interdit de faire une réservation ou de signaler aux autres que vous y serez</strong>
-      car cette pratique est contraire à l'esprit dans lequel <?=$point->article_demonstratif.' '.$point->nom_type?> a été créée.
-      Tout commentaire dans ce sens sera supprimé par les modérateurs.
-      Voir <a href="<?=$config_wri['lien_forum']?>viewtopic.php?t=37">la discussion à ce sujet sur le forum.</a>
+      <?=_("Il est <strong>interdit de faire une réservation ou de signaler aux autres que vous y serez</strong>")?>
+      <?=sprintf(_("car cette pratique est contraire à l'esprit dans lequel %s a été créée."), ce_type_de_point($point))?>
+      <?=_("Tout commentaire dans ce sens sera supprimé par les modérateurs.")?>
+      <?=sprintf(_("Voir %s"), '<a href="'.$config_wri['lien_forum'].'viewtopic.php?t=37">'._("la discussion à ce sujet sur le forum.").'</a>')?>
     </p>
   <?php }
   if ( in_array($point->id_point_type,$config_wri['tout_type_refuge']) ) { ?>
     <p>
-      Voir <a href="<?=$config_wri['base_wiki']?>quels_commentaires_mettre">ce que nous souhaitons voir et ne pas voir dans les commentaires</a>.
+      <?=sprintf(_("Voir %s."), '<a href="'.lien_wiki('quels_commentaires_mettre').'">'._("ce que nous souhaitons voir et ne pas voir dans les commentaires").'</a>')?>
     </p>
   <?php }
   if ($point->equivalent_proprio!="") { ?>
-    <p>Le site n'a aucun rapport avec les propriétaires ou gérants de <?=$point->article_demonstratif.' '.$point->nom_type?> (inutile de leur laisser un message ici).</p>
+    <p><?=sprintf(_("Le site n'a aucun rapport avec les propriétaires ou gérants de %s (inutile de leur laisser un message ici)."), ce_type_de_point($point))?></p>
   <?php } ?>
   <p>
-    Le commentaire et la photo que vous ajoutez sera soumis à
-    la <a href="<?=$config_wri['base_wiki']?>restriction_licence">licence creative commons by-sa</a>
-    et pourra être réutilisé dans ce cadre.
+    <?=sprintf(_("Le commentaire et la photo que vous ajoutez sera soumis à la %s et pourra être réutilisé dans ce cadre."), '<a href="'.lien_wiki('restriction_licence').'">'._("licence creative commons by-sa").'</a>')?>
   </p>
 </div>
 

@@ -2,16 +2,16 @@
   <?=wiki_page_html("conseil-avant-ajout-point")?>
   <?php if (!est_connecte()) { ?>
     <dl>
-      <dt>Pas encore de compte ?</dt>
+      <dt><?=_("Pas encore de compte ?")?></dt>
       <dd>
-        <p>Nous remarquons que vous n'êtes pas connecté ou n'êtes pas inscrit sur le site. Cela n'est pas obligatoire, mais si vous souhaitez améliorer ultérieurement votre fiche, vous ne pourrez le faire sans l'aide d'un modérateur. Il restera possible après coup de vous ré-attribuer une fiche par demande sur le forum, mais c'est plus simple d'être connecté dès le départ !</p>
+        <p><?=_("Nous remarquons que vous n'êtes pas connecté ou n'êtes pas inscrit sur le site. Cela n'est pas obligatoire, mais si vous souhaitez améliorer ultérieurement votre fiche, vous ne pourrez le faire sans l'aide d'un modérateur. Il restera possible après coup de vous ré-attribuer une fiche par demande sur le forum, mais c'est plus simple d'être connecté dès le départ !")?></p>
       </dd>
     </dl>
   <?php } ?>
 
-  <form id="cree_point" action="/point_formulaire_modification/">
+  <form id="cree_point" action="<?=url_langue('/point_formulaire_modification/')?>">
     <fieldset>
-      <legend>Ajouter un·e :</legend>
+      <legend><?=_("Ajouter un·e :")?></legend>
       <fieldset class="booleen">
       <?php
         $first = true;
@@ -24,13 +24,13 @@
         <input type="radio" name="id_point_type" id="type_<?=$pa->id_point_type?>" value="<?=$pa->id_point_type?>" <?=$checked?>>
         <label for="type_<?=$pa->id_point_type?>">
           <?php if ($icone) { ?><img src="/images/icones/svg.php?nom=<?=htmlspecialchars($icone)?>" alt="" width="20" height="20"><?php } ?>
-          <?=htmlspecialchars($pa->nom_type)?>
+          <?=htmlspecialchars(_($pa->nom_type))?>
         </label>
       <?php } ?>
       </fieldset>
     </fieldset>
-    <p><input type="submit" value="Passer à l'étape suivante"></p>
+    <p><input type="submit" value="<?=_("Passer à l'étape suivante")?>"></p>
   </form>
-  <h5>Licence des contenus</h5>
-  <p>L'information que vous allez rentrer <a href="<?=lien_wiki("restriction_licence")?>">sera soumise à la licence creative commons by-sa.</a></p>
+  <h5><?=_("Licence des contenus")?></h5>
+  <p><?=_("L'information que vous allez rentrer")?> <a href="<?=lien_wiki("restriction_licence")?>"><?=_("sera soumise à la licence creative commons by-sa.")?></a></p>
 </div>

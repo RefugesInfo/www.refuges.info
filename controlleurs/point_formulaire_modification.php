@@ -39,7 +39,7 @@ if ( !empty($_REQUEST["id_point"]) )
   {
     $vue->http_status_code = 404;
     $vue->type = "page_simple";
-    $vue->titre="Point inexistant";
+    $vue->titre=_("Point inexistant");
     $vue->contenu=$point->message;
     return "";
   }
@@ -58,7 +58,7 @@ if ( !empty($_REQUEST["id_point"]) )
       $bouton_suppr->nom = "action";
       $bouton_suppr->type = "submit";
       $bouton_suppr->valeur = "supprimer";
-      $bouton_suppr->label = "Suppression de la fiche";
+      $bouton_suppr->label = _("Suppression de la fiche");
       $bouton_suppr->classe = "bouton-supprimer"; // rouge, voir style_formulaire.css
     }
 
@@ -66,14 +66,14 @@ if ( !empty($_REQUEST["id_point"]) )
     $icone="&amp;iconecenter=ne_sait_pas";
     $action="Modification";
     $vue->verbe="Modifier";
-    $vue->titre="Modification d'un point dans refuges.info";
+    $vue->titre=_("Modification d'un point dans refuges.info");
   }
   else // Ni modérateur global, ni modérateur de fiche on l'informe que ses droits sont insuffisants
   {
     $vue->type="page_simple";
-    $vue->titre="Permissions insuffisantes";
-    $vue->contenu="Désolé, mais pour cette opération vous devez être modérateur et être connecté au forum :";
-    $vue->titre_lien="Connexion forum";
+    $vue->titre=_("Permissions insuffisantes");
+    $vue->contenu=_("Désolé, mais pour cette opération vous devez être modérateur et être connecté au forum :");
+    $vue->titre_lien=_("Connexion forum");
     $vue->lien=$config_wri['connexion_forum'];
     return "";
   }
@@ -107,17 +107,17 @@ elseif ( !empty($_REQUEST["id_point_type"]))
   $icone="&amp;iconecenter=".choix_icone($point);
   $action="Ajout";
   $vue->verbe="Ajouter";
-  $vue->titre="Ajout d'un point dans refuges.info";
+  $vue->titre=_("Ajout d'un point dans refuges.info");
 
 }
 // 3) On ne devrait pas arriver en direct sur ce formulaire ou il nous manque une information
 else
 {
   $vue->type="page_simple";
-  $vue->titre="Formulaire d'ajout de point : information manquante";
-  $vue->contenu="Vous n'auriez pas dû arriver ici, le type de point à créer n'a pas été reçu (ni l'identifiant d'un point à modifier).";
-  $vue->titre_lien="Choisir le type de point à ajouter";
-  $vue->lien="/point_ajout";
+  $vue->titre=_("Formulaire d'ajout de point : information manquante");
+  $vue->contenu=_("Vous n'auriez pas dû arriver ici, le type de point à créer n'a pas été reçu (ni l'identifiant d'un point à modifier).");
+  $vue->titre_lien=_("Choisir le type de point à ajouter");
+  $vue->lien=url_langue("/point_ajout");
   return "";
 }
 
@@ -132,7 +132,7 @@ if (!empty($point->id_point))
 $bouton_valider = new stdClass;
 $bouton_valider->nom = "action";
 $bouton_valider->type = "submit";
-$bouton_valider->valeur = $bouton_valider->label = $vue->verbe;
+$bouton_valider->valeur = $bouton_valider->label = $vue->verbe; // la valeur est testée par point_modification.php, le libellé est traduit à l'affichage
 
 // Gestion de l'ordre des boutons modifier/valider/supprimer
 $vue->champs->boutons->valider=$bouton_valider;
@@ -161,8 +161,8 @@ foreach ($textes_area as $libelle => $nom_variable)
 
 // Seuls les modérateurs peuvent cacher un point, le test est directement dans la vue
 $vue->champs->cache = $point->cache;
-$vue->champs->cache_label = "Cacher cette fiche du public";
-$vue->champs->cache_aide = "Cette action n'est accessible qu'aux modérateurs, cela cachera la fiche de la vue de tous sauf des modérateurs (demande du propriétaire, terrain privé, autre raison). Une autre possiblité, selon le cas, serait de noter comme fermé/détruite qui garde visible, mais indique le changement de statut";
+$vue->champs->cache_label = _("Cacher cette fiche du public");
+$vue->champs->cache_aide = _("Cette action n'est accessible qu'aux modérateurs, cela cachera la fiche de la vue de tous sauf des modérateurs (demande du propriétaire, terrain privé, autre raison). Une autre possibilité, selon le cas, serait de noter comme fermé/détruite qui garde visible, mais indique le changement de statut");
 
 // cas spécifique des champs qui peuvent être NULL=ne sait pas ou un nombre entier
 foreach ($config_wri['champs_entier_ou_sait_pas_points'] as $champ)
@@ -195,11 +195,11 @@ if ( !empty($point->equivalent_conditions_utilisation) )
   $vue->champs->conditions_utilisation = new stdClass; // traite en cas particulier, trop specifique
 
   if ($point->id_point_type==$config_wri['id_point_d_eau'])
-    $vue->champs->conditions_utilisation->options = array( 'NULL' => 'Ne sait pas', 'ouverture' => 'Coule', 'intermittent' => 'Débit intermittent','fermeture' => $point->equivalent_conditions_utilisation);
+    $vue->champs->conditions_utilisation->options = array( 'NULL' => _('Ne sait pas'), 'ouverture' => _('Coule'), 'intermittent' => _('Débit intermittent'),'fermeture' => $point->equivalent_conditions_utilisation);
   else if ($point->id_point_type==$config_wri['id_passage_delicat'])
-    $vue->champs->conditions_utilisation->options = array('ouverture' => 'Ouvert', 'NULL' => 'Ne sait pas','fermeture' => $point->equivalent_conditions_utilisation);
+    $vue->champs->conditions_utilisation->options = array('ouverture' => _('Ouvert'), 'NULL' => _('Ne sait pas'),'fermeture' => $point->equivalent_conditions_utilisation);
   else
-    $vue->champs->conditions_utilisation->options = array('ouverture' => 'Ouvert', 'detruit' => 'Détruit(e)','fermeture' => $point->equivalent_conditions_utilisation,'cle_a_recuperer' => $point->equivalent_ouverture_contact_prealable);
+    $vue->champs->conditions_utilisation->options = array('ouverture' => _('Ouvert'), 'detruit' => _('Détruit(e)'),'fermeture' => $point->equivalent_conditions_utilisation,'cle_a_recuperer' => $point->equivalent_ouverture_contact_prealable);
 
   $vue->champs->conditions_utilisation->valeur = is_null($point->conditions_utilisation)? "NULL":$point->conditions_utilisation ; // retourne "NULL" si ca vaut NULL (au lieu de"")
 }

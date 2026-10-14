@@ -601,7 +601,7 @@ function infos_points($conditions)
     if (!$point->cache or !empty($conditions->avec_points_caches)) // On renvoi ce point, soit il n'est pas caché, soit on a demandé aussi les points cachés
       $points[$point->id_point]=$point_final;
     elseif ( !empty($conditions->ids_points) and is_numeric($conditions->ids_points)) // on avait spécifiquement demandé un point mais il est caché on retourne un message d'erreur
-      return erreur("Ce point d'id $conditions->ids_points a existé par le passé sur ce site, mais seul un modérateur peut retrouver son historique");
+      return erreur(sprintf(_("Ce point d'id %s a existé par le passé sur ce site, mais seul un modérateur peut retrouver son historique"), $conditions->ids_points));
     $id_point_deja_fait=$point->id_point;
   }
   return $points;
@@ -631,7 +631,7 @@ function infos_point($id_point,$meme_si_cache=False,$avec_polygones=True, $meme_
 
   // Sans id, infos_points() ne filtrerait rien et renverrait tous les points
   if (!est_entier_positif($id_point))
-    return erreur("Identifiant de point invalide");
+    return erreur(_("Identifiant de point invalide"));
 
   $conditions = new stdClass;
   $conditions->ids_points=$id_point;
@@ -656,10 +656,10 @@ function infos_point($id_point,$meme_si_cache=False,$avec_polygones=True, $meme_
     return erreur($points->message);
 
   if (count($points)==0)
-    return erreur("Le numéro de point demandé $id_point est introuvable dans notre base");
+    return erreur(sprintf(_("Le numéro de point demandé %s est introuvable dans notre base"), $id_point));
 
   if (count($points)>1)
-    return erreur("Ben ça alors ? on a récupéré plus que 1 point, pas prévu...");
+    return erreur(_("Ben ça alors ? on a récupéré plus que 1 point, pas prévu..."));
 
   // Comme il n'y a qu'un élément, on le prend
   $point=reset($points);
@@ -670,6 +670,15 @@ function infos_point($id_point,$meme_si_cache=False,$avec_polygones=True, $meme_
 Lien plus simple à utiliser maintenant ! sur la base de l'objet point "habituel" et plus rapide que celui du dessous
 car requête de moins
 *******************************************************************************************************************************/
+// "ce refuge gardé", "cette cabane non gardée" : le français accorde le démonstratif, l'anglais dit "this alpine hut"
+function ce_type_de_point($point)
+{
+  global $config_wri;
+  if ($config_wri['langue_courante']=='fr')
+    return $point->article_demonstratif.' '.$point->nom_type;
+  return sprintf(_("ce %s"), _($point->nom_type));
+}
+
 function lien_point($point,$lien_local=false,$langue=null)
 {
   global $config_wri;
@@ -781,9 +790,9 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
 
   // désolé, le nom du point ne peut être vide, unset ou juste des espaces
   if ( empty($point->nom) or empty(trim($point->nom)))
-    return erreur("Le nom ne peut être vide");
+    return erreur(_("Le nom ne peut être vide"));
   if ( preg_match("/[\<\>\]\[\;]/",$point->nom) )
-    return erreur("Le nom contient un des caractères non autorisé suivant : [ ] < > ;");
+    return erreur(_("Le nom contient un des caractères non autorisé suivant : [ ] < > ;"));
 
   // On met à jour la date de dernière modification. PGSQL peut le faire, avec un trigger..
   $champs_sql['date_derniere_modification'] = 'NOW()';
@@ -805,27 +814,22 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
       return erreur("Erreur sur la requête SQL","$q en erreur");
 
     if ( $res = $r->fetch() )
-      return erreur("L'emplacement de <a href='/point/{$res->id_point}'>\"{$res->nom}\"</a> \n".
-        "et ses alentours sont privés.<br/>\n".
-        "On ne peut pas y référencer de cabane.<br/>\n".
-        "Voir : <a href=\"{$config_wri['base_wiki']}fiche-cabane-non-gardee\">".
-        "Définition d'une cabane non gardée</a>.<br/>\n".
-        "Laissez-nous un message sur le forum si vous souhaitez en discuter.<br/>\n");
+      return erreur(sprintf(_("L'emplacement de <a href='/point/%s'>\"%s\"</a> et ses alentours sont privés.<br/> On ne peut pas y référencer de cabane.<br/> Voir : <a href=\"%s\">Définition d'une cabane non gardée</a>.<br/> Laissez-nous un message sur le forum si vous souhaitez en discuter.<br/>"),
+        $res->id_point, $res->nom, (function_exists('lien_wiki') ? lien_wiki('fiche-cabane-non-gardee') : $config_wri['base_wiki'].'fiche-cabane-non-gardee')));
   }
 
   /********* les coordonnées du point *************/
   if (empty($point->geojson)) { // Plus besoin de faire ces vérifs avec le nouveau format geojson
   // désolé, les coordonnées ne peuvent être vide ou non numérique
-  $erreur_coordonnee="du point doit être au format degré décimaux, par exemple : 45.789, la valeur reçue est :";
   if (empty($point->latitude) or !is_numeric($point->latitude))
-    return erreur("La latitude $erreur_coordonnee $point->latitude");
+    return erreur(sprintf(_("La latitude du point doit être au format degré décimaux, par exemple : 45.789, la valeur reçue est : %s"), $point->latitude));
   if (empty($point->latitude) or !is_numeric($point->longitude))
-    return erreur("La longitude $erreur_coordonnee $point->longitude");
+    return erreur(sprintf(_("La longitude du point doit être au format degré décimaux, par exemple : 45.789, la valeur reçue est : %s"), $point->longitude));
 
   if ($point->latitude>90 or $point->latitude<-90)
-    return erreur("La latitude du point doit être comprise entre -90 et 90 (degrés)");
+    return erreur(_("La latitude du point doit être comprise entre -90 et 90 (degrés)"));
   if ($point->longitude>180 or $point->longitude<-180)
-    return erreur("La longitude du point doit être comprise entre -180 et 180 (degrés)");
+    return erreur(_("La longitude du point doit être comprise entre -180 et 180 (degrés)"));
   }
   // si aucune précision gps, on les suppose approximatives
   if (empty($point->id_type_precision_gps))
@@ -836,11 +840,11 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
     $point->altitude=0;
   //On a bien reçu une altitude, mais ça n'est pas un entier positif (les cabanes sous marines ne sont pas encore acceptées !)
   if (!est_entier_positif($point->altitude))
-    return erreur("L'altitude du point doit être un nombre entier positif, reçu : $point->altitude");
+    return erreur(sprintf(_("L'altitude du point doit être un nombre entier positif, reçu : %s"), $point->altitude));
 
   //On a bien reçu une altitude, mais c'est une valeur vraiment improbable
   if ($point->altitude>8848)
-    return erreur($point->altitude."m comme altitude du point, c'est plus que l'Everest, vous avez dû vous tromper ?");
+    return erreur(sprintf(_("%sm comme altitude du point, c'est plus que l'Everest, vous avez dû vous tromper ?"), $point->altitude));
 
   if (!empty($point->geojson))
     $champs_sql['geom']="ST_SetSRID(ST_GeomFromGeoJSON(".$pdo->quote($point->geojson)."), 4326)";
@@ -848,7 +852,7 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
   foreach ($config_wri['champs_entier_ou_sait_pas_points'] as $a_tester)
     if (!empty($point->$a_tester))
       if ( !(est_entier_positif($point->$a_tester) or $point->$a_tester=="ne_sait_pas") )
-        return erreur("Le nombre de $a_tester doit être un entier supérieur ou égal à 0, reçu : '".$point->$a_tester."'");
+        return erreur(sprintf(_("Le nombre de %s doit être un entier supérieur ou égal à 0, reçu : '%s'"), $a_tester, $point->$a_tester));
   //d($point->places_matelas);
   if (isset($point->places_matelas) and empty($point->places_matelas)) // La valeur a été mise à vide, ça veut dire qu'on veut l'annuler, pas l'ignorer, bon, il pourrait pas mettre 0 dans la case non ?
     $point->places_matelas=0;
@@ -874,12 +878,12 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
   {
     $point_avant = infos_point($point->id_point,true,false,true);
     if (isset($point_avant->erreur) and $point_avant->erreur) // oulla on nous demande une modif mais il n'existe pas ?
-      return erreur("Erreur de modification du point : $point_avant->message");
+      return erreur(sprintf(_("Erreur de modification du point : %s"), $point_avant->message));
 
     $query_finale=requete_modification_ou_ajout_generique('points',$champs_sql,'update','id_point',$point->id_point);
 
     if (!$pdo->exec($query_finale))
-      return erreur("La requête SQL est en erreur, mais nous ne savons pas pourquoi, prévenez nous sur le forum, vous avez trouvé un bug !",$query_finale);
+      return erreur(_("La requête SQL est en erreur, mais nous ne savons pas pourquoi, prévenez nous sur le forum, vous avez trouvé un bug !"),$query_finale);
 
     /********* Renommage du titre "topic point" dans le forum refuges si le nom de la fiche change, sauf s'il s'agit d'un modèle, qui n'a pas de sujet dans le forum, en réalité, on pourrait uniformiser et leur laisser un forum, ça ne poserait aucun problème, mais des modérateurs s'en sont trouvé étonné et on voulu bien faire, et on supprimé les forum en question, créant finalement un bug, alors, en 2020 j'ai décidé de ne plus avoir de forum pour les modèles *************/
     if (!$point_avant->modele and $point_avant->nom!=$point->nom)
@@ -963,7 +967,7 @@ function suppression_point($point,$id_utilisateur_qui_supprime=0)
 
   historisation_modification($point_test,null,'suppression point',$id_utilisateur_qui_supprime);
 
-  return ok("La fiche du point, les commentaires, les photos et la zone forum ont bien été supprimés");
+  return ok(_("La fiche du point, les commentaires, les photos et la zone forum ont bien été supprimés"));
 }
 
 /*******************************************************

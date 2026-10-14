@@ -232,7 +232,7 @@ function infos_commentaire($id_commentaire,$meme_si_cache=False)
   if (!empty($c->erreur))
     return erreur($c->message);
   if (count($c)!=1)
-    return erreur("Le commentaire d'id=".$id_commentaire." a été demandé mais il n'a pas été trouvé et ce n'est pas normal, je m'arrète là");
+    return erreur(sprintf(_("Le commentaire d'id=%s a été demandé mais il n'a pas été trouvé et ce n'est pas normal, je m'arrête là"), $id_commentaire));
   return $c[0];
 }
 
@@ -271,18 +271,18 @@ function modification_ajout_commentaire($commentaire)
 
   $point=infos_point($commentaire->id_point??0,True);
   if (!empty($point->erreur))
-    return erreur("Le commentaire ne peut être ajouté car : ".$point->message ?? '',"Id du point: \"$commentaire->id_point\"");
+    return erreur(sprintf(_("Le commentaire ne peut être ajouté car : %s"), $point->message ?? ''),"Id du point: \"$commentaire->id_point\"");
   // Test de validité, un commentaire ne peut être modifié ou ajouté que si son texte existe ou a une photo
   // On dirait que le commentaire dispose bien d'une photo
   if (!empty($commentaire->photo['originale']))
   {
     if (!is_file($commentaire->photo['originale']??''))
-      return erreur("La photo proposée ne semble pas exister ou ne nous est pas parvenue");
+      return erreur(_("La photo proposée ne semble pas exister ou ne nous est pas parvenue"));
 
     $format_photo=exif_imagetype($commentaire->photo['originale']);
     // Test pour voir si le fichier envoyé est bien un format de photo dans la liste que nous acceptons
     if (!in_array($format_photo,$config_wri['format_photo_autorisees'] ))
-      return erreur("Le fichier proposé ne semble pas contenir une image au format ".$config_wri['texte_des_formats_photo_autorisee'].", vous pouvez revenir en arrière et retirer la photo, la vérifier ou en fournir une autre.");
+      return erreur(sprintf(_("Le fichier proposé ne semble pas contenir une image au format %s, vous pouvez revenir en arrière et retirer la photo, la vérifier ou en fournir une autre."), _($config_wri['texte_des_formats_photo_autorisee'])));
 
     //bien, on a une image pour ce commentaire
     $photo_valide=True;
@@ -294,14 +294,14 @@ function modification_ajout_commentaire($commentaire)
     $commentaire->photo_existe=0;
 
   if (!$photo_valide and trim($commentaire->texte??'')=="")
-    return erreur("Le commentaire ne contient ni photo ni texte, il n'est pas traité");
+    return erreur(_("Le commentaire ne contient ni photo ni texte, il n'est pas traité"));
 
   // On a donc soit une photo valide, soit un texte pour le commentaire, on continue
   if (!empty($commentaire->id_commentaire)) // On a un id de commentaire, on est donc en train de le modifier
   {
     $commentaire_avant_modification=infos_commentaire($commentaire->id_commentaire,True);
     if (!empty($commentaire_avant_modification->erreur))
-      return erreur("Une modification d'un commentaire inexistant a été demandée : ".$commentaire_avant_modification->message);
+      return erreur(sprintf(_("Une modification d'un commentaire inexistant a été demandée : %s"), $commentaire_avant_modification->message));
 
     if (!empty($commentaire->photo['originale']))
       $ajout_photo=empty($commentaire->photo['originale']);
@@ -373,15 +373,15 @@ function modification_ajout_commentaire($commentaire)
     $commentaire->id_commentaire = $pdo->lastInsertId();
 
   if ($mode=="ajout")
-    $retour->message="Le commentaire a été ajouté";
+    $retour->message=_("Le commentaire a été ajouté");
   else
-    $retour->message="Le commentaire a été modifié";
+    $retour->message=_("Le commentaire a été modifié");
 
   touch_fiches($point, $commentaire_avant_modification??null);
 
   // C'est juste "cosmétique" : si on détecte que le numéro du point a changé, on signale qu'un transfert a eu lieu.
   if ($mode == "modification" and $un_transfert_a_eu_lieu)
-    $retour->message.=" et a été transféré sur la fiche : <a href=\"".lien_point($point)."\">".$point->nom."</a>";
+    $retour->message.=sprintf(_(" et a été transféré sur la fiche : %s"), "<a href=\"".lien_point($point)."\">".$point->nom."</a>");
 
   $retour->erreur=False;
 
@@ -496,10 +496,10 @@ function suppression_photos($commentaire,$force=False)
           unlink($photo);
   }
   else
-    return erreur("pas de photo dans ce commentaire");
+    return erreur(_("pas de photo dans ce commentaire"));
 
   touch_fiches($commentaire);
-  return ok("photo supprimée");
+  return ok(_("photo supprimée"));
 }
 
 /******************************************************
@@ -522,12 +522,12 @@ function suppression_commentaire($commentaire)
   $success = $pdo->exec($query_delete);
 
   if (!$success)
-    return erreur("Suppression d'un commentaire inexistant",$query_delete);
+    return erreur(_("Suppression d'un commentaire inexistant"),$query_delete);
   else {
     // Les traductions automatiques de ce commentaire n'ont plus de source (pas de ON DELETE CASCADE : on le fait explicitement)
     $pdo->exec("DELETE FROM traductions WHERE type_objet='commentaire' AND id_objet=$commentaire->id_commentaire");
     touch_fiches($commentaire);
-    return ok("Commentaire supprimé");
+    return ok(_("Commentaire supprimé"));
   }
 
   return True;
@@ -591,10 +591,10 @@ function transfert_forum($commentaire)
   $retour=suppression_commentaire($commentaire);
 
   if ($retour->erreur)
-    return erreur($retour->message.", mais la copie a réussie");
+    return erreur(sprintf(_("%s, mais la copie a réussie"), $retour->message));
   else {
     touch_fiches($commentaire);
-    return ok("Message transféré sur le forum");
+    return ok(_("Message transféré sur le forum"));
   }
 }
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-14 16:46+0200\n"
+"POT-Creation-Date: 2026-10-14 17:15+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -498,6 +498,242 @@ msgstr ""
 msgid "Page sous licence :"
 msgstr ""
 
+msgid "Pas encore de compte ?"
+msgstr ""
+
+msgid ""
+"Nous remarquons que vous n'êtes pas connecté ou n'êtes pas inscrit sur le "
+"site. Cela n'est pas obligatoire, mais si vous souhaitez améliorer "
+"ultérieurement votre fiche, vous ne pourrez le faire sans l'aide d'un "
+"modérateur. Il restera possible après coup de vous ré-attribuer une fiche "
+"par demande sur le forum, mais c'est plus simple d'être connecté dès le "
+"départ !"
+msgstr ""
+
+msgid "Ajouter un·e :"
+msgstr ""
+
+msgid "Passer à l'étape suivante"
+msgstr ""
+
+msgid "Licence des contenus"
+msgstr ""
+
+msgid "L'information que vous allez rentrer"
+msgstr ""
+
+msgid "sera soumise à la licence creative commons by-sa."
+msgstr ""
+
+#, php-format
+msgid "Ajouter un commentaire sur la fiche de %s :"
+msgstr ""
+
+msgid ""
+"Nous remarquons que <strong>vous n'êtes pas connecté</strong> sur le site ou "
+"le Forum. Bien que nous autorisions les contributions anonymes, nous vous "
+"recommandons de vous connecter sur le forum et/ou de créer un compte afin de "
+"pouvoir revenir faire des modifications ultérieures"
+msgstr ""
+
+msgid ""
+"<strong>Votre commentaire a bien été ajouté !</strong> (vous pouvez en "
+"ajouter d'autres)"
+msgstr ""
+
+msgid "Syntaxe&nbsp;possible"
+msgstr ""
+
+msgid "Auteur :"
+msgstr ""
+
+msgid "facultatif"
+msgstr ""
+
+msgid "Choisir ou déposer une photo"
+msgstr ""
+
+msgid "Aperçu de la photo choisie"
+msgstr ""
+
+#, php-format
+msgid ""
+"facultatif, format %1$s de taille max=%2$s La photo doit soit être la votre "
+"soit être sous une %3$s (pensez alors à citer son auteur si cela est requis)."
+msgstr ""
+
+msgid "licence compatible"
+msgstr ""
+
+msgid "Prévenir les modérateurs globaux pour compléter la fiche."
+msgstr ""
+
+msgid ""
+"Votre commentaire sera alors visible de tous immédiatement, mais par la "
+"suite un modérateur pourra compléter la fiche et le supprimer ou le garder."
+msgstr ""
+
+msgid ""
+"<strong>Mauvaise lettre !</strong> Merci de recopier la lettre indiquée afin "
+"de lutter contre les message indésirables: Il y a eu ici beaucoup de "
+"messages laissés par des 'robots' faisant de la publicité pour des sites "
+"plus que douteux, du coup, cette manoeuvre a pour but de leur compliquer la "
+"tâche. Idéalement, seul un 'humain' saura comprendre ce qu'il faut faire. "
+"Nous sommes désolé de cette perte d'ergonomie; Un des objectifs principal du "
+"site a toujours été d'être simple et rapide d'utilisation."
+msgstr ""
+
+msgid "Ceci afin d'éviter les messages indésirables automatiques, désolé."
+msgstr ""
+
+msgid "Envoyer"
+msgstr ""
+
+msgid "Recommencer"
+msgstr ""
+
+msgid "Ce que vous pouvez ou non mettre sur le site"
+msgstr ""
+
+msgid ""
+"Un commentaire sur une fiche a pour but d'être utile à tous et objectif."
+msgstr ""
+
+#, php-format
+msgid ""
+"Si vous désirez poster une appréciation ou une question faites le plutôt sur "
+"le %s."
+msgstr ""
+
+#, php-format
+msgid "forum attaché à %s"
+msgstr ""
+
+msgid ""
+"Il est <strong>interdit de faire une réservation ou de signaler aux autres "
+"que vous y serez</strong>"
+msgstr ""
+
+#, php-format
+msgid "car cette pratique est contraire à l'esprit dans lequel %s a été créée."
+msgstr ""
+
+msgid "Tout commentaire dans ce sens sera supprimé par les modérateurs."
+msgstr ""
+
+#, php-format
+msgid "Voir %s"
+msgstr ""
+
+msgid "la discussion à ce sujet sur le forum."
+msgstr ""
+
+#, php-format
+msgid "Voir %s."
+msgstr ""
+
+msgid "ce que nous souhaitons voir et ne pas voir dans les commentaires"
+msgstr ""
+
+#, php-format
+msgid ""
+"Le site n'a aucun rapport avec les propriétaires ou gérants de %s (inutile "
+"de leur laisser un message ici)."
+msgstr ""
+
+#, php-format
+msgid ""
+"Le commentaire et la photo que vous ajoutez sera soumis à la %s et pourra "
+"être réutilisé dans ce cadre."
+msgstr ""
+
+msgid "licence creative commons by-sa"
+msgstr ""
+
+msgid "À noter :"
+msgstr ""
+
+msgid ""
+"Cette fiche est un modèle, ne la supprimez ou changez son type que si vous "
+"savez vraiment ce que vous faites"
+msgstr ""
+
+msgid "Double cliquer sur un point de la carte pour y ramener le curseur."
+msgstr ""
+
+msgid "Coordonnées"
+msgstr ""
+
+msgid "Longitude :"
+msgstr ""
+
+msgid "Latitude :"
+msgstr ""
+
+msgid "Provenance"
+msgstr ""
+
+msgid "Altitude (mètre) :"
+msgstr ""
+
+msgid "Informations de base"
+msgstr ""
+
+msgid "Nom :"
+msgstr ""
+
+msgid "Type de point"
+msgstr ""
+
+msgid "Modérateur de cette fiche :"
+msgstr ""
+
+msgid "Anonyme/Aucun"
+msgstr ""
+
+msgid "Mise en forme texte"
+msgstr ""
+
+msgid "oui"
+msgstr ""
+
+msgid "non"
+msgstr ""
+
+msgid "État :"
+msgstr ""
+
+msgid "ne sait pas"
+msgstr ""
+
+msgid "nombre :"
+msgstr ""
+
+msgid "Questions pour les contributeurs anonymes"
+msgstr ""
+
+msgid "Votre nom ou pseudo (facultatif) :"
+msgstr ""
+
+msgid ""
+"Cette procédure permet de s'assurer que les 'robots' qui parcourent le Net "
+"ne viennent pas jusqu'ici"
+msgstr ""
+
+msgid "Modification d'un point"
+msgstr ""
+
+msgid ""
+"(Vous pouvez retourner corriger le problème en utilisant le bouton retour de "
+"votre navigateur)"
+msgstr ""
+
+msgid "Merci de votre contribution"
+msgstr ""
+
+msgid "Cliquez ici pour voir ou retourner à la fiche"
+msgstr ""
+
 msgid "Carte et informations sur les refuges, cabanes et abris de montagne"
 msgstr ""
 
@@ -524,10 +760,239 @@ msgstr ""
 msgid "Info périmée ?"
 msgstr ""
 
+msgid "Ajouter un point dans refuges.info"
+msgstr ""
+
+msgid ""
+"Il contient un ou des mots clés interdits. En cas de doute venez en parler "
+"sur le forum"
+msgstr ""
+
+msgid "Impossible d'ajouter ce commentaire car :"
+msgstr ""
+
+#, php-format
+msgid "Ajouter une information ou une photo sur %s"
+msgstr ""
+
+msgid "Point inexistant"
+msgstr ""
+
+msgid "Suppression de la fiche"
+msgstr ""
+
+msgid "Modification d'un point dans refuges.info"
+msgstr ""
+
+msgid "Permissions insuffisantes"
+msgstr ""
+
+msgid ""
+"Désolé, mais pour cette opération vous devez être modérateur et être "
+"connecté au forum :"
+msgstr ""
+
+msgid "Connexion forum"
+msgstr ""
+
+msgid "Ajout d'un point dans refuges.info"
+msgstr ""
+
+msgid "Formulaire d'ajout de point : information manquante"
+msgstr ""
+
+msgid ""
+"Vous n'auriez pas dû arriver ici, le type de point à créer n'a pas été reçu "
+"(ni l'identifiant d'un point à modifier)."
+msgstr ""
+
+msgid "Choisir le type de point à ajouter"
+msgstr ""
+
+msgid "Cacher cette fiche du public"
+msgstr ""
+
+msgid ""
+"Cette action n'est accessible qu'aux modérateurs, cela cachera la fiche de "
+"la vue de tous sauf des modérateurs (demande du propriétaire, terrain privé, "
+"autre raison). Une autre possibilité, selon le cas, serait de noter comme "
+"fermé/détruite qui garde visible, mais indique le changement de statut"
+msgstr ""
+
+msgid "Ne sait pas"
+msgstr ""
+
+msgid "Coule"
+msgstr ""
+
+msgid "Débit intermittent"
+msgstr ""
+
+msgid "Ouvert"
+msgstr ""
+
+msgid "Détruit(e)"
+msgstr ""
+
+msgid "ERREUR: vous n'avez pas rentré la lettre demandée"
+msgstr ""
+
+msgid "Le point a bien été ajouté"
+msgstr ""
+
+msgid "Le point a bien été modifié"
+msgstr ""
+
+msgid ""
+"Vous n'êtes ni modérateur global, ni modérateur de cette fiche, vous n'avez "
+"pas l'autorisation de la modifier"
+msgstr ""
+
+msgid ""
+"Vous n'êtes pas modérateur du site, vous n'avez pas l'autorisation de la "
+"supprimer"
+msgstr ""
+
+#, php-format
+msgid ""
+"Le commentaire d'id=%s a été demandé mais il n'a pas été trouvé et ce n'est "
+"pas normal, je m'arrête là"
+msgstr ""
+
+#, php-format
+msgid "Le commentaire ne peut être ajouté car : %s"
+msgstr ""
+
+msgid "La photo proposée ne semble pas exister ou ne nous est pas parvenue"
+msgstr ""
+
+#, php-format
+msgid ""
+"Le fichier proposé ne semble pas contenir une image au format %s, vous "
+"pouvez revenir en arrière et retirer la photo, la vérifier ou en fournir une "
+"autre."
+msgstr ""
+
+msgid "Le commentaire ne contient ni photo ni texte, il n'est pas traité"
+msgstr ""
+
+#, php-format
+msgid "Une modification d'un commentaire inexistant a été demandée : %s"
+msgstr ""
+
+msgid "Le commentaire a été ajouté"
+msgstr ""
+
+msgid "Le commentaire a été modifié"
+msgstr ""
+
+#, php-format
+msgid " et a été transféré sur la fiche : %s"
+msgstr ""
+
+msgid "pas de photo dans ce commentaire"
+msgstr ""
+
+msgid "photo supprimée"
+msgstr ""
+
+msgid "Suppression d'un commentaire inexistant"
+msgstr ""
+
+msgid "Commentaire supprimé"
+msgstr ""
+
+#, php-format
+msgid "%s, mais la copie a réussie"
+msgstr ""
+
+msgid "Message transféré sur le forum"
+msgstr ""
+
 msgid "Message forum"
 msgstr ""
 
 msgid "de"
+msgstr ""
+
+#, php-format
+msgid ""
+"Ce point d'id %s a existé par le passé sur ce site, mais seul un modérateur "
+"peut retrouver son historique"
+msgstr ""
+
+msgid "Identifiant de point invalide"
+msgstr ""
+
+#, php-format
+msgid "Le numéro de point demandé %s est introuvable dans notre base"
+msgstr ""
+
+msgid "Ben ça alors ? on a récupéré plus que 1 point, pas prévu..."
+msgstr ""
+
+#, php-format
+msgid "ce %s"
+msgstr ""
+
+msgid "Le nom ne peut être vide"
+msgstr ""
+
+msgid "Le nom contient un des caractères non autorisé suivant : [ ] < > ;"
+msgstr ""
+
+#, php-format
+msgid ""
+"L'emplacement de <a href='/point/%s'>\"%s\"</a> et ses alentours sont privés."
+"<br/> On ne peut pas y référencer de cabane.<br/> Voir : <a "
+"href=\"%s\">Définition d'une cabane non gardée</a>.<br/> Laissez-nous un "
+"message sur le forum si vous souhaitez en discuter.<br/>"
+msgstr ""
+
+#, php-format
+msgid ""
+"La latitude du point doit être au format degré décimaux, par exemple : "
+"45.789, la valeur reçue est : %s"
+msgstr ""
+
+#, php-format
+msgid ""
+"La longitude du point doit être au format degré décimaux, par exemple : "
+"45.789, la valeur reçue est : %s"
+msgstr ""
+
+msgid "La latitude du point doit être comprise entre -90 et 90 (degrés)"
+msgstr ""
+
+msgid "La longitude du point doit être comprise entre -180 et 180 (degrés)"
+msgstr ""
+
+#, php-format
+msgid "L'altitude du point doit être un nombre entier positif, reçu : %s"
+msgstr ""
+
+#, php-format
+msgid ""
+"%sm comme altitude du point, c'est plus que l'Everest, vous avez dû vous "
+"tromper ?"
+msgstr ""
+
+#, php-format
+msgid "Le nombre de %s doit être un entier supérieur ou égal à 0, reçu : '%s'"
+msgstr ""
+
+#, php-format
+msgid "Erreur de modification du point : %s"
+msgstr ""
+
+msgid ""
+"La requête SQL est en erreur, mais nous ne savons pas pourquoi, prévenez "
+"nous sur le forum, vous avez trouvé un bug !"
+msgstr ""
+
+msgid ""
+"La fiche du point, les commentaires, les photos et la zone forum ont bien "
+"été supprimés"
 msgstr ""
 
 msgid "abri naturel"
@@ -668,9 +1133,6 @@ msgstr ""
 msgid "zone réglementée"
 msgstr ""
 
-msgid "Débit intermittent"
-msgstr ""
-
 msgid "Détruite"
 msgstr ""
 
@@ -687,4 +1149,16 @@ msgid "Inconnu"
 msgstr ""
 
 msgid "<b>Inconnu</b>"
+msgstr ""
+
+msgid "accès"
+msgstr ""
+
+msgid "remarques"
+msgstr ""
+
+msgid "Entrez la lettre <strong>g</strong>"
+msgstr ""
+
+msgid "jpeg, png, bmp ou webp"
 msgstr ""

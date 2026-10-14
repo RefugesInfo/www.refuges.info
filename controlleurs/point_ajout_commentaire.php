@@ -77,7 +77,7 @@ if (empty($point->erreur))
       {
         $vue->messages = new stdClass;
         $vue->messages->erreur=True;
-        $commentaire->message="Il contient un ou des mots clés interdits. En cas de doute venez en parler sur le forum";
+        $commentaire->message=_("Il contient un ou des mots clés interdits. En cas de doute venez en parler sur le forum");
       }
       else
         // On tente d'ajouter le commentaire, qui peut retourner une erreur au besoin (point supprimé, erreur technique, ...)
@@ -104,13 +104,13 @@ if (empty($point->erreur))
       if (empty($vue->messages->erreur))
       {
         // succes passe en parametre URL
-        header("Location: /point_ajout_commentaire/".$commentaire->id_point."?succes=1");
+        header("Location: ".url_langue("/point_ajout_commentaire/".$commentaire->id_point)."?succes=1");
         exit;
       }
       else
       {
         $vue->type = "page_simple";
-        $vue->contenu=$vue->titre="Impossible d'ajouter ce commentaire car : ".$commentaire->message;
+        $vue->contenu=$vue->titre=_("Impossible d'ajouter ce commentaire car :")." ".$commentaire->message;
         return;
       }
 
@@ -125,7 +125,7 @@ if (empty($point->erreur))
   // Qu'on arrive juste ou que l'on vienne déjà de rentrer un premier commentaire, on affiche le formulaire (rappel paramètres si erreur, vide si nouveau commentaire de +)
   $vue->nom_point=protege($point->nom);
   // Le titre n'était défini que dans les branches d'erreur : la page nominale sortait avec un <title> vide
-  $vue->titre="Ajouter une information ou une photo sur $vue->nom_point";
+  $vue->titre=sprintf(_("Ajouter une information ou une photo sur %s"), $vue->nom_point);
   $vue->lien_point=lien_point($point);
   $vue->point_existe=True;
   $vue->commentaire=$commentaire;

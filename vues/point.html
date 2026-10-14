@@ -28,7 +28,7 @@
     if (est_autorise($point->id_moderateur)) { ?>
       <div class="noprint bloc_liens_centre">
         <p><b>
-          <a class="lien_bouton" href="/point_formulaire_modification?id_point=<?=$vue->point->id_point?>">
+          <a class="lien_bouton" href="<?=url_langue('/point_formulaire_modification')?>?id_point=<?=$vue->point->id_point?>">
             Modification
           </a>&nbsp;
           <a class="lien_bouton" href="/gestion/historique_modifications/<?=$vue->point->id_point?>">
@@ -89,7 +89,7 @@
     </p>
 <!--================================= DEMANDE DE MODIFICATION =================================-->
     <div class="noprint bloc_liens_centre">
-      <a class="lien_bouton" href="/point_ajout_commentaire/<?=$vue->point->id_point?>?correction=oui">
+      <a class="lien_bouton" href="<?=url_langue('/point_ajout_commentaire/'.$vue->point->id_point)?>?correction=oui">
         <?=_("Demander une modification de la fiche")?>
       </a>
     </div>
@@ -229,7 +229,7 @@
 <!--===================================== LIEN AJOUT COMMENTAIRE ====================================-->
   <h5 class="noprint"><?=_("Informations récentes")?></h5>
     <div class="noprint bloc_liens_centre">
-      <a class="lien_bouton" href="/point_ajout_commentaire/<?=$vue->point->id_point?>">
+      <a class="lien_bouton" href="<?=url_langue('/point_ajout_commentaire/'.$vue->point->id_point)?>">
         <?=_("Ajouter une information et/ou une photo")?>
       </a>
     </div>

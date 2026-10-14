@@ -1,23 +1,23 @@
 <div class="contenu">
   <?php if (!empty($vue->avertissement)) { ?>
-    <p><strong class="warning">À noter : <?=htmlspecialchars($vue->avertissement)?></strong></p>
+    <p><strong class="warning"><?=_("À noter :")?> <?=htmlspecialchars($vue->avertissement)?></strong></p>
   <?php } ?>
   <?php // Signaler les fiches qui sont des modèles
   if ($vue->point->modele??'') { ?>
     <strong class="warning">
-      Cette fiche est un modèle, ne la supprimez ou changez son type que si vous savez vraiment ce que vous faites
+      <?=_("Cette fiche est un modèle, ne la supprimez ou changez son type que si vous savez vraiment ce que vous faites")?>
     </strong>
   <?php } ?>
 
   <div id="conteneur-carte-saisie">
     <div id="carte-saisie"></div>
-    <div class="noprint texte-tout-petit">Double cliquer sur un point de la carte pour y ramener le curseur.</div>
+    <div class="noprint texte-tout-petit"><?=_("Double cliquer sur un point de la carte pour y ramener le curseur.")?></div>
   </div>
 
-  <form class="wri" id="form_point" method="post" action="/point_modification">
+  <form class="wri" id="form_point" method="post" action="<?=url_langue('/point_modification')?>">
     <div>
       <?php foreach ($vue->champs->boutons as $bouton) { ?> <button class="<?=$bouton->classe ?? ''?>" type="<?=$bouton->type?>" name="<?=$bouton->nom?>" value="<?=$bouton->valeur?>" onclick="choix='<?=$bouton->valeur?>'">
-      <?=$bouton->label?>
+      <?=_($bouton->label)?>
       </button>
       <?php } ?>
     </div>
@@ -31,46 +31,46 @@
 
     <!-- Edition de la position -->
     <fieldset>
-      <legend>Coordonnées</legend>
+      <legend><?=_("Coordonnées")?></legend>
       <div id="champs-position">
         <label>
           <input type="hidden" name="geojson" value='<?=!empty($vue->point->id_point)?$vue->point->geojson:''?>'>
-          Longitude :
+          <?=_("Longitude :")?>
           <input type="text" name="lon" size="12" maxlength="12" onchange="champPositionChange()">
-          Latitude :
+          <?=_("Latitude :")?>
           <input type="text" name="lat" size="12" maxlength="12" onchange="champPositionChange()">
         </label>
       </div>
 
       <label>&nbsp;</label>
-      <label>Provenance
+      <label><?=_("Provenance")?>
         <select name="id_type_precision_gps">
           <?php foreach ($vue->infos_base->type_precision AS $gps) { ?>
             <option value="<?=$gps->id_type_precision_gps?>" <?=($gps->id_type_precision_gps==$vue->point->id_type_precision_gps)? ' selected="selected"' : '' ;?>>
-              <?=$gps->nom_precision_gps ?>
+              <?=_($gps->nom_precision_gps) ?>
             </option>
           <?php } ?>
         </select>
       </label>
 
       <label>
-        Altitude (mètre) :
+        <?=_("Altitude (mètre) :")?>
         <input type="text" name="altitude" size="6" value="<?=$vue->point->altitude?>">
       </label>
     </fieldset>
 
     <fieldset>
-      <legend>Informations de base</legend>
+      <legend><?=_("Informations de base")?></legend>
       <label>
-        Nom :
+        <?=_("Nom :")?>
         <input class="input_en_ligne" type="text" name="nom" placeholder="<?=!isset($vue->point->id_point) ? $vue->point->nom : ''?>" value="<?=isset($vue->point->id_point) ? $vue->point->nom : ''?>">
       </label>
       <?php if (!empty($vue->point->id_point)) { ?>
-        <label>Type de point
+        <label><?=_("Type de point")?>
           <select name='id_point_type'>
             <?php foreach ($vue->infos_base->types_point AS $type_point) { ?>
               <option value="<?=$type_point->id_point_type?>" <?=($type_point->id_point_type==$vue->point->id_point_type)? 'selected="selected"' : '' ;?>>
-                <?=$type_point->nom_type?>
+                <?=_($type_point->nom_type)?>
               </option>
             <?php } ?>
           </select>
@@ -80,10 +80,10 @@
       <?php } ?>
 
       <?php if (est_moderateur() and !empty($vue->point->id_point)) { ?>
-        <label>Modérateur de cette fiche:
+        <label><?=_("Modérateur de cette fiche :")?>
           <select name='id_moderateur'>
             <option value="0" <?=(0==$vue->point->id_moderateur)? 'selected="selected"' : '' ;?>>
-              Anonyme/Aucun
+              <?=_("Anonyme/Aucun")?>
             </option>
             <?php foreach ($vue->utilisateurs AS $utilisateur) { ?>
               <option value="<?=$utilisateur->user_id?>" <?=($utilisateur->user_id==$vue->point->id_moderateur)? 'selected="selected"' : '' ;?>>
@@ -97,28 +97,28 @@
       <fieldset class="textarea">
         <?php foreach ($vue->champs->textareas as $tx_nom => $tx_params) { ?>
           <label>
-            <span><?=ucfirst($tx_params->label)?></span>
+            <span><?=ucfirst(_($tx_params->label))?></span>
             <textarea placeholder="<?=!isset($vue->point->id_point) ? $tx_params->valeur : ''?>" name="<?=$tx_nom?>"><?=isset($vue->point->id_point) ? $tx_params->valeur:''?></textarea>
           </label>
         <?php } ?>
-        <a class="lien-mise-en-forme" href="<?=$vue->lien_bbcode?>">Mise en forme texte</a>
+        <a class="lien-mise-en-forme" href="<?=$vue->lien_bbcode?>"><?=_("Mise en forme texte")?></a>
       </fieldset>
     </fieldset>
 
     <?php if (est_moderateur()) { ?>
       <fieldset class="booleen">
-        <legend title="<?=$vue->champs->cache_aide?>"><?=$vue->champs->cache_label?> :</legend>
-        <label>oui<input type="radio" name="cache" value="TRUE" <?=($vue->champs->cache===true)?'checked="checked"':'';?>></label>
-        <label>non<input type="radio" name="cache" value="FALSE" <?=($vue->champs->cache===false)?'checked="checked"':'';?>></label>
+        <legend title="<?=$vue->champs->cache_aide?>"><?=sprintf(_("%s :"), $vue->champs->cache_label)?></legend>
+        <label><?=_("oui")?><input type="radio" name="cache" value="TRUE" <?=($vue->champs->cache===true)?'checked="checked"':'';?>></label>
+        <label><?=_("non")?><input type="radio" name="cache" value="FALSE" <?=($vue->champs->cache===false)?'checked="checked"':'';?>></label>
       </fieldset>
     <?php } ?>
 
     <?php if (!empty($vue->champs->conditions_utilisation)) { ?>
       <fieldset class="booleen">
-        <legend>État :</legend>
+        <legend><?=_("État :")?></legend>
         <?php foreach ( $vue->champs->conditions_utilisation->options as $option_key => $option_valeur) {
           if (!empty($option_valeur)) { ?>
-            <label><?=$option_valeur?>
+            <label><?=_($option_valeur)?>
               <input type="radio" name="conditions_utilisation" value="<?=$option_key?>" <?=($vue->champs->conditions_utilisation->valeur==$option_key)?' checked="checked"':'';?>>
             </label>
         <?php } } ?>
@@ -134,11 +134,11 @@
            $visible = 'visible';
       ?>
       <fieldset class="booleen">
-        <legend><?=$params->label?> :</legend>
-        <label>ne sait pas
+        <legend><?=sprintf(_("%s :"), _($params->label))?></legend>
+        <label><?=_("ne sait pas")?>
           <input type="radio" name="<?=$nom?>_pas_utile" onclick="afficheEtSet('<?=$nom?>','hidden','ne_sait_pas');" <?=($params->valeur===NULL)?' checked="checked"':'';?>>
         </label>
-        <label>nombre :
+        <label><?=_("nombre :")?>
           <input type="radio" name="<?=$nom?>_pas_utile" onclick="afficheEtSet('<?=$nom?>','visible','');" <?=($params->valeur!==NULL)?' checked="checked"':'';?>>
           <input type="text" id="<?=$nom?>" name="<?=$nom?>" size="4" style="visibility: <?=$visible?>;" value="<?=($params->valeur===NULL)?'ne_sait_pas':$params->valeur;?>">
         </label>
@@ -147,25 +147,25 @@
 
     <?php foreach ($vue->champs->trinaires as $nom => $params) { ?>
       <fieldset class="booleen">
-        <legend <?=(isset($params->aide))? ' title="'.$params->aide.'"':'';?>><?=$params->label?> :</legend>
-        <label>ne sait pas<input type="radio" name="<?=$nom?>" value="ne_sait_pas" <?=($params->valeur===NULL)?'checked="checked"':'';?>></label>
-        <label>oui<input type="radio" name="<?=$nom?>" value="TRUE" <?=($params->valeur===true)?'checked="checked"':'';?>></label>
-        <label>non<input type="radio" name="<?=$nom?>" value="FALSE" <?=($params->valeur===false)?'checked="checked"':'';?>></label>
+        <legend <?=(isset($params->aide))? ' title="'.$params->aide.'"':'';?>><?=sprintf(_("%s :"), _($params->label))?></legend>
+        <label><?=_("ne sait pas")?><input type="radio" name="<?=$nom?>" value="ne_sait_pas" <?=($params->valeur===NULL)?'checked="checked"':'';?>></label>
+        <label><?=_("oui")?><input type="radio" name="<?=$nom?>" value="TRUE" <?=($params->valeur===true)?'checked="checked"':'';?>></label>
+        <label><?=_("non")?><input type="radio" name="<?=$nom?>" value="FALSE" <?=($params->valeur===false)?'checked="checked"':'';?>></label>
       </fieldset>
       <br style="clear: both;">
     <?php }
     if ( !est_connecte() ) { ?>
       <br style="clear: both;" />
-      <h4>Questions pour les contributeurs anonymes</h4>
+      <h4><?=_("Questions pour les contributeurs anonymes")?></h4>
       <fieldset>
         <label>
-          Votre nom ou pseudo (facultatif) :
+          <?=_("Votre nom ou pseudo (facultatif) :")?>
           <input class="input_en_ligne" type="text" name="nom_createur" value="">
         </label>
       </fieldset>
       <fieldset>
-        <label title="Cette procédure permet de s'assurer que les 'robots' qui parcourent le Net ne viennent pas jusqu'ici">
-          <?=$config_wri['captcha_question']?>
+        <label title="<?=_("Cette procédure permet de s'assurer que les 'robots' qui parcourent le Net ne viennent pas jusqu'ici")?>">
+          <?=_($config_wri['captcha_question'])?>
           <input name="lettre_securite" class="input_captcha_court" type="text">
         </label>
       </fieldset>
@@ -174,7 +174,7 @@
     <fieldset>
       <?php foreach ($vue->champs->boutons as $bouton) { ?>
         <button class="<?=$bouton->classe ?? ''?>" type="<?=$bouton->type?>" name="<?=$bouton->nom?>" value="<?=$bouton->valeur?>">
-          <?=$bouton->label?>
+          <?=_($bouton->label)?>
         </button>
       <?php } ?>
     </fieldset>

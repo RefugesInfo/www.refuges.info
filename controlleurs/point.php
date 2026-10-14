@@ -160,14 +160,14 @@ else // le point est valide
     if (est_autorise($commentaire->id_createur_commentaire))
     {
       $commentaire->lien_commentaire =
-        '/commentaire_formulaire_modification?id_point_retour='.$commentaire->id_point.
+        url_langue('/commentaire_formulaire_modification').'?id_point_retour='.$commentaire->id_point.
         '&amp;id_commentaire='.$commentaire->id_commentaire;
       $commentaire->texte_lien_commentaire = _('Modifier');
     }
     else
     {
       // l'internaute, en cliquant ici va nous donner ce qu'il pense de ce commentaire
-      $commentaire->lien_commentaire = "/avis_internaute_commentaire/$commentaire->id_commentaire/";
+      $commentaire->lien_commentaire = url_langue("/avis_internaute_commentaire/$commentaire->id_commentaire/");
       $commentaire->texte_lien_commentaire = _('Info périmée ?');
     }
   }

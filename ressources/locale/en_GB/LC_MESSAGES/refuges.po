@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: refuges.info\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-14 16:46+0200\n"
+"POT-Creation-Date: 2026-10-14 17:15+0200\n"
 "Language: en_GB\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -504,8 +504,278 @@ msgstr ""
 msgid "Page sous licence :"
 msgstr "Page licensed under:"
 
+msgid "Pas encore de compte ?"
+msgstr "No account yet?"
+
+msgid ""
+"Nous remarquons que vous n'êtes pas connecté ou n'êtes pas inscrit sur le "
+"site. Cela n'est pas obligatoire, mais si vous souhaitez améliorer "
+"ultérieurement votre fiche, vous ne pourrez le faire sans l'aide d'un "
+"modérateur. Il restera possible après coup de vous ré-attribuer une fiche "
+"par demande sur le forum, mais c'est plus simple d'être connecté dès le "
+"départ !"
+msgstr ""
+"We notice that you are not logged in or not registered on the site. This is "
+"not compulsory, but if you want to improve your sheet later on, you will not "
+"be able to do so without a moderator's help. It will remain possible "
+"afterwards to have a sheet reassigned to you by asking on the forum, but it "
+"is simpler to be logged in from the start!"
+
+msgid "Ajouter un·e :"
+msgstr "Add a:"
+
+msgid "Passer à l'étape suivante"
+msgstr "Go to the next step"
+
+msgid "Licence des contenus"
+msgstr "Licence of the content"
+
+msgid "L'information que vous allez rentrer"
+msgstr "The information you are about to enter"
+
+msgid "sera soumise à la licence creative commons by-sa."
+msgstr "will be subject to the creative commons by-sa licence."
+
+#, php-format
+msgid "Ajouter un commentaire sur la fiche de %s :"
+msgstr "Add a comment on the sheet of %s:"
+
+msgid ""
+"Nous remarquons que <strong>vous n'êtes pas connecté</strong> sur le site ou "
+"le Forum. Bien que nous autorisions les contributions anonymes, nous vous "
+"recommandons de vous connecter sur le forum et/ou de créer un compte afin de "
+"pouvoir revenir faire des modifications ultérieures"
+msgstr ""
+"We notice that <strong>you are not logged in</strong> on the site or the "
+"Forum. Although we allow anonymous contributions, we recommend that you log "
+"in on the forum and/or create an account so that you can come back later to "
+"make changes"
+
+msgid ""
+"<strong>Votre commentaire a bien été ajouté !</strong> (vous pouvez en "
+"ajouter d'autres)"
+msgstr "<strong>Your comment has been added!</strong> (you can add more)"
+
+msgid "Syntaxe&nbsp;possible"
+msgstr "Possible&nbsp;syntax"
+
+msgid "Auteur :"
+msgstr "Author:"
+
+msgid "facultatif"
+msgstr "optional"
+
+msgid "Choisir ou déposer une photo"
+msgstr "Choose or drop a photo"
+
+msgid "Aperçu de la photo choisie"
+msgstr "Preview of the chosen photo"
+
+#, php-format
+msgid ""
+"facultatif, format %1$s de taille max=%2$s La photo doit soit être la votre "
+"soit être sous une %3$s (pensez alors à citer son auteur si cela est requis)."
+msgstr ""
+"optional, format %1$s with a maximum size of %2$s. The photo must either be "
+"your own or be under a %3$s (remember to credit its author if this is "
+"required)."
+
+msgid "licence compatible"
+msgstr "compatible licence"
+
+msgid "Prévenir les modérateurs globaux pour compléter la fiche."
+msgstr "Alert the global moderators to complete the sheet."
+
+msgid ""
+"Votre commentaire sera alors visible de tous immédiatement, mais par la "
+"suite un modérateur pourra compléter la fiche et le supprimer ou le garder."
+msgstr ""
+"Your comment will then be visible to everyone immediately, but afterwards a "
+"moderator will be able to complete the sheet and delete the comment or keep "
+"it."
+
+msgid ""
+"<strong>Mauvaise lettre !</strong> Merci de recopier la lettre indiquée afin "
+"de lutter contre les message indésirables: Il y a eu ici beaucoup de "
+"messages laissés par des 'robots' faisant de la publicité pour des sites "
+"plus que douteux, du coup, cette manoeuvre a pour but de leur compliquer la "
+"tâche. Idéalement, seul un 'humain' saura comprendre ce qu'il faut faire. "
+"Nous sommes désolé de cette perte d'ergonomie; Un des objectifs principal du "
+"site a toujours été d'être simple et rapide d'utilisation."
+msgstr ""
+"<strong>Wrong letter!</strong> Please copy the letter shown, to fight "
+"unwanted messages: a lot of messages were left here by 'robots' advertising "
+"more than dubious sites, so this step is meant to make their task harder. "
+"Ideally, only a 'human' will understand what to do. We are sorry for this "
+"loss of ease of use; one of the site's main goals has always been to be "
+"simple and quick to use."
+
+msgid "Ceci afin d'éviter les messages indésirables automatiques, désolé."
+msgstr "This is to avoid automatic unwanted messages, sorry."
+
+msgid "Envoyer"
+msgstr "Send"
+
+msgid "Recommencer"
+msgstr "Start again"
+
+msgid "Ce que vous pouvez ou non mettre sur le site"
+msgstr "What you can and cannot put on the site"
+
+msgid ""
+"Un commentaire sur une fiche a pour but d'être utile à tous et objectif."
+msgstr "A comment on a sheet is meant to be useful to everyone and objective."
+
+#, php-format
+msgid ""
+"Si vous désirez poster une appréciation ou une question faites le plutôt sur "
+"le %s."
+msgstr ""
+"If you wish to post an opinion or a question, please do so rather on the %s."
+
+#, php-format
+msgid "forum attaché à %s"
+msgstr "forum attached to %s"
+
+msgid ""
+"Il est <strong>interdit de faire une réservation ou de signaler aux autres "
+"que vous y serez</strong>"
+msgstr ""
+"It is <strong>forbidden to make a booking or to tell others that you will be "
+"there</strong>"
+
+#, php-format
+msgid "car cette pratique est contraire à l'esprit dans lequel %s a été créée."
+msgstr ""
+"because this practice is contrary to the spirit in which %s was created."
+
+msgid "Tout commentaire dans ce sens sera supprimé par les modérateurs."
+msgstr "Any comment to this effect will be deleted by the moderators."
+
+#, php-format
+msgid "Voir %s"
+msgstr "See %s"
+
+msgid "la discussion à ce sujet sur le forum."
+msgstr "the discussion about this on the forum."
+
+#, php-format
+msgid "Voir %s."
+msgstr "See %s."
+
+msgid "ce que nous souhaitons voir et ne pas voir dans les commentaires"
+msgstr "what we want to see and not to see in the comments"
+
+#, php-format
+msgid ""
+"Le site n'a aucun rapport avec les propriétaires ou gérants de %s (inutile "
+"de leur laisser un message ici)."
+msgstr ""
+"The site has no connection with the owners or managers of %s (no point "
+"leaving them a message here)."
+
+#, php-format
+msgid ""
+"Le commentaire et la photo que vous ajoutez sera soumis à la %s et pourra "
+"être réutilisé dans ce cadre."
+msgstr ""
+"The comment and the photo that you add will be subject to the %s and may be "
+"reused within that framework."
+
+msgid "licence creative commons by-sa"
+msgstr "creative commons by-sa licence"
+
+msgid "À noter :"
+msgstr "Please note:"
+
+msgid ""
+"Cette fiche est un modèle, ne la supprimez ou changez son type que si vous "
+"savez vraiment ce que vous faites"
+msgstr ""
+"This sheet is a template, only delete it or change its type if you really "
+"know what you are doing"
+
+msgid "Double cliquer sur un point de la carte pour y ramener le curseur."
+msgstr "Double-click on a point of the map to bring the cursor there."
+
+msgid "Coordonnées"
+msgstr "Coordinates"
+
+msgid "Longitude :"
+msgstr "Longitude:"
+
+msgid "Latitude :"
+msgstr "Latitude:"
+
+msgid "Provenance"
+msgstr "Source"
+
+msgid "Altitude (mètre) :"
+msgstr "Altitude (metres):"
+
+msgid "Informations de base"
+msgstr "Basic information"
+
+msgid "Nom :"
+msgstr "Name:"
+
+msgid "Type de point"
+msgstr "Type of point"
+
+msgid "Modérateur de cette fiche :"
+msgstr "Moderator of this sheet:"
+
+msgid "Anonyme/Aucun"
+msgstr "Anonymous/None"
+
+msgid "Mise en forme texte"
+msgstr "Text formatting"
+
+msgid "oui"
+msgstr "yes"
+
+msgid "non"
+msgstr "no"
+
+msgid "État :"
+msgstr "Status:"
+
+msgid "ne sait pas"
+msgstr "don't know"
+
+msgid "nombre :"
+msgstr "number:"
+
+msgid "Questions pour les contributeurs anonymes"
+msgstr "Questions for anonymous contributors"
+
+msgid "Votre nom ou pseudo (facultatif) :"
+msgstr "Your name or username (optional):"
+
+msgid ""
+"Cette procédure permet de s'assurer que les 'robots' qui parcourent le Net "
+"ne viennent pas jusqu'ici"
+msgstr ""
+"This procedure makes sure that the 'robots' that roam the Net do not get "
+"this far"
+
+msgid "Modification d'un point"
+msgstr "Editing a point"
+
+msgid ""
+"(Vous pouvez retourner corriger le problème en utilisant le bouton retour de "
+"votre navigateur)"
+msgstr "(You can go back and fix the problem using your browser's back button)"
+
+msgid "Merci de votre contribution"
+msgstr "Thank you for your contribution"
+
+msgid "Cliquez ici pour voir ou retourner à la fiche"
+msgstr "Click here to see or go back to the sheet"
+
 msgid "Carte et informations sur les refuges, cabanes et abris de montagne"
-msgstr "Map and information on alpine huts, wilderness huts and mountain shelters"
+msgstr ""
+"Map and information on alpine huts, wilderness huts and mountain shelters"
 
 msgid "cabanes, refuges et points d'eau"
 msgstr "wilderness huts, alpine huts and water points"
@@ -530,11 +800,232 @@ msgstr "Edit"
 msgid "Info périmée ?"
 msgstr "Out of date?"
 
+msgid "Ajouter un point dans refuges.info"
+msgstr "Add a point on refuges.info"
+
+msgid ""
+"Il contient un ou des mots clés interdits. En cas de doute venez en parler "
+"sur le forum"
+msgstr ""
+"It contains one or more forbidden keywords. If in doubt, come and talk about "
+"it on the forum"
+
+msgid "Impossible d'ajouter ce commentaire car :"
+msgstr "Unable to add this comment because:"
+
+#, php-format
+msgid "Ajouter une information ou une photo sur %s"
+msgstr "Add information or a photo about %s"
+
+msgid "Point inexistant"
+msgstr "Point does not exist"
+
+msgid "Suppression de la fiche"
+msgstr "Delete the sheet"
+
+msgid "Modification d'un point dans refuges.info"
+msgstr "Editing a point on refuges.info"
+
+msgid "Permissions insuffisantes"
+msgstr "Insufficient permissions"
+
+msgid ""
+"Désolé, mais pour cette opération vous devez être modérateur et être "
+"connecté au forum :"
+msgstr ""
+"Sorry, but for this operation you must be a moderator and be logged in to "
+"the forum:"
+
+msgid "Connexion forum"
+msgstr "Forum login"
+
+msgid "Ajout d'un point dans refuges.info"
+msgstr "Adding a point on refuges.info"
+
+msgid "Formulaire d'ajout de point : information manquante"
+msgstr "Add-point form: missing information"
+
+msgid ""
+"Vous n'auriez pas dû arriver ici, le type de point à créer n'a pas été reçu "
+"(ni l'identifiant d'un point à modifier)."
+msgstr ""
+"You should not have ended up here: the type of point to create was not "
+"received (nor the identifier of a point to edit)."
+
+msgid "Choisir le type de point à ajouter"
+msgstr "Choose the type of point to add"
+
+msgid "Cacher cette fiche du public"
+msgstr "Hide this sheet from the public"
+
+msgid ""
+"Cette action n'est accessible qu'aux modérateurs, cela cachera la fiche de "
+"la vue de tous sauf des modérateurs (demande du propriétaire, terrain privé, "
+"autre raison). Une autre possibilité, selon le cas, serait de noter comme "
+"fermé/détruite qui garde visible, mais indique le changement de statut"
+msgstr ""
+"This action is only available to moderators; it will hide the sheet from "
+"everyone except moderators (owner's request, private land, other reason). "
+"Another possibility, depending on the case, would be to mark it as closed/"
+"destroyed, which keeps it visible but shows the change of status"
+
+msgid "Ne sait pas"
+msgstr "Don't know"
+
+msgid "Coule"
+msgstr "Flowing"
+
+msgid "Débit intermittent"
+msgstr "Intermittent flow"
+
+msgid "Ouvert"
+msgstr "Open"
+
+msgid "Détruit(e)"
+msgstr "Destroyed"
+
+msgid "ERREUR: vous n'avez pas rentré la lettre demandée"
+msgstr "ERROR: you did not enter the requested letter"
+
+msgid "Le point a bien été ajouté"
+msgstr "The point has been added"
+
+msgid "Le point a bien été modifié"
+msgstr "The point has been modified"
+
+msgid ""
+"Vous n'êtes ni modérateur global, ni modérateur de cette fiche, vous n'avez "
+"pas l'autorisation de la modifier"
+msgstr ""
+"You are neither a global moderator nor a moderator of this sheet; you do not "
+"have permission to modify it"
+
+msgid ""
+"Vous n'êtes pas modérateur du site, vous n'avez pas l'autorisation de la "
+"supprimer"
+msgstr ""
+"You are not a moderator of the site; you do not have permission to delete it"
+
+#, php-format
+msgid "Le commentaire d'id=%s a été demandé mais il n'a pas été trouvé et ce n'est pas normal, je m'arrête là"
+msgstr "Comment id=%s was requested but could not be found, which is not normal, so I am stopping here"
+
+#, php-format
+msgid "Le commentaire ne peut être ajouté car : %s"
+msgstr "The comment cannot be added because: %s"
+
+msgid "La photo proposée ne semble pas exister ou ne nous est pas parvenue"
+msgstr "The photo you submitted does not seem to exist or did not reach us"
+
+#, php-format
+msgid "Le fichier proposé ne semble pas contenir une image au format %s, vous pouvez revenir en arrière et retirer la photo, la vérifier ou en fournir une autre."
+msgstr "The file you submitted does not seem to contain an image in the format %s; you can go back and remove the photo, check it or provide another one."
+
+msgid "Le commentaire ne contient ni photo ni texte, il n'est pas traité"
+msgstr "The comment contains neither a photo nor text, it is not processed"
+
+#, php-format
+msgid "Une modification d'un commentaire inexistant a été demandée : %s"
+msgstr "An edit of a non-existent comment was requested: %s"
+
+msgid "Le commentaire a été ajouté"
+msgstr "The comment has been added"
+
+msgid "Le commentaire a été modifié"
+msgstr "The comment has been modified"
+
+#, php-format
+msgid " et a été transféré sur la fiche : %s"
+msgstr " and has been transferred to the sheet: %s"
+
+msgid "pas de photo dans ce commentaire"
+msgstr "no photo in this comment"
+
+msgid "photo supprimée"
+msgstr "photo deleted"
+
+msgid "Suppression d'un commentaire inexistant"
+msgstr "Deletion of a non-existent comment"
+
+msgid "Commentaire supprimé"
+msgstr "Comment deleted"
+
+#, php-format
+msgid "%s, mais la copie a réussie"
+msgstr "%s, but the copy succeeded"
+
+msgid "Message transféré sur le forum"
+msgstr "Message transferred to the forum"
+
 msgid "Message forum"
 msgstr "Forum message"
 
 msgid "de"
 msgstr "by"
+
+#, php-format
+msgid "Ce point d'id %s a existé par le passé sur ce site, mais seul un modérateur peut retrouver son historique"
+msgstr "The point with id %s existed in the past on this site, but only a moderator can retrieve its history"
+
+msgid "Identifiant de point invalide"
+msgstr "Invalid point identifier"
+
+#, php-format
+msgid "Le numéro de point demandé %s est introuvable dans notre base"
+msgstr "The requested point number %s cannot be found in our database"
+
+msgid "Ben ça alors ? on a récupéré plus que 1 point, pas prévu..."
+msgstr "Well, how about that? We got back more than 1 point, which was not expected..."
+
+#, php-format
+msgid "ce %s"
+msgstr "this %s"
+
+msgid "Le nom ne peut être vide"
+msgstr "The name cannot be empty"
+
+msgid "Le nom contient un des caractères non autorisé suivant : [ ] < > ;"
+msgstr "The name contains one of the following forbidden characters: [ ] < > ;"
+
+#, php-format
+msgid "L'emplacement de <a href='/point/%s'>\"%s\"</a> et ses alentours sont privés.<br/> On ne peut pas y référencer de cabane.<br/> Voir : <a href=\"%s\">Définition d'une cabane non gardée</a>.<br/> Laissez-nous un message sur le forum si vous souhaitez en discuter.<br/>"
+msgstr "The location of <a href='/point/%s'>\"%s\"</a> and its surroundings are private.<br/> A hut cannot be listed there.<br/> See: <a href=\"%s\">Definition of a wilderness hut</a>.<br/> Leave us a message on the forum if you would like to discuss it.<br/>"
+
+#, php-format
+msgid "La latitude du point doit être au format degré décimaux, par exemple : 45.789, la valeur reçue est : %s"
+msgstr "The point's latitude must be in decimal degrees format, for example: 45.789; the value received is: %s"
+
+#, php-format
+msgid "La longitude du point doit être au format degré décimaux, par exemple : 45.789, la valeur reçue est : %s"
+msgstr "The point's longitude must be in decimal degrees format, for example: 45.789; the value received is: %s"
+
+msgid "La latitude du point doit être comprise entre -90 et 90 (degrés)"
+msgstr "The point's latitude must be between -90 and 90 (degrees)"
+
+msgid "La longitude du point doit être comprise entre -180 et 180 (degrés)"
+msgstr "The point's longitude must be between -180 and 180 (degrees)"
+
+#, php-format
+msgid "L'altitude du point doit être un nombre entier positif, reçu : %s"
+msgstr "The point's altitude must be a positive whole number, received: %s"
+
+#, php-format
+msgid "%sm comme altitude du point, c'est plus que l'Everest, vous avez dû vous tromper ?"
+msgstr "%s m as the point's altitude is more than Everest; you must have made a mistake?"
+
+#, php-format
+msgid "Le nombre de %s doit être un entier supérieur ou égal à 0, reçu : '%s'"
+msgstr "The number of %s must be a whole number greater than or equal to 0, received: '%s'"
+
+#, php-format
+msgid "Erreur de modification du point : %s"
+msgstr "Error while modifying the point: %s"
+
+msgid "La requête SQL est en erreur, mais nous ne savons pas pourquoi, prévenez nous sur le forum, vous avez trouvé un bug !"
+msgstr "The SQL query failed and we do not know why, please let us know on the forum, you have found a bug!"
+
+msgid "La fiche du point, les commentaires, les photos et la zone forum ont bien été supprimés"
+msgstr "The point's sheet, its comments, its photos and its forum area have been deleted"
 
 msgid "abri naturel"
 msgstr "natural shelter"
@@ -674,9 +1165,6 @@ msgstr "zone"
 msgid "zone réglementée"
 msgstr "regulated zone"
 
-msgid "Débit intermittent"
-msgstr "Intermittent flow"
-
 msgid "Détruite"
 msgstr "Destroyed"
 
@@ -694,3 +1182,16 @@ msgstr "Unknown"
 
 msgid "<b>Inconnu</b>"
 msgstr "<b>Unknown</b>"
+
+msgid "accès"
+msgstr "access"
+
+msgid "remarques"
+msgstr "remarks"
+
+msgid "Entrez la lettre <strong>g</strong>"
+msgstr "Enter the letter <strong>g</strong>"
+
+msgid "jpeg, png, bmp ou webp"
+msgstr "jpeg, png, bmp or webp"
+
