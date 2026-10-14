@@ -670,9 +670,11 @@ function infos_point($id_point,$meme_si_cache=False,$avec_polygones=True, $meme_
 Lien plus simple à utiliser maintenant ! sur la base de l'objet point "habituel" et plus rapide que celui du dessous
 car requête de moins
 *******************************************************************************************************************************/
-function lien_point($point,$lien_local=false)
+function lien_point($point,$lien_local=false,$langue=null)
 {
   global $config_wri;
+  // $langue : null = langue de la page courante ; 'fr' ou 'en' pour faire le lien vers l'autre version
+  $suffixe_langue = ($langue===null) ? $config_wri['url_suffixe_langue'] : (($langue==='fr') ? '' : $langue.'/');
 
   if (isset($_SERVER['HTTPS']))
       $schema="https";
@@ -684,7 +686,7 @@ function lien_point($point,$lien_local=false)
   else
       $url_complete="$schema://".$config_wri['nom_hote']."/";
 
-   return $url_complete."point/$point->id_point/".replace_url($point->nom_type)."/".replace_url($point->nom)."/";
+   return $url_complete."point/$point->id_point/".replace_url($point->nom_type)."/".replace_url($point->nom)."/".$suffixe_langue;
 }
 
 

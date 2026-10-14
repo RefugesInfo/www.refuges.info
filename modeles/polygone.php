@@ -228,9 +228,11 @@ function liste_type_polygone()
 On génére une url vers la carte d'un polygone
 si local est False un lien absolu sera généré
 *********************************************/
-function lien_polygone($polygone,$local=True)
+function lien_polygone($polygone,$local=True,$langue=null)
 {
   global $config_wri;
+  // $langue : null = langue de la page courante ; 'fr' ou 'en' pour faire le lien vers l'autre version
+  $suffixe_langue = ($langue===null) ? $config_wri['url_suffixe_langue'] : (($langue==='fr') ? '' : $langue.'/');
 
   if (isset($_SERVER['HTTPS']))
       $schema="https";
@@ -247,7 +249,7 @@ function lien_polygone($polygone,$local=True)
   else
     $url_complete="$schema://".$config_wri['nom_hote'];
 
-  return $url_complete."/nav/$polygone->id_polygone/".replace_url($type_polygone)."/".replace_url($polygone->nom_polygone)."/";
+  return $url_complete."/nav/$polygone->id_polygone/".replace_url($type_polygone)."/".replace_url($polygone->nom_polygone)."/".$suffixe_langue;
 }
 
 /********************************************

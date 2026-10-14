@@ -9,10 +9,14 @@ require_once ("mise_en_forme_texte.php");
 require_once ("bdd.php");
 
 // Fonction pour réaliser un lien vers une page du wiki dont le nom est passé en paramètre
-function lien_wiki($page="/")
+function lien_wiki($page="/",$langue=null)
 {
     global $config_wri;
-    return $config_wri['base_wiki'].strtolower($page);
+    // $langue : null = langue de la page courante ; 'fr' ou 'en' pour faire le lien vers l'autre version
+    $suffixe_langue = ($langue===null) ? $config_wri['url_suffixe_langue'] : (($langue==='fr') ? '' : $langue.'/');
+    $page = ($page==="/") ? '' : strtolower($page);
+    // /wiki/page/en/ ; la page d'accueil du wiki (nom vide) devient /wiki//en/ pour ne pas être prise pour une page "en"
+    return $config_wri['base_wiki'].$page.($suffixe_langue ? '/'.$suffixe_langue : '');
 }
 
 // retourne plus simplement le contenu de la page wiki concernée au format html (le bbcode a été converti en html)
