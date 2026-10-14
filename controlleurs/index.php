@@ -14,7 +14,7 @@ require_once ("leaflet_libs.php");
 add_lib('overpass/dist/OverPassLayer.bundle.js', 'chemin_leaflet');
 add_lib('overpass/dist/OverPassLayer.css', 'chemin_leaflet');
 
-$vue->titre = 'Carte et informations sur les refuges, cabanes et abris de montagne';
+$vue->titre = _('Carte et informations sur les refuges, cabanes et abris de montagne');
 $vue->stat = stat_site ();
 
 // Préparation de la liste des photos et commentaires récent(e)s

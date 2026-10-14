@@ -7,30 +7,30 @@
   </p>
 
   <div class="tablo">
-    <h4><?=$vue->stat->nbpoints?> points, <?=$vue->stat->nbmassifs?> massifs</h4>
+    <h4><?=sprintf(_("%s points, %s massifs"), $vue->stat->nbpoints, $vue->stat->nbmassifs)?></h4>
 
     <div id="conteneur-selecteur-points"></div>
     <div id="carte-accueil" class="carte"></div>
-    <div class="noprint texte-tout-petit">Cliquer sur un cluster pour discocier les points proches.</div>
+    <div class="noprint texte-tout-petit"><?=_("Cliquer sur un cluster pour dissocier les points proches.")?></div>
 
     <p id="export-carte">
-      Export des points refuges.info sélectionnés sur la carte au format
+      <?=_("Export des points refuges.info sélectionnés sur la carte au format")?>
       <select name="format" onchange="addRemoveOverlay()">
-        <option value="gpx">gpx (Complet, pour logiciel type osmand, marble, ...)</option>
-        <option value="gpx_garmin">gpx (compatible basecamp/mapsource/viking/...)</option>
-        <option value="gpx_simple">gpx simplifié (sans remarques et accès)</option>
-        <option value="kml">kml (googlearth et plusieurs applications smartphone )</option>
+        <option value="gpx"><?=_("gpx (Complet, pour logiciel type osmand, marble, ...)")?></option>
+        <option value="gpx_garmin"><?=_("gpx (compatible basecamp/mapsource/viking/...)")?></option>
+        <option value="gpx_simple"><?=_("gpx simplifié (sans remarques et accès)")?></option>
+        <option value="kml"><?=_("kml (googlearth et plusieurs applications smartphone)")?></option>
         <option value="gml">Geography Markup Language</option>
-        <option value="csv">csv (tableurs)</option>
-        <option value="xml">xml Spécifique à notre base, exhaustif</option>
+        <option value="csv"><?=_("csv (tableurs)")?></option>
+        <option value="xml"><?=_("xml Spécifique à notre base, exhaustif")?></option>
         <option value="json">Json</option>
         <option value="geojson">GeoJson</option>
       </select>
-      <a title="Télécharger le fichier">Télécharger</a>
-      ou <a onclick="copyExportLink()" title="Copier le lien dans le clipboard">🔗</a>
+      <a title="<?=_("Télécharger le fichier")?>"><?=_("Télécharger")?></a>
+      <?=_("ou")?> <a onclick="copyExportLink()" title="<?=_("Copier le lien dans le clipboard")?>">🔗</a>
     </p>
 
-    <h5>Autres zones :</h5>
+    <h5><?=_("Autres zones :")?></h5>
     <ul class="liste-massifs">
       <?php if (isset($vue->zones_couvertes)) foreach ($vue->zones_couvertes AS $nom_zone => $lien) { ?>
         <li>
@@ -41,66 +41,70 @@
   </div>
 
   <div class="tablo">
-    <h4><?=$vue->stat->nbphotos?> photos. Les dernières :</h4>
+    <h4><?=sprintf(_("%s photos. Les dernières :"), $vue->stat->nbphotos)?></h4>
     <?php if (isset($vue->nouveaux_commentaires))
       foreach ($vue->nouveaux_commentaires as $nouveau_commentaire) {
         if (isset ($nouveau_commentaire->photo_existe) &&
           isset ($nouveau_commentaire->lien_photo)) { ?>
           <a href="<?=lien_point($nouveau_commentaire,true)?>#C<?=$nouveau_commentaire->id_commentaire?>"
             title="<?=$nouveau_commentaire->nom?>">
-            <img alt="photo" src="<?=$nouveau_commentaire->lien_photo['vignette']?>">
+            <img alt="<?=_("photo")?>" src="<?=$nouveau_commentaire->lien_photo['vignette']?>">
           </a>
         <?php }
       } ?>
 
-    <h4><?=$vue->stat->nbpoints?> points dans la base. Les <?=$config_wri['defaut_max_ajouts_recents']?> derniers ajoutés :</h4>
+    <h4><?=sprintf(_("%s points dans la base. Les %s derniers ajoutés :"), $vue->stat->nbpoints, $config_wri['defaut_max_ajouts_recents'])?></h4>
     <ul>
       <?php if (isset($vue->nouveaux_points)) foreach ($vue->nouveaux_points as $nouveau_point) { ?>
         <li>
           <b><?=date("d/m/y",$nouveau_point->date_creation_timestamp)?></b>
-          &nbsp;Ajout <?=$nouveau_point->article_partitif_point_type?> <?=$nouveau_point->nom_type?>
+          &nbsp;<?=$config_wri['langue_courante']=='fr' ? 'Ajout '.$nouveau_point->article_partitif_point_type.' '.$nouveau_point->nom_type : sprintf(_("Ajout : %s"), _($nouveau_point->nom_type))?>
           <?php if ($nouveau_point->nom_createur!="") {
             if ($nouveau_point->id_moderateur==0) { ?>
-              par <?=$nouveau_point->nom_createur?>
+              <?=_("par")?> <?=$nouveau_point->nom_createur?>
             <?php } else { ?>
-              par <a href="<?=$config_wri['fiche_utilisateur'].$nouveau_point->id_moderateur?>"><?=$nouveau_point->nom_createur?></a>
+              <?=_("par")?> <a href="<?=$config_wri['fiche_utilisateur'].$nouveau_point->id_moderateur?>"><?=$nouveau_point->nom_createur?></a>
             <?php } ?>
           <?php } ?>
             : <a href="<?=lien_point($nouveau_point,true)?>"><?=mb_ucfirst($nouveau_point->nom)?></a>
         </li>
       <?php } ?>
       <li>
-        <a href="/nouvelles/?nombre=<?=$config_wri['defaut_nombre_nouvelles_page_nouvelles']?>&amp;quoi=points"
-          title="Voir les <?=$config_wri['defaut_nombre_nouvelles_page_nouvelles']?> derniers points ajoutés sur le site">
-          <b>Plus...</b>
+        <a href="<?=url_langue('/nouvelles/')?>?nombre=<?=$config_wri['defaut_nombre_nouvelles_page_nouvelles']?>&amp;quoi=points"
+          title="<?=sprintf(_("Voir les %s derniers points ajoutés sur le site"), $config_wri['defaut_nombre_nouvelles_page_nouvelles'])?>">
+          <b><?=_("Plus...")?></b>
         </a>
       </li>
     </ul>
 
-    <h4><?=$vue->stat->nbcomm?> commentaires. Les <?=$config_wri['defaut_max_commentaires_recents']?> derniers :</h4>
+    <h4><?=sprintf(_("%s commentaires. Les %s derniers :"), $vue->stat->nbcomm, $config_wri['defaut_max_commentaires_recents'])?></h4>
     <ul>
       <?php foreach ($vue->nouveaux_commentaires as $nouveau_commentaire) { ?>
         <li>
           <b><?=date("d/m/y",$nouveau_commentaire->ts_unix_commentaire)?></b>
-          &nbsp;Commentaire
+          &nbsp;<?=_("Commentaire")?>
           <?php if ($nouveau_commentaire->auteur_commentaire!="") {
             if ($nouveau_commentaire->id_createur_commentaire==0) { ?>
-              par <?=$nouveau_commentaire->auteur_commentaire?>
+              <?=_("par")?> <?=$nouveau_commentaire->auteur_commentaire?>
             <?php } else { ?>
-              par <a href="<?=$config_wri['fiche_utilisateur'].$nouveau_commentaire->id_createur_commentaire?>"><?=$nouveau_commentaire->auteur_commentaire?></a>
+              <?=_("par")?> <a href="<?=$config_wri['fiche_utilisateur'].$nouveau_commentaire->id_createur_commentaire?>"><?=$nouveau_commentaire->auteur_commentaire?></a>
             <?php } ?>
           <?php } ?>
-            sur <a href="<?=lien_point($nouveau_commentaire,true)?>#C<?=$nouveau_commentaire->id_commentaire?>"><?=$nouveau_commentaire->nom?></a>
+            <?=_("sur")?> <a href="<?=lien_point($nouveau_commentaire,true)?>#C<?=$nouveau_commentaire->id_commentaire?>"><?=$nouveau_commentaire->nom?></a>
             <?php if (isset($nouveau_commentaire->id_polygone)) { ?>
-              dans le
-              <a href="<?=lien_polygone($nouveau_commentaire,True)?>">massif <?=$nouveau_commentaire->article_partitif?> <?=$nouveau_commentaire->nom_polygone?></a>
+              <?php if ($config_wri['langue_courante']=='fr') { ?>
+                dans le
+                <a href="<?=lien_polygone($nouveau_commentaire,True)?>">massif <?=$nouveau_commentaire->article_partitif?> <?=$nouveau_commentaire->nom_polygone?></a>
+              <?php } else { ?>
+                <?=sprintf(_("dans le massif %s"), '<a href="'.lien_polygone($nouveau_commentaire,True).'">'.$nouveau_commentaire->nom_polygone.'</a>')?>
+              <?php } ?>
             <?php } ?>
         </li>
       <?php } ?>
       <li>
-        <a href="/nouvelles/?nombre=<?=$config_wri['defaut_nombre_nouvelles_page_nouvelles']?>&quoi=commentaires"
-          title="Les <?=$config_wri['defaut_nombre_nouvelles_page_nouvelles']?>derniers commentaires dans refuges.info">
-          <b>Plus...</b>
+        <a href="<?=url_langue('/nouvelles/')?>?nombre=<?=$config_wri['defaut_nombre_nouvelles_page_nouvelles']?>&quoi=commentaires"
+          title="<?=sprintf(_("Les %s derniers commentaires dans refuges.info"), $config_wri['defaut_nombre_nouvelles_page_nouvelles'])?>">
+          <b><?=_("Plus...")?></b>
         </a>
       </li>
     </ul>

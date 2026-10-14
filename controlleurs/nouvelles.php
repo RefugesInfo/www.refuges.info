@@ -6,7 +6,7 @@
 require_once ("nouvelle.php");
 require_once ("commentaire.php");
 
-$vue->titre = 'Dernières nouvelles du site et informations ajoutées sur les refuges';
+$vue->titre = _('Dernières nouvelles du site et informations ajoutées sur les refuges');
 if (isset($_GET['nombre']) and is_numeric($_GET['nombre']))
   $nombre = $_GET['nombre'];
 else

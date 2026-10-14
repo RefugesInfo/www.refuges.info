@@ -1,17 +1,17 @@
 <div class="contenu">
-  <a href="/nouvelles/?quoi=points">Points</a> -
-  <a href="/nouvelles/?quoi=refuges">Refuges</a> -
-  <a href="/nouvelles/?quoi=points_d_eau">Points d'eau</a> -
-  <a href="/nouvelles/?quoi=abris_naturels">Abris naturels</a> -
-  <a href="/nouvelles/?quoi=commentaires">Commentaires</a> -
-  <a href="/nouvelles/?quoi=forums">Forum</a> -
-  <a href="/nouvelles/?quoi=commentaires,points">Tout sauf forum</a> -
-  <a href="/nouvelles/">Tout</a> -
-  <a href="/formulaire_rss_et_nouvelles/?choix=nouvelles">Paramétrer par régions</a>
+  <a href="<?=url_langue('/nouvelles/')?>?quoi=points"><?=_("Points")?></a> -
+  <a href="<?=url_langue('/nouvelles/')?>?quoi=refuges"><?=_("Refuges")?></a> -
+  <a href="<?=url_langue('/nouvelles/')?>?quoi=points_d_eau"><?=_("Points d'eau")?></a> -
+  <a href="<?=url_langue('/nouvelles/')?>?quoi=abris_naturels"><?=_("Abris naturels")?></a> -
+  <a href="<?=url_langue('/nouvelles/')?>?quoi=commentaires"><?=_("Commentaires")?></a> -
+  <a href="<?=url_langue('/nouvelles/')?>?quoi=forums"><?=_("Forum")?></a> -
+  <a href="<?=url_langue('/nouvelles/')?>?quoi=commentaires,points"><?=_("Tout sauf forum")?></a> -
+  <a href="<?=url_langue('/nouvelles/')?>"><?=_("Tout")?></a> -
+  <a href="<?=url_langue('/formulaire_rss_et_nouvelles/')?>?choix=nouvelles"><?=_("Paramétrer par régions")?></a>
 
   <?=$vue->nouvelles_generales?>
 
-  <h4>Les nouvelles</h4>
+  <h4><?=_("Les nouvelles")?></h4>
   <div class="table">
     <?php foreach ($vue->nouvelles as $nouvelle) { ?>
       <div class="tr">
@@ -21,7 +21,7 @@
         <div class="td ligne_pointillee">
           <span>
         <?php if (!empty($nouvelle['localisation'])) { // pour les nouvelles sur un point dans aucun polygone ?>
-          <?=$nouvelle['localisation']?> :
+          <?=sprintf(_("%s :"), $nouvelle['localisation'])?>
         <?php } ?>
           <?php if (!empty($nouvelle["lien_fiche"])) { ?><a href="<?=$nouvelle["lien_fiche"]?>"><?=bbcode2html($nouvelle["nom_point"])?></a><?php } else { ?><b><?=bbcode2html($nouvelle["nom_point"])?></b><?php } ?>&nbsp;
           </span>
@@ -33,5 +33,5 @@
     <?php } ?>
   </div>
 
-  <a href="/nouvelles/?nombre=<?=$vue->nombre?>&amp;quoi=<?=$vue->types_nouvelles?><?=$vue->ids_polygones ?? ''?>">(En voir 100 de plus...)</a>
+  <a href="<?=url_langue('/nouvelles/')?>?nombre=<?=$vue->nombre?>&amp;quoi=<?=$vue->types_nouvelles?><?=$vue->ids_polygones ?? ''?>"><?=_("(En voir 100 de plus...)")?></a>
 </div>

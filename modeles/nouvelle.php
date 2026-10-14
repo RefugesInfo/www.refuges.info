@@ -147,7 +147,12 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
             $news_array[$i]['localisation']=chaine_de_localisation($point->polygones);
             $news_array[$i]['user_id']=$point->id_moderateur;
             $news_array[$i]['auteur']=$point->nom_createur;
-            $texte = "<b><a href=\"".lien_point($point,$lien_locaux)."\">Ajout ".$news_array[$i]['partitif_point']." ".$news_array[$i]['type_point']."</a></b>" ;
+            // le français accorde ("Ajout d'un refuge gardé"), l'anglais n'a pas de partitif : "Added: alpine hut"
+            if ($config_wri['langue_courante']=='fr')
+              $libelle_ajout = "Ajout ".$news_array[$i]['partitif_point']." ".$news_array[$i]['type_point'];
+            else
+              $libelle_ajout = sprintf(_("Ajout : %s"), _($news_array[$i]['type_point']));
+            $texte = "<b><a href=\"".lien_point($point,$lien_locaux)."\">".$libelle_ajout."</a></b>" ;
             $news_array[$i]['texte']=$texte;
             $i++;
           }
@@ -192,7 +197,7 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
   $nouvelles = array ();
   foreach ($news_array as $nouvelle)
   {
-    $par_ou_de="par";
+    $par_ou_de=_("par");
     if ($nouvelle['categorie'] == "Forum") // FIXME: idée d'une magie pour s'éviter de faire x fois la requête ? where id_point in (x,y,z,t,.....) ?
     {
       $nouvelle['texte'] = "";
@@ -211,10 +216,10 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
         else
           $url_complete="https://".$config_wri['nom_hote'];
         $lien_forum=$url_complete.$config_wri['lien_forum']."viewtopic.php?p=".$nouvelle['post_id']."#p".$nouvelle['post_id'];
-        $nouvelle['texte']="<b><a href=\"$lien_forum\">Message forum</a></b>";
+        $nouvelle['texte']="<b><a href=\"$lien_forum\">"._("Message forum")."</a></b>";
         $nouvelle['lien']=$lien_forum;
         $nouvelle['lien_fiche']=lien_point($point,$lien_locaux);
-        $par_ou_de="de";
+        $par_ou_de=_("de");
       }
     }
     if ($nouvelle['categorie'] == "Commentaire")
@@ -227,10 +232,10 @@ function nouvelles($nombre,$type,$ids_polygones="",$lien_locaux=True,$req=null)
       $lien=lien_point($point,$lien_locaux)."#C".$nouvelle['id_commentaire'];
       $nouvelle['nom_point']=ucfirst($point->nom);
       $nouvelle['localisation']=chaine_de_localisation($point->polygones);
-      $nouvelle['texte'] = "<b><a href=\"$lien\">Commentaire</a></b>";
+      $nouvelle['texte'] = "<b><a href=\"$lien\">"._("Commentaire")."</a></b>";
       $nouvelle['lien']=$lien;
       $nouvelle['lien_fiche']=lien_point($point,$lien_locaux);
-      $par_ou_de="de";
+      $par_ou_de=_("de");
     }
 
     if (!empty($nouvelle['user_id']) and $nouvelle['user_id'] > 1) // Les anonymes sont 1 sur le forum et 0 dans notre base

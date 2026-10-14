@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: refuges.info\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-14 14:10+0200\n"
+"POT-Creation-Date: 2026-10-14 16:46+0200\n"
 "Language: en_GB\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -170,6 +170,92 @@ msgid "Masquer"
 msgstr "Hide"
 
 #, php-format
+msgid "%s points, %s massifs"
+msgstr "%s points, %s massifs"
+
+msgid "Cliquer sur un cluster pour dissocier les points proches."
+msgstr "Click on a cluster to separate the nearby points."
+
+msgid "Export des points refuges.info sélectionnés sur la carte au format"
+msgstr "Export the refuges.info points selected on the map in the format"
+
+msgid "gpx (Complet, pour logiciel type osmand, marble, ...)"
+msgstr "gpx (Full, for software such as osmand, marble, ...)"
+
+msgid "gpx (compatible basecamp/mapsource/viking/...)"
+msgstr "gpx (compatible with basecamp/mapsource/viking/...)"
+
+msgid "gpx simplifié (sans remarques et accès)"
+msgstr "simplified gpx (without remarks and access)"
+
+msgid "kml (googlearth et plusieurs applications smartphone)"
+msgstr "kml (Google Earth and several smartphone apps)"
+
+msgid "csv (tableurs)"
+msgstr "csv (spreadsheets)"
+
+msgid "xml Spécifique à notre base, exhaustif"
+msgstr "xml Specific to our database, exhaustive"
+
+msgid "Télécharger le fichier"
+msgstr "Download the file"
+
+msgid "Télécharger"
+msgstr "Download"
+
+msgid "ou"
+msgstr "or"
+
+msgid "Copier le lien dans le clipboard"
+msgstr "Copy the link to the clipboard"
+
+msgid "Autres zones :"
+msgstr "Other zones:"
+
+#, php-format
+msgid "%s photos. Les dernières :"
+msgstr "%s photos. The latest:"
+
+msgid "photo"
+msgstr "photo"
+
+#, php-format
+msgid "%s points dans la base. Les %s derniers ajoutés :"
+msgstr "%s points in the database. The %s most recently added:"
+
+#, php-format
+msgid "Ajout : %s"
+msgstr "Added: %s"
+
+msgid "par"
+msgstr "by"
+
+#, php-format
+msgid "Voir les %s derniers points ajoutés sur le site"
+msgstr "See the %s most recently added points on the site"
+
+msgid "Plus..."
+msgstr "More..."
+
+#, php-format
+msgid "%s commentaires. Les %s derniers :"
+msgstr "%s comments. The latest %s:"
+
+msgid "Commentaire"
+msgstr "Comment"
+
+msgid "sur"
+msgstr "on"
+
+#, php-format
+msgid "dans le massif %s"
+msgstr "in the %s massif"
+
+#, php-format
+msgid "Les %s derniers commentaires dans refuges.info"
+msgstr "The %s latest comments on refuges.info"
+
+#, php-format
 msgid "Voici les %s"
 msgstr "Here are the %s"
 
@@ -251,6 +337,34 @@ msgstr "Other sites"
 msgid "(seuls les 100 premiers points sont affichés)"
 msgstr "(only the first 100 points are shown)"
 
+msgid "Refuges"
+msgstr "Huts"
+
+msgid "Points d'eau"
+msgstr "Water points"
+
+msgid "Abris naturels"
+msgstr "Natural shelters"
+
+msgid "Commentaires"
+msgstr "Comments"
+
+msgid "Tout sauf forum"
+msgstr "Everything except forum"
+
+msgid "Paramétrer par régions"
+msgstr "Set up by region"
+
+msgid "Les nouvelles"
+msgstr "The news"
+
+#, php-format
+msgid "%s :"
+msgstr "%s:"
+
+msgid "(En voir 100 de plus...)"
+msgstr "(See 100 more...)"
+
 msgid ""
 "Cette fiche est cachée du public, elle n'est visible que des modérateurs"
 msgstr "This page is hidden from the public, it is only visible to moderators"
@@ -261,9 +375,6 @@ msgstr "This page is a template, it is only visible to moderators"
 msgid "Traduction automatique (pilote) : l'original en français fait foi."
 msgstr "Automatic translation (pilot): the French original is authoritative."
 
-msgid "Cliquer sur un cluster pour dissocier les points proches."
-msgstr "Click on a cluster to separate the nearby points."
-
 #, php-format
 msgid "Localisation %s :"
 msgstr "Location (%s):"
@@ -273,10 +384,6 @@ msgstr "map"
 
 msgid "Demander une modification de la fiche"
 msgstr "Request a change to this page"
-
-#, php-format
-msgid "%s :"
-msgstr "%s:"
 
 msgid "Vous êtes le gestionnaire ?"
 msgstr "Are you the manager?"
@@ -381,9 +488,6 @@ msgstr "Recent information"
 msgid "Ajouter une information et/ou une photo"
 msgstr "Add some information and/or a photo"
 
-msgid "par"
-msgstr "by"
-
 msgid "Photo"
 msgstr "Photo"
 
@@ -400,6 +504,9 @@ msgstr ""
 msgid "Page sous licence :"
 msgstr "Page licensed under:"
 
+msgid "Carte et informations sur les refuges, cabanes et abris de montagne"
+msgstr "Map and information on alpine huts, wilderness huts and mountain shelters"
+
 msgid "cabanes, refuges et points d'eau"
 msgstr "wilderness huts, alpine huts and water points"
 
@@ -414,11 +521,20 @@ msgstr "%s on a map"
 msgid "Selecteur de refuges, point d'eau et cabane sur les cartes"
 msgstr "Selector of alpine huts, water points and wilderness huts on the maps"
 
+msgid "Dernières nouvelles du site et informations ajoutées sur les refuges"
+msgstr "Latest site news and information added about huts"
+
 msgid "Modifier"
 msgstr "Edit"
 
 msgid "Info périmée ?"
 msgstr "Out of date?"
+
+msgid "Message forum"
+msgstr "Forum message"
+
+msgid "de"
+msgstr "by"
 
 msgid "abri naturel"
 msgstr "natural shelter"
