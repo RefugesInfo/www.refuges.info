@@ -1,0 +1,574 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-14 14:10+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+msgid "Utilisateur"
+msgstr ""
+
+msgid "Administrateur"
+msgstr ""
+
+msgid "Modérateur"
+msgstr ""
+
+msgid "Panneau de l’utilisateur"
+msgstr ""
+
+msgid "Messages privés"
+msgstr ""
+
+msgid "Déconnexion"
+msgstr ""
+
+msgid "Connexion"
+msgstr ""
+
+msgid "Pour vous connecter,"
+msgstr ""
+
+msgid "vous devez"
+msgstr ""
+
+msgid "passer en HTTPS"
+msgstr ""
+
+msgid "Nom d’utilisateur"
+msgstr ""
+
+msgid "Mot de passe"
+msgstr ""
+
+msgid "Utilisation des cookies"
+msgstr ""
+
+msgid "Mot de passe oublié"
+msgstr ""
+
+msgid "Créer un compte"
+msgstr ""
+
+msgid "Connexion avancée"
+msgstr ""
+
+msgid "Accueil du site"
+msgstr ""
+
+msgid "Nouvelles"
+msgstr ""
+
+msgid "Les entrées les plus récentes"
+msgstr ""
+
+msgid "Ajouter"
+msgstr ""
+
+msgid "Ajouter une nouvelle cabane ou refuge"
+msgstr ""
+
+msgid "Cartes"
+msgstr ""
+
+msgid "Afficher les points sur divers fonds de cartes"
+msgstr ""
+
+msgid "Forum"
+msgstr ""
+
+msgid "Forum de discussion"
+msgstr ""
+
+msgid "Recherche"
+msgstr ""
+
+msgid "Recherche de point"
+msgstr ""
+
+msgid "Lancer la recherche"
+msgstr ""
+
+msgid "Recherche avancée"
+msgstr ""
+
+msgid "Retour à l'entrée du site"
+msgstr ""
+
+msgid "Accueil"
+msgstr ""
+
+msgid "Ajouter un point"
+msgstr ""
+
+msgid "Qui sommes nous ?"
+msgstr ""
+
+msgid "Donation € ❤️"
+msgstr ""
+
+msgid "Consignes en cabane"
+msgstr ""
+
+msgid "Règles de prudence"
+msgstr ""
+
+msgid ""
+"Formulaire de recherche multicritères de points dans la base de données de "
+"refuges.info"
+msgstr ""
+
+msgid "Recherche de points"
+msgstr ""
+
+msgid ""
+"Exportation de la base refuges.info aux formats kmz (googlearth compressé), "
+"kml (googlearth), gml (Geography Markup Language), GPS (gpx), GPS (gpx "
+"simplifié), Garmin points d'intérêts, csv (tableurs)"
+msgstr ""
+
+msgid "Export de points"
+msgstr ""
+
+msgid "Appli GPS"
+msgstr ""
+
+msgid "Flux RSS"
+msgstr ""
+
+msgid "Support site"
+msgstr ""
+
+msgid "Doc API"
+msgstr ""
+
+msgid "Cookies"
+msgstr ""
+
+msgid "Licence"
+msgstr ""
+
+msgid "Mentions légales"
+msgstr ""
+
+msgid "Liens"
+msgstr ""
+
+msgid "Masquer la barre d'informations"
+msgstr ""
+
+msgid "Masquer"
+msgstr ""
+
+#, php-format
+msgid "Voici les %s"
+msgstr ""
+
+#, php-format
+msgid "dans %s"
+msgstr ""
+
+#, php-format
+msgid "Voici toutes les %ss"
+msgstr ""
+
+#, php-format
+msgid "Voici tous les %ss"
+msgstr ""
+
+msgid "Points"
+msgstr ""
+
+msgid "Légende"
+msgstr ""
+
+#, php-format
+msgid "%s uniquement"
+msgstr ""
+
+msgid "Tout"
+msgstr ""
+
+msgid "Ctrl+click: nouvel onglet"
+msgstr ""
+
+msgid "Maj+click: nouvelle fenêtre"
+msgstr ""
+
+msgid "Téléchargements"
+msgstr ""
+
+#, php-format
+msgid "Tous les points refuges.info dans %s"
+msgstr ""
+
+msgid "Télécharger au format GPX complet"
+msgstr ""
+
+msgid "Télécharger au format GPX pour Garmin"
+msgstr ""
+
+msgid "Télécharger au format KML"
+msgstr ""
+
+#, php-format
+msgid "Services (%s) - disponible seulement pour les zooms forts"
+msgstr ""
+
+msgid "Points de la base OpensStreetmap ; © OpenStreetMap contributors"
+msgstr ""
+
+msgid "hôtel ou location"
+msgstr ""
+
+msgid "camping"
+msgstr ""
+
+msgid "point d'eau"
+msgstr ""
+
+msgid "alimentation"
+msgstr ""
+
+msgid "parking"
+msgstr ""
+
+msgid "bus"
+msgstr ""
+
+msgid "Autres sites"
+msgstr ""
+
+msgid "(seuls les 100 premiers points sont affichés)"
+msgstr ""
+
+msgid ""
+"Cette fiche est cachée du public, elle n'est visible que des modérateurs"
+msgstr ""
+
+msgid "Cette fiche est un modèle, elle n'est visible que des modérateurs"
+msgstr ""
+
+msgid "Traduction automatique (pilote) : l'original en français fait foi."
+msgstr ""
+
+msgid "Cliquer sur un cluster pour dissocier les points proches."
+msgstr ""
+
+#, php-format
+msgid "Localisation %s :"
+msgstr ""
+
+msgid "carte"
+msgstr ""
+
+msgid "Demander une modification de la fiche"
+msgstr ""
+
+#, php-format
+msgid "%s :"
+msgstr ""
+
+msgid "Vous êtes le gestionnaire ?"
+msgstr ""
+
+msgid ""
+"Refuges.info n'a aucun lien avec les gestionnaires. Vous devez les appeler "
+"directement."
+msgstr ""
+
+msgid "Accès :"
+msgstr ""
+
+msgid "Remarques :"
+msgstr ""
+
+msgid "Informations complémentaires :"
+msgstr ""
+
+#, php-format
+msgid "%s : %s"
+msgstr ""
+
+msgid "Points à proximité (distance à vol d'oiseau) :"
+msgstr ""
+
+#, php-format
+msgid "%s (altitude : %sm), situé(e) à %s%s"
+msgstr ""
+
+msgid "Réglementation particulière :"
+msgstr ""
+
+#, php-format
+msgid "%s est situé·e dans"
+msgstr ""
+
+#, php-format
+msgid "(Plus d'information sur <a href=\"%s\">cette réglementation</a>)"
+msgstr ""
+
+msgid "Coordonnées :"
+msgstr ""
+
+msgid "Provenance :"
+msgstr ""
+
+msgid "Export :"
+msgstr ""
+
+msgid "Géoloc"
+msgstr ""
+
+#, php-format
+msgid "Fiche n°%s sur le site depuis le %s"
+msgstr ""
+
+#, php-format
+msgid ", dernière modification du %s."
+msgstr ""
+
+msgid "Modérateur actuel de cette fiche :"
+msgstr ""
+
+msgid "Créateur de cette fiche :"
+msgstr ""
+
+#, php-format
+msgid "Discussions sur %s"
+msgstr ""
+
+#, php-format
+msgid ""
+"Pour les discussions, les questions et les avis, on vous conseille "
+"d'utiliser le <a href=\"%1$s\">forum dédié à %2$s</a>. Les utilisateurs du "
+"site qui \"suivent\" la discussion du forum seront prévenus par e-mail si "
+"vous postez votre message sur le forum. Pour faire part d'une information "
+"objective à propos de %2$s (accès, réglementation, demande de corrections de "
+"la fiche), vous pouvez ajouter une information ci-après."
+msgstr ""
+
+msgid "Dernier message du forum :"
+msgid_plural "Derniers messages du forum :"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Le forum est vide, n'hésitez pas à y laisser le premier message!"
+msgstr ""
+
+msgid "Voir le post"
+msgstr ""
+
+msgid "Informations récentes"
+msgstr ""
+
+msgid "Ajouter une information et/ou une photo"
+msgstr ""
+
+msgid "par"
+msgstr ""
+
+msgid "Photo"
+msgstr ""
+
+msgid ""
+"Avertissement : Les informations fournies sont indicatives. Elles ne "
+"sauraient engager la responsabilité des gestionnaires ou des rédacteurs dans "
+"l'hypothèse où les utilisateurs de ces informations n'observeraient pas les "
+"règles de prudence que la montagne impose. Soyez responsables"
+msgstr ""
+
+msgid "Page sous licence :"
+msgstr ""
+
+msgid "cabanes, refuges et points d'eau"
+msgstr ""
+
+#, php-format
+msgid "le %2$s %1$s"
+msgstr ""
+
+#, php-format
+msgid "%s sur une carte"
+msgstr ""
+
+msgid "Selecteur de refuges, point d'eau et cabane sur les cartes"
+msgstr ""
+
+msgid "Modifier"
+msgstr ""
+
+msgid "Info périmée ?"
+msgstr ""
+
+msgid "abri naturel"
+msgstr ""
+
+msgid "administrative"
+msgstr ""
+
+msgid "Auprès de qui se renseigner / accessibilité"
+msgstr ""
+
+msgid "Autre"
+msgstr ""
+
+msgid "bâtiment à investiguer"
+msgstr ""
+
+msgid "cabane non gardée"
+msgstr ""
+
+msgid "Capacité d'accueil"
+msgstr ""
+
+msgid "Cheminée"
+msgstr ""
+
+msgid "Clés à récupérer"
+msgstr ""
+
+msgid "commune"
+msgstr ""
+
+msgid "Coordonnées approximatives"
+msgstr ""
+
+msgid "Coordonnées cachées"
+msgstr ""
+
+msgid "Coordonnées lues sur une des cartes proposées"
+msgstr ""
+
+msgid "Coordonnées pointées sur photos aériennes"
+msgstr ""
+
+msgid "Coordonnées prises sur le terrain"
+msgstr ""
+
+msgid "Couvertures"
+msgstr ""
+
+msgid "département"
+msgstr ""
+
+msgid "Eau à moins de 100m"
+msgstr ""
+
+msgid "Eau à proximité"
+msgstr ""
+
+msgid "Eau gratuite en libre accès"
+msgstr ""
+
+msgid "Fermé"
+msgstr ""
+
+msgid "Fermé au public"
+msgstr ""
+
+msgid "Fermée"
+msgstr ""
+
+msgid "Forêt à moins de 100m"
+msgstr ""
+
+msgid "Forêt à proximité"
+msgstr ""
+
+msgid "gîte d'étape"
+msgstr ""
+
+msgid "Inutilisable"
+msgstr ""
+
+msgid "Latrines"
+msgstr ""
+
+msgid "Manque un mur"
+msgstr ""
+
+msgid "massif"
+msgstr ""
+
+msgid "montagnarde"
+msgstr ""
+
+msgid "Ouverture sur contact préalable"
+msgstr ""
+
+msgid "passage délicat"
+msgstr ""
+
+msgid "pays"
+msgstr ""
+
+msgid "Places possibles pour dormir"
+msgstr ""
+
+msgid "Places prévues pour dormir"
+msgstr ""
+
+msgid "Places sur Matelas"
+msgstr ""
+
+msgid "Poêle"
+msgstr ""
+
+msgid "Propriétaire / accessibilité"
+msgstr ""
+
+msgid "Propriétaires"
+msgstr ""
+
+msgid "refuge gardé"
+msgstr ""
+
+msgid "région"
+msgstr ""
+
+msgid "région naturelle"
+msgstr ""
+
+msgid "Tari définitivement"
+msgstr ""
+
+msgid "zone"
+msgstr ""
+
+msgid "zone réglementée"
+msgstr ""
+
+msgid "Débit intermittent"
+msgstr ""
+
+msgid "Détruite"
+msgstr ""
+
+msgid "Détruit"
+msgstr ""
+
+msgid "Oui"
+msgstr ""
+
+msgid "Non"
+msgstr ""
+
+msgid "Inconnu"
+msgstr ""
+
+msgid "<b>Inconnu</b>"
+msgstr ""

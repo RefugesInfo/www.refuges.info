@@ -9,7 +9,7 @@ DUMP    := ressources/sql/2026-09-21-jeu-de-donnee-test-avec-la-base-de-refuges.
 
 .DEFAULT_GOAL := help
 
-.PHONY: locale help up down restart build logs shell db db-load phpbb-url db-dump ps clean
+.PHONY: locale locale-extraire help up down restart build logs shell db db-load phpbb-url db-dump ps clean
 
 help: ## Affiche cette aide
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
@@ -94,3 +94,8 @@ clean: ## Arrête tout et SUPPRIME les données de la base (volume)
 
 locale: ## Compile les traductions de l'interface (ressources/locale/*/LC_MESSAGES/refuges.po -> .mo)
 	for po in ressources/locale/*/LC_MESSAGES/refuges.po; do msgfmt --check -o "$${po%.po}.mo" "$$po"; done
+
+locale-extraire: ## Extrait les textes marqués _() vers refuges.pot et fusionne dans les .po (puis traduire les entrées vides)
+	xgettext --language=PHP --from-code=UTF-8 --keyword=_ --keyword=ngettext:1,2 --no-location -o ressources/locale/refuges.pot \
+	  vues/*.html vues/*.php controlleurs/*.php controlleurs/gestion/*.php modeles/*.php includes/*.php routes/*.php ressources/locale/valeurs_base_de_donnees.php
+	for po in ressources/locale/*/LC_MESSAGES/refuges.po; do msgmerge --update --no-fuzzy-matching --backup=none "$$po" ressources/locale/refuges.pot; done

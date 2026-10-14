@@ -3,11 +3,578 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: refuges.info\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-14 14:10+0200\n"
 "Language: en_GB\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgid "Utilisateur"
+msgstr "User"
+
+msgid "Administrateur"
+msgstr "Administrator"
+
+msgid "Modérateur"
+msgstr "Moderator"
+
+msgid "Panneau de l’utilisateur"
+msgstr "User control panel"
+
+msgid "Messages privés"
+msgstr "Private messages"
+
+msgid "Déconnexion"
+msgstr "Log out"
+
+msgid "Connexion"
+msgstr "Log in"
+
+msgid "Pour vous connecter,"
+msgstr "To log in,"
+
+msgid "vous devez"
+msgstr "you must"
+
+msgid "passer en HTTPS"
+msgstr "switch to HTTPS"
+
+msgid "Nom d’utilisateur"
+msgstr "Username"
+
+msgid "Mot de passe"
+msgstr "Password"
+
+msgid "Utilisation des cookies"
+msgstr "Use of cookies"
+
+msgid "Mot de passe oublié"
+msgstr "Forgotten password"
+
+msgid "Créer un compte"
+msgstr "Create an account"
+
+msgid "Connexion avancée"
+msgstr "Advanced login"
+
+msgid "Accueil du site"
+msgstr "Site home page"
+
+msgid "Nouvelles"
+msgstr "News"
+
+msgid "Les entrées les plus récentes"
+msgstr "The most recent entries"
+
+msgid "Ajouter"
+msgstr "Add"
+
+msgid "Ajouter une nouvelle cabane ou refuge"
+msgstr "Add a new wilderness hut or alpine hut"
+
+msgid "Cartes"
+msgstr "Maps"
+
+msgid "Afficher les points sur divers fonds de cartes"
+msgstr "Show the points on various background maps"
+
+msgid "Forum"
+msgstr "Forum"
+
+msgid "Forum de discussion"
+msgstr "Discussion forum"
+
+msgid "Recherche"
+msgstr "Search"
+
+msgid "Recherche de point"
+msgstr "Search for a point"
+
+msgid "Lancer la recherche"
+msgstr "Search"
+
+msgid "Recherche avancée"
+msgstr "Advanced search"
+
+msgid "Retour à l'entrée du site"
+msgstr "Back to the site entrance"
+
+msgid "Accueil"
+msgstr "Home"
+
+msgid "Ajouter un point"
+msgstr "Add a point"
+
+msgid "Qui sommes nous ?"
+msgstr "Who are we?"
+
+msgid "Donation € ❤️"
+msgstr "Donate € ❤️"
+
+msgid "Consignes en cabane"
+msgstr "Hut etiquette"
+
+msgid "Règles de prudence"
+msgstr "Safety rules"
+
+msgid ""
+"Formulaire de recherche multicritères de points dans la base de données de "
+"refuges.info"
+msgstr "Multi-criteria search form for points in the refuges.info database"
+
+msgid "Recherche de points"
+msgstr "Search for points"
+
+msgid ""
+"Exportation de la base refuges.info aux formats kmz (googlearth compressé), "
+"kml (googlearth), gml (Geography Markup Language), GPS (gpx), GPS (gpx "
+"simplifié), Garmin points d'intérêts, csv (tableurs)"
+msgstr ""
+"Export of the refuges.info database in the formats kmz (compressed Google "
+"Earth), kml (Google Earth), gml (Geography Markup Language), GPS (gpx), GPS "
+"(simplified gpx), Garmin points of interest, csv (spreadsheets)"
+
+msgid "Export de points"
+msgstr "Export points"
+
+msgid "Appli GPS"
+msgstr "GPS app"
+
+msgid "Flux RSS"
+msgstr "RSS feed"
+
+msgid "Support site"
+msgstr "Site support"
+
+msgid "Doc API"
+msgstr "API docs"
+
+msgid "Cookies"
+msgstr "Cookies"
+
+msgid "Licence"
+msgstr "Licence"
+
+msgid "Mentions légales"
+msgstr "Legal notice"
+
+msgid "Liens"
+msgstr "Links"
+
+msgid "Masquer la barre d'informations"
+msgstr "Hide the information bar"
+
+msgid "Masquer"
+msgstr "Hide"
+
+#, php-format
+msgid "Voici les %s"
+msgstr "Here are the %s"
+
+#, php-format
+msgid "dans %s"
+msgstr "in %s"
+
+#, php-format
+msgid "Voici toutes les %ss"
+msgstr "Here are all the %ss"
+
+#, php-format
+msgid "Voici tous les %ss"
+msgstr "Here are all the %ss"
+
+msgid "Points"
+msgstr "Points"
+
+msgid "Légende"
+msgstr "Key"
+
+#, php-format
+msgid "%s uniquement"
+msgstr "%s only"
+
+msgid "Tout"
+msgstr "All"
+
+msgid "Ctrl+click: nouvel onglet"
+msgstr "Ctrl+click: new tab"
+
+msgid "Maj+click: nouvelle fenêtre"
+msgstr "Shift+click: new window"
+
+msgid "Téléchargements"
+msgstr "Downloads"
+
+#, php-format
+msgid "Tous les points refuges.info dans %s"
+msgstr "All refuges.info points in %s"
+
+msgid "Télécharger au format GPX complet"
+msgstr "Download as full GPX"
+
+msgid "Télécharger au format GPX pour Garmin"
+msgstr "Download as GPX for Garmin"
+
+msgid "Télécharger au format KML"
+msgstr "Download as KML"
+
+#, php-format
+msgid "Services (%s) - disponible seulement pour les zooms forts"
+msgstr "Services (%s) - only available at high zoom levels"
+
+msgid "Points de la base OpensStreetmap ; © OpenStreetMap contributors"
+msgstr "Points from the OpenStreetMap database; © OpenStreetMap contributors"
+
+msgid "hôtel ou location"
+msgstr "hotel or rental"
+
+msgid "camping"
+msgstr "campsite"
+
+msgid "point d'eau"
+msgstr "water point"
+
+msgid "alimentation"
+msgstr "groceries"
+
+msgid "parking"
+msgstr "car park"
+
+msgid "bus"
+msgstr "bus"
+
+msgid "Autres sites"
+msgstr "Other sites"
+
+msgid "(seuls les 100 premiers points sont affichés)"
+msgstr "(only the first 100 points are shown)"
+
+msgid ""
+"Cette fiche est cachée du public, elle n'est visible que des modérateurs"
+msgstr "This page is hidden from the public, it is only visible to moderators"
+
+msgid "Cette fiche est un modèle, elle n'est visible que des modérateurs"
+msgstr "This page is a template, it is only visible to moderators"
+
 msgid "Traduction automatique (pilote) : l'original en français fait foi."
 msgstr "Automatic translation (pilot): the French original is authoritative."
+
+msgid "Cliquer sur un cluster pour dissocier les points proches."
+msgstr "Click on a cluster to separate the nearby points."
+
+#, php-format
+msgid "Localisation %s :"
+msgstr "Location (%s):"
+
+msgid "carte"
+msgstr "map"
+
+msgid "Demander une modification de la fiche"
+msgstr "Request a change to this page"
+
+#, php-format
+msgid "%s :"
+msgstr "%s:"
+
+msgid "Vous êtes le gestionnaire ?"
+msgstr "Are you the manager?"
+
+msgid ""
+"Refuges.info n'a aucun lien avec les gestionnaires. Vous devez les appeler "
+"directement."
+msgstr ""
+"Refuges.info has no connection with the managers. You must call them "
+"directly."
+
+msgid "Accès :"
+msgstr "Access:"
+
+msgid "Remarques :"
+msgstr "Remarks:"
+
+msgid "Informations complémentaires :"
+msgstr "Additional information:"
+
+#, php-format
+msgid "%s : %s"
+msgstr "%s: %s"
+
+msgid "Points à proximité (distance à vol d'oiseau) :"
+msgstr "Nearby points (as the crow flies):"
+
+#, php-format
+msgid "%s (altitude : %sm), situé(e) à %s%s"
+msgstr "%s (altitude: %sm), %s%s away"
+
+msgid "Réglementation particulière :"
+msgstr "Special regulations:"
+
+#, php-format
+msgid "%s est situé·e dans"
+msgstr "%s is located in"
+
+#, php-format
+msgid "(Plus d'information sur <a href=\"%s\">cette réglementation</a>)"
+msgstr "(More information about <a href=\"%s\">this regulation</a>)"
+
+msgid "Coordonnées :"
+msgstr "Coordinates:"
+
+msgid "Provenance :"
+msgstr "Source:"
+
+msgid "Export :"
+msgstr "Export:"
+
+msgid "Géoloc"
+msgstr "Geoloc"
+
+#, php-format
+msgid "Fiche n°%s sur le site depuis le %s"
+msgstr "Page no. %s on the site since %s"
+
+#, php-format
+msgid ", dernière modification du %s."
+msgstr ", last modified on %s."
+
+msgid "Modérateur actuel de cette fiche :"
+msgstr "Current moderator of this page:"
+
+msgid "Créateur de cette fiche :"
+msgstr "Creator of this page:"
+
+#, php-format
+msgid "Discussions sur %s"
+msgstr "Discussions about %s"
+
+#, php-format
+msgid ""
+"Pour les discussions, les questions et les avis, on vous conseille "
+"d'utiliser le <a href=\"%1$s\">forum dédié à %2$s</a>. Les utilisateurs du "
+"site qui \"suivent\" la discussion du forum seront prévenus par e-mail si "
+"vous postez votre message sur le forum. Pour faire part d'une information "
+"objective à propos de %2$s (accès, réglementation, demande de corrections de "
+"la fiche), vous pouvez ajouter une information ci-après."
+msgstr ""
+"For discussions, questions and opinions, we advise you to use <a "
+"href=\"%1$s\">the forum dedicated to %2$s</a>. Site users who \"follow\" the "
+"forum discussion will be notified by e-mail if you post your message on the "
+"forum. To share objective information about %2$s (access, regulations, "
+"requests for corrections to the page), you can add some information below."
+
+msgid "Dernier message du forum :"
+msgid_plural "Derniers messages du forum :"
+msgstr[0] "Latest message from the forum:"
+msgstr[1] "Latest messages from the forum:"
+
+msgid "Le forum est vide, n'hésitez pas à y laisser le premier message!"
+msgstr "The forum is empty, feel free to leave the first message!"
+
+msgid "Voir le post"
+msgstr "See the post"
+
+msgid "Informations récentes"
+msgstr "Recent information"
+
+msgid "Ajouter une information et/ou une photo"
+msgstr "Add some information and/or a photo"
+
+msgid "par"
+msgstr "by"
+
+msgid "Photo"
+msgstr "Photo"
+
+msgid ""
+"Avertissement : Les informations fournies sont indicatives. Elles ne "
+"sauraient engager la responsabilité des gestionnaires ou des rédacteurs dans "
+"l'hypothèse où les utilisateurs de ces informations n'observeraient pas les "
+"règles de prudence que la montagne impose. Soyez responsables"
+msgstr ""
+"Warning: the information provided is indicative. It cannot make the managers "
+"or editors liable if users of this information do not observe the safety "
+"rules that the mountains demand. Be responsible"
+
+msgid "Page sous licence :"
+msgstr "Page licensed under:"
+
+msgid "cabanes, refuges et points d'eau"
+msgstr "wilderness huts, alpine huts and water points"
+
+#, php-format
+msgid "le %2$s %1$s"
+msgstr "the %2$s %1$s"
+
+#, php-format
+msgid "%s sur une carte"
+msgstr "%s on a map"
+
+msgid "Selecteur de refuges, point d'eau et cabane sur les cartes"
+msgstr "Selector of alpine huts, water points and wilderness huts on the maps"
+
+msgid "Modifier"
+msgstr "Edit"
+
+msgid "Info périmée ?"
+msgstr "Out of date?"
+
+msgid "abri naturel"
+msgstr "natural shelter"
+
+msgid "administrative"
+msgstr "administrative"
+
+msgid "Auprès de qui se renseigner / accessibilité"
+msgstr "Who to contact / accessibility"
+
+msgid "Autre"
+msgstr "Other"
+
+msgid "bâtiment à investiguer"
+msgstr "building to investigate"
+
+msgid "cabane non gardée"
+msgstr "wilderness hut"
+
+msgid "Capacité d'accueil"
+msgstr "Capacity"
+
+msgid "Cheminée"
+msgstr "Fireplace"
+
+msgid "Clés à récupérer"
+msgstr "Keys to be collected"
+
+msgid "commune"
+msgstr "municipality"
+
+msgid "Coordonnées approximatives"
+msgstr "Approximate coordinates"
+
+msgid "Coordonnées cachées"
+msgstr "Hidden coordinates"
+
+msgid "Coordonnées lues sur une des cartes proposées"
+msgstr "Coordinates read from one of the maps offered"
+
+msgid "Coordonnées pointées sur photos aériennes"
+msgstr "Coordinates picked from aerial photos"
+
+msgid "Coordonnées prises sur le terrain"
+msgstr "Coordinates taken in the field"
+
+msgid "Couvertures"
+msgstr "Blankets"
+
+msgid "département"
+msgstr "department"
+
+msgid "Eau à moins de 100m"
+msgstr "Water within 100 m"
+
+msgid "Eau à proximité"
+msgstr "Water nearby"
+
+msgid "Eau gratuite en libre accès"
+msgstr "Free water with open access"
+
+msgid "Fermé"
+msgstr "Closed"
+
+msgid "Fermé au public"
+msgstr "Closed to the public"
+
+msgid "Fermée"
+msgstr "Closed"
+
+msgid "Forêt à moins de 100m"
+msgstr "Forest within 100 m"
+
+msgid "Forêt à proximité"
+msgstr "Forest nearby"
+
+msgid "gîte d'étape"
+msgstr "gîte"
+
+msgid "Inutilisable"
+msgstr "Unusable"
+
+msgid "Latrines"
+msgstr "Latrines"
+
+msgid "Manque un mur"
+msgstr "A wall is missing"
+
+msgid "massif"
+msgstr "massif"
+
+msgid "montagnarde"
+msgstr "mountain"
+
+msgid "Ouverture sur contact préalable"
+msgstr "Opening on prior contact"
+
+msgid "passage délicat"
+msgstr "tricky passage"
+
+msgid "pays"
+msgstr "country"
+
+msgid "Places possibles pour dormir"
+msgstr "Possible sleeping places"
+
+msgid "Places prévues pour dormir"
+msgstr "Intended sleeping places"
+
+msgid "Places sur Matelas"
+msgstr "Places on mattresses"
+
+msgid "Poêle"
+msgstr "Stove"
+
+msgid "Propriétaire / accessibilité"
+msgstr "Owner / accessibility"
+
+msgid "Propriétaires"
+msgstr "Owners"
+
+msgid "refuge gardé"
+msgstr "alpine hut"
+
+msgid "région"
+msgstr "region"
+
+msgid "région naturelle"
+msgstr "natural region"
+
+msgid "Tari définitivement"
+msgstr "Permanently dried up"
+
+msgid "zone"
+msgstr "zone"
+
+msgid "zone réglementée"
+msgstr "regulated zone"
+
+msgid "Débit intermittent"
+msgstr "Intermittent flow"
+
+msgid "Détruite"
+msgstr "Destroyed"
+
+msgid "Détruit"
+msgstr "Destroyed"
+
+msgid "Oui"
+msgstr "Yes"
+
+msgid "Non"
+msgstr "No"
+
+msgid "Inconnu"
+msgstr "Unknown"
+
+msgid "<b>Inconnu</b>"
+msgstr "<b>Unknown</b>"

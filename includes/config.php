@@ -238,6 +238,13 @@ if (!function_exists('_')) { // extension gettext absente (certains conteneurs d
   function _($texte) { return $texte; }
   function ngettext($un, $plusieurs, $n) { return $n==1 ? $un : $plusieurs; }
 }
+// Lien interne vers une page sans url historique (accueil, formulaires...) dans la langue courante : url_langue('/nouvelles') => /en/nouvelles
+// (pour point, nav et wiki : lien_point(), lien_polygone() et lien_wiki())
+function url_langue($chemin)
+{
+  global $config_wri;
+  return $config_wri['url_prefixe_langue'].$chemin;
+}
 
 // Timezone par défaut pour choisir l'affichage des dates+heures
 $config_wri['timezone']='Europe/Paris';
