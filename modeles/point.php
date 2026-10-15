@@ -788,8 +788,18 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
 {
   global $config_wri,$pdo;
 
-  // désolé, le nom du point ne peut être vide, unset ou juste des espaces
-  if ( empty($point->nom) or empty(trim($point->nom)))
+  // Le formulaire ne transmet pas le flag modele : pour une modification on le lit dans la fiche actuelle (réutilisée plus bas)
+  if ( !empty($point->id_point) )
+  {
+    $point_avant = infos_point($point->id_point,true,false,true);
+    if (isset($point_avant->erreur) and $point_avant->erreur) // oulla on nous demande une modif mais il n'existe pas ?
+      return erreur(sprintf(_("Erreur de modification du point : %s"), $point_avant->message));
+  }
+
+  $est_modele = !empty($point->modele) || !empty($point_avant->modele);
+  
+  // désolé, le nom du point ne peut être vide, unset ou juste des espaces (sauf s'il s'agit d'un modèle)
+  if ( empty(trim($point->nom ?? "")) and !$est_modele )
     return erreur(_("Le nom ne peut être vide"));
   if ( preg_match("/[\<\>\]\[\;]/",$point->nom) )
     return erreur(_("Le nom contient un des caractères non autorisé suivant : [ ] < > ;"));
@@ -838,9 +848,10 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
   // si aucune altitude, on la suppose à 0
   if (!isset($point->altitude))
     $point->altitude=0;
-  //On a bien reçu une altitude, mais ça n'est pas un entier positif (les cabanes sous marines ne sont pas encore acceptées !)
-  if (!est_entier_positif($point->altitude))
-    return erreur(sprintf(_("L'altitude du point doit être un nombre entier positif, reçu : %s"), $point->altitude));
+  // On a bien reçu une altitude, mais ça n'est pas un entier positif ou nul (les cabanes sous marines ne sont pas encore acceptées !)
+  // On accepte spécifiquement 0 (non car cela est possible au raz de mer, quoi que ? mais car c'est la valeur par défaut des modèles, permettant de détecter un oubli de changement)
+  if (!(est_entier_positif($point->altitude) or $point->altitude==0))
+    return erreur(sprintf(_("L'altitude du point doit être un nombre entier positif ou nul, reçu : %s"), $point->altitude));
 
   //On a bien reçu une altitude, mais c'est une valeur vraiment improbable
   if ($point->altitude>8848)
@@ -876,10 +887,6 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
 
   if ( !empty($point->id_point) )  // update
   {
-    $point_avant = infos_point($point->id_point,true,false,true);
-    if (isset($point_avant->erreur) and $point_avant->erreur) // oulla on nous demande une modif mais il n'existe pas ?
-      return erreur(sprintf(_("Erreur de modification du point : %s"), $point_avant->message));
-
     $query_finale=requete_modification_ou_ajout_generique('points',$champs_sql,'update','id_point',$point->id_point);
 
     if (!$pdo->exec($query_finale))
