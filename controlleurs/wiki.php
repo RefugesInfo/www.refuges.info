@@ -9,9 +9,10 @@ require_once ("mise_en_forme_texte.php");
 require_once ("wiki.php");
 
 
-// Si aucune page n'est précisée dans l'url on suppose que l'on souhaite la page par défaut stockée '' dans la base
-$page = $controlleur->url_decoupee[1] ?? '';
-$page=urldecode($page);
+// Si aucune page n'est précisée dans l'url (/wiki ou /wiki/) on affiche la page d'accueil du wiki, nommée "index" dans la base
+$page = urldecode($controlleur->url_decoupee[1] ?? '');
+if ($page==='')
+  $page='index';
 // On est bien avec un moderateur, on peut autoriser, si demande, modification et suppression
 if (est_moderateur())
 {
@@ -24,7 +25,7 @@ if (est_moderateur())
 // Conteneur standard de l'entête et pied de page
 $contenu_brut =  wiki_page_brut ($page);
 
-$vue->titre = $page;
+$vue->titre = ($page==='index') ? '' : $page; // la page d'accueil n'a pas de titre (comme avant)
 $vue->nom_page= $page;
 // La page n'existe pas (ou pas encore !)
 if (!empty ($contenu_brut->erreur) and $contenu_brut->erreur and empty($_REQUEST['form_modifier']))

@@ -26,7 +26,7 @@ $controlleur->url_decoupee = explode ('/',$controlleur->url_base);
 // La marque de langue est toujours le DERNIER élément de l'url :
 //   /point/91/type/nom/en/  et  /nav/5257/massif/nom/en/ : à l'indice 4 strictement, pour ne jamais être confondue avec
 //                                                          le nom d'une fiche (indice 3) ; forme courte /point/91/en/ acceptée
-//   /wiki/legende_carte/en/ : à l'indice 2 strictement (la page d'accueil du wiki est /wiki//en/)
+//   /wiki/legende_carte/en/ : à l'indice 2 strictement (la page d'accueil du wiki est /wiki/index/en/)
 //   /en/  /nouvelles/en/  /formulaire_exportations/en/ : dernier élément pour toutes les autres pages
 $langue_url = '';
 $indice_langue = null;
@@ -60,6 +60,9 @@ if ($indice_langue !== null)
     $controlleur->url_decoupee = array('');
 }
 $segments_neutres = $controlleur->url_decoupee; // url sans marque de langue, pour construire le sélecteur de langue
+if ($segments_neutres[0]=='wiki')
+  // une seule url par page et par langue (canonical, hreflang) : /wiki/page (fr) et /wiki/page/en/ ; /wiki et /wiki/ sont la page "index"
+  $segments_neutres = array('wiki', ($segments_neutres[1] ?? '')!=='' ? $segments_neutres[1] : 'index');
 $controlleur->langue = $langue_url ?: 'fr';
 // Url de la page courante dans chaque langue (sélecteur de langue, hreflang) : même page, autre marque de langue
 $requete = ($_SERVER['QUERY_STRING'] ?? '') !== '' ? '?'.$_SERVER['QUERY_STRING'] : '';
@@ -74,6 +77,8 @@ foreach (array_merge(array('fr'), $config_wri['langues_url']) as $langue_cible)
     {
       $s = array_pad($s, 2, '');
       array_splice($s, 2, 0, $langue_cible);
+      if (end($s) !== '')
+        $s[] = ''; // forme canonique /wiki/page/en/ (avec la barre finale)
     }
     else
     {

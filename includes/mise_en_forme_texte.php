@@ -104,10 +104,12 @@ function bbcode2html($texte_avec_bbcode,$autoriser_html=False,$autoriser_balise_
   $texte_avec_bbcode_apres_detection_urls = preg_replace($urlauto_pattern,$urlauto_replace,$texte_avec_bbcode);
 
   // gestion des liens vers notre wiki au format [url=##page]c'est là que ça se passe[/url] on le repasse d'abord en bbcode plus classique avec url locale (qui tient compte de l'éventuel sous-dossier dans lequel on est installé
-  // Dans une autre langue que le français, le lien reste dans la langue : [url=##page] => /wiki/page/en/ (accueil du wiki : /wiki//en/)
-  if (!empty($config_wri['url_suffixe_langue']))
-    $texte_avec_bbcode_apres_detection_urls=preg_replace('/url=##([^\]\s]*)/', 'url='.$config_wri['base_wiki'].'${1}/'.$config_wri['url_suffixe_langue'], $texte_avec_bbcode_apres_detection_urls);
-  $texte_avec_bbcode_apres_detection_urls=str_replace("url=##","url=".$config_wri['base_wiki'],$texte_avec_bbcode_apres_detection_urls);
+  // Dans une autre langue que le français, le lien reste dans la langue : [url=##page] => /wiki/page/en/
+  // [url=##] sans nom de page = accueil du wiki, la page "index" (/wiki/index, /wiki/index/en/)
+  $texte_avec_bbcode_apres_detection_urls=preg_replace_callback('/url=##([^\]\s]*)/', function ($m) use ($config_wri) {
+    $suffixe = empty($config_wri['url_suffixe_langue']) ? '' : '/'.$config_wri['url_suffixe_langue'];
+    return 'url='.$config_wri['base_wiki'].($m[1]==='' ? 'index' : $m[1]).$suffixe;
+  }, $texte_avec_bbcode_apres_detection_urls);
 
   /**
    on évite qu'un petit malin injecte du HTML ( style javascript pas sympa )

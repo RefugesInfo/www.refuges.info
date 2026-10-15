@@ -14,8 +14,8 @@ function lien_wiki($page="/",$langue=null)
     global $config_wri;
     // $langue : null = langue de la page courante ; 'fr' ou 'en' pour faire le lien vers l'autre version
     $suffixe_langue = ($langue===null) ? $config_wri['url_suffixe_langue'] : (($langue==='fr') ? '' : $langue.'/');
-    $page = ($page==="/") ? '' : strtolower($page);
-    // /wiki/page/en/ ; la page d'accueil du wiki (nom vide) devient /wiki//en/ pour ne pas être prise pour une page "en"
+    // /wiki/page/en/ ; la page d'accueil du wiki s'appelle "index" (appelée sans nom ou avec "/", elle donne /wiki/index)
+    $page = ($page==="/" or $page==="") ? 'index' : strtolower($page);
     return $config_wri['base_wiki'].$page.($suffixe_langue ? '/'.$suffixe_langue : '');
 }
 
@@ -33,7 +33,7 @@ function wiki_page_html($page)
     {
       $res_traduction = $pdo->query("SELECT texte,hash_source FROM traductions
         WHERE type_objet='wiki' AND id_objet=0 AND champ='contenu'
-          AND cle_objet=".$pdo->quote($page==='' ? '/' : $page)." AND langue=".$pdo->quote($config_wri['langue_courante']));
+          AND cle_objet=".$pdo->quote($page)." AND langue=".$pdo->quote($config_wri['langue_courante']));
       $traduction = $res_traduction ? $res_traduction->fetch() : false;
       if ($traduction && $traduction->texte !== null && $traduction->hash_source === md5($contenu_page->contenu))
         $contenu_page->contenu = $traduction->texte;
@@ -124,7 +124,7 @@ function supprimer_page($page)
   $res=$pdo->query($query);
   if (!$res)
     return erreur("Requête SQL impossible à executer",$query);
-  $pdo->query("delete from traductions where type_objet='wiki' and cle_objet=".($page=="''" ? "'/'" : $page)); // ses traductions aussi ('/' = page d'accueil du wiki, nom vide)
+  $pdo->query("delete from traductions where type_objet='wiki' and cle_objet=$page"); // ses traductions aussi
 
   return ok("Page supprimée et tout ses anciennes versions");
 }
