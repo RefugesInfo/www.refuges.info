@@ -42,6 +42,8 @@ if (in_array($premier, array('point','nav'), true))
     $indice_langue = 4;
   elseif ($est_langue(2) and $dernier_utile === 2)
     $indice_langue = 2;
+  elseif ($est_langue(1) and $dernier_utile === 1)
+    $indice_langue = 1; // /nav/en/ : la vue carte sans identifiant (un id de point ou de polygone n est jamais une langue)
 }
 elseif ($premier == 'wiki')
 {

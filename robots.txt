@@ -33,3 +33,6 @@ User-agent: Meta-ExternalAgent
 User-agent: PetalBot
 User-agent: ClaudeBot
 Disallow: /
+
+# Plan du site (pages principales, avec leurs versions par langue)
+Sitemap: https://www.refuges.info/sitemap.xml

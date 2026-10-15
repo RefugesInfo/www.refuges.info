@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Sitemap des pages principales. Chaque version de langue est listée avec toutes ses alternatives (hreflang) :
+     ajouter une langue = une ligne xhtml:link de plus par page, et une entrée url de plus par page. -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://www.refuges.info/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.refuges.info/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.refuges.info/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.refuges.info/"/>
+  </url>
+  <url>
+    <loc>https://www.refuges.info/en/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.refuges.info/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.refuges.info/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.refuges.info/"/>
+  </url>
+  <url>
+    <loc>https://www.refuges.info/nouvelles/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.refuges.info/nouvelles/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.refuges.info/nouvelles/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.refuges.info/nouvelles/"/>
+  </url>
+  <url>
+    <loc>https://www.refuges.info/nouvelles/en/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.refuges.info/nouvelles/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.refuges.info/nouvelles/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.refuges.info/nouvelles/"/>
+  </url>
+  <url>
+    <loc>https://www.refuges.info/nav</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.refuges.info/nav"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.refuges.info/nav/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.refuges.info/nav"/>
+  </url>
+  <url>
+    <loc>https://www.refuges.info/nav/en/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.refuges.info/nav"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.refuges.info/nav/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.refuges.info/nav"/>
+  </url>
+  <url>
+    <loc>https://www.refuges.info/point_formulaire_recherche/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.refuges.info/point_formulaire_recherche/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.refuges.info/point_formulaire_recherche/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.refuges.info/point_formulaire_recherche/"/>
+  </url>
+  <url>
+    <loc>https://www.refuges.info/point_formulaire_recherche/en/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.refuges.info/point_formulaire_recherche/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.refuges.info/point_formulaire_recherche/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.refuges.info/point_formulaire_recherche/"/>
+  </url>
+  <url>
+    <loc>https://www.refuges.info/formulaire_exportations/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.refuges.info/formulaire_exportations/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.refuges.info/formulaire_exportations/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.refuges.info/formulaire_exportations/"/>
+  </url>
+  <url>
+    <loc>https://www.refuges.info/formulaire_exportations/en/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.refuges.info/formulaire_exportations/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.refuges.info/formulaire_exportations/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.refuges.info/formulaire_exportations/"/>
+  </url>
+  <url>
+    <loc>https://www.refuges.info/wiki/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.refuges.info/wiki/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.refuges.info/wiki//en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.refuges.info/wiki/"/>
+  </url>
+  <url>
+    <loc>https://www.refuges.info/wiki//en/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.refuges.info/wiki/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.refuges.info/wiki//en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.refuges.info/wiki/"/>
+  </url>
+</urlset>
