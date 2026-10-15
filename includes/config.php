@@ -230,8 +230,7 @@ $config_wri['langues_url']=array('en');   // langues d'affichage autres que le f
 $config_wri['noms_langues']=array('fr'=>'Français', 'en'=>'English'); // dans leur propre langue, pour le sélecteur de langue
 $config_wri['liens_langues']=array();     // langue => url de la page courante dans cette langue (rempli par le routeur)
 $config_wri['langue_courante']='fr';
-$config_wri['url_prefixe_langue']='';     // '' ou '/en' : avant le nom de la page (accueil, wiki...)
-$config_wri['url_suffixe_langue']='';     // '' ou 'en/' : après /point/id/type/nom/ et /nav/id/type/nom/
+$config_wri['url_suffixe_langue']='';     // '' ou 'en/' : toujours en dernier dans l'url (/point/id/type/nom/en/, /nouvelles/en/)
 // Traductions de l'interface : gettext, le msgid est le texte français (donc le français n'a pas de catalogue et rien ne casse si
 // une traduction manque). Catalogues : ressources/locale/<locale>/LC_MESSAGES/refuges.po (sources) et .mo (compilés, pour PHP)
 $config_wri['chemin_locale']=$config_wri['racine_projet']."ressources/locale/";
@@ -240,12 +239,16 @@ if (!function_exists('_')) { // extension gettext absente (certains conteneurs d
   function _($texte) { return $texte; }
   function ngettext($un, $plusieurs, $n) { return $n==1 ? $un : $plusieurs; }
 }
-// Lien interne vers une page sans url historique (accueil, formulaires...) dans la langue courante : url_langue('/nouvelles') => /en/nouvelles
+// Lien interne vers une page sans url historique (accueil, formulaires...) dans la langue courante : url_langue('/nouvelles') => /nouvelles/en/
+// (la marque de langue est ajoutée en fin de chemin, avant une éventuelle ?query ou #ancre)
 // (pour point, nav et wiki : lien_point(), lien_polygone() et lien_wiki())
 function url_langue($chemin)
 {
   global $config_wri;
-  return $config_wri['url_prefixe_langue'].$chemin;
+  if ($config_wri['url_suffixe_langue']==='')
+    return $chemin;
+  $fin = strcspn($chemin, '?#');
+  return rtrim(substr($chemin, 0, $fin), '/').'/'.$config_wri['url_suffixe_langue'].substr($chemin, $fin);
 }
 
 // Timezone par défaut pour choisir l'affichage des dates+heures

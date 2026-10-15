@@ -22,66 +22,72 @@ $controlleur->url_base=str_replace('RACINE'."/",'','RACINE'.$sans_parametres[0])
 //DOM ajout de RACINE évite d'enlever tous les / quand sous_dossier_installation = /
 $controlleur->url_decoupee = explode ('/',$controlleur->url_base);
 
-// Langue d'affichage portée par l'url (le français = aucune marque, pour garder les urls historiques) :
-//   /point/91/type/nom/en/  et  /nav/5257/massif/nom/en/ : suffixe, toujours en 5ème position (l'indice 4) pour ne jamais
-//                                                          être confondu avec le nom d'une fiche (indice 3)
-//   /wiki/legende_carte/en/ : suffixe en 3ème position (l'indice 2), même principe (la page d'accueil du wiki est /wiki//en/)
-//   /en/  /en/formulaire_exportations ... : préfixe pour toutes les autres pages
+// Langue d'affichage portée par l'url (le français = aucune marque, pour garder les urls historiques).
+// La marque de langue est toujours le DERNIER élément de l'url :
+//   /point/91/type/nom/en/  et  /nav/5257/massif/nom/en/ : à l'indice 4 strictement, pour ne jamais être confondue avec
+//                                                          le nom d'une fiche (indice 3) ; forme courte /point/91/en/ acceptée
+//   /wiki/legende_carte/en/ : à l'indice 2 strictement (la page d'accueil du wiki est /wiki//en/)
+//   /en/  /nouvelles/en/  /formulaire_exportations/en/ : dernier élément pour toutes les autres pages
 $langue_url = '';
-$segments_neutres = $controlleur->url_decoupee; // url sans marque de langue, pour construire le sélecteur de langue
-if (in_array($controlleur->url_decoupee[0], $config_wri['langues_url'], true))
+$indice_langue = null;
+$premier = $controlleur->url_decoupee[0];
+$utiles = array_keys(array_filter($controlleur->url_decoupee, function ($segment) { return $segment !== ''; }));
+$dernier_utile = $utiles ? end($utiles) : null;
+$est_langue = function ($indice) use ($controlleur, $config_wri) {
+  return isset($controlleur->url_decoupee[$indice]) and in_array($controlleur->url_decoupee[$indice], $config_wri['langues_url'], true);
+};
+if (in_array($premier, array('point','nav'), true))
 {
-  $langue_url = array_shift($controlleur->url_decoupee);
-  $segments_neutres = $controlleur->url_decoupee;
+  if ($est_langue(4))
+    $indice_langue = 4;
+  elseif ($est_langue(2) and $dernier_utile === 2)
+    $indice_langue = 2;
+}
+elseif ($premier == 'wiki')
+{
+  if ($est_langue(2))
+    $indice_langue = 2;
+}
+elseif ($premier != 'api' and $dernier_utile !== null and $est_langue($dernier_utile))
+  $indice_langue = $dernier_utile;
+if ($indice_langue !== null)
+{
+  $langue_url = $controlleur->url_decoupee[$indice_langue];
+  array_splice($controlleur->url_decoupee, $indice_langue, 1); // les contrôleurs ne voient pas la langue
   if (!$controlleur->url_decoupee)
     $controlleur->url_decoupee = array('');
-  // Pour point, nav et wiki, la forme officielle est le suffixe : une seule url par page (doublons, liens externes)
-  $suffixe = ($controlleur->url_decoupee[0]=='wiki') ? array_slice($controlleur->url_decoupee, 0, 2)
-    : (in_array($controlleur->url_decoupee[0], array('point','nav'), true) ? array_slice($controlleur->url_decoupee, 0, 4) : array());
-  if ($suffixe and isset($suffixe[count($suffixe)-1]) and $suffixe[count($suffixe)-1] !== ''
-    and count($suffixe) == (($suffixe[0]=='wiki') ? 2 : 4))
-  {
-    header('Location: /'.implode('/', $suffixe).'/'.$langue_url.'/'.(isset($_SERVER['QUERY_STRING']) && $_SERVER['QUERY_STRING']!=='' ? '?'.$_SERVER['QUERY_STRING'] : ''), true, 301);
-    exit();
-  }
 }
-elseif (in_array($controlleur->url_decoupee[0], array('point','nav'), true)
-  and in_array($controlleur->url_decoupee[4] ?? '', $config_wri['langues_url'], true))
-{
-  $langue_url = $controlleur->url_decoupee[4];
-  array_splice($controlleur->url_decoupee, 4, 1); // les contrôleurs ne voient pas la langue, l'indice 4 reste vide comme avant
-  $segments_neutres = $controlleur->url_decoupee;
-}
-elseif ($controlleur->url_decoupee[0]=='wiki'
-  and in_array($controlleur->url_decoupee[2] ?? '', $config_wri['langues_url'], true))
-{
-  $langue_url = $controlleur->url_decoupee[2];
-  array_splice($controlleur->url_decoupee, 2, 1);
-  $segments_neutres = $controlleur->url_decoupee;
-}
+$segments_neutres = $controlleur->url_decoupee; // url sans marque de langue, pour construire le sélecteur de langue
 $controlleur->langue = $langue_url ?: 'fr';
 // Url de la page courante dans chaque langue (sélecteur de langue, hreflang) : même page, autre marque de langue
 $requete = ($_SERVER['QUERY_STRING'] ?? '') !== '' ? '?'.$_SERVER['QUERY_STRING'] : '';
 foreach (array_merge(array('fr'), $config_wri['langues_url']) as $langue_cible)
 {
   $s = $segments_neutres;
-  if ($langue_cible == 'fr')
-    ;
-  elseif (in_array($s[0], array('point','nav'), true) and count($s) >= 4 and $s[3] !== '')
-    array_splice($s, 4, 0, $langue_cible);
-  elseif ($s[0] == 'wiki')
+  if ($langue_cible != 'fr')
   {
-    $s = array_pad($s, 2, '');
-    array_splice($s, 2, 0, $langue_cible);
+    if (in_array($s[0], array('point','nav'), true) and count($s) >= 4 and $s[3] !== '')
+      array_splice($s, 4, 0, $langue_cible);
+    elseif ($s[0] == 'wiki')
+    {
+      $s = array_pad($s, 2, '');
+      array_splice($s, 2, 0, $langue_cible);
+    }
+    else
+    {
+      if (in_array($s[0], array('point','nav'), true))
+        $s = array_slice($s, 0, 2); // /point/91/en/ : forme courte, redirigée vers l'url complète
+      while ($s and end($s) === '')
+        array_pop($s);
+      $s[] = $langue_cible;
+      $s[] = '';
+    }
   }
-  else
-    array_unshift($s, $langue_cible);
   $config_wri['liens_langues'][$langue_cible] = '/'.implode('/', $s).$requete;
 }
 if ($langue_url)
 {
   $config_wri['langue_courante'] = $langue_url;
-  $config_wri['url_prefixe_langue'] = '/'.$langue_url;
   $config_wri['url_suffixe_langue'] = $langue_url.'/';
   $config_wri['langue'] = 'en_GB'; // IntlDateFormatter
   setlocale(LC_TIME, $config_wri['locales_systeme'][$langue_url] ?? 'fr_FR.UTF-8');
