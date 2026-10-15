@@ -94,7 +94,20 @@ elseif ( !empty($_REQUEST["id_point_type"]))
     $point = new stdClass;
   }
   else
+  {
     $point=reset($points_modele);
+
+    // Textes d'aide du modèle dans la langue de la page (table traductions), seulement s'ils correspondent au texte français actuel
+    if ($config_wri['langue_courante']!='fr')
+    {
+      $res = $pdo->query("SELECT champ,texte,hash_source FROM traductions
+        WHERE type_objet='point' AND id_objet=".(int)$point->id_point." AND langue=".$pdo->quote($config_wri['langue_courante'])."
+        AND champ IN ('remarques','acces','proprietaires') AND texte IS NOT NULL");
+      foreach ($res as $t)
+        if ($t->hash_source === md5($point->{$t->champ} ?? ''))
+          $point->{$t->champ} = $t->texte;
+    }
+  }
 
   // on force l'id du point à vide histoire de ne pas modifier le modèle
   unset($point->id_point);
