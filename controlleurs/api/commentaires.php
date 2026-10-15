@@ -34,8 +34,8 @@ foreach ($commentaires_point as $cp) {
     $com['photo-vignette'] = preg_replace('/\?[0-9]*/', '', $cp->lien_photo['vignette']);
   if(isset($cp->lien_photo['reduite']) )
     $com['photo-reduite'] = preg_replace('/\?[0-9]*/', '', $cp->lien_photo['reduite']);
-  if(isset($cp->lien_photo['vignette']) )
-    $com['photo-originale'] = preg_replace('/\?[0-9]*/', '', $cp->lien_photo['vignette']);
+  if(isset($cp->lien_photo['originale']) )
+    $com['photo-originale'] = preg_replace('/\?[0-9]*/', '', $cp->lien_photo['originale']);
   $commentaires[] = $com;
 }
 
