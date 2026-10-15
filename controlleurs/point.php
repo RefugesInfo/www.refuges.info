@@ -73,7 +73,7 @@ else // le point est valide
   $vue->lien_wiki_explication_type=lien_wiki("fiche-".replace_url($point->nom_type));
   $vue->lien_wiki_explication_geo=lien_wiki("geo-uri");
   $vue->lien_wiki_explication_proprio=lien_wiki("informations_proprietaires");
-  $vue->titre = "$vue->nom_debut_majuscule $point->altitude m ($point->nom_type)";
+  $vue->titre = "$vue->nom_debut_majuscule $point->altitude m ("._($point->nom_type).")";
 
   // Conversion en XY CH1903 Swisstopo
   $swiss_converter = new Antistatique\Swisstopo\SwisstopoConverter();
