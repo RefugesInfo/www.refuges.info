@@ -178,11 +178,11 @@ function infos_commentaires ($conditions)
           if (is_file($chemin_photo))
           {
             $commentaire->photo[$taille]=$chemin_photo;
-            // Les 6 caractères ajoutés ont pour but, après une modification sur la photo, d'éviter que les caches navigateurs ne s'activent
+            // Le filemtime a pour but, après une modification sur la photo, d'éviter que les caches navigateurs ne s'activent
+            // (un simple stat, pas de lecture du fichier comme le ferait un md5_file à chaque affichage)
             $commentaire->lien_photo[$taille]=
             $commentaire->lien_photo_reduite=
-              $config_wri['rep_web_photos_points'].$nom_fichier_photo."?md="
-              .substr(md5_file($chemin_photo), 6, 6);
+              $config_wri['rep_web_photos_points'].$nom_fichier_photo."?".filemtime($chemin_photo);
             break; // pas besoin de tester toute les extensions, on en a trouvé une
           }
         }
