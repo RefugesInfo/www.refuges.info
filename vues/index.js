@@ -55,8 +55,8 @@ const argsPolygones = [
     click: true,
   }
 ];
-overlays['Régions'] = new WriPolygonLayer(11, ...argsPolygones);
-overlays['Massifs'] = new WriPolygonLayer(1, ...argsPolygones);
+overlays[libelle('Régions')] = new WriPolygonLayer(11, ...argsPolygones);
+overlays[libelle('Massifs')] = new WriPolygonLayer(1, ...argsPolygones);
 
 // Couche externe d'itinéraires
 overlays[libelle('Itinéraires')] = coucheItineraires;
