@@ -1,5 +1,5 @@
-/* global couchesDeFond, couchesIconesWRI, WriPOILayer, WriPolygonLayer, couchesOverpass, coucheItineraires */
-/* global controlesComuns, positionMemoryControl, positionMemoryArray */
+/* global couchesIconesWRI, WriPOILayer, WriPolygonLayer, couchesDeFond, couchesOverpass,
+ coucheItineraires, controlesComuns, positionMemoryControl, positionMemoryArray */
 
 const map = L.map('carte-accueil'),
   tileLayers = couchesDeFond(<?=json_encode($config_wri["mapKeys"])?>),
@@ -9,7 +9,6 @@ const map = L.map('carte-accueil'),
     showCoverageOnHover: false, // Optional: hides the cluster bounds polygon
     maxClusterRadius: 30, // Less clusters
   });
-  //TODO séparer sélecteur / clusters et faire 2 fonctions générales
 
 // Libellés affichés des couches (traduits par le serveur). L'identité d'une couche reste son nom français : c'est lui qui est
 // mémorisé dans sessionStorage et cherché dans couchesIconesWRI ; on repasse donc du libellé affiché à ce nom (identite).
@@ -19,7 +18,9 @@ const libelles = <?=json_encode($vue->libelles_couches)?>,
 
 // Couches refuges.info de la page 
 if (typeof sessionStorage.checkedLayers !== 'string')
-  sessionStorage.checkedLayers = 'Cabane non gardée,Refuge gardé,Gîte d\'étape';
+  sessionStorage.checkedLayers =
+  localStorage.checkedLayers ||
+  'Cabane non gardée,Refuge gardé,Gîte d\'étape';
 
 // Chargement du fond de carte actif
 (tileLayers[decodeURI(positionMemoryArray[3])] || Object.values(tileLayers)[0]).addTo(map);
@@ -47,8 +48,15 @@ for (const [nom, args] of Object.entries(couchesIconesWRI)) {
 }
 
 // Polygones WRI
-overlays[libelle('Régions')] = new WriPolygonLayer('https://<?=$_SERVER["SERVER_NAME"]?>', 11, '<?=$vue->version_features?>', true);
-overlays[libelle('Massifs')] = new WriPolygonLayer('https://<?=$_SERVER["SERVER_NAME"]?>', 1, '<?=$vue->version_features?>', true);
+const argsPolygones = [
+  'https://<?=$_SERVER["SERVER_NAME"]?>',
+  '<?=$vue->version_features?>', {
+    labels: true,
+    click: true,
+  }
+];
+overlays['Régions'] = new WriPolygonLayer(11, ...argsPolygones);
+overlays['Massifs'] = new WriPolygonLayer(1, ...argsPolygones);
 
 // Couche externe d'itinéraires
 overlays[libelle('Itinéraires')] = coucheItineraires;
@@ -63,7 +71,7 @@ for (const [nom, query] of Object.entries(couchesOverpass))
   overlays['OSM ' + nom] = new L.OverPassLayer({
     query: '(nwr' + query + '({{bbox}}););out center;',
     markerIcon: L.icon({
-      iconUrl: 'https://<?=$_SERVER["SERVER_NAME"]?>/images/icones/' + nom.replace('ô', 'o').replace(/[^a-z]/gu, '') + '.svg',
+      iconUrl: 'https://<?=$_SERVER["SERVER_NAME"]?>/images/icones/' + nom.replaceAll('ô', 'o').replaceAll(/[^a-z]/gu, '') + '.svg',
       iconSize: [24, 24],
       iconAnchor: [12, 12],
     }),
@@ -101,9 +109,9 @@ const overlaySelectors = document.querySelectorAll('.leaflet-control-layers-over
 
 /* eslint-disable-next-line no-unused-vars */
 function copyExportLink() {
-  navigator.clipboard.writeText(exportCarteEl.children[1].href)
+  navigator.clipboard.writeText(exportCarteEl.lastChild.href)
     .then(() => alert(<?=json_encode(_("Lien d'exportation copié dans le presse-papier :"))?> + '\n\n' +
-      exportCarteEl.children[1].href));
+      exportCarteEl.lastChild.href));
 }
 
 // Mémorisation des couches de points et l'export
@@ -129,7 +137,8 @@ function addRemoveOverlay() {
   }
 
   // Mémorise dans la mémoire de l'explorateur
-  sessionStorage.checkedLayers = checkedLayersNames.join(',');
+  localStorage.checkedLayers =
+    sessionStorage.checkedLayers = checkedLayersNames.join(',');
 
   exportCarteEl.children[1].href = '/api/bbox' +
     '?type_points=' + checkedLayersTypes.join(',') +

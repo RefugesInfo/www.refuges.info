@@ -538,6 +538,7 @@ a img {
   /* Pour ne pas trop déborder en bas */
 }
 
+/* Carte de l'éditeur de massifs */
 .selecteur-carte-edit {
   padding-left: 1px;
 }
@@ -556,6 +557,29 @@ a img {
 .selecteur-carte-edit label {
   text-align: justify;
   cursor: pointer;
+}
+
+.leaflet-control-upload button {
+  height: 34px;
+}
+
+.leaflet-control-upload.buttonSelected span,
+.leaflet-control-upload:not(.buttonSelected) input {
+  display: none;
+}
+
+#edit-help-modify {
+  margin: 5px;
+}
+
+#edit-help-modify span {
+  display: inline-block;
+  background-repeat: no-repeat;
+  height: 16px;
+  width: 16px;
+  background-color: white;
+  background-size: 14px;
+  background-position: center;
 }
 
 /* Menu deplié */

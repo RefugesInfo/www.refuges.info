@@ -11,6 +11,8 @@ if (!est_moderateur()) {
 // Bon, on triche un peu ici: on factorise un max avec /nav
 require_once ("nav.php");
 require_once ("polygone.php");
+require_once ("leaflet_libs.php");
+add_lib('geoman/leaflet-geoman.js', 'chemin_leaflet');
 
 // Quelques trucs spécifiques
 if(!isset($vue->polygone) && isset($vue->contenu))

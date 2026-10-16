@@ -8,15 +8,15 @@
 /*********************************************
  * Couches vectorielles du site refuges.info *
  *********************************************
-  Une icône est une image .png représentant un type de point
-  Un point est défini par une position, un nom et une icône destinée à être affiché sur une carte
-  Une fiche contient toutes les informations concernant un point, y compris les commentaires
+  Une icône est une image .png représentant un type de point.
+  Un point est défini par une position, un nom et une icône destinée à être affiché sur une carte.
+  Une fiche contient toutes les informations concernant un point, y compris les commentaires.
 
-  json est une structure contenant des définitions de points
-  geoJson sa représentation en string
+  json est une structure contenant des définitions de points,
+  geoJson sa représentation en string.
 
-  Le résultat des requêtes API est mis en cache pendant 1 semaine par l'explorateur
-  La date de dernière création, édition, suppression de polygone ou point (hors commentaires)
+  Le résultat des requêtes API est mis en cache pendant 1 semaine par l'explorateur.
+  La date de dernière création, édition, suppression de polygone ou point (hors commentaires),
   est fournie à la page HTML qui la passe en argument de l'API pour recharger si nécessaire.
 */
 
@@ -27,9 +27,10 @@
 class WriPOILayer extends L.geoJson {
   constructor(serveurAPI, type, versionFeatures, hideTooltip) {
     const iconList = [],
-      url = serveurAPI + '/api/bbox?' +
-      'nb_points=all&type_points=' + type +
-      '&version=' + versionFeatures + '&cache=' + (7 * 24 * 3600);
+      url = serveurAPI + '/api/bbox' +
+      '?nb_points=all&type_points=' + type +
+      '&version=' + versionFeatures +
+      '&cache=' + (7 * 24 * 3600);
     //TODO Délai cache api / depuis
 
     super(null, {
@@ -65,7 +66,7 @@ class WriPOILayer extends L.geoJson {
 
     // Fetch remote data
     fetch(url)
-      .catch((er) => console.error(er + ' fetching ' + url))
+      .catch((error) => console.error(error + ' fetching ' + url))
       .then((response) => response.json())
       .then((json) => {
         if (json.features.length) {
@@ -75,7 +76,10 @@ class WriPOILayer extends L.geoJson {
           // Preload icons
           //TODO don't do it twice
           for (const name in iconList)
-            document.body.insertAdjacentHTML('beforeend', '<img style="display:none" src="/images/icones/' + name + '.svg"/>')
+            document.body.insertAdjacentHTML(
+              'beforeend',
+              '<img style="display:none" src="/images/icones/' + name + '.svg"/>'
+            );
         }
 
         // Trigger for who needs it
@@ -84,54 +88,104 @@ class WriPOILayer extends L.geoJson {
   }
 }
 
-/*****************************
- * Polygones de refuges.info *
- *****************************/
 /* eslint-disable-next-line no-unused-vars */
 class WriPolygonLayer extends L.geoJson {
-  constructor(serveurAPI, typeId, versionFeatures, clickEnabled) {
+  constructor(typeId, serveurAPI, versionFeatures, options = {}) {
     const url = serveurAPI + '/api/polygones?' +
       'type_polygon=' + typeId +
       '&version=' + versionFeatures +
-      '&cache=' + (7 * 24 * 3600);
+      '&cache=' + (7 * 24 * 3600) +
+      (options.urlParam || '');
 
     super(null, {
       style: (feature) => ({
         stroke: false,
         color: feature.properties.couleur,
+        ...options,
       }),
 
       onEachFeature: (feature, layer) => {
         // Etiquettes
-        layer.bindTooltip(
-          feature.properties.nom
-          .replace(/ ([a-z]?[a-z]?[a-z]) /gui, ' $1&nbsp;')
-          .replace(/ /gu, '<br/>'), {
-            permanent: true,
-            direction: 'center',
-          }).openTooltip();
+        if (options.labels)
+          layer.bindTooltip(
+            feature.properties.nom
+            .replaceAll(/ ([a-z]?[a-z]?[a-z]) /gui, ' $1&nbsp;')
+            .replaceAll(/ /gu, '<br/>'), {
+              permanent: true,
+              direction: 'center',
+            }).openTooltip();
 
-        layer.on('mouseover mouseout', (evt) => {
-          evt.target.setStyle({
-            stroke: evt.type === 'mouseover',
+        if (options.click) {
+          // Mouse hover & click
+          layer.on(
+            'mouseover mouseout', (evt) => {
+              evt.target.setStyle({
+                stroke: evt.type === 'mouseover',
+              });
+            });
+
+          layer.on({
+            click: (evt) => {
+              location.href = '/nav/' + evt.sourceTarget.feature.id;
+            },
           });
-        });
-
-if(clickEnabled)
-        layer.on({
-          click: (evt) => {
-            location.href = '/nav/' + evt.sourceTarget.feature.id;
-          },
-        });
+        } else
+          // Remove cursor pointer on hover
+          layer.on({
+            mouseover: (evt) => {
+              evt.target.getElement().style.cursor = 'grab';
+            },
+          });
       },
+      ...options,
     });
 
+    if (options.bbox)
+      // Wait for the attachment to the map to get the map reference
+      this.on('add', (evtAdd) => {
+        this.fetchUrlDataBbox(evtAdd.target._map, url);
+
+        // Get event when the map is moved to refresh the bbox
+        evtAdd.target._map.on('dragend', (evtDragEnd) => {
+          this.clearLayers();
+          this.fetchUrlDataBbox(evtDragEnd.target, url);
+        });
+      });
+    else
+      this.fetchUrlData(url, options);
+  }
+
+  fetchUrlDataBbox = function(map, url) {
+    const b = map.getBounds(),
+      bbox = [b.getWest(), b.getSouth(), b.getEast(), b.getNorth()];
+
+    this.fetchUrlData(url + '&bbox=' + bbox.join(','));
+  }
+
+  fetchUrlData = function(url, options = {}) {
     fetch(url)
-      .catch((er) => console.error(er + ' fetching ' + url))
+      .catch((error) => console.error(error + ' fetching ' + url))
       .then((response) => response.json())
       .then((json) => {
-        if (json.features.length)
+        if (options.polygonIdToReverse)
+          json.features.forEach((f) => {
+            if (f.id === options.polygonIdToReverse) {
+              f.geometry.coordinates.unshift([
+                [ // Set the world first to make the polygons holes
+                  [-180, -90],
+                  [-180, 90],
+                  [180, 90],
+                  [180, -90]
+                ]
+              ]);
+              this.addData(f);
+            }
+          });
+        else if (json.features.length)
           this.addData(json);
+
+        // Trigger for who needs it
+        this.fire('load');
       });
   }
 }
@@ -166,6 +220,8 @@ class IGNTileLayer extends L.tileLayer {
     });
   }
 }
+
+//TODO GPS : affichage distance au touch sur une carte
 
 /*********************************************************
  * Rotating marker to be used in L.Control.Gps           *
@@ -223,7 +279,7 @@ class MarkerCompass extends L.Marker {
   // Add or replace the icon rotation style
   rotateIcon() {
     this._icon.style.transform =
-      this._icon.style.transform.replace(/rotateZ\([^)]+\)/u, '') +
+      this._icon.style.transform.replaceAll(/rotateZ\([^)]+\)/gu, '') +
       ' rotateZ(' + (45 - parseInt(this.heading, 10)) + 'deg)';
   }
 }
@@ -266,3 +322,80 @@ function positionMemoryControl(map) {
     });
   });
 }
+
+/**********************
+ * Editeur de massifs *
+ **********************/
+// Inverse les lat & lng entre geoJson et Leaflet
+function flipLonLatRecursive(data) {
+  if (Array.isArray(data) && typeof data[0] === 'number')
+    return [data[1], data[0]];
+
+  return data.map(item => flipLonLatRecursive(item));
+}
+
+/*************************************
+ * Bouton de chargement d'un fichier *
+ *************************************/
+/* eslint-disable-next-line no-unused-vars */
+const ControlPolygonsUpload = L.Control.extend({
+  options: {
+    position: 'topleft',
+    title: 'Import geometry file',
+  },
+
+  onAdd(map) {
+    const buttonDiv = L.DomUtil.create('div', 'button-wrapper leaflet-control-upload');
+
+    buttonDiv.innerHTML = '<button title="' + this.options.title + ' .geojson, .gml, .gpx, .json, .kml, .xml">' +
+      '<span>📁</span>' +
+      '<input type="file" accept=".geojson,.gml,.gpx,.json,.kml,.xml" />' +
+      '</button>';
+    // Display the input
+    buttonDiv.addEventListener('click', () => buttonDiv.classList.add('buttonSelected'));
+
+    // A file has been selected
+    buttonDiv.lastChild.addEventListener('change', (evt) => {
+      const reader = new FileReader();
+
+      reader.readAsText(evt.target.files[0]);
+      reader.onload = () => {
+        // We cannot use libraries because we want to convert lines into polygons
+        const fileText = reader.result
+          .replaceAll(/[\n\r\t]/gu, ' ') // Remove CR LF & tabs     
+          .replaceAll(/ +/gu, ' '), // Remove multiple spaces   
+          polygonsCoords = [];
+
+        // Json, GeoJson
+        for (const match of fileText.matchAll(/"coordinates":([^}]*)/gu)) {
+          const coords = flipLonLatRecursive(JSON.parse(match[1]));
+          if (typeof coords[0] === 'object') // Avoid points
+            polygonsCoords.push(coords);
+        }
+
+        // XML, KML, GML
+        for (const match of fileText.matchAll(/coordinates>([0-9,. ]+)/gu))
+          polygonsCoords.push(flipLonLatRecursive(JSON.parse( //TODO flipLonLatRecursive -> L.polygon
+            '[[' + match[1].trim().replaceAll(' ', '],[') + ']]'
+          )));
+
+        // GPX
+        for (const match of fileText.replaceAll('" /> <trkpt lat="', ' ').replaceAll('" lon="', ',').matchAll(/lat="([0-9,. ]+)/gu))
+          polygonsCoords.push((JSON.parse(
+            '[[' + match[1].trim().replaceAll(' ', '],[') + ']]'
+          )));
+
+        if (polygonsCoords.length) {
+          const polygons = L.polygon(polygonsCoords).addTo(map);
+          map.fitBounds(polygons.getBounds());
+          map.pm.enableGlobalEditMode();
+        } else
+          alert('Type de fichier non géré ou ne comportant pas de polygones ni de trace');
+
+        buttonDiv.classList.remove('buttonSelected');
+      };
+    });
+
+    return buttonDiv;
+  }
+});

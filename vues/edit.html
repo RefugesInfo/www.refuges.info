@@ -1,3 +1,5 @@
+<link type="text/css" rel="stylesheet" href="/leaflet/geoman/leaflet-geoman.css"><?php //TODO mettre ailleurs ?>
+
 <div class="contenu noprint">
   <h3 id="titrepage">
     <?=$vue->titre?>
@@ -35,12 +37,6 @@
           <input type="text" name="article_partitif" size="9" value="<?=$vue->polygone->article_partitif??''?>" />
         </p>
         <br/>
-        <p class="edit-error-lines">
-          <?=_("Il ne doit pas y avoir de ligne pour enregistrer.")?>
-        </p>
-        <p class="edit-error-polys">
-          <?=_("Il doit y avoir au moins 1 polygone pour enregistrer.")?>
-        </p>
         <p>
           <input type="submit" name="enregistrer" value="<?=_("Enregistrer et rester")?>" />
         </p>
@@ -50,53 +46,28 @@
     <form method="post" action="<?=url_langue('/nav/'.($vue->polygone->id_polygone??0))?>" >
       <p><input type="submit" value="<?=_("Quitter sans enregistrer")?>" /></p>
     </form>
+    <?php if (isset($vue->polygone->id_polygone)) { ?>
+      <br/>
+      <p id="export-polygon">
+        <a href="" target="_BLANCK">Exporter la dernière version enregistrée au format</a>
+        <select name="format" onchange="formatChange()">
+          <option value="geojson">GeoJson</option>
+          <option value="gml">GML</option>
+        </select>
+      </p>
+    <?php } ?>
   </fieldset>
 
-  <div id="edit-help-modify">
-    <p><?=sprintf(_("L'élément sélectionné est %s"), '<span style="color:red"><b>'._("rouge").'</b></span>')?></p>
-    <p><?=sprintf(_("Les éléments sélectionnables sont %s"), '<span style="color:blue"><b>'._("bleus").'</b></span>')?></p>
-    <p><?=sprintf(_("Les éléments en fond sont %s"), '<b>'._("noirs").'</b>')?></p>
-    <br />
-    <p><b><?=_("Modifier un polygone :")?></b></p>
-    <p><?=sprintf(_("Cliquer sur un sommet et glisser pour le %s"), '<u>'._("déplacer").'</u>')?></p>
-    <p><?=sprintf(_("Cliquer le long d'un segment et glisser pour %s"), '<u>'._("ajouter un sommet au milieu d'un segment").'</u>')?></p>
-    <p><?=sprintf(_("Alt+cliquer sur un sommet pour le %s"), '<u>'._("supprimer").'</u>')?></p>
-    <p><?=sprintf(_("Ctrl+Alt+cliquer sur un de ses segments pour %s"), '<u>'._("supprimer un polygone ou une ligne").'</u>')?></p>
-    <p><?=sprintf(_("Un polygone entièrement inclus dans un autre %s"), '<u>'._("crée un trou").'</u>')?></p>
-    <br />
-    <p><b><?=_("Utiliser des lignes pour les éditions complexes :")?></b></p>
-    <p><?=sprintf(_("Ctrl+cliquer sur un sommet ou un segment d'un polygone rouge pour le %s"), '<u>'._("transformer en ligne").'</u>')?></p>
-    <p><?=_("...puis déplacer l'une des 2 extrémités (rond rouge)")?></p>
-    <p><?=sprintf(_("Ctrl+cliquer sur une ligne pour la %s"), '<u>'._("couper en deux").'</u>')?></p>
-    <p><?=sprintf(_("Déplacer l'extrémité d'une ligne jusqu'à l'extrémité d'une autre ligne pour les %s"), '<u>'._("fusionner").'</u>')?></p>
-    <p><?=sprintf(_("Fusionner les 2 extrémités d'une ligne pour la %s"), '<u>'._("transformer en polygone").'</u>')?></p>
-    <p style="color:red"><?=_("Vous devez transformer toutes les lignes en polygones ou les supprimer avant d'enregistrer")?></p>
-  </div>
-
-  <div id="edit-help-drawPoly">
-    <p><b><?=_("Créer un polygone :")?></b></p>
-    <p><?=_("Cliquer sur le bouton")?>
-        <span style="display:inline-block;transform:scaleX(-1)">&#x23E2;</span>
-    </p>
-    <p><?=sprintf(_("Cliquer sur l'emplacement du %s"), '<u>'._("début").'</u>')?></p>
-    <p><?=sprintf(_("Puis sur chaque %s"), '<u>'._("sommet à créer").'</u>')?></p>
-    <p><?=sprintf(_("Double cliquer sur le %s pour terminer"), '<u>'._("dernier sommet").'</u>')?></p>
-  </div>
-
-  <div id="edit-help-drawLine">
-    <p><b><?=_("Créer une ligne :")?></b></p>
-    <p><?=_("Cliquer sur le bouton")?>
-        <span style="display:inline-block;transform:scaleX(-1)">&#x2710;</span>
-    </p>
-    <p><?=sprintf(_("Cliquer sur l'emplacement du %s"), '<u>'._("début").'</u>')?></p>
-    <p><?=sprintf(_("Puis sur chaque %s"), '<u>'._("sommet à créer").'</u>')?></p>
-    <p><?=sprintf(_("Double cliquer sur le %s pour terminer"), '<u>'._("dernier sommet").'</u>')?></p>
-    <br />
-    <p><b><?=_("Suivre un tracé existant :")?></b></p>
-    <p><?=sprintf(_("Pendant la création, placer un sommet sur un %s"), '<u>'._("polygone en fond").'</u>')?></p>
-    <p><?=sprintf(_("ou charger %s un %s"), '&#x1F4C2;', '<u>'._("fichier de trace").'</u>')?></p>
-    <p><?=sprintf(_("...et en %s"), '<u>'._("suivre le contour").'</u>')?></p>
-    <p><?=_("Placer un sommet en dehors du tracé suivi pour en sortir")?></p>
+  <div id="edit-help-modify" class="leaflet-pm-toolbar">
+    <p><span class="leaflet-pm-icon-polygon"></span> <?=_("Créér un nouveau polygone :")?></p>
+    <p><?=_("- puis cliquer sur chaque emplacement de sommet,")?></p>
+    <p><?=_("- le fermer pour finir.")?></p>
+    <p><span class="leaflet-pm-icon-edit"></span> <?=_("Éditer les polygones :")?></p>
+    <p><?=_("- déplacer un sommet pour modifier la forme d'un polygone,")?></p>
+    <p><?=_("- déplacer le milieu d'un segment pour créer un sommet,")?></p>
+    <p><?=_("- clic droit sur un sommet pour le supprimer.")?></p>
+    <!--p><span class="leaflet-pm-icon-cut"></span> <?=_("Créer une enclave ou enlever une partie d'un polygone,")?></p-->
+    <p><span class="leaflet-pm-icon-delete"></span> <?=_("Supprimer des polygones.")?></p>
   </div>
 
   <?php if (isset($vue->polygone->id_polygone)) { ?>
