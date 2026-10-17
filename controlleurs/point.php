@@ -51,24 +51,35 @@ else // le point est valide
   $vue->point=$point;
   $vue->nom_createur = protege($point->nom_createur);
   $vue->nom=protege($point->nom);
-  // Pilote multi-langue : /point/id/type/nom/en/ affiche les traductions disponibles (repli sur le français).
+  // Multi-langue : /point/id/type/nom/en/ affiche les traductions disponibles (repli sur la langue d'origine).
+  // La langue d'affichage peut aussi être le français (contenus d'origine non française ; texte NULL = déjà dans la langue).
+  // Une traduction n'est utilisée que si elle correspond au texte actuel (hash_source) : sinon on garde l'original.
   // Uniquement ici, dans la page d'affichage : le formulaire de modification ne doit jamais recevoir un texte traduit
   $trad = array();
+  $trad_langue_source = array();
   $id = (int)$point->id_point;
-  $res = $pdo->query("SELECT type_objet,id_objet,champ,texte FROM traductions
-    WHERE langue='en' AND texte IS NOT NULL AND (
-      (type_objet='point' AND id_objet=$id) OR
-      (type_objet='commentaire' AND id_objet IN (SELECT id_commentaire FROM commentaires WHERE id_point=$id)))");
+  $res = $pdo->query("SELECT t.type_objet,t.id_objet,t.champ,t.texte,t.langue_source FROM traductions t
+    LEFT JOIN points p ON t.type_objet='point' AND p.id_point=t.id_objet
+    LEFT JOIN commentaires c ON t.type_objet='commentaire' AND c.id_commentaire=t.id_objet AND c.id_point=$id
+    WHERE t.langue=".$pdo->quote($config_wri['langue_courante'])." AND t.texte IS NOT NULL AND (
+      (t.type_objet='point' AND t.id_objet=$id AND t.hash_source=md5(CASE t.champ
+        WHEN 'remarques' THEN p.remarques WHEN 'acces' THEN p.acces WHEN 'proprietaires' THEN p.proprietaires END)) OR
+      (t.type_objet='commentaire' AND c.id_commentaire IS NOT NULL AND t.hash_source=md5(c.texte)))");
   foreach ($res as $r)
+  {
     $trad[$r->type_objet][$r->id_objet][$r->champ] = $r->texte;
+    $trad_langue_source[$r->type_objet][$r->id_objet][$r->champ] = $r->langue_source;
+  }
   $vue->traduction_disponible = !empty($trad);
-  $vue->langue_affichee = ($controlleur->langue === 'en') ? 'en' : '';
-  if (!$vue->langue_affichee)
-    $trad = array();
+  $vue->langue_affichee = $config_wri['langue_courante'];
 
-  $vue->proprietaires=bbcode2html($trad['point'][$id]['proprietaires'] ?? $point->proprietaires);
-  $vue->acces=bbcode2html($trad['point'][$id]['acces'] ?? $point->acces);
-  $vue->remarques=bbcode2html($trad['point'][$id]['remarques'] ?? $point->remarques);
+  // Un champ traduit est suivi de la mention « traduit automatiquement » avec accès à l'original
+  foreach (array('proprietaires','acces','remarques') as $champ)
+  {
+    $vue->$champ = bbcode2html($trad['point'][$id][$champ] ?? $point->$champ);
+    if (isset($trad['point'][$id][$champ]))
+      $vue->$champ .= html_original_traduction(bbcode2html($point->$champ), $trad_langue_source['point'][$id][$champ]);
+  }
   $vue->nom_debut_majuscule = protege(mb_ucfirst($point->nom));
   $vue->lien_wiki_explication_type=lien_wiki("fiche-".replace_url($point->nom_type));
   $vue->lien_wiki_explication_geo=lien_wiki("geo-uri");
@@ -153,7 +164,10 @@ else // le point est valide
 
   foreach ($vue->commentaires AS $commentaire) {
     if (isset($trad['commentaire'][$commentaire->id_commentaire]['texte']))
+    {
+      $commentaire->traduction_auto=html_original_traduction($commentaire->texte_affichage, $trad_langue_source['commentaire'][$commentaire->id_commentaire]['texte']);
       $commentaire->texte_affichage=bbcode2html($trad['commentaire'][$commentaire->id_commentaire]['texte'],FALSE,FALSE);
+    }
     // DOM 02/2026 déplacé depuis modele/commentaires sur remarque de Sly
     // Formatage des données et affichage d'un commentaire de la fiche d'un point
     // ici le lien pour modérer ce commentaire si on est modérateur ou auteur du commentaire

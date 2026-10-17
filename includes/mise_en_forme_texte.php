@@ -457,3 +457,13 @@ function mise_en_forme_texte(&$html, $format) {
 
   array_walk_recursive($html, 'updatebool2char'); // Remplace les False et True en 0 ou 1
 }
+
+// Mention « traduit automatiquement » + texte d'origine masqué (<details>, sans JavaScript), à placer sous un texte affiché en traduction.
+// $langue_source : code de la colonne langue_source de la table traductions ; une source mixte ('fr+en') n'est pas nommée
+function html_original_traduction($html_original, $langue_source)
+{
+  $connue = ctype_alpha($langue_source); // une source mixte ('fr+en') n'est pas nommée
+  $mention = $connue ? sprintf(_("Trad. auto %s"), strtoupper($langue_source)) : _("Trad. auto");
+  return '<details class="traduction_auto"><summary title="'.htmlspecialchars(_("Traduit automatiquement ; cliquer pour voir le texte original")).'">'.$mention.'</summary>'
+    .'<div class="traduction_auto_original"'.($connue ? ' lang="'.$langue_source.'"' : '').'>'.$html_original.'</div></details>';
+}

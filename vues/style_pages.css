@@ -403,6 +403,24 @@ a.lien_bouton:active {
   margin-top: 1em;
 }
 
+.traduction_auto {
+  /* mention « traduit automatiquement » + original masqué, sous un texte traduit */
+  font-size: 0.7em;
+  text-align: right;
+  margin: 0.2em 0.5em 0.3em 0.5em;
+}
+
+.traduction_auto summary {
+  cursor: pointer;
+}
+
+.traduction_auto_original {
+  text-align: left;
+  border-top: thin dashed var(--couleur_texte);
+  margin-top: 0.3em;
+  padding-top: 0.3em;
+}
+
 .commentaire_metainfo {
   background-color: var(--couleur_legende);
   border: thin solid var(--couleur_texte);

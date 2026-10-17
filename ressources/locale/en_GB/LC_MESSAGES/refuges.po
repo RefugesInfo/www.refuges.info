@@ -919,8 +919,22 @@ msgstr "History"
 msgid "Trace de la création du point"
 msgstr "Trace of the point's creation"
 
-msgid "Traduction automatique (pilote) : l'original en français fait foi."
-msgstr "Automatic translation (pilot): the French original is authoritative."
+msgid ""
+"Une partie de cette page a été traduite automatiquement : chaque texte "
+"concerné indique sa langue d'origine et permet d'en voir l'original."
+msgstr ""
+"Part of this page has been translated automatically: each text concerned "
+"shows its original language and lets you view the original."
+
+#, php-format
+msgid "Trad. auto %s"
+msgstr "Auto-translated %s"
+
+msgid "Trad. auto"
+msgstr "Auto-translated"
+
+msgid "Traduit automatiquement ; cliquer pour voir le texte original"
+msgstr "Automatically translated; click to view the original text"
 
 #, php-format
 msgid "Localisation %s :"

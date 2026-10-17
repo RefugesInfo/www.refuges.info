@@ -53,8 +53,8 @@
       <strong>(<?=_($vue->annonce_fermeture)?>)</strong>
       <?php } ?>
     </h1>
-    <?php if ($vue->langue_affichee and $vue->traduction_disponible) { ?>
-      <p class="noprint"><em><?=_("Traduction automatique (pilote) : l'original en français fait foi.")?></em></p>
+    <?php if ($vue->traduction_disponible) { ?>
+      <p class="noprint"><em><?=_("Une partie de cette page a été traduite automatiquement : chaque texte concerné indique sa langue d'origine et permet d'en voir l'original.")?></em></p>
     <?php } ?>
   </div>
 <!--============================================ CARTE ============================================-->
@@ -280,6 +280,7 @@
               <?=$commentaire->texte_affichage?>
             </p></blockquote>
           <?php } ?>
+          <?=$commentaire->traduction_auto ?? ''?>
           <hr class="spacer"><!-- pour ne pas avoir la foto qui depasse -->
         </div>
       </li>
