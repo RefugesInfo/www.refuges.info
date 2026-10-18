@@ -19,6 +19,15 @@ else
 {
   $vue->commentaire=$commentaire;
   $vue->commentaire->texte_affichage=bbcode2html($commentaire->texte,FALSE,FALSE);
+  // Multi-langue : texte traduit dans la langue de la page s'il est à jour (hash_source), original consultable
+  $res = $pdo->query("SELECT texte,langue_source FROM traductions
+    WHERE type_objet='commentaire' AND id_objet=".(int)$commentaire->id_commentaire." AND champ='texte'
+    AND langue=".$pdo->quote($config_wri['langue_courante'])." AND texte IS NOT NULL AND hash_source=".$pdo->quote(md5($commentaire->texte)));
+  if ($trad = $res->fetch())
+  {
+    $vue->commentaire->traduction_auto=html_original_traduction($vue->commentaire->texte_affichage, $trad->langue_source);
+    $vue->commentaire->texte_affichage=bbcode2html($trad->texte,FALSE,FALSE);
+  }
   $vue->commentaire->lien=lien_point($commentaire,True);
 
   /**************************** l'action  ******************************/
