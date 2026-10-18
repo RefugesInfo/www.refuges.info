@@ -121,13 +121,13 @@ else if(!((count($temp)==4 &&
   is_numeric($temp[2]) &&
   is_numeric($temp[3])) ||
   $req->bbox == "world")) {
-  exit ("Error : wrong bbox parameter");
+  exit (_("Erreur : paramètre bbox incorrect"));
 }
 
 // On vérifie que la liste de massif est correcte
 $temp = explode(",", $req->massif);
 foreach ($temp as $massif) {
-  if($req->page == "massif" && !is_numeric($massif)) { exit ("Error : wrong massif id"); }
+  if($req->page == "massif" && !is_numeric($massif)) { exit (_("Erreur : identifiant de massif incorrect")); }
 }
 
 /****************************** REQUÊTE RÉCUPÉRATION PTS ******************************/

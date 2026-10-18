@@ -41,7 +41,7 @@ foreach ($temp as $type_polygone) {
 }
 // On vérifie que l'id de polygone pour l'intersection est correct (un entier, ou vide)
 if($req->intersection != "" && !est_entier_positif($req->intersection)) {
-  exit ("Error : wrong intersection parameter");
+  exit (_("Erreur : paramètre intersection incorrect"));
 }
 // On vérifie que la bbox est correcte
 $temp = explode(",", $req->bbox);

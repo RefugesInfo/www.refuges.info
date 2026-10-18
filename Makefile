@@ -97,5 +97,5 @@ locale: ## Compile les traductions de l'interface (ressources/locale/*/LC_MESSAG
 
 locale-extraire: ## Extrait les textes marqués _() vers refuges.pot et fusionne dans les .po (puis traduire les entrées vides)
 	xgettext --language=PHP --from-code=UTF-8 --keyword=_ --keyword=ngettext:1,2 --no-location -o ressources/locale/refuges.pot \
-	  vues/*.html vues/gestion/*.html vues/*.js vues/*.php controlleurs/*.php controlleurs/gestion/*.php modeles/*.php includes/*.php routes/*.php ressources/locale/valeurs_base_de_donnees.php
+	  vues/*.html vues/gestion/*.html vues/*.js vues/*.php controlleurs/*.php controlleurs/gestion/*.php controlleurs/api/*.php modeles/*.php includes/*.php routes/*.php ressources/locale/valeurs_base_de_donnees.php
 	for po in ressources/locale/*/LC_MESSAGES/refuges.po; do msgmerge --update --no-fuzzy-matching --backup=none "$$po" ressources/locale/refuges.pot; done

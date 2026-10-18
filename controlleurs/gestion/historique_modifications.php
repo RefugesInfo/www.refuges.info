@@ -64,7 +64,7 @@ $vue->filtres->utilisateurs=$pdo->query("SELECT DISTINCT h.id_user, u.username F
 $query_log_modification="select *,date_modification::timestamp(0) as date from historique_modifications_points$condition_point order by date_modification desc LIMIT $limite";
 
 if (! ($res = $pdo->query($query_log_modification)))
-  return erreur("Requête en erreur, impossible d'afficher l'historique de modifications",$query_log_modification);
+  return erreur(_("Requête en erreur, impossible d'afficher l'historique de modifications"),$query_log_modification);
 
 // Champs texte pour lesquels on met en évidence, mot par mot, ce qui a changé ('remark' et 'proprio' : anciens noms, restés dans les anciennes lignes)
 $champs_texte_compares = ['nom', 'remarques', 'remark', 'acces', 'proprietaires', 'proprio'];

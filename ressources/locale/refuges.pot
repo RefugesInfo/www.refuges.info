@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-19 00:54+0200\n"
+"POT-Creation-Date: 2026-10-19 01:02+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1535,6 +1535,10 @@ msgstr ""
 msgid "%s sur une carte"
 msgstr ""
 
+#, php-format
+msgid "Impossible d'afficher la carte sur ce polygone car : %s"
+msgstr ""
+
 msgid "Selecteur de refuges, point d'eau et cabane sur les cartes"
 msgstr ""
 
@@ -1567,6 +1571,10 @@ msgstr ""
 msgid "Ajouter une information ou une photo sur %s"
 msgstr ""
 
+#, php-format
+msgid "Impossible d'ajouter un commentaire car : %s"
+msgstr ""
+
 msgid "Point inexistant"
 msgstr ""
 
@@ -1577,6 +1585,22 @@ msgid "Modification d'un point dans refuges.info"
 msgstr ""
 
 msgid "Connexion forum"
+msgstr ""
+
+#, php-format
+msgid ""
+"Le formulaire d'ajout n'a pas pu être pré-rempli : aucune fiche modèle "
+"n'existe pour le type de point n°%d dans la base (il en faut exactement "
+"une). Le formulaire est affiché avec des champs vides, vous pouvez le "
+"remplir normalement."
+msgstr ""
+
+#, php-format
+msgid ""
+"Le formulaire d'ajout n'a pas pu être pré-rempli : plusieurs fiches modèles "
+"existent pour le type de point n°%d dans la base (il en faut exactement "
+"une). Le formulaire est affiché avec des champs vides, vous pouvez le "
+"remplir normalement."
 msgstr ""
 
 msgid "Ajout d'un point dans refuges.info"
@@ -1689,9 +1713,21 @@ msgstr ""
 msgid "concerne un %s et n'a pas été traitée par un modérateur"
 msgstr ""
 
+#, php-format
+msgid ""
+"Requête en erreur, impossible de marquer comme traité l'email de numéro %s"
+msgstr ""
+
+msgid ""
+"Requête en erreur, impossible d'afficher l'historique des emails en erreur"
+msgstr ""
+
 msgid ""
 "L'historique n'est consultable que par les modérateurs, ou par le modérateur "
 "de la fiche pour l'historique de sa fiche, êtes vous bien connecté ?"
+msgstr ""
+
+msgid "Requête en erreur, impossible d'afficher l'historique de modifications"
 msgstr ""
 
 msgid "anonyme ?"
@@ -1702,6 +1738,15 @@ msgid "Fiche n°%s"
 msgstr ""
 
 msgid "Erreur : aucun nom ?"
+msgstr ""
+
+msgid "Erreur : paramètre bbox incorrect"
+msgstr ""
+
+msgid "Erreur : identifiant de massif incorrect"
+msgstr ""
+
+msgid "Erreur : paramètre intersection incorrect"
 msgstr ""
 
 #, php-format

@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: refuges.info\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-19 00:54+0200\n"
+"POT-Creation-Date: 2026-10-19 01:02+0200\n"
 "Language: en_GB\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1629,6 +1629,10 @@ msgstr "wilderness huts, alpine huts and water points"
 msgid "%s sur une carte"
 msgstr "%s on a map"
 
+#, php-format
+msgid "Impossible d'afficher la carte sur ce polygone car : %s"
+msgstr "Unable to display the map for this polygon because: %s"
+
 msgid "Selecteur de refuges, point d'eau et cabane sur les cartes"
 msgstr "Selector of alpine huts, water points and wilderness huts on the maps"
 
@@ -1663,6 +1667,10 @@ msgstr "Unable to add this comment because:"
 msgid "Ajouter une information ou une photo sur %s"
 msgstr "Add information or a photo about %s"
 
+#, php-format
+msgid "Impossible d'ajouter un commentaire car : %s"
+msgstr "Unable to add a comment because: %s"
+
 msgid "Point inexistant"
 msgstr "Point does not exist"
 
@@ -1674,6 +1682,28 @@ msgstr "Editing a point on refuges.info"
 
 msgid "Connexion forum"
 msgstr "Forum login"
+
+#, php-format
+msgid ""
+"Le formulaire d'ajout n'a pas pu être pré-rempli : aucune fiche modèle "
+"n'existe pour le type de point n°%d dans la base (il en faut exactement "
+"une). Le formulaire est affiché avec des champs vides, vous pouvez le "
+"remplir normalement."
+msgstr ""
+"The add form could not be pre-filled: no template sheet exists for point "
+"type no. %d in the database (exactly one is required). The form is displayed "
+"with empty fields; you can fill it in as usual."
+
+#, php-format
+msgid ""
+"Le formulaire d'ajout n'a pas pu être pré-rempli : plusieurs fiches modèles "
+"existent pour le type de point n°%d dans la base (il en faut exactement "
+"une). Le formulaire est affiché avec des champs vides, vous pouvez le "
+"remplir normalement."
+msgstr ""
+"The add form could not be pre-filled: several template sheets exist for "
+"point type no. %d in the database (exactly one is required). The form is "
+"displayed with empty fields; you can fill it in as usual."
 
 msgid "Ajout d'un point dans refuges.info"
 msgstr "Adding a point on refuges.info"
@@ -1797,12 +1827,24 @@ msgstr "contains a word that may suggest a booking"
 msgid "concerne un %s et n'a pas été traitée par un modérateur"
 msgstr "concerns a %s and has not been processed by a moderator"
 
+#, php-format
+msgid ""
+"Requête en erreur, impossible de marquer comme traité l'email de numéro %s"
+msgstr "Query failed, unable to mark email number %s as processed"
+
+msgid ""
+"Requête en erreur, impossible d'afficher l'historique des emails en erreur"
+msgstr "Query failed, unable to display the history of failed emails"
+
 msgid ""
 "L'historique n'est consultable que par les modérateurs, ou par le modérateur "
 "de la fiche pour l'historique de sa fiche, êtes vous bien connecté ?"
 msgstr ""
 "The history can only be viewed by moderators, or by the moderator of a sheet "
 "for the history of their own sheet; are you logged in?"
+
+msgid "Requête en erreur, impossible d'afficher l'historique de modifications"
+msgstr "Query failed, unable to display the modification history"
 
 msgid "anonyme ?"
 msgstr "anonymous?"
@@ -1813,6 +1855,15 @@ msgstr "Sheet no. %s"
 
 msgid "Erreur : aucun nom ?"
 msgstr "Error: no name?"
+
+msgid "Erreur : paramètre bbox incorrect"
+msgstr "Error: wrong bbox parameter"
+
+msgid "Erreur : identifiant de massif incorrect"
+msgstr "Error: wrong mountain range id"
+
+msgid "Erreur : paramètre intersection incorrect"
+msgstr "Error: wrong intersection parameter"
 
 #, php-format
 msgid ""

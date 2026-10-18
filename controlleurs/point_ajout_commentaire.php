@@ -137,6 +137,6 @@ else // Une erreur est survenue sur le point concerné, ne permettons pas d'ajou
 {
   $vue->http_status_code = 404;
   $vue->type = "page_simple";
-  $vue->titre="Impossible d'ajouter un commentaire car : $point->message";
+  $vue->titre=sprintf(_("Impossible d'ajouter un commentaire car : %s"), $point->message);
 }
 

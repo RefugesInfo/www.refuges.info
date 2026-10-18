@@ -97,7 +97,7 @@ if (!empty($id_polygone))
   }
   else // On a un problème avec le polygone demandé dans l'url, inutile d'aller plus loin
   {
-    $vue->contenu=$vue->titre="Impossible d'afficher la carte sur ce polygone car : ".$polygone->message;
+    $vue->contenu=$vue->titre=sprintf(_("Impossible d'afficher la carte sur ce polygone car : %s"), $polygone->message);
     $vue->http_status_code="404";
     $vue->type='page_simple';
     return;
