@@ -20,6 +20,7 @@ class listener implements EventSubscriberInterface
       'core.viewtopic_assign_template_vars_before' => 'assign_template_vars_before',
       'core.posting_modify_template_vars' => 'assign_template_vars_before',
       'core.page_footer' => 'page_footer', // includes/functions.php 4308
+      'core.user_setup' => 'user_setup',
       'core.user_add_modify_data' => 'user_add_modify_data',
       'core.user_add_modify_notifications_data' => 'user_add_modify_notifications_data',
     ];
@@ -40,6 +41,22 @@ class listener implements EventSubscriberInterface
         $point = true;
       }
     }
+  }
+
+  // Langue du forum : le choix fait dans le sélecteur du bandeau (cookie "langue" posé par vues/bandeau.js, commun au site
+  // et au forum) l'emporte sur la langue du profil et sur la langue par défaut. Sans cookie, rien ne change.
+  // Pas de langue dans l'url du forum : les robots (sans cookie) voient toujours la même version.
+  public function user_setup($event) {
+    global $request, $phpbb_root_path, $phpEx;
+
+    $choix = $request->variable('langue', '', false, \phpbb\request\request_interface::COOKIE);
+    if (in_array($choix, ['fr', 'en'], true) && file_exists($phpbb_root_path.'language/'.$choix."/common.$phpEx"))
+      $event['user_lang_name'] = $choix;
+
+    // Textes des templates de l'extension (language/<langue>/common.php)
+    $lang_set_ext = $event['lang_set_ext'];
+    $lang_set_ext[] = ['ext_name' => 'RefugesInfo/couplage', 'lang_set' => 'common'];
+    $event['lang_set_ext'] = $lang_set_ext;
   }
 
   public function page_footer() {
@@ -69,6 +86,19 @@ class listener implements EventSubscriberInterface
       'STYLE_CSS' => fichier_vue('style.css.php', 'chemin_vues', true),
       'STYLE_FORUM_CSS' => fichier_vue('style_forum.css', 'chemin_vues', true),
     ]);
+
+    // Le bandeau et le pied de page sont dans la langue du forum (le routeur du site n'est pas passé par là) :
+    // seules fr et en y ont un catalogue ; le sélecteur recharge la même page, le cookie "langue" (bandeau.js) fait le reste
+    $langue = $user->lang_name == 'en' ? 'en' : 'fr';
+    $config_wri['langue_courante'] = $langue;
+    $config_wri['url_suffixe_langue'] = $langue == 'fr' ? '' : $langue.'/';
+    if ($langue != 'fr')
+      $config_wri['langue'] = 'en_GB'; // IntlDateFormatter
+    setlocale(LC_MESSAGES, $config_wri['locales_systeme'][$langue]);
+    bindtextdomain('refuges', $config_wri['chemin_locale']);
+    bind_textdomain_codeset('refuges', 'UTF-8');
+    textdomain('refuges');
+    $config_wri['liens_langues'] = ['fr' => $_SERVER['REQUEST_URI'], 'en' => $_SERVER['REQUEST_URI']];
 
     // On recrée le contexte car on n'est pas dans le MVC de WRI
     $vue = new \stdClass;

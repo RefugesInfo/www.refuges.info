@@ -172,7 +172,7 @@
     <?php } ?>
   </div>
 
-  <?php // Sélecteur de langue : absent du forum (pas de version traduite ; liens_langues est rempli par le routeur) ?>
+  <?php // Sélecteur de langue (liens_langues est rempli par le routeur, ou par l'extension couplage du forum : même page, le cookie fait la bascule) ?>
   <?php if (!empty($config_wri['liens_langues'])) { ?>
   <div class="menu-langue menu-bouton">
     🌐<span><?=strtoupper($config_wri['langue_courante'])?></span>

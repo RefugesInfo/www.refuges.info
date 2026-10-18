@@ -79,8 +79,6 @@ function masqueBandeauInfo() {
       alternates[l.hreflang] = l.href;
   });
   const langues = Object.keys(alternates);
-  if (langues.length < 2)
-    return; // page sans version dans une autre langue (erreur...)
 
   const languePage = document.documentElement.lang || 'fr';
   const bloc = document.getElementById('suggestion-langue');
@@ -98,6 +96,9 @@ function masqueBandeauInfo() {
   document.querySelectorAll('.menu-langue a[hreflang]').forEach(function (a) {
     a.addEventListener('click', function () { memoriser(a.hreflang); });
   });
+
+  if (langues.length < 2)
+    return; // page sans version dans une autre langue (erreur, forum : la bascule se fait côté serveur avec le cookie)
 
   const choix = lireChoix();
 
