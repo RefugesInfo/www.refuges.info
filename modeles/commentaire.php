@@ -75,13 +75,13 @@ function infos_commentaires ($conditions)
 
   if (!empty($conditions->ids_points))
     if (!verif_multiples_entiers($conditions->ids_points))
-      return erreur("Le paramètre donné pour les ids des points dont on veut les commentaires n'est pas valide. Reçu : $conditions->ids_points");
+      return erreur(sprintf(_("Le paramètre donné pour les ids des points dont on veut les commentaires n'est pas valide. Reçu : %s"), $conditions->ids_points));
     else
       $conditions_sql.=" AND id_point IN ($conditions->ids_points)";
 
   if (!empty($conditions->ids_commentaires))
     if (!verif_multiples_entiers($conditions->ids_commentaires))
-      return erreur("Le paramètre donné pour les ids des commentaires n'est pas valide. Reçu : $conditions->ids_commentaires");
+      return erreur(sprintf(_("Le paramètre donné pour les ids des commentaires n'est pas valide. Reçu : %s"), $conditions->ids_commentaires));
     else
       $conditions_sql.=" AND id_commentaire IN ($conditions->ids_commentaires)";
 
@@ -90,7 +90,7 @@ function infos_commentaires ($conditions)
 
   if (!empty($conditions->ids_createurs_commentaires))
     if (!verif_multiples_entiers($conditions->ids_createurs_commentaires))
-      return erreur("Le paramètre donné pour les ids des utilisateurs dont on veut les commentaires n'est pas valide. Reçu : $conditions->ids_createurs_commentaires");
+      return erreur(sprintf(_("Le paramètre donné pour les ids des utilisateurs dont on veut les commentaires n'est pas valide. Reçu : %s"), $conditions->ids_createurs_commentaires));
     else
       $conditions_sql.=" AND id_createur_commentaire in ($conditions->ids_createurs_commentaires)";
 
@@ -139,7 +139,7 @@ function infos_commentaires ($conditions)
 
     if (!empty($conditions->ids_polygones))
       if (!verif_multiples_entiers($conditions->ids_polygones))
-        return erreur("Le paramètre donné pour les ids de polygones auxquels les points appartiennent dont on veut les commentaires n'est pas valide. Reçu : $conditions->ids_polygones");
+        return erreur(sprintf(_("Le paramètre donné pour les ids de polygones auxquels les points appartiennent dont on veut les commentaires n'est pas valide. Reçu : %s"), $conditions->ids_polygones));
       else
         $condition_en_plus.=" AND polygones.id_polygone IN ($conditions->ids_polygones) ";
   }
@@ -156,7 +156,7 @@ function infos_commentaires ($conditions)
     $limite";
 
   if ( ! ($res=$pdo->query($query)))
-    return erreur("Une erreur sur la requête est survenue",$query);
+    return erreur(_("Une erreur sur la requête est survenue"),$query);
 
   //jmb: renvoie un tablo vide, au lieu d'un NULL si pas de comment, => les appelants n'ont plus a tester.
   $commentaires = array() ;
@@ -368,7 +368,7 @@ function modification_ajout_commentaire($commentaire)
     $query_finale=requete_modification_ou_ajout_generique('commentaires',$champs_sql,'insert');
 
   if (!$pdo->exec($query_finale))
-    return erreur("Problème qui n'aurait pas dû arriver, le traitement du commentaire a foiré","La requête était : $query_finale");
+    return erreur(_("Problème qui n'aurait pas dû arriver, le traitement du commentaire a foiré"),"La requête était : $query_finale");
   elseif ($mode!="modification")
     $commentaire->id_commentaire = $pdo->lastInsertId();
 

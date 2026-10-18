@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: refuges.info\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-19 00:47+0200\n"
+"POT-Creation-Date: 2026-10-19 00:54+0200\n"
 "Language: en_GB\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1816,6 +1816,38 @@ msgstr "Error: no name?"
 
 #, php-format
 msgid ""
+"Le paramètre donné pour les ids des points dont on veut les commentaires "
+"n'est pas valide. Reçu : %s"
+msgstr ""
+"The parameter given for the ids of the points whose comments are wanted is "
+"not valid. Received: %s"
+
+#, php-format
+msgid ""
+"Le paramètre donné pour les ids des commentaires n'est pas valide. Reçu : %s"
+msgstr "The parameter given for the comment ids is not valid. Received: %s"
+
+#, php-format
+msgid ""
+"Le paramètre donné pour les ids des utilisateurs dont on veut les "
+"commentaires n'est pas valide. Reçu : %s"
+msgstr ""
+"The parameter given for the ids of the users whose comments are wanted is "
+"not valid. Received: %s"
+
+#, php-format
+msgid ""
+"Le paramètre donné pour les ids de polygones auxquels les points "
+"appartiennent dont on veut les commentaires n'est pas valide. Reçu : %s"
+msgstr ""
+"The parameter given for the ids of the polygons that the points whose "
+"comments are wanted belong to is not valid. Received: %s"
+
+msgid "Une erreur sur la requête est survenue"
+msgstr "An error occurred in the query"
+
+#, php-format
+msgid ""
 "Le commentaire d'id=%s a été demandé mais il n'a pas été trouvé et ce n'est "
 "pas normal, je m'arrête là"
 msgstr ""
@@ -1844,6 +1876,10 @@ msgstr "The comment contains neither a photo nor text, it is not processed"
 #, php-format
 msgid "Une modification d'un commentaire inexistant a été demandée : %s"
 msgstr "An edit of a non-existent comment was requested: %s"
+
+msgid ""
+"Problème qui n'aurait pas dû arriver, le traitement du commentaire a foiré"
+msgstr "A problem that should not have happened: processing the comment failed"
 
 msgid "Le commentaire a été ajouté"
 msgstr "The comment has been added"
@@ -1874,11 +1910,113 @@ msgstr "%s, but the copy succeeded"
 msgid "Message transféré sur le forum"
 msgstr "Message transferred to the forum"
 
+#, php-format
+msgid "Erreur de suppression sur le forum, le topic est inconnu : %s"
+msgstr "Error while deleting on the forum, the topic is unknown: %s"
+
+#, php-format
+msgid ""
+"Le paramètre donné pour les ids des forum dont on veut les messages n'est "
+"pas valide. Reçu : %s"
+msgstr ""
+"The parameter given for the ids of the forums whose messages are wanted is "
+"not valid. Received: %s"
+
+#, php-format
+msgid ""
+"Le paramètre de limite $conditions->limite est mal formé (devrait être un "
+"entier positif), reçu : %s"
+msgstr ""
+"The limit parameter $conditions->limite is malformed (should be a positive "
+"whole number), received: %s"
+
+msgid "Impossible d'obtenir les derniers messages du forum"
+msgstr "Unable to get the latest forum messages"
+
 msgid "Message forum"
 msgstr "Forum message"
 
 msgid "de"
 msgstr "by"
+
+#, php-format
+msgid "Le paramètre de limite $conditions->limite est mal formé, reçu : %s"
+msgstr "The limit parameter $conditions->limite is malformed, received: %s"
+
+#, php-format
+msgid "Le paramètre donnée pour les ids des points n'est pas valide, reçu : %s"
+msgstr "The parameter given for the point ids is not valid, received: %s"
+
+#, php-format
+msgid ""
+"Le paramètre donné pour les ids des polygones n'est pas valide, reçu : %s"
+msgstr "The parameter given for the polygon ids is not valid, received: %s"
+
+#, php-format
+msgid ""
+"Le paramètre donné pour les ids des types de points n'est pas valide, reçu : "
+"%s"
+msgstr "The parameter given for the point type ids is not valid, received: %s"
+
+#, php-format
+msgid "Le nombre de place minimum doit être un nombre entier, reçu : %s"
+msgstr "The minimum number of places must be a whole number, received: %s"
+
+#, php-format
+msgid "Le nombre de place maximum doit être un nombre entier, reçu : %s"
+msgstr "The maximum number of places must be a whole number, received: %s"
+
+#, php-format
+msgid ""
+"Le nombre de place minimum sur matelas doit être un nombre entier supérieur "
+"à 0, reçu : '%s'"
+msgstr ""
+"The minimum number of places on mattresses must be a whole number greater "
+"than 0, received: '%s'"
+
+#, php-format
+msgid "L'altitude minimum doit être un nombre entier positif, reçu : %s"
+msgstr "The minimum altitude must be a positive whole number, received: %s"
+
+#, php-format
+msgid "L'altitude maximum doit être un nombre entier positif, reçu : %s"
+msgstr "The maximum altitude must be a positive whole number, received: %s"
+
+#, php-format
+msgid ""
+"Vous avez demandé une précision pour les coordonnées gps, qui est invalide : "
+"%s"
+msgstr "You requested a GPS coordinate precision that is not valid: %s"
+
+#, php-format
+msgid ""
+"Le paramètre donné pour les ids de modérateurs de fiche n'est pas valide, "
+"reçu : %s"
+msgstr ""
+"The parameter given for the sheet moderator ids is not valid, received: %s"
+
+#, php-format
+msgid "La demande ne peut aboutir car la condition de %s=%s est incorrecte"
+msgstr "The request cannot succeed because the condition %s=%s is incorrect"
+
+#, php-format
+msgid ""
+"le format demandé '%s' pour la géométrie du point n'est pas dans la liste "
+"autorisée suivante : gml geojson ou kml"
+msgstr ""
+"The requested format '%s' for the point geometry is not in the following "
+"allowed list: gml, geojson or kml"
+
+msgid "Le champ fourni pour le topic_id n'est pas un entier positif"
+msgstr "The field supplied for topic_id is not a positive whole number"
+
+#, php-format
+msgid ""
+"On nous a demandé les points avec '%s' ce qui est inexistant ou signe d'un "
+"bug"
+msgstr ""
+"We were asked for the points with '%s', which does not exist or is a sign of "
+"a bug"
 
 #, php-format
 msgid ""
@@ -1903,6 +2041,13 @@ msgstr ""
 #, php-format
 msgid "ce %s"
 msgstr "this %s"
+
+#, php-format
+msgid "Le point passé n'a pas d'id valide ou existant sur le forum, reçu : %s"
+msgstr "The given point has no valid or existing id on the forum, received: %s"
+
+msgid "Erreur sur la requête SQL"
+msgstr "Error in the SQL query"
 
 #, php-format
 msgid "Erreur de modification du point : %s"
@@ -1975,6 +2120,14 @@ msgstr ""
 "The SQL query failed and we do not know why, please let us know on the "
 "forum, you have found a bug!"
 
+msgid "Erreur création forum point"
+msgstr "Error creating the point's forum topic"
+
+msgid ""
+"Requête en erreur (développeurs: activer le mode debug pour comprendre "
+"pourquoi)"
+msgstr "Query failed (developers: enable debug mode to find out why)"
+
 msgid ""
 "La fiche du point, les commentaires, les photos et la zone forum ont bien "
 "été supprimés"
@@ -1982,8 +2135,89 @@ msgstr ""
 "The point's sheet, its comments, its photos and its forum area have been "
 "deleted"
 
+#, php-format
+msgid "le paramètre donné pour les ids de polygone est/sont invalide.s : %s"
+msgstr "The parameter given for the polygon id(s) is not valid: %s"
+
+#, php-format
+msgid ""
+"Le paramètre donnée pour les ids qui ne doivent pas y être n'est pas "
+"valide : %s"
+msgstr "The parameter given for the ids that must be excluded is not valid: %s"
+
+#, php-format
+msgid "Le paramètre donnée pour les type de polygones n'est pas valide : %s"
+msgstr "The parameter given for the polygon types is not valid: %s"
+
+#, php-format
+msgid "Le paramètre donné pour intersection n'est pas valide : %s"
+msgstr "The parameter given for intersection is not valid: %s"
+
+msgid ""
+"Requête SQL en erreur (vous pouvez nous signaler le problème sur le forum)"
+msgstr "SQL query failed (you can report the problem to us on the forum)"
+
+#, php-format
+msgid "le paramètre donné pour l' id unique de polygone est invalide : %s"
+msgstr "The parameter given for the single polygon id is not valid: %s"
+
+#, php-format
+msgid "Le polygone d'id %s n'existe pas dans notre base"
+msgstr "The polygon with id %s does not exist in our database"
+
+#, php-format
+msgid "Vous demandez un type de polygone avec un id incorrect : %s"
+msgstr "You are requesting a polygon type with an incorrect id: %s"
+
+#, php-format
+msgid "Le type de polygone avec un id de %s est inexistant dans notre base"
+msgstr "The polygon type with id %s does not exist in our database"
+
+msgid ""
+"Il y a un problème dans la base, il n'y a aucune catégorie de polygone : "
+"polygone_type vide !"
+msgstr ""
+"There is a problem in the database: there are no polygon categories, "
+"polygone_type is empty!"
+
+msgid "NOM DE MASSIF VIDE"
+msgstr "MOUNTAIN RANGE NAME EMPTY"
+
+msgid "Revenez en arrière pour continuer l'édition"
+msgstr "Go back to continue editing"
+
+#, php-format
+msgid "Article partitif trop long (max = 20 caractères) : %s"
+msgstr "Partitive article too long (max = 20 characters): %s"
+
+msgid "MASSIF OU ZONE NON MODIFIÉ(E) CAR NE COMPORTE PAS DE POLYGONE"
+msgstr "MOUNTAIN RANGE OR ZONE NOT MODIFIED BECAUSE IT HAS NO POLYGON"
+
+msgid "Requête impossible"
+msgstr "Query impossible"
+
+msgid "MASSIF OU ZONE NON CRÉÉ(E) CAR NE COMPORTE PAS DE POLYGONE"
+msgstr "MOUNTAIN RANGE OR ZONE NOT CREATED BECAUSE IT HAS NO POLYGON"
+
+#, php-format
+msgid "L'id de l'utilisateur demandé : '%s' n'est pas un entier"
+msgstr "The requested user id: '%s' is not a whole number"
+
+msgid "Utilisateur inexistant"
+msgstr "User does not exist"
+
+msgid "Requête SQL impossible à executer"
+msgstr "SQL query could not be executed"
+
 msgid "Cette page du wiki n'existe pas"
 msgstr "This wiki page does not exist"
+
+msgid ""
+"Il n'y a aucune page dans notre wiki, oulla, c'est louche, quelqu'un à tout "
+"purger, ou alors une nouvelle installation, ou alors un bug..."
+msgstr ""
+"There is no page at all in our wiki; that is suspicious: someone purged "
+"everything, or this is a new installation, or a bug..."
 
 #, php-format
 msgid "Trad. auto %s"

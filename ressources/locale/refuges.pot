@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-19 00:47+0200\n"
+"POT-Creation-Date: 2026-10-19 00:54+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1706,6 +1706,32 @@ msgstr ""
 
 #, php-format
 msgid ""
+"Le paramètre donné pour les ids des points dont on veut les commentaires "
+"n'est pas valide. Reçu : %s"
+msgstr ""
+
+#, php-format
+msgid ""
+"Le paramètre donné pour les ids des commentaires n'est pas valide. Reçu : %s"
+msgstr ""
+
+#, php-format
+msgid ""
+"Le paramètre donné pour les ids des utilisateurs dont on veut les "
+"commentaires n'est pas valide. Reçu : %s"
+msgstr ""
+
+#, php-format
+msgid ""
+"Le paramètre donné pour les ids de polygones auxquels les points "
+"appartiennent dont on veut les commentaires n'est pas valide. Reçu : %s"
+msgstr ""
+
+msgid "Une erreur sur la requête est survenue"
+msgstr ""
+
+#, php-format
+msgid ""
 "Le commentaire d'id=%s a été demandé mais il n'a pas été trouvé et ce n'est "
 "pas normal, je m'arrête là"
 msgstr ""
@@ -1729,6 +1755,10 @@ msgstr ""
 
 #, php-format
 msgid "Une modification d'un commentaire inexistant a été demandée : %s"
+msgstr ""
+
+msgid ""
+"Problème qui n'aurait pas dû arriver, le traitement du commentaire a foiré"
 msgstr ""
 
 msgid "Le commentaire a été ajouté"
@@ -1760,10 +1790,101 @@ msgstr ""
 msgid "Message transféré sur le forum"
 msgstr ""
 
+#, php-format
+msgid "Erreur de suppression sur le forum, le topic est inconnu : %s"
+msgstr ""
+
+#, php-format
+msgid ""
+"Le paramètre donné pour les ids des forum dont on veut les messages n'est "
+"pas valide. Reçu : %s"
+msgstr ""
+
+#, php-format
+msgid ""
+"Le paramètre de limite $conditions->limite est mal formé (devrait être un "
+"entier positif), reçu : %s"
+msgstr ""
+
+msgid "Impossible d'obtenir les derniers messages du forum"
+msgstr ""
+
 msgid "Message forum"
 msgstr ""
 
 msgid "de"
+msgstr ""
+
+#, php-format
+msgid "Le paramètre de limite $conditions->limite est mal formé, reçu : %s"
+msgstr ""
+
+#, php-format
+msgid "Le paramètre donnée pour les ids des points n'est pas valide, reçu : %s"
+msgstr ""
+
+#, php-format
+msgid ""
+"Le paramètre donné pour les ids des polygones n'est pas valide, reçu : %s"
+msgstr ""
+
+#, php-format
+msgid ""
+"Le paramètre donné pour les ids des types de points n'est pas valide, reçu : "
+"%s"
+msgstr ""
+
+#, php-format
+msgid "Le nombre de place minimum doit être un nombre entier, reçu : %s"
+msgstr ""
+
+#, php-format
+msgid "Le nombre de place maximum doit être un nombre entier, reçu : %s"
+msgstr ""
+
+#, php-format
+msgid ""
+"Le nombre de place minimum sur matelas doit être un nombre entier supérieur "
+"à 0, reçu : '%s'"
+msgstr ""
+
+#, php-format
+msgid "L'altitude minimum doit être un nombre entier positif, reçu : %s"
+msgstr ""
+
+#, php-format
+msgid "L'altitude maximum doit être un nombre entier positif, reçu : %s"
+msgstr ""
+
+#, php-format
+msgid ""
+"Vous avez demandé une précision pour les coordonnées gps, qui est invalide : "
+"%s"
+msgstr ""
+
+#, php-format
+msgid ""
+"Le paramètre donné pour les ids de modérateurs de fiche n'est pas valide, "
+"reçu : %s"
+msgstr ""
+
+#, php-format
+msgid "La demande ne peut aboutir car la condition de %s=%s est incorrecte"
+msgstr ""
+
+#, php-format
+msgid ""
+"le format demandé '%s' pour la géométrie du point n'est pas dans la liste "
+"autorisée suivante : gml geojson ou kml"
+msgstr ""
+
+msgid "Le champ fourni pour le topic_id n'est pas un entier positif"
+msgstr ""
+
+#, php-format
+msgid ""
+"On nous a demandé les points avec '%s' ce qui est inexistant ou signe d'un "
+"bug"
 msgstr ""
 
 #, php-format
@@ -1784,6 +1905,13 @@ msgstr ""
 
 #, php-format
 msgid "ce %s"
+msgstr ""
+
+#, php-format
+msgid "Le point passé n'a pas d'id valide ou existant sur le forum, reçu : %s"
+msgstr ""
+
+msgid "Erreur sur la requête SQL"
 msgstr ""
 
 #, php-format
@@ -1842,12 +1970,97 @@ msgid ""
 "nous sur le forum, vous avez trouvé un bug !"
 msgstr ""
 
+msgid "Erreur création forum point"
+msgstr ""
+
+msgid ""
+"Requête en erreur (développeurs: activer le mode debug pour comprendre "
+"pourquoi)"
+msgstr ""
+
 msgid ""
 "La fiche du point, les commentaires, les photos et la zone forum ont bien "
 "été supprimés"
 msgstr ""
 
+#, php-format
+msgid "le paramètre donné pour les ids de polygone est/sont invalide.s : %s"
+msgstr ""
+
+#, php-format
+msgid ""
+"Le paramètre donnée pour les ids qui ne doivent pas y être n'est pas "
+"valide : %s"
+msgstr ""
+
+#, php-format
+msgid "Le paramètre donnée pour les type de polygones n'est pas valide : %s"
+msgstr ""
+
+#, php-format
+msgid "Le paramètre donné pour intersection n'est pas valide : %s"
+msgstr ""
+
+msgid ""
+"Requête SQL en erreur (vous pouvez nous signaler le problème sur le forum)"
+msgstr ""
+
+#, php-format
+msgid "le paramètre donné pour l' id unique de polygone est invalide : %s"
+msgstr ""
+
+#, php-format
+msgid "Le polygone d'id %s n'existe pas dans notre base"
+msgstr ""
+
+#, php-format
+msgid "Vous demandez un type de polygone avec un id incorrect : %s"
+msgstr ""
+
+#, php-format
+msgid "Le type de polygone avec un id de %s est inexistant dans notre base"
+msgstr ""
+
+msgid ""
+"Il y a un problème dans la base, il n'y a aucune catégorie de polygone : "
+"polygone_type vide !"
+msgstr ""
+
+msgid "NOM DE MASSIF VIDE"
+msgstr ""
+
+msgid "Revenez en arrière pour continuer l'édition"
+msgstr ""
+
+#, php-format
+msgid "Article partitif trop long (max = 20 caractères) : %s"
+msgstr ""
+
+msgid "MASSIF OU ZONE NON MODIFIÉ(E) CAR NE COMPORTE PAS DE POLYGONE"
+msgstr ""
+
+msgid "Requête impossible"
+msgstr ""
+
+msgid "MASSIF OU ZONE NON CRÉÉ(E) CAR NE COMPORTE PAS DE POLYGONE"
+msgstr ""
+
+#, php-format
+msgid "L'id de l'utilisateur demandé : '%s' n'est pas un entier"
+msgstr ""
+
+msgid "Utilisateur inexistant"
+msgstr ""
+
+msgid "Requête SQL impossible à executer"
+msgstr ""
+
 msgid "Cette page du wiki n'existe pas"
+msgstr ""
+
+msgid ""
+"Il n'y a aucune page dans notre wiki, oulla, c'est louche, quelqu'un à tout "
+"purger, ou alors une nouvelle installation, ou alors un bug..."
 msgstr ""
 
 #, php-format

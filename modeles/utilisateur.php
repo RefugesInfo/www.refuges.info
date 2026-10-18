@@ -10,12 +10,12 @@ function infos_utilisateur($id_utilisateur)
 {
   global $pdo;
   if (!est_entier_positif($id_utilisateur))
-    return erreur("L'id de l'utilisateur demandé : '$id_utilisateur' n'est pas un entier");
+    return erreur(sprintf(_("L'id de l'utilisateur demandé : '%s' n'est pas un entier"), $id_utilisateur));
   $query="SELECT * FROM phpbb3_users WHERE user_id=$id_utilisateur";
   $res=$pdo->query($query);
   $utilisateur=$res->fetch();
   if (!$utilisateur)
-    return erreur("Utilisateur inexistant","pasunbug");
+    return erreur(_("Utilisateur inexistant"),"pasunbug");
   else {
     // phpBB intègre un nom d'utilisateur dans sa base après avoir passé un htmlentities, pour les users connectés, donc je ré-inverse le processus pour avoir le nom d'utilisateur tel que saisi par l'utilisateur lui même (quitte à lui repasser ensuite un htmlentities si on doit l'afficher dans une page html, mais au moins, dans les logs, les tables, l'historique interne il sera stoqué proprement
     $utilisateur->username=html_entity_decode($utilisateur->username);

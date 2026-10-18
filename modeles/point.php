@@ -118,14 +118,14 @@ function infos_points($conditions)
   // condition de limite en nombre
   if (!empty($conditions->limite))
     if (!est_entier_positif ($conditions->limite))
-      return erreur("Le paramètre de limite \$conditions->limite est mal formé, reçu : $conditions->limite");
+      return erreur(sprintf(_("Le paramètre de limite \$conditions->limite est mal formé, reçu : %s"), $conditions->limite));
     else
       $limite="\n\tLIMIT $conditions->limite";
 
   /******** Liste des conditions de type WHERE *******/
   if (!empty($conditions->ids_points))
     if (!verif_multiples_entiers($conditions->ids_points))
-      return erreur("Le paramètre donnée pour les ids des points n'est pas valide, reçu : $conditions->ids_points");
+      return erreur(sprintf(_("Le paramètre donnée pour les ids des points n'est pas valide, reçu : %s"), $conditions->ids_points));
     else
       $conditions_sql.="\n\tAND points.id_point IN ($conditions->ids_points)";
 
@@ -142,7 +142,7 @@ function infos_points($conditions)
   if( !empty($conditions->ids_polygones) )
   {
     if (!verif_multiples_entiers($conditions->ids_polygones))
-      return erreur("Le paramètre donné pour les ids des polygones n'est pas valide, reçu : $conditions->ids_polygones");
+      return erreur(sprintf(_("Le paramètre donné pour les ids des polygones n'est pas valide, reçu : %s"), $conditions->ids_polygones));
     else
     {
       $tables_en_plus.=" INNER JOIN polygones ON ( ST_Within(points.geom,polygones.geom) AND polygones.id_polygone IN ($conditions->ids_polygones)   ) ";
@@ -193,7 +193,7 @@ function infos_points($conditions)
   // condition sur le type de point (on s'attend à 14 ou 14,15,16 )
   if( !empty($conditions->ids_types_point) )
     if (!verif_multiples_entiers($conditions->ids_types_point))
-      return erreur("Le paramètre donné pour les ids des types de points n'est pas valide, reçu : $conditions->ids_types_point");
+      return erreur(sprintf(_("Le paramètre donné pour les ids des types de points n'est pas valide, reçu : %s"), $conditions->ids_types_point));
     else
       $conditions_sql .="\n\tAND points.id_point_type IN ($conditions->ids_types_point) \n";
 
@@ -201,30 +201,30 @@ function infos_points($conditions)
     if( est_entier_positif($conditions->places_minimum) )
       $conditions_sql .= "\n\tAND points.places >= $conditions->places_minimum";
     else
-        return erreur("Le nombre de place minimum doit être un nombre entier, reçu : $conditions->places_minimum");
+        return erreur(sprintf(_("Le nombre de place minimum doit être un nombre entier, reçu : %s"), $conditions->places_minimum));
   if( !empty($conditions->places_maximum) )
     if( est_entier_positif($conditions->places_maximum) )
       $conditions_sql .= "\n\tAND points.places <= $conditions->places_maximum";
     else
-        return erreur("Le nombre de place maximum doit être un nombre entier, reçu : $conditions->places_maximum");
+        return erreur(sprintf(_("Le nombre de place maximum doit être un nombre entier, reçu : %s"), $conditions->places_maximum));
   // le -1 est lié au fait que nous avons choisi (très curieusement !) que 0 veut dire "il y a des places sur matelas, mais en nombre inconnu", soit une ou plus)
   if( !empty($conditions->places_matelas_minimum) )
     if ( est_entier_positif($conditions->places_matelas_minimum ))
       $conditions_sql .= "\n\tAND points.places_matelas >= $conditions->places_matelas_minimum";
     else
-      return erreur("Le nombre de place minimum sur matelas doit être un nombre entier supérieur à 0, reçu : '$conditions->places_matelas_minimum'");
+      return erreur(sprintf(_("Le nombre de place minimum sur matelas doit être un nombre entier supérieur à 0, reçu : '%s'"), $conditions->places_matelas_minimum));
 
   // conditions sur l'altitude
   if( !empty($conditions->altitude_minimum) )
     if( est_entier_positif($conditions->altitude_minimum) )
       $conditions_sql .= "\n\tAND points.altitude >= $conditions->altitude_minimum";
     else
-      return erreur("L'altitude minimum doit être un nombre entier positif, reçu : $conditions->altitude_minimum");
+      return erreur(sprintf(_("L'altitude minimum doit être un nombre entier positif, reçu : %s"), $conditions->altitude_minimum));
   if( !empty($conditions->altitude_maximum) )
     if( est_entier_positif($conditions->altitude_maximum) )
       $conditions_sql .= "\n\tAND points.altitude <= $conditions->altitude_maximum";
     else
-      return erreur("L'altitude maximum doit être un nombre entier positif, reçu : $conditions->altitude_maximum");
+      return erreur(sprintf(_("L'altitude maximum doit être un nombre entier positif, reçu : %s"), $conditions->altitude_maximum));
 
 
   //veut-on les points dont les coordonnées sont cachées ?
@@ -236,12 +236,12 @@ function infos_points($conditions)
     if (est_entier_positif($conditions->precision_gps))
       $conditions_sql .= "\n\tAND points.id_type_precision_gps IN ($conditions->precision_gps)";
     else
-      return erreur("Vous avez demandé une précision pour les coordonnées gps, qui est invalide :".$conditions->precision_gps);
+      return erreur(sprintf(_("Vous avez demandé une précision pour les coordonnées gps, qui est invalide : %s"), $conditions->precision_gps));
 
   //quel(s) modérateur(s) de fiche ?
   if( !empty($conditions->id_moderateur) )
     if (!verif_multiples_entiers($conditions->id_moderateur))
-      return erreur("Le paramètre donné pour les ids de modérateurs de fiche n'est pas valide, reçu : $conditions->id_moderateur");
+      return erreur(sprintf(_("Le paramètre donné pour les ids de modérateurs de fiche n'est pas valide, reçu : %s"), $conditions->id_moderateur));
     else
       $conditions_sql .= "\n\tAND points.id_moderateur IN ($conditions->id_moderateur)";
 
@@ -279,13 +279,13 @@ function infos_points($conditions)
       if (in_array($champ,$config_wri['champs_trinaires_points']) and in_array($valeur,array(1,0,Null)) ) // A priori, rien ne vient d'un formulaire (mais soyons safe), et on peut nous même nous tromper en passant cette condition
         $conditions_sql.="\n\tAND points.$champ IS ".var_export($valeur,true) ; // var_export renvoie la valeur d'un bool et null aussi
       else
-        return erreur("La demande ne peut aboutir car la condition de $champ=$valeur est incorrecte");
+        return erreur(sprintf(_("La demande ne peut aboutir car la condition de %s=%s est incorrecte"), $champ, $valeur));
 
   if (!empty($conditions->avec_geometrie))
     if (in_array($conditions->avec_geometrie,array('gml','geojson','kml')))
       $champs_en_plus.=",st_as$conditions->avec_geometrie(geom) AS geometrie_$conditions->avec_geometrie";
     else
-      return erreur("le format demandé '$conditions->avec_geometrie' pour la géométrie du point n'est pas dans la liste autorisée suivante : gml geojson ou kml");
+      return erreur(sprintf(_("le format demandé '%s' pour la géométrie du point n'est pas dans la liste autorisée suivante : gml geojson ou kml"), $conditions->avec_geometrie));
 
   //prise en compte de la recherche sur le chauffage
   if (!empty($conditions->chauffage))
@@ -310,7 +310,7 @@ function infos_points($conditions)
     if (est_entier_positif($conditions->topic_id))
       $conditions_sql.="\n\tAND points.topic_id =".$conditions->topic_id;
     else
-      return erreur("Le champ fourni pour le topic_id n'est pas un entier positif");
+      return erreur(_("Le champ fourni pour le topic_id n'est pas un entier positif"));
 
 
   if (!empty($conditions->ordre))
@@ -320,7 +320,7 @@ function infos_points($conditions)
     if (in_array($conditions->conditions_utilisation, array('ouverture', 'fermeture', 'cle_a_recuperer', 'detruit')))
       $conditions_sql.="\n\tAND points.conditions_utilisation = '$conditions->conditions_utilisation'";
     else
-      return erreur("On nous a demandé les points avec '$conditions->conditions_utilisation' ce qui est inexistant ou signe d'un bug");
+      return erreur(sprintf(_("On nous a demandé les points avec '%s' ce qui est inexistant ou signe d'un bug"), $conditions->conditions_utilisation));
 
   if (!empty($conditions->depuis))
     $conditions_sql.="\n\tAND points.date_modification_fiche > to_timestamp($conditions->depuis)";
@@ -340,7 +340,7 @@ function infos_points($conditions)
       $limite
     ";
     if ( ! ($res_clusters = $pdo->query($query_clusters)) )
-      return erreur("Une erreur sur la requête est survenue",$query_clusters);
+      return erreur(_("Une erreur sur la requête est survenue"),$query_clusters);
     $points_isoles = [];
 
     while ( $raw = $res_clusters->fetch() )
@@ -387,7 +387,7 @@ function infos_points($conditions)
       $limite
     ";
     if ( ! ($res_ids = $pdo->query($query_ids)))
-      return erreur("Une erreur sur la requête est survenue",$query_ids);
+      return erreur(_("Une erreur sur la requête est survenue"),$query_ids);
 
     $ids_points_trouves=[];
     while ($raw=$res_ids->fetch())
@@ -433,7 +433,7 @@ function infos_points($conditions)
     $limite
   ";
   if ( ! ($res = $pdo->query($query_points)))
-    return erreur("Une erreur sur la requête est survenue",$query_points);
+    return erreur(_("Une erreur sur la requête est survenue"),$query_points);
 
   // Constuisons maintenant la liste des points demandés avec toutes les informations sur chacun d'eux
   // Depuis 12/2024 On sort maintenant tous les polygones auxquels les points appartiennent chaque point peut sortir plusieurs fois, il faut en tenir compte.
@@ -736,14 +736,14 @@ function infos_point_forum ($point)
   $result = array();
 
   if (!est_entier_positif($point->topic_id))
-    return erreur("Le point passé n'a pas d'id valide ou existant sur le forum reçu :".$point->topic_id ?? '');
+    return erreur(sprintf(_("Le point passé n'a pas d'id valide ou existant sur le forum, reçu : %s"), $point->topic_id ?? ''));
   $q="SELECT *
     FROM phpbb3_posts
     WHERE topic_id = $point->topic_id
       AND post_visibility = 1
     ORDER BY post_time DESC";
   $r = $pdo->query($q);
-  if (!$r) return erreur("Erreur sur la requête SQL","$q en erreur");
+  if (!$r) return erreur(_("Erreur sur la requête SQL"),"$q en erreur");
 
   while ( $res = $r->fetch() )
   {
@@ -821,7 +821,7 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
 
     $r = $pdo->query($q);
     if (!$r)
-      return erreur("Erreur sur la requête SQL","$q en erreur");
+      return erreur(_("Erreur sur la requête SQL"),"$q en erreur");
 
     if ( $res = $r->fetch() )
       return erreur(sprintf(_("L'emplacement de <a href='/point/%s'>\"%s\"</a> et ses alentours sont privés.<br/> On ne peut pas y référencer de cabane.<br/> Voir : <a href=\"%s\">Définition d'une cabane non gardée</a>.<br/> Laissez-nous un message sur le forum si vous souhaitez en discuter.<br/>"),
@@ -916,12 +916,12 @@ function modification_ajout_point($point,$id_utilisateur_qui_modifie=0)
       'topic_poster' => $id_moderateur, // Vaut 0 si c'est un anonyme, sinon l'id de la personne connectée
     ]);
     if (!$r['topic_id'])
-      return erreur( "Erreur création forum point<br/>".var_export($r,true) );
+      return erreur(_("Erreur création forum point")."<br/>".var_export($r,true));
 
     $champs_sql['topic_id'] = $r['topic_id']; // On note le topic_id dans la table point pour faire le lien
     $query_finale=requete_modification_ou_ajout_generique('points',$champs_sql,'insert');
     if (!$pdo->exec($query_finale))
-      return erreur("Requête en erreur (développeurs: activer le mode debug pour comprendre pourquoi)",$query_finale);
+      return erreur(_("Requête en erreur (développeurs: activer le mode debug pour comprendre pourquoi)"),$query_finale);
 
     $point->id_point = $pdo->lastInsertId();
 
@@ -993,7 +993,7 @@ function touch_fiches($commentaire, $commentaire_avant_modification=null)
   $query_modif_fiche = "UPDATE points SET date_modification_fiche=NOW() WHERE id_point $condition";
 
   if (!$pdo->exec($query_modif_fiche))
-    return erreur("Erreur sur la requête SQL", $query_modif_fiche);
+    return erreur(_("Erreur sur la requête SQL"), $query_modif_fiche);
 }
 
 /*******************************************************

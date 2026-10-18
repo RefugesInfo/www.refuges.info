@@ -59,14 +59,14 @@ function infos_polygones($conditions)
   // Conditions sur les ids des polygones
   if (!empty($conditions->ids_polygones))
     if (!verif_multiples_entiers($conditions->ids_polygones))
-      return erreur("le paramètre donné pour les ids de polygone est/sont invalide.s : $conditions->ids_polygones");
+      return erreur(sprintf(_("le paramètre donné pour les ids de polygone est/sont invalide.s : %s"), $conditions->ids_polygones));
     else
       $conditions_sql.=" AND id_polygone IN ($conditions->ids_polygones)";
 
     // Conditions sur les ids des polygones (qui ne sont pas ceux donnés)
   if (!empty($conditions->non_ids_polygones))
     if (!verif_multiples_entiers($conditions->non_ids_polygones))
-      return erreur("Le paramètre donnée pour les ids qui ne doivent pas y être n'est pas valide : $conditions->non_ids_polygones");
+      return erreur(sprintf(_("Le paramètre donnée pour les ids qui ne doivent pas y être n'est pas valide : %s"), $conditions->non_ids_polygones));
     else
       $conditions_sql.=" AND id_polygone NOT IN ($conditions->non_ids_polygones)";
 
@@ -82,7 +82,7 @@ function infos_polygones($conditions)
 
   if (!empty($conditions->ids_polygone_type))
     if (!verif_multiples_entiers($conditions->ids_polygone_type))
-      return erreur("Le paramètre donnée pour les type de polygones n'est pas valide : $conditions->ids_polygone_type");
+      return erreur(sprintf(_("Le paramètre donnée pour les type de polygones n'est pas valide : %s"), $conditions->ids_polygone_type));
     else
       $conditions_sql.=" AND polygone_type.id_polygone_type IN ($conditions->ids_polygone_type)";
 
@@ -96,7 +96,7 @@ function infos_polygones($conditions)
   if (!empty($conditions->intersection))
   {
     if (!est_entier_positif($conditions->intersection))
-      return erreur("Le paramètre donné pour intersection n'est pas valide : $conditions->intersection");
+      return erreur(sprintf(_("Le paramètre donné pour intersection n'est pas valide : %s"), $conditions->intersection));
     $table_en_plus.=",polygones AS zones ";
     $conditions_sql.=" AND ST_INTERSECTS(polygones.geom, zones.geom) AND zones.id_polygone = ". $conditions->intersection ;
   }
@@ -133,7 +133,7 @@ function infos_polygones($conditions)
   //d($query);
   $res=$pdo->query($query);
   if (!$res)
-    return erreur("Requête SQL en erreur (vous pouvez nous signaler le problème sur le forum)",$query);
+    return erreur(_("Requête SQL en erreur (vous pouvez nous signaler le problème sur le forum)"),$query);
   // On les met tous dans le tableau à retourner
   $polygones = $res->fetchall();
   return $polygones;
@@ -163,7 +163,7 @@ Si $avec_geometrie vaut gml/kml/svg/text/...  (voir fonction avant) la géométr
 function infos_polygone($id_polygone,$avec_geometrie=False,$avec_enveloppe=False,$avec_geom=False)
 {
   if (!est_entier_positif($id_polygone)) // Inutile d'aller plus loin
-    return erreur("le paramètre donné pour l' id unique de polygone est invalide : $id_polygone");
+    return erreur(sprintf(_("le paramètre donné pour l' id unique de polygone est invalide : %s"), $id_polygone));
 
   $conditions = new stdClass;
   $conditions->ids_polygones=$id_polygone;
@@ -182,7 +182,7 @@ function infos_polygone($id_polygone,$avec_geometrie=False,$avec_enveloppe=False
     return erreur($poly->message);
 
   if (count($poly)!=1)
-    return erreur("Le polygone d'id $id_polygone n'existe pas dans notre base");
+    return erreur(sprintf(_("Le polygone d'id %s n'existe pas dans notre base"), $id_polygone));
 
   // Protection contre les polygones vides
   if (isset($poly[0]) &&
@@ -198,14 +198,14 @@ function infos_type_polygone($id_polygone_type)
 {
   global $pdo;
   if (!est_entier_positif($id_polygone_type))
-    return erreur("Vous demandez un type de polygone avec un id incorrect :".$id_polygone_type);
+    return erreur(sprintf(_("Vous demandez un type de polygone avec un id incorrect : %s"), $id_polygone_type));
   $query="SELECT *
     FROM polygone_type
     WHERE id_polygone_type=$id_polygone_type
   ";
   $res=$pdo->query($query);
   if (empty($infos_type_polygone=$res->fetch()))
-    return erreur("Le type de polygone avec un id de $id_polygone_type est inexistant dans notre base");
+    return erreur(sprintf(_("Le type de polygone avec un id de %s est inexistant dans notre base"), $id_polygone_type));
   else
     return $infos_type_polygone;
 }
@@ -219,7 +219,7 @@ function liste_type_polygone()
   $liste_type_polygone = $res->fetchall();
 
   if (empty($liste_type_polygone) )
-    return erreur("Il y a un problème dans la base, il n'y a aucune catégorie de polygone : polygone_type vide !");
+    return erreur(_("Il y a un problème dans la base, il n'y a aucune catégorie de polygone : polygone_type vide !"));
   else
     return $liste_type_polygone;
 }
@@ -265,14 +265,14 @@ function edit_info_polygone()
     $nom_polygone     = str_replace ("'", "''", $_POST['nom_polygone']??'');
 
     if (isset ($_POST ['nom_polygone']) && strlen ($nom_polygone) == 0) {
-        echo '<p style="color:red">NOM DE MASSIF VIDE</p>';
-        echo '<p>Revenez en arrière pour continuer l\'édition</p>';
+        echo '<p style="color:red">'._("NOM DE MASSIF VIDE").'</p>';
+        echo '<p>'._("Revenez en arrière pour continuer l'édition").'</p>';
         exit;
     }
 
     if (strlen ($article_partitif) > 20) {
-        echo 'Article partitif trop long (max = 20 caractères): '.$article_partitif;
-        echo '<p>Revenez en arrière pour continuer l\'édition</p>';
+        echo sprintf(_("Article partitif trop long (max = 20 caractères) : %s"), $article_partitif);
+        echo '<p>'._("Revenez en arrière pour continuer l'édition").'</p>';
         exit;
     }
 
@@ -284,8 +284,8 @@ function edit_info_polygone()
   {
     if (!json_decode($_POST['json_polygones'])->coordinates)
     {
-      echo '<p style="color:red">MASSIF OU ZONE NON MODIFIÉ(E) CAR NE COMPORTE PAS DE POLYGONE</p>';
-      echo '<p>Revenez en arrière pour continuer l\'édition</p>';
+      echo '<p style="color:red">'._("MASSIF OU ZONE NON MODIFIÉ(E) CAR NE COMPORTE PAS DE POLYGONE").'</p>';
+      echo '<p>'._("Revenez en arrière pour continuer l'édition").'</p>';
       exit;
     }
 
@@ -308,7 +308,7 @@ function edit_info_polygone()
       ."WHERE id_polygone = {$_POST['id_polygone']}";
     $res = $pdo->query($query_update);
     if (!$res)
-      erreur('Requête impossible',$query_update);
+      erreur(_('Requête impossible'),$query_update);
   }
 
   // Création
@@ -319,8 +319,8 @@ function edit_info_polygone()
   {
     if (!json_decode($_POST['json_polygones'])->coordinates)
     {
-      echo '<p style="color:red">MASSIF OU ZONE NON CRÉÉ(E) CAR NE COMPORTE PAS DE POLYGONE</p>';
-      echo '<p>Revenez en arrière pour continuer l\'édition</p>';
+      echo '<p style="color:red">'._("MASSIF OU ZONE NON CRÉÉ(E) CAR NE COMPORTE PAS DE POLYGONE").'</p>';
+      echo '<p>'._("Revenez en arrière pour continuer l'édition").'</p>';
       exit;
     }
 
@@ -328,7 +328,7 @@ function edit_info_polygone()
     $query_no = "SELECT id_polygone FROM polygones WHERE nom_polygone = '$nom_polygone'";
     $res=$pdo->query($query_no);
     if (!$res)
-      erreur('Requête impossible',$query_no);
+      erreur(_('Requête impossible'),$query_no);
 
     $new_poly = $res->fetch();
     if (!$new_poly)
@@ -338,12 +338,12 @@ function edit_info_polygone()
         "VALUES ({$_POST['id_polygone_type']}, '$article_partitif', '$nom_polygone', st_makevalid(ST_SetSRID(ST_GeomFromGeoJSON('{$_POST['json_polygones']}'), 4326)))";
       $res=$pdo->query($query_cree);
       if (!$res)
-        erreur('Requête impossible',$query_cree);
+        erreur(_('Requête impossible'),$query_cree);
 
       // Maintenant, on rècupère le n° du polygone créé
       $res=$pdo->query($query_no);
       if (!$res)
-        erreur('Requête impossible',$query_no);
+        erreur(_('Requête impossible'),$query_no);
       else
         $new_poly=$res->fetch();
     }
@@ -370,7 +370,7 @@ function edit_info_polygone()
     $query_delate = "DELETE FROM polygones WHERE id_polygone = {$_POST['id_polygone']}";
     $res = $pdo->query($query_delate);
     if (!$res)
-      erreur('Requête impossible',$query_delate);
+      erreur(_('Requête impossible'),$query_delate);
   }
   return null;
 }

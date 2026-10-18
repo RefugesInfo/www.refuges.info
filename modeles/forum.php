@@ -116,7 +116,7 @@ function forum_delete_topic ($topic_id) {
   $db->sql_freeresult($result);
 
   if (!isset ($pids))
-    return erreur('Erreur de supression sur le forum, le topic est inconnu : '.$topic_id);
+    return erreur(sprintf(_("Erreur de suppression sur le forum, le topic est inconnu : %s"), $topic_id));
 
   delete_posts('post_id', $pids); // On ne sait pas supprimer un topic: il faut supprimer tous ses posts
   sync('forum'); // Et on nettoie un peu tout ça
@@ -136,7 +136,7 @@ function messages_du_forum($conditions)
 
   if (!empty($conditions->ids_forum))
     if (!verif_multiples_entiers($conditions->ids_forum))
-      return erreur("Le paramètre donné pour les ids des forum dont on veut les messages n'est pas valide. Reçu : $conditions->ids_forum");
+      return erreur(sprintf(_("Le paramètre donné pour les ids des forum dont on veut les messages n'est pas valide. Reçu : %s"), $conditions->ids_forum));
     else
       $quels_ids.="AND phpbb3_topics.forum_id in ($conditions->ids_forum)";
 
@@ -146,7 +146,7 @@ function messages_du_forum($conditions)
   // condition de limite en nombre
   if (!empty($conditions->limite))
     if (!est_entier_positif ($conditions->limite))
-      return erreur("Le paramètre de limite \$conditions->limite est mal formé (devrait être un entier positif), reçu : ".$conditions->limite);
+      return erreur(sprintf(_("Le paramètre de limite \$conditions->limite est mal formé (devrait être un entier positif), reçu : %s"), $conditions->limite));
     else
       $limite="\n\tLIMIT $conditions->limite";
 
@@ -172,7 +172,7 @@ function messages_du_forum($conditions)
   LIMIT $conditions->limite";
 
   if (! ($res=$pdo->query($query_messages_du_forum)))
-    return erreur("Impossible d'obtenir les derniers messages du forum",$query_messages_du_forum);
+    return erreur(_("Impossible d'obtenir les derniers messages du forum"),$query_messages_du_forum);
   else
   {
   while ($message_du_forum = $res->fetch())

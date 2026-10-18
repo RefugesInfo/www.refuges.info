@@ -56,7 +56,7 @@ function wiki_page_html($page)
       if($cherche_points) {
         $sql = "SELECT id_point, nom FROM points WHERE nom ILIKE ".$pdo->quote("%$cherche_points%")." LIMIT $nb_max";
         if ( ! ($res = $pdo->query($sql)))
-          return erreur("Une erreur sur la requête est survenue",$sql);
+          return erreur(_("Une erreur sur la requête est survenue"),$sql);
 
         while ($row = $res->fetch())
           $retour[] = str_replace (['{nom}','{id_point}'], [$row->nom,$row->id_point], $matches[1]);
@@ -93,7 +93,7 @@ function wiki_page_brut($page)
             WHERE nom_page=$page order by date desc limit 1";
   $res=$pdo->query($query);
   if (!$res)
-    return erreur("Requête SQL impossible à executer",$query);
+    return erreur(_("Requête SQL impossible à executer"),$query);
 
   $page=$res->fetch();
   if (!$page)
@@ -110,7 +110,7 @@ function ecrire_contenu($page,$contenu)
   $query="insert into pages_wiki (nom_page,contenu) VALUES ($page,$contenu)";
   $res=$pdo->query($query);
   if (!$res)
-    return erreur("Requête SQL impossible à executer",$query);
+    return erreur(_("Requête SQL impossible à executer"),$query);
 
   return ok("Page mise à jour, et ancienne verson conservée");
 }
@@ -123,7 +123,7 @@ function supprimer_page($page)
   $query="delete from pages_wiki where nom_page=$page";
   $res=$pdo->query($query);
   if (!$res)
-    return erreur("Requête SQL impossible à executer",$query);
+    return erreur(_("Requête SQL impossible à executer"),$query);
   $pdo->query("delete from traductions where type_objet='wiki' and cle_objet=$page"); // ses traductions aussi
 
   return ok("Page supprimée et tout ses anciennes versions");
@@ -139,10 +139,10 @@ function liste_pages_wiki($conditions = Null)
           ORDER BY nom_page ASC;";
   $res=$pdo->query($query);
   if (!$res)
-    return erreur("Requête SQL impossible à executer",$query);
+    return erreur(_("Requête SQL impossible à executer"),$query);
   while ($page_wiki = $res->fetch())
     $pages_wiki[]=$page_wiki;
   if (empty($pages_wiki))
-    return erreur("Il n'y a aucune page dans notre wiki, oulla, c'est louche, quelqu'un à tout purger, ou alors une nouvelle installation, ou alors un bug...");
+    return erreur(_("Il n'y a aucune page dans notre wiki, oulla, c'est louche, quelqu'un à tout purger, ou alors une nouvelle installation, ou alors un bug..."));
   return $pages_wiki;
 }
