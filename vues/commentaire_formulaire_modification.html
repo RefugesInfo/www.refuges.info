@@ -4,7 +4,7 @@
     <input type="hidden" name="id_commentaire" value="<?=$commentaire->id_commentaire?>" />
     <input type="hidden" name="id_point_retour" value="<?=protege($_REQUEST['id_point_retour'] ?? '')?>" />
     <!-- Bouton par défaut (touche Entrée dans un champ) : doit rester le premier bouton du formulaire -->
-    <button name="type" value="modification" type="submit" class="bouton_par_defaut" tabindex="-1" aria-hidden="true"><?=_("Modifier")?></button>
+    <button name="type" value="modification" type="submit" class="bouton_par_defaut" tabindex="-1" aria-hidden="true"><?=_("Enregistrer")?></button>
 
     <div class="texte_et_photo">
       <fieldset>
@@ -79,7 +79,7 @@
     </fieldset>
 
     <div class="actions_finales">
-      <button name="type" value="modification" type="submit"><?=_("Modifier")?></button>
+      <button name="type" value="modification" type="submit"><?=_("Enregistrer")?></button>
       <button name="type" value="transfert_forum" type="submit"><?=_("Transférer vers le forum")?></button>
       <span class="groupe_transfert">
         <button name="type" value="transfert_autre_point" type="submit"><?=_("Transférer vers la fiche n°")?></button>

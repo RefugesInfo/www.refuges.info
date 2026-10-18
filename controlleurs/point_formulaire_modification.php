@@ -147,7 +147,8 @@ if (!empty($point->id_point))
 $bouton_valider = new stdClass;
 $bouton_valider->nom = "action";
 $bouton_valider->type = "submit";
-$bouton_valider->valeur = $bouton_valider->label = $vue->verbe; // la valeur est testée par point_modification.php, le libellé est traduit à l'affichage
+$bouton_valider->valeur = $vue->verbe; // la valeur est testée par point_modification.php, le libellé est traduit à l'affichage
+$bouton_valider->label = $vue->verbe == "Modifier" ? "Enregistrer" : $vue->verbe;
 
 // Gestion de l'ordre des boutons modifier/valider/supprimer
 $vue->champs->boutons->valider=$bouton_valider;

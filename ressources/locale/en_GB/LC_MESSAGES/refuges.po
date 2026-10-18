@@ -271,6 +271,9 @@ msgstr "Edit comment no. %s"
 msgid "Modifier"
 msgstr "Edit"
 
+msgid "Enregistrer"
+msgstr "Save changes"
+
 msgid "Texte"
 msgstr "Text"
 

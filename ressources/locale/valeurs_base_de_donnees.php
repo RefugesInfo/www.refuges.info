@@ -62,6 +62,7 @@ _("remarques");
 _("Entrez la lettre <strong>g</strong>");
 _("Ajouter");
 _("Modifier");
+_("Enregistrer");
 _("jpeg, png, bmp ou webp");
 _("kml (googlearth et plusieurs applications smartphone )");
 _("Poêle");
