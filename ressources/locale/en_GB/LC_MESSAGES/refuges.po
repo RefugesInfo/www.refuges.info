@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: refuges.info\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-14 17:53+0200\n"
+"POT-Creation-Date: 2026-10-19 00:47+0200\n"
 "Language: en_GB\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -100,8 +100,8 @@ msgstr[1] "editing of %s posts to process"
 msgid "Historique des traces"
 msgstr "Trace history"
 
-msgid "Massifs & zones"
-msgstr "Mountain ranges & zones"
+msgid "Créér un polygone"
+msgstr "Create a polygon"
 
 msgid "Pré-remplissage des champs lors d'un ajout de point"
 msgstr "Pre-filling of the fields when a point is added"
@@ -361,174 +361,38 @@ msgstr "Name:"
 msgid "Article partitif (max 20 car)"
 msgstr "Partitive article (max 20 characters)"
 
-msgid "Il ne doit pas y avoir de ligne pour enregistrer."
-msgstr "There must be no line in order to save."
-
-msgid "Il doit y avoir au moins 1 polygone pour enregistrer."
-msgstr "There must be at least 1 polygon in order to save."
-
 msgid "Enregistrer et rester"
 msgstr "Save and stay"
 
 msgid "Quitter sans enregistrer"
 msgstr "Leave without saving"
 
-#, php-format
-msgid "L'élément sélectionné est %s"
-msgstr "The selected element is %s"
+msgid "Créér un nouveau polygone :"
+msgstr "Create a new polygon:"
 
-msgid "rouge"
-msgstr "red"
+msgid "- puis cliquer sur chaque emplacement de sommet,"
+msgstr "- then click on each vertex location,"
 
-#, php-format
-msgid "Les éléments sélectionnables sont %s"
-msgstr "The selectable elements are %s"
+msgid "- le fermer pour finir."
+msgstr "- close it to finish."
 
-msgid "bleus"
-msgstr "blue"
+msgid "Éditer les polygones :"
+msgstr "Edit polygons:"
 
-#, php-format
-msgid "Les éléments en fond sont %s"
-msgstr "The background elements are %s"
+msgid "- déplacer un sommet pour modifier la forme d'un polygone,"
+msgstr "- move a vertex to change the shape of a polygon,"
 
-msgid "noirs"
-msgstr "black"
+msgid "- déplacer le milieu d'un segment pour créer un sommet,"
+msgstr "- move the middle of a segment to create a vertex,"
 
-msgid "Modifier un polygone :"
-msgstr "Modify a polygon:"
+msgid "- clic droit sur un sommet pour le supprimer."
+msgstr "- right-click on a vertex to delete it."
 
-#, php-format
-msgid "Cliquer sur un sommet et glisser pour le %s"
-msgstr "Click on a vertex and drag to %s it"
+msgid "Créer une enclave ou enlever une partie d'un polygone,"
+msgstr "Create an enclave or remove part of a polygon,"
 
-msgid "déplacer"
-msgstr "move"
-
-#, php-format
-msgid "Cliquer le long d'un segment et glisser pour %s"
-msgstr "Click along a segment and drag to %s"
-
-msgid "ajouter un sommet au milieu d'un segment"
-msgstr "add a vertex in the middle of a segment"
-
-#, php-format
-msgid "Alt+cliquer sur un sommet pour le %s"
-msgstr "Alt+click on a vertex to %s it"
-
-msgid "supprimer"
-msgstr "delete"
-
-#, php-format
-msgid "Ctrl+Alt+cliquer sur un de ses segments pour %s"
-msgstr "Ctrl+Alt+click on one of its segments to %s"
-
-msgid "supprimer un polygone ou une ligne"
-msgstr "delete a polygon or a line"
-
-#, php-format
-msgid "Un polygone entièrement inclus dans un autre %s"
-msgstr "A polygon entirely inside another one %s"
-
-msgid "crée un trou"
-msgstr "creates a hole"
-
-msgid "Utiliser des lignes pour les éditions complexes :"
-msgstr "Using lines for complex edits:"
-
-#, php-format
-msgid "Ctrl+cliquer sur un sommet ou un segment d'un polygone rouge pour le %s"
-msgstr "Ctrl+click on a vertex or a segment of a red polygon to %s it"
-
-msgid "transformer en ligne"
-msgstr "turn it into a line"
-
-msgid "...puis déplacer l'une des 2 extrémités (rond rouge)"
-msgstr "...then move one of the 2 ends (red circle)"
-
-#, php-format
-msgid "Ctrl+cliquer sur une ligne pour la %s"
-msgstr "Ctrl+click on a line to %s it"
-
-msgid "couper en deux"
-msgstr "cut it in two"
-
-#, php-format
-msgid ""
-"Déplacer l'extrémité d'une ligne jusqu'à l'extrémité d'une autre ligne pour "
-"les %s"
-msgstr "Move the end of a line to the end of another line to %s them"
-
-msgid "fusionner"
-msgstr "merge"
-
-#, php-format
-msgid "Fusionner les 2 extrémités d'une ligne pour la %s"
-msgstr "Merge the 2 ends of a line to %s it"
-
-msgid "transformer en polygone"
-msgstr "turn it into a polygon"
-
-msgid ""
-"Vous devez transformer toutes les lignes en polygones ou les supprimer avant "
-"d'enregistrer"
-msgstr "You must turn all the lines into polygons or delete them before saving"
-
-msgid "Créer un polygone :"
-msgstr "Create a polygon:"
-
-msgid "Cliquer sur le bouton"
-msgstr "Click on the button"
-
-#, php-format
-msgid "Cliquer sur l'emplacement du %s"
-msgstr "Click on the location of the %s"
-
-msgid "début"
-msgstr "start"
-
-#, php-format
-msgid "Puis sur chaque %s"
-msgstr "Then on each %s"
-
-msgid "sommet à créer"
-msgstr "vertex to create"
-
-#, php-format
-msgid "Double cliquer sur le %s pour terminer"
-msgstr "Double-click on the %s to finish"
-
-msgid "dernier sommet"
-msgstr "last vertex"
-
-msgid "Créer une ligne :"
-msgstr "Create a line:"
-
-msgid "Suivre un tracé existant :"
-msgstr "Following an existing outline:"
-
-#, php-format
-msgid "Pendant la création, placer un sommet sur un %s"
-msgstr "While creating, place a vertex on a %s"
-
-msgid "polygone en fond"
-msgstr "background polygon"
-
-#, php-format
-msgid "ou charger %s un %s"
-msgstr "or load %s a %s"
-
-msgid "fichier de trace"
-msgstr "track file"
-
-#, php-format
-msgid "...et en %s"
-msgstr "...and %s"
-
-msgid "suivre le contour"
-msgstr "follow the outline"
-
-msgid "Placer un sommet en dehors du tracé suivi pour en sortir"
-msgstr "Place a vertex outside the followed outline to leave it"
+msgid "Supprimer des polygones."
+msgstr "Delete polygons."
 
 msgid "Suppression"
 msgstr "Deletion"
@@ -566,7 +430,8 @@ msgstr "Export options"
 
 msgid "Veuillez préciser les options des type de points et des massifs voulus"
 msgstr ""
-"Please specify the options for the types of points and the mountain ranges you want"
+"Please specify the options for the types of points and the mountain ranges "
+"you want"
 
 msgid "Choix des points de la base à exporter"
 msgstr "Choice of the points of the database to export"
@@ -607,12 +472,13 @@ msgid ""
 "Vous n'avez sélectionné aucun type de point ou aucun massif, revenez en "
 "arrière pour compléter le formulaire"
 msgstr ""
-"You have not selected any type of point or any mountain range; go back to complete "
-"the form"
+"You have not selected any type of point or any mountain range; go back to "
+"complete the form"
 
 msgid ""
 "Veuillez préciser les options de ce que vous voulez et dans quel(s) massif(s)"
-msgstr "Please specify the options for what you want and in which mountain range(s)"
+msgstr ""
+"Please specify the options for what you want and in which mountain range(s)"
 
 msgid "Choix des nouvelles à afficher"
 msgstr "Choice of the news to display"
@@ -823,15 +689,15 @@ msgid ""
 "Un massif est défini par un polygone qui représente EXACTEMENT le contour du "
 "massif."
 msgstr ""
-"A mountain range is defined by a polygon that represents EXACTLY the outline of the "
-"mountain range."
+"A mountain range is defined by a polygon that represents EXACTLY the outline "
+"of the mountain range."
 
 msgid ""
 "Un point est réputé appartenir à un massif quand il est STRICTEMENT INCLUS "
 "dans le polygone."
 msgstr ""
-"A point is deemed to belong to a mountain range when it is STRICTLY INSIDE the "
-"polygon."
+"A point is deemed to belong to a mountain range when it is STRICTLY INSIDE "
+"the polygon."
 
 msgid "Créer un massif"
 msgstr "Create a mountain range"
@@ -854,8 +720,8 @@ msgid ""
 "Un massif est réputé appartenir à une zone quand son polygone INTERSECTE "
 "celui de la zone."
 msgstr ""
-"A mountain range is deemed to belong to a zone when its polygon INTERSECTS the "
-"zone's polygon."
+"A mountain range is deemed to belong to a zone when its polygon INTERSECTS "
+"the zone's polygon."
 
 msgid ""
 "La zone n'a donc pas besoin d'être très précise : un vague rectangle suffit "
@@ -863,14 +729,15 @@ msgid ""
 "massif."
 msgstr ""
 "The zone therefore does not need to be very precise: a rough rectangle is "
-"enough most of the time as long as it covers at least a bit of each mountain range."
+"enough most of the time as long as it covers at least a bit of each mountain "
+"range."
 
 msgid ""
 "Par contre, si elle déborde sur un massif qui n'a rien à voir, celui-ci sera "
 "affiché."
 msgstr ""
-"On the other hand, if it spills over onto an unrelated mountain range, that mountain range "
-"will be displayed."
+"On the other hand, if it spills over onto an unrelated mountain range, that "
+"mountain range will be displayed."
 
 msgid "Créer une zone"
 msgstr "Create a zone"
@@ -925,16 +792,6 @@ msgid ""
 msgstr ""
 "Part of this page has been translated automatically: each text concerned "
 "shows its original language and lets you view the original."
-
-#, php-format
-msgid "Trad. auto %s"
-msgstr "Auto-translated %s"
-
-msgid "Trad. auto"
-msgstr "Auto-translated"
-
-msgid "Traduit automatiquement ; cliquer pour voir le texte original"
-msgstr "Automatically translated; click to view the original text"
 
 #, php-format
 msgid "Localisation %s :"
@@ -1337,8 +1194,8 @@ msgid ""
 "Polygones (départements, régions, massifs, réserves naturelles, tous les "
 "polygones dans notre base) contenant les points recherchés"
 msgstr ""
-"Polygons (departments, regions, mountain ranges, nature reserves, all the polygons "
-"in our database) containing the points being searched for"
+"Polygons (departments, regions, mountain ranges, nature reserves, all the "
+"polygons in our database) containing the points being searched for"
 
 msgid "Dans le massif/département/... :"
 msgstr "In the mountain range/department/... :"
@@ -2047,6 +1904,10 @@ msgstr ""
 msgid "ce %s"
 msgstr "this %s"
 
+#, php-format
+msgid "Erreur de modification du point : %s"
+msgstr "Error while modifying the point: %s"
+
 msgid "Le nom ne peut être vide"
 msgstr "The name cannot be empty"
 
@@ -2088,8 +1949,10 @@ msgid "La longitude du point doit être comprise entre -180 et 180 (degrés)"
 msgstr "The point's longitude must be between -180 and 180 (degrees)"
 
 #, php-format
-msgid "L'altitude du point doit être un nombre entier positif, reçu : %s"
-msgstr "The point's altitude must be a positive whole number, received: %s"
+msgid ""
+"L'altitude du point doit être un nombre entier positif ou nul, reçu : %s"
+msgstr ""
+"The point's altitude must be a positive whole number or zero, received: %s"
 
 #, php-format
 msgid ""
@@ -2104,10 +1967,6 @@ msgid "Le nombre de %s doit être un entier supérieur ou égal à 0, reçu : '%
 msgstr ""
 "The number of %s must be a whole number greater than or equal to 0, "
 "received: '%s'"
-
-#, php-format
-msgid "Erreur de modification du point : %s"
-msgstr "Error while modifying the point: %s"
 
 msgid ""
 "La requête SQL est en erreur, mais nous ne savons pas pourquoi, prévenez "
@@ -2125,6 +1984,16 @@ msgstr ""
 
 msgid "Cette page du wiki n'existe pas"
 msgstr "This wiki page does not exist"
+
+#, php-format
+msgid "Trad. auto %s"
+msgstr "Auto-translated %s"
+
+msgid "Trad. auto"
+msgstr "Auto-translated"
+
+msgid "Traduit automatiquement ; cliquer pour voir le texte original"
+msgstr "Automatically translated; click to view the original text"
 
 msgid ""
 ", vous devez être un modérateur du site, pour accéder à cette page, êtes "

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-14 17:53+0200\n"
+"POT-Creation-Date: 2026-10-19 00:47+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -104,7 +104,7 @@ msgstr[1] ""
 msgid "Historique des traces"
 msgstr ""
 
-msgid "Massifs & zones"
+msgid "Créér un polygone"
 msgstr ""
 
 msgid "Pré-remplissage des champs lors d'un ajout de point"
@@ -362,173 +362,37 @@ msgstr ""
 msgid "Article partitif (max 20 car)"
 msgstr ""
 
-msgid "Il ne doit pas y avoir de ligne pour enregistrer."
-msgstr ""
-
-msgid "Il doit y avoir au moins 1 polygone pour enregistrer."
-msgstr ""
-
 msgid "Enregistrer et rester"
 msgstr ""
 
 msgid "Quitter sans enregistrer"
 msgstr ""
 
-#, php-format
-msgid "L'élément sélectionné est %s"
+msgid "Créér un nouveau polygone :"
 msgstr ""
 
-msgid "rouge"
+msgid "- puis cliquer sur chaque emplacement de sommet,"
 msgstr ""
 
-#, php-format
-msgid "Les éléments sélectionnables sont %s"
+msgid "- le fermer pour finir."
 msgstr ""
 
-msgid "bleus"
+msgid "Éditer les polygones :"
 msgstr ""
 
-#, php-format
-msgid "Les éléments en fond sont %s"
+msgid "- déplacer un sommet pour modifier la forme d'un polygone,"
 msgstr ""
 
-msgid "noirs"
+msgid "- déplacer le milieu d'un segment pour créer un sommet,"
 msgstr ""
 
-msgid "Modifier un polygone :"
+msgid "- clic droit sur un sommet pour le supprimer."
 msgstr ""
 
-#, php-format
-msgid "Cliquer sur un sommet et glisser pour le %s"
+msgid "Créer une enclave ou enlever une partie d'un polygone,"
 msgstr ""
 
-msgid "déplacer"
-msgstr ""
-
-#, php-format
-msgid "Cliquer le long d'un segment et glisser pour %s"
-msgstr ""
-
-msgid "ajouter un sommet au milieu d'un segment"
-msgstr ""
-
-#, php-format
-msgid "Alt+cliquer sur un sommet pour le %s"
-msgstr ""
-
-msgid "supprimer"
-msgstr ""
-
-#, php-format
-msgid "Ctrl+Alt+cliquer sur un de ses segments pour %s"
-msgstr ""
-
-msgid "supprimer un polygone ou une ligne"
-msgstr ""
-
-#, php-format
-msgid "Un polygone entièrement inclus dans un autre %s"
-msgstr ""
-
-msgid "crée un trou"
-msgstr ""
-
-msgid "Utiliser des lignes pour les éditions complexes :"
-msgstr ""
-
-#, php-format
-msgid "Ctrl+cliquer sur un sommet ou un segment d'un polygone rouge pour le %s"
-msgstr ""
-
-msgid "transformer en ligne"
-msgstr ""
-
-msgid "...puis déplacer l'une des 2 extrémités (rond rouge)"
-msgstr ""
-
-#, php-format
-msgid "Ctrl+cliquer sur une ligne pour la %s"
-msgstr ""
-
-msgid "couper en deux"
-msgstr ""
-
-#, php-format
-msgid ""
-"Déplacer l'extrémité d'une ligne jusqu'à l'extrémité d'une autre ligne pour "
-"les %s"
-msgstr ""
-
-msgid "fusionner"
-msgstr ""
-
-#, php-format
-msgid "Fusionner les 2 extrémités d'une ligne pour la %s"
-msgstr ""
-
-msgid "transformer en polygone"
-msgstr ""
-
-msgid ""
-"Vous devez transformer toutes les lignes en polygones ou les supprimer avant "
-"d'enregistrer"
-msgstr ""
-
-msgid "Créer un polygone :"
-msgstr ""
-
-msgid "Cliquer sur le bouton"
-msgstr ""
-
-#, php-format
-msgid "Cliquer sur l'emplacement du %s"
-msgstr ""
-
-msgid "début"
-msgstr ""
-
-#, php-format
-msgid "Puis sur chaque %s"
-msgstr ""
-
-msgid "sommet à créer"
-msgstr ""
-
-#, php-format
-msgid "Double cliquer sur le %s pour terminer"
-msgstr ""
-
-msgid "dernier sommet"
-msgstr ""
-
-msgid "Créer une ligne :"
-msgstr ""
-
-msgid "Suivre un tracé existant :"
-msgstr ""
-
-#, php-format
-msgid "Pendant la création, placer un sommet sur un %s"
-msgstr ""
-
-msgid "polygone en fond"
-msgstr ""
-
-#, php-format
-msgid "ou charger %s un %s"
-msgstr ""
-
-msgid "fichier de trace"
-msgstr ""
-
-#, php-format
-msgid "...et en %s"
-msgstr ""
-
-msgid "suivre le contour"
-msgstr ""
-
-msgid "Placer un sommet en dehors du tracé suivi pour en sortir"
+msgid "Supprimer des polygones."
 msgstr ""
 
 msgid "Suppression"
@@ -906,7 +770,9 @@ msgstr ""
 msgid "Trace de la création du point"
 msgstr ""
 
-msgid "Traduction automatique (pilote) : l'original en français fait foi."
+msgid ""
+"Une partie de cette page a été traduite automatiquement : chaque texte "
+"concerné indique sa langue d'origine et permet d'en voir l'original."
 msgstr ""
 
 #, php-format
@@ -1920,6 +1786,10 @@ msgstr ""
 msgid "ce %s"
 msgstr ""
 
+#, php-format
+msgid "Erreur de modification du point : %s"
+msgstr ""
+
 msgid "Le nom ne peut être vide"
 msgstr ""
 
@@ -1953,7 +1823,8 @@ msgid "La longitude du point doit être comprise entre -180 et 180 (degrés)"
 msgstr ""
 
 #, php-format
-msgid "L'altitude du point doit être un nombre entier positif, reçu : %s"
+msgid ""
+"L'altitude du point doit être un nombre entier positif ou nul, reçu : %s"
 msgstr ""
 
 #, php-format
@@ -1964,10 +1835,6 @@ msgstr ""
 
 #, php-format
 msgid "Le nombre de %s doit être un entier supérieur ou égal à 0, reçu : '%s'"
-msgstr ""
-
-#, php-format
-msgid "Erreur de modification du point : %s"
 msgstr ""
 
 msgid ""
@@ -1981,6 +1848,16 @@ msgid ""
 msgstr ""
 
 msgid "Cette page du wiki n'existe pas"
+msgstr ""
+
+#, php-format
+msgid "Trad. auto %s"
+msgstr ""
+
+msgid "Trad. auto"
+msgstr ""
+
+msgid "Traduit automatiquement ; cliquer pour voir le texte original"
 msgstr ""
 
 msgid ""
