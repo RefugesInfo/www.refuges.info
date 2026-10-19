@@ -254,7 +254,7 @@
             } ?>
           </div>
           <div class="bloc_liens_haut_droit">
-          <a class="liens_avec_decoration" href="<?=$commentaire->lien_commentaire?>">
+          <a class="liens_avec_decoration" href="<?=$commentaire->lien_commentaire?>"<?=$commentaire->rel_lien_commentaire?>>
             <?=$commentaire->texte_lien_commentaire?></a>
             <?php if (est_autorise($point->id_moderateur)) { ?>
               <a class="liens_avec_decoration"

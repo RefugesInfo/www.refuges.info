@@ -177,12 +177,15 @@ else // le point est valide
         url_langue('/commentaire_formulaire_modification').'?id_point_retour='.$commentaire->id_point.
         '&amp;id_commentaire='.$commentaire->id_commentaire;
       $commentaire->texte_lien_commentaire = _('Modifier');
+      $commentaire->rel_lien_commentaire = '';
     }
     else
     {
       // l'internaute, en cliquant ici va nous donner ce qu'il pense de ce commentaire
       $commentaire->lien_commentaire = url_langue("/avis_internaute_commentaire/$commentaire->id_commentaire/");
       $commentaire->texte_lien_commentaire = _('Info périmée ?');
+      // action réservée aux humains : on évite que les robots la suivent
+      $commentaire->rel_lien_commentaire = ' rel="nofollow"';
     }
   }
 }
