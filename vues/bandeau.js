@@ -98,8 +98,28 @@ function masqueBandeauInfo() {
     a.addEventListener('click', function () { memoriser(a.hreflang); });
   });
 
-  if (langues.length < 2)
-    return; // page sans version dans une autre langue (erreur, forum : la bascule se fait côté serveur avec le cookie)
+  if (langues.length < 2) {
+    // Page sans <link rel=alternate> (erreur, forum : la langue se choisit côté serveur avec le cookie). Le sélecteur
+    // liste quand même les langues : sans choix, page en français et navigateur dans une autre langue gérée, on mémorise
+    // la langue et on recharge la page (si les cookies sont refusés, pas de rechargement : pas de boucle)
+    const gerees = [];
+    document.querySelectorAll('.menu-langue a[hreflang]').forEach(function (a) { gerees.push(a.hreflang); });
+    const courante = document.querySelector('.menu-langue a[aria-current]');
+    if (lireChoix() || !courante || courante.hreflang != 'fr')
+      return;
+    for (const l of (navigator.languages || [navigator.language || ''])) {
+      const code = l.toLowerCase().split('-')[0];
+      if (code == 'fr')
+        return;
+      if (gerees.indexOf(code) >= 0) {
+        memoriser(code);
+        if (lireChoix() == code)
+          location.reload();
+        return;
+      }
+    }
+    return;
+  }
 
   const choix = lireChoix();
 
