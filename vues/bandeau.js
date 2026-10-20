@@ -68,7 +68,7 @@ function masqueBandeauInfo() {
 /*********** Langue de l'interface : mémorisation du choix et suggestion ***********
  Tout se passe ici, dans le navigateur, et pas côté serveur : la page est la même pour tous (cache, moteurs de recherche)
  et on n'utilise jamais l'en-tête Accept-Language mais navigator.languages, uniquement pour proposer.
- - un clic sur FR / EN du sélecteur mémorise le choix (cookie "langue", 1 an)
+ - un clic sur une langue du sélecteur mémorise le choix (cookie "langue", 1 an)
  - choix = autre langue que celle de la page : bascule vers la même page dans cette langue (jamais vers le français :
    le français est la langue de repli, on ne renvoie pas un visiteur arrivé sur une page anglaise vers le français)
  - pas de choix et navigateur en anglais (avant le français) : proposition discrète, jamais de redirection */
@@ -115,10 +115,12 @@ function masqueBandeauInfo() {
     origine = sessionStorage.getItem('langue_bascule');
     sessionStorage.removeItem('langue_bascule');
   } catch (e) { }
-  if (origine && alternates[origine] && bloc) {
-    document.getElementById('suggestion-langue-bascule').hidden = false;
+  const bascule = bloc && bloc.querySelector('.suggestion-bascule[data-langue="' + languePage + '"]');
+  if (origine && alternates[origine] && bascule) {
+    bascule.hidden = false;
+    bascule.querySelector('.origine').textContent = origine.toUpperCase();
     bloc.hidden = false;
-    document.getElementById('suggestion-langue-retour').addEventListener('click', function () {
+    bascule.querySelector('.retour').addEventListener('click', function () {
       memoriser(origine);
       location.href = alternates[origine];
     });
@@ -138,13 +140,16 @@ function masqueBandeauInfo() {
   }
   if (!suggeree || suggeree == languePage || suggeree == 'fr')
     return;
-  document.getElementById('suggestion-langue-proposition').hidden = false;
+  const proposition = bloc.querySelector('.suggestion-proposition[data-langue="' + suggeree + '"]');
+  if (!proposition)
+    return;
+  proposition.hidden = false;
   bloc.hidden = false;
-  document.getElementById('suggestion-langue-oui').addEventListener('click', function () {
+  proposition.querySelector('.oui').addEventListener('click', function () {
     memoriser(suggeree);
     location.href = alternates[suggeree];
   });
-  document.getElementById('suggestion-langue-non').addEventListener('click', function () {
+  proposition.querySelector('.non').addEventListener('click', function () {
     memoriser(languePage); // "pas maintenant" = on ne le redemande plus
     bloc.hidden = true;
   });

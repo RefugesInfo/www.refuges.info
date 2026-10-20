@@ -1,0 +1,2070 @@
+# Traductions de l'interface de refuges.info : français (msgid) -> italien
+# Les .po sont les sources, les .mo sont compilés avec : make locale   (ou msgfmt -o refuges.mo refuges.po)
+# Registre : tutoiement ("tu"), à confirmer par des locuteurs natifs. Voir ressources/traduction/glossaire-it.md
+msgid ""
+msgstr ""
+"Project-Id-Version: refuges.info\n"
+"Report-Msgid-Bugs-To: \n"
+"Language: it_IT\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Merci de nous aider, le commentaire et/ou photo suivant(e) :"
+msgstr "Grazie per il tuo aiuto, il seguente commento e/o la seguente foto:"
+
+msgid "Photo du commentaire"
+msgstr "Foto del commento"
+
+msgid "Est :"
+msgstr "È:"
+
+msgid "Plus d'actualité ou n'a rien à voir avec le point ou n'est pas factuel"
+msgstr "Non più attuale, oppure non c'entra con il punto, oppure non è oggettivo"
+
+msgid "(Voir ce que l'on peut mettre ou ne pas mettre)."
+msgstr "(Vedi cosa si può inserire e cosa no)."
+
+msgid "Ou au contraire très utile : ces informations devraient être rajoutées dans la fiche en haut."
+msgstr "Oppure, al contrario, molto utile: queste informazioni dovrebbero essere aggiunte in alto nella scheda."
+
+msgid "Une raison pour expliquer ?"
+msgstr "Un motivo da spiegare?"
+
+msgid "(facultatif)"
+msgstr "(facoltativo)"
+
+#, php-format
+msgid "Contre les robots %s s'il vous plait :"
+msgstr "Contro i robot %s, per favore:"
+
+msgid "Votre remarque sera transmise en privé aux modérateurs."
+msgstr "La tua segnalazione sarà trasmessa in privato ai moderatori."
+
+msgid "Valider mon avis"
+msgstr "Conferma il mio parere"
+
+#, php-format
+msgid "Retour sur %s sans action."
+msgstr "Ritorno su %s senza alcuna azione."
+
+#, php-format
+msgid "la fiche de %s"
+msgstr "la scheda di %s"
+
+msgid "Commentaires à corriger"
+msgstr "Commenti da correggere"
+
+msgid "Emails en erreur"
+msgstr "E-mail in errore"
+
+msgid "Posts édités à vérifier"
+msgstr "Post modificati da verificare"
+
+msgid "Utilisateur"
+msgstr "Utente"
+
+msgid "Administrateur"
+msgstr "Amministratore"
+
+msgid "Modérateur"
+msgstr "Moderatore"
+
+msgid "Panneau de l’utilisateur"
+msgstr "Pannello utente"
+
+msgid "Messages privés"
+msgstr "Messaggi privati"
+
+msgid "Déconnexion"
+msgstr "Disconnessione"
+
+msgid "Commentaires à traiter"
+msgstr "Commenti da gestire"
+
+msgid "Historique des modifications"
+msgstr "Cronologia delle modifiche"
+
+#, php-format
+msgid "édition de %s post à traiter"
+msgid_plural "édition de %s posts à traiter"
+msgstr[0] "%s modifica di post da gestire"
+msgstr[1] "%s modifiche di post da gestire"
+
+msgid "Historique des traces"
+msgstr "Cronologia delle tracce"
+
+msgid "Créér un polygone"
+msgstr "Crea un poligono"
+
+msgid "Pré-remplissage des champs lors d'un ajout de point"
+msgstr "Precompilazione dei campi all'aggiunta di un punto"
+
+msgid "Modèles de points"
+msgstr "Modelli di punti"
+
+msgid "Liste des contenus spéciaux"
+msgstr "Elenco dei contenuti speciali"
+
+msgid "Liste des pages wiki"
+msgstr "Elenco delle pagine wiki"
+
+msgid "Scanner les liens véreux"
+msgstr "Scansiona i link sospetti"
+
+msgid "Modération du forum"
+msgstr "Moderazione del forum"
+
+msgid "Administration du forum"
+msgstr "Amministrazione del forum"
+
+msgid "Connexion"
+msgstr "Accesso"
+
+msgid "Pour vous connecter,"
+msgstr "Per accedere,"
+
+msgid "vous devez"
+msgstr "devi"
+
+msgid "passer en HTTPS"
+msgstr "passare a HTTPS"
+
+msgid "Nom d’utilisateur"
+msgstr "Nome utente"
+
+msgid "Mot de passe"
+msgstr "Password"
+
+msgid "Utilisation des cookies"
+msgstr "Uso dei cookie"
+
+msgid "Mot de passe oublié"
+msgstr "Password dimenticata"
+
+msgid "Créer un compte"
+msgstr "Crea un account"
+
+msgid "Connexion avancée"
+msgstr "Accesso avanzato"
+
+msgid "Accueil du site"
+msgstr "Home del sito"
+
+msgid "Nouvelles"
+msgstr "Novità"
+
+msgid "Les entrées les plus récentes"
+msgstr "Gli inserimenti più recenti"
+
+msgid "Ajouter"
+msgstr "Aggiungi"
+
+msgid "Ajouter une nouvelle cabane ou refuge"
+msgstr "Aggiungi una nuova capanna o un nuovo rifugio"
+
+msgid "Cartes"
+msgstr "Mappe"
+
+msgid "Afficher les points sur divers fonds de cartes"
+msgstr "Mostra i punti su vari sfondi cartografici"
+
+msgid "Forum"
+msgstr "Forum"
+
+msgid "Forum de discussion"
+msgstr "Forum di discussione"
+
+msgid "Recherche"
+msgstr "Ricerca"
+
+msgid "Recherche de point"
+msgstr "Ricerca di un punto"
+
+msgid "Lancer la recherche"
+msgstr "Avvia la ricerca"
+
+msgid "Recherche avancée"
+msgstr "Ricerca avanzata"
+
+msgid "Retour à l'entrée du site"
+msgstr "Torna all'ingresso del sito"
+
+msgid "Accueil"
+msgstr "Home"
+
+msgid "Ajouter un point"
+msgstr "Aggiungi un punto"
+
+msgid "Qui sommes nous ?"
+msgstr "Chi siamo?"
+
+msgid "Donation € ❤️"
+msgstr "Donazione € ❤️"
+
+msgid "Consignes en cabane"
+msgstr "Regole nelle capanne"
+
+msgid "Règles de prudence"
+msgstr "Regole di prudenza"
+
+msgid "Formulaire de recherche multicritères de points dans la base de données de refuges.info"
+msgstr "Modulo di ricerca multicriterio dei punti nel database di refuges.info"
+
+msgid "Recherche de points"
+msgstr "Ricerca di punti"
+
+msgid "Exportation de la base refuges.info aux formats kmz (googlearth compressé), kml (googlearth), gml (Geography Markup Language), GPS (gpx), GPS (gpx simplifié), Garmin points d'intérêts, csv (tableurs)"
+msgstr "Esportazione del database di refuges.info nei formati kmz (Google Earth compresso), kml (Google Earth), gml (Geography Markup Language), GPS (gpx), GPS (gpx semplificato), punti di interesse Garmin, csv (fogli di calcolo)"
+
+msgid "Export de points"
+msgstr "Esportazione di punti"
+
+msgid "Appli GPS"
+msgstr "App GPS"
+
+msgid "Flux RSS"
+msgstr "Feed RSS"
+
+msgid "Support site"
+msgstr "Supporto sito"
+
+msgid "Doc API"
+msgstr "Documentazione API"
+
+msgid "Cookies"
+msgstr "Cookie"
+
+msgid "Licence"
+msgstr "Licenza"
+
+msgid "Mentions légales"
+msgstr "Note legali"
+
+msgid "Liens"
+msgstr "Link"
+
+msgid "Masquer la barre d'informations"
+msgstr "Nascondi la barra informativa"
+
+msgid "Masquer"
+msgstr "Nascondi"
+
+#, php-format
+msgid "Modifier le commentaire n°%s"
+msgstr "Modifica il commento n. %s"
+
+msgid "Modifier"
+msgstr "Modifica"
+
+msgid "Texte"
+msgstr "Testo"
+
+msgid "Photo"
+msgstr "Foto"
+
+msgid "photo liée au commentaire"
+msgstr "foto collegata al commento"
+
+msgid "Changer la photo"
+msgstr "Cambia la foto"
+
+msgid "Remplacer la photo"
+msgstr "Sostituisci la foto"
+
+msgid "Ajouter une photo"
+msgstr "Aggiungi una foto"
+
+msgid "Aperçu de la photo choisie"
+msgstr "Anteprima della foto scelta"
+
+#, php-format
+msgid "format %s"
+msgstr "formato %s"
+
+msgid "Rotation :"
+msgstr "Rotazione:"
+
+msgid "aucune"
+msgstr "nessuna"
+
+msgid "90° à gauche"
+msgstr "90° a sinistra"
+
+msgid "90° à droite"
+msgstr "90° a destra"
+
+msgid "Supprimer la photo"
+msgstr "Elimina la foto"
+
+msgid "Date et auteur"
+msgstr "Data e autore"
+
+msgid "Date :"
+msgstr "Data:"
+
+msgid "Auteur (si non authentifié) :"
+msgstr "Autore (se non autenticato):"
+
+msgid "Auteur authentifié :"
+msgstr "Autore autenticato:"
+
+msgid "Non authentifié"
+msgstr "Non autenticato"
+
+msgid "Transférer vers le forum"
+msgstr "Trasferisci al forum"
+
+msgid "Transférer vers la fiche n°"
+msgstr "Trasferisci alla scheda n."
+
+msgid "Numéro de la fiche de destination"
+msgstr "Numero della scheda di destinazione"
+
+msgid "Supprimer le commentaire"
+msgstr "Elimina il commento"
+
+#, php-format
+msgid "Retourner à la fiche : %s"
+msgstr "Torna alla scheda: %s"
+
+#, php-format
+msgid "Modification du commentaire n°%s"
+msgstr "Modifica del commento n. %s"
+
+msgid "Édition"
+msgstr "Modifica"
+
+msgid "Création"
+msgstr "Creazione"
+
+msgid "Type :"
+msgstr "Tipo:"
+
+msgid "Nom :"
+msgstr "Nome:"
+
+msgid "Article partitif (max 20 car)"
+msgstr "Articolo partitivo (max 20 caratteri)"
+
+msgid "Enregistrer et rester"
+msgstr "Salva e resta"
+
+msgid "Quitter sans enregistrer"
+msgstr "Esci senza salvare"
+
+msgid "Créér un nouveau polygone :"
+msgstr "Crea un nuovo poligono:"
+
+msgid "- puis cliquer sur chaque emplacement de sommet,"
+msgstr "- poi fai clic su ogni posizione dei vertici,"
+
+msgid "- le fermer pour finir."
+msgstr "- chiudilo per terminare."
+
+msgid "Éditer les polygones :"
+msgstr "Modifica i poligoni:"
+
+msgid "- déplacer un sommet pour modifier la forme d'un polygone,"
+msgstr "- sposta un vertice per modificare la forma di un poligono,"
+
+msgid "- déplacer le milieu d'un segment pour créer un sommet,"
+msgstr "- sposta il centro di un segmento per creare un vertice,"
+
+msgid "- clic droit sur un sommet pour le supprimer."
+msgstr "- clic destro su un vertice per eliminarlo."
+
+msgid "Créer une enclave ou enlever une partie d'un polygone,"
+msgstr "Creare un'enclave o rimuovere una parte di un poligono,"
+
+msgid "Supprimer des polygones."
+msgstr "Eliminare dei poligoni."
+
+msgid "Suppression"
+msgstr "Eliminazione"
+
+#, php-format
+msgid "Supprimer %s"
+msgstr "Elimina %s"
+
+#, php-format
+msgid "le %2$s %1$s"
+msgstr "%2$s %1$s"
+
+msgid "(définitif)."
+msgstr "(definitivo)."
+
+#, php-format
+msgid "ATTENTION : Ceci va supprimer définitivement %s"
+msgstr "ATTENZIONE: questo eliminerà definitivamente %s"
+
+msgid "Aucune restauration ne sera possible"
+msgstr "Non sarà possibile alcun ripristino"
+
+#, php-format
+msgid "Supprimer « %s »"
+msgstr "Elimina «%s»"
+
+msgid "ou"
+msgstr "o"
+
+msgid "Annuler"
+msgstr "Annulla"
+
+msgid "Options d'exportations"
+msgstr "Opzioni di esportazione"
+
+msgid "Veuillez préciser les options des type de points et des massifs voulus"
+msgstr "Specifica le opzioni dei tipi di punti e dei massicci desiderati"
+
+msgid "Choix des points de la base à exporter"
+msgstr "Scelta dei punti del database da esportare"
+
+msgid "Choix des massifs de la base à exporter"
+msgstr "Scelta dei massicci del database da esportare"
+
+msgid "Choix du format d'exportation"
+msgstr "Scelta del formato di esportazione"
+
+msgid "Obtenir le lien"
+msgstr "Ottieni il link"
+
+msgid "Plus de détail sur ces formats"
+msgstr "Maggiori dettagli su questi formati"
+
+msgid "Lien vers les données demandées"
+msgstr "Link ai dati richiesti"
+
+msgid "Voir les détails sur la licence de refuges.info"
+msgstr "Vedi i dettagli sulla licenza di refuges.info"
+
+msgid "Exportation demandée"
+msgstr "Esportazione richiesta"
+
+#, php-format
+msgid "Voici le lien permanent d'accès direct aux données au format \"%s\""
+msgstr "Ecco il link permanente di accesso diretto ai dati nel formato \"%s\""
+
+msgid "lien vers les données"
+msgstr "link ai dati"
+
+msgid "Cliquez ici pour télécharger les données"
+msgstr "Clicca qui per scaricare i dati"
+
+msgid "Vous n'avez sélectionné aucun type de point ou aucun massif, revenez en arrière pour compléter le formulaire"
+msgstr "Non hai selezionato alcun tipo di punto né alcun massiccio, torna indietro per completare il modulo"
+
+msgid "Veuillez préciser les options de ce que vous voulez et dans quel(s) massif(s)"
+msgstr "Specifica le opzioni di ciò che desideri e in quali massicci"
+
+msgid "Choix des nouvelles à afficher"
+msgstr "Scelta delle novità da mostrare"
+
+msgid "Commentaires"
+msgstr "Commenti"
+
+msgid "Messages des forums"
+msgstr "Messaggi dei forum"
+
+msgid "Ajouts de refuges et cabanes"
+msgstr "Aggiunte di rifugi e capanne"
+
+msgid "Ajouts de points d'eau"
+msgstr "Aggiunte di punti acqua"
+
+msgid "Ajouts d'abris naturels"
+msgstr "Aggiunte di ripari naturali"
+
+msgid "Ajouts de points"
+msgstr "Aggiunte di punti"
+
+msgid "Choix des massifs de la base à restreindre"
+msgstr "Scelta dei massicci a cui limitare"
+
+msgid "Vous demandez vraiment quelque chose de vide ? (Ou alors c'est un bug)"
+msgstr "Stai davvero chiedendo qualcosa di vuoto? (Oppure è un bug)"
+
+#, php-format
+msgid "%s points, %s massifs"
+msgstr "%s punti, %s massicci"
+
+msgid "Cliquer sur un cluster pour dissocier les points proches."
+msgstr "Clicca su un gruppo (cluster) per separare i punti vicini."
+
+msgid "Export des points refuges.info sélectionnés sur la carte au format"
+msgstr "Esportazione dei punti di refuges.info selezionati sulla mappa nel formato"
+
+msgid "gpx (Complet, pour logiciel type osmand, marble, ...)"
+msgstr "gpx (completo, per software come OsmAnd, Marble, ...)"
+
+msgid "gpx (compatible basecamp/mapsource/viking/...)"
+msgstr "gpx (compatibile con BaseCamp/MapSource/Viking/...)"
+
+msgid "gpx simplifié (sans remarques et accès)"
+msgstr "gpx semplificato (senza note e accesso)"
+
+msgid "kml (googlearth et plusieurs applications smartphone)"
+msgstr "kml (Google Earth e varie applicazioni per smartphone)"
+
+msgid "csv (tableurs)"
+msgstr "csv (fogli di calcolo)"
+
+msgid "xml Spécifique à notre base, exhaustif"
+msgstr "xml specifico del nostro database, completo"
+
+msgid "Télécharger le fichier"
+msgstr "Scarica il file"
+
+msgid "Télécharger"
+msgstr "Scarica"
+
+msgid "Copier le lien dans le clipboard"
+msgstr "Copia il link negli appunti"
+
+msgid "Autres zones :"
+msgstr "Altre zone:"
+
+#, php-format
+msgid "%s photos. Les dernières :"
+msgstr "%s foto. Le ultime:"
+
+msgid "photo"
+msgstr "foto"
+
+#, php-format
+msgid "%s points dans la base. Les %s derniers ajoutés :"
+msgstr "%s punti nel database. Gli ultimi %s aggiunti:"
+
+#, php-format
+msgid "Ajout : %s"
+msgstr "Aggiunta: %s"
+
+msgid "par"
+msgstr "da"
+
+#, php-format
+msgid "Voir les %s derniers points ajoutés sur le site"
+msgstr "Vedi gli ultimi %s punti aggiunti al sito"
+
+msgid "Plus..."
+msgstr "Altro..."
+
+#, php-format
+msgid "%s commentaires. Les %s derniers :"
+msgstr "%s commenti. Gli ultimi %s:"
+
+msgid "Commentaire"
+msgstr "Commento"
+
+msgid "sur"
+msgstr "su"
+
+#, php-format
+msgid "dans le massif %s"
+msgstr "nel massiccio %s"
+
+#, php-format
+msgid "Les %s derniers commentaires dans refuges.info"
+msgstr "Gli ultimi %s commenti su refuges.info"
+
+#, php-format
+msgid "Voici les %s"
+msgstr "Ecco: %s"
+
+#, php-format
+msgid "dans %s"
+msgstr "in %s"
+
+#, php-format
+msgid "Voici toutes les %ss"
+msgstr "Ecco tutte le voci di tipo «%s»"
+
+#, php-format
+msgid "Voici tous les %ss"
+msgstr "Ecco tutte le voci di tipo «%s»"
+
+msgid "Points"
+msgstr "Punti"
+
+msgid "Légende"
+msgstr "Legenda"
+
+#, php-format
+msgid "%s uniquement"
+msgstr "Solo %s"
+
+msgid "Tout"
+msgstr "Tutto"
+
+msgid "Ctrl+click: nouvel onglet"
+msgstr "Ctrl+clic: nuova scheda del browser"
+
+msgid "Maj+click: nouvelle fenêtre"
+msgstr "Maiusc+clic: nuova finestra"
+
+msgid "Téléchargements"
+msgstr "Download"
+
+#, php-format
+msgid "Tous les points refuges.info dans %s"
+msgstr "Tutti i punti di refuges.info in %s"
+
+msgid "Télécharger au format GPX complet"
+msgstr "Scarica in formato GPX completo"
+
+msgid "Télécharger au format GPX pour Garmin"
+msgstr "Scarica in formato GPX per Garmin"
+
+msgid "Télécharger au format KML"
+msgstr "Scarica in formato KML"
+
+#, php-format
+msgid "Services (%s) - disponible seulement pour les zooms forts"
+msgstr "Servizi (%s) - disponibili solo con zoom elevato"
+
+msgid "Points de la base OpensStreetmap ; © OpenStreetMap contributors"
+msgstr "Punti del database OpenStreetMap ; © OpenStreetMap contributors"
+
+msgid "hôtel ou location"
+msgstr "albergo o affittacamere"
+
+msgid "camping"
+msgstr "campeggio"
+
+msgid "point d'eau"
+msgstr "punto acqua"
+
+msgid "alimentation"
+msgstr "alimentari"
+
+msgid "parking"
+msgstr "parcheggio"
+
+msgid "bus"
+msgstr "autobus"
+
+msgid "Autres sites"
+msgstr "Altri siti"
+
+msgid "(seuls les 100 premiers points sont affichés)"
+msgstr "(vengono mostrati solo i primi 100 punti)"
+
+msgid "Modifications"
+msgstr "Modifiche"
+
+#, php-format
+msgid "Modifier %s"
+msgstr "Modifica %s"
+
+msgid "Massifs"
+msgstr "Massicci"
+
+msgid "Voir les massifs"
+msgstr "Vedi i massicci"
+
+msgid "Un massif est défini par un polygone qui représente EXACTEMENT le contour du massif."
+msgstr "Un massiccio è definito da un poligono che rappresenta ESATTAMENTE il suo contorno."
+
+msgid "Un point est réputé appartenir à un massif quand il est STRICTEMENT INCLUS dans le polygone."
+msgstr "Un punto si considera appartenente a un massiccio quando è STRETTAMENTE INCLUSO nel poligono."
+
+msgid "Créer un massif"
+msgstr "Crea un massiccio"
+
+msgid "Pour modifier ou supprimer un massif, ouvrez-le en édition."
+msgstr "Per modificare o eliminare un massiccio, aprilo in modifica."
+
+msgid "Zones"
+msgstr "Zone"
+
+msgid "Voir les zones"
+msgstr "Vedi le zone"
+
+msgid "Une zone est définie par un polygone qui n'est jamais affiché en tant que tel."
+msgstr "Una zona è definita da un poligono che non viene mai mostrato in quanto tale."
+
+msgid "Un massif est réputé appartenir à une zone quand son polygone INTERSECTE celui de la zone."
+msgstr "Un massiccio si considera appartenente a una zona quando il suo poligono INTERSECA quello della zona."
+
+msgid "La zone n'a donc pas besoin d'être très précise : un vague rectangle suffit la plupart du temps du moment qu'il recouvre au moins un bout de chaque massif."
+msgstr "La zona non ha quindi bisogno di essere molto precisa: nella maggior parte dei casi basta un rettangolo approssimativo, purché copra almeno una parte di ogni massiccio."
+
+msgid "Par contre, si elle déborde sur un massif qui n'a rien à voir, celui-ci sera affiché."
+msgstr "Se invece sconfina su un massiccio che non c'entra niente, quest'ultimo verrà mostrato."
+
+msgid "Créer une zone"
+msgstr "Crea una zona"
+
+msgid "Pour modifier ou supprimer une zone, ouvrez-la en édition."
+msgstr "Per modificare o eliminare una zona, aprila in modifica."
+
+msgid "Refuges"
+msgstr "Rifugi"
+
+msgid "Points d'eau"
+msgstr "Punti acqua"
+
+msgid "Abris naturels"
+msgstr "Ripari naturali"
+
+msgid "Tout sauf forum"
+msgstr "Tutto tranne il forum"
+
+msgid "Paramétrer par régions"
+msgstr "Imposta per regioni"
+
+msgid "Les nouvelles"
+msgstr "Le novità"
+
+#, php-format
+msgid "%s :"
+msgstr "%s:"
+
+msgid "(En voir 100 de plus...)"
+msgstr "(Vedine altri 100...)"
+
+msgid "Cette fiche est cachée du public, elle n'est visible que des modérateurs"
+msgstr "Questa scheda è nascosta al pubblico, è visibile solo ai moderatori"
+
+msgid "Cette fiche est un modèle, elle n'est visible que des modérateurs"
+msgstr "Questa scheda è un modello, è visibile solo ai moderatori"
+
+msgid "Modification"
+msgstr "Modifica"
+
+msgid "Historique"
+msgstr "Cronologia"
+
+msgid "Trace de la création du point"
+msgstr "Traccia della creazione del punto"
+
+msgid "Une partie de cette page a été traduite automatiquement : chaque texte concerné indique sa langue d'origine et permet d'en voir l'original."
+msgstr "Una parte di questa pagina è stata tradotta automaticamente: ogni testo interessato indica la sua lingua originale e permette di vederne l'originale."
+
+#, php-format
+msgid "Localisation %s :"
+msgstr "Localizzazione %s:"
+
+msgid "carte"
+msgstr "mappa"
+
+msgid "Demander une modification de la fiche"
+msgstr "Richiedi una modifica della scheda"
+
+msgid "Vous êtes le gestionnaire ?"
+msgstr "Sei il gestore?"
+
+msgid "Refuges.info n'a aucun lien avec les gestionnaires. Vous devez les appeler directement."
+msgstr "Refuges.info non ha alcun legame con i gestori. Devi contattarli direttamente."
+
+msgid "Accès :"
+msgstr "Accesso:"
+
+msgid "Remarques :"
+msgstr "Note:"
+
+msgid "Informations complémentaires :"
+msgstr "Informazioni aggiuntive:"
+
+#, php-format
+msgid "%s : %s"
+msgstr "%s: %s"
+
+msgid "Points à proximité (distance à vol d'oiseau) :"
+msgstr "Punti nelle vicinanze (distanza in linea d'aria):"
+
+#, php-format
+msgid "%s (altitude : %sm), situé(e) à %s%s"
+msgstr "%s (altitudine: %s m), situato a %s%s"
+
+msgid "Réglementation particulière :"
+msgstr "Regolamentazione particolare:"
+
+#, php-format
+msgid "%s est situé·e dans"
+msgstr "%s si trova in"
+
+#, php-format
+msgid "(Plus d'information sur <a href=\"%s\">cette réglementation</a>)"
+msgstr "(Maggiori informazioni su <a href=\"%s\">questa regolamentazione</a>)"
+
+msgid "Coordonnées :"
+msgstr "Coordinate:"
+
+msgid "Provenance :"
+msgstr "Provenienza:"
+
+msgid "Export :"
+msgstr "Esporta:"
+
+msgid "Géoloc"
+msgstr "Geoloc"
+
+#, php-format
+msgid "Fiche n°%s sur le site depuis le %s"
+msgstr "Scheda n. %s sul sito dal %s"
+
+#, php-format
+msgid ", dernière modification du %s."
+msgstr ", ultima modifica del %s."
+
+msgid "Modérateur actuel de cette fiche :"
+msgstr "Moderatore attuale di questa scheda:"
+
+msgid "Créateur de cette fiche :"
+msgstr "Creatore di questa scheda:"
+
+#, php-format
+msgid "Discussions sur %s"
+msgstr "Discussioni su %s"
+
+#, php-format
+msgid "Pour les discussions, les questions et les avis, on vous conseille d'utiliser le <a href=\"%1$s\">forum dédié à %2$s</a>. Les utilisateurs du site qui \"suivent\" la discussion du forum seront prévenus par e-mail si vous postez votre message sur le forum. Pour faire part d'une information objective à propos de %2$s (accès, réglementation, demande de corrections de la fiche), vous pouvez ajouter une information ci-après."
+msgstr "Per discussioni, domande e pareri ti consigliamo di usare il <a href=\"%1$s\">forum dedicato a %2$s</a>. Gli utenti del sito che \"seguono\" la discussione del forum riceveranno un'e-mail se pubblichi il tuo messaggio sul forum. Per comunicare un'informazione oggettiva su %2$s (accesso, regolamentazione, richiesta di correzione della scheda), puoi aggiungere un'informazione qui sotto."
+
+msgid "Dernier message du forum :"
+msgid_plural "Derniers messages du forum :"
+msgstr[0] "Ultimo messaggio del forum:"
+msgstr[1] "Ultimi messaggi del forum:"
+
+msgid "Le forum est vide, n'hésitez pas à y laisser le premier message!"
+msgstr "Il forum è vuoto, non esitare a lasciarvi il primo messaggio!"
+
+msgid "Voir le post"
+msgstr "Vedi il post"
+
+msgid "Informations récentes"
+msgstr "Informazioni recenti"
+
+msgid "Ajouter une information et/ou une photo"
+msgstr "Aggiungi un'informazione e/o una foto"
+
+msgid "Trace de la création du commentaire"
+msgstr "Traccia della creazione del commento"
+
+msgid "Avertissement : Les informations fournies sont indicatives. Elles ne sauraient engager la responsabilité des gestionnaires ou des rédacteurs dans l'hypothèse où les utilisateurs de ces informations n'observeraient pas les règles de prudence que la montagne impose. Soyez responsables"
+msgstr "Avvertenza: le informazioni fornite sono indicative. Non possono impegnare la responsabilità dei gestori o dei redattori nel caso in cui gli utenti di queste informazioni non rispettino le regole di prudenza che la montagna impone. Sii responsabile"
+
+msgid "Page sous licence :"
+msgstr "Pagina con licenza:"
+
+msgid "Pas encore de compte ?"
+msgstr "Non hai ancora un account?"
+
+msgid "Nous remarquons que vous n'êtes pas connecté ou n'êtes pas inscrit sur le site. Cela n'est pas obligatoire, mais si vous souhaitez améliorer ultérieurement votre fiche, vous ne pourrez le faire sans l'aide d'un modérateur. Il restera possible après coup de vous ré-attribuer une fiche par demande sur le forum, mais c'est plus simple d'être connecté dès le départ !"
+msgstr "Notiamo che non sei connesso o non sei iscritto al sito. Non è obbligatorio, ma se in seguito vorrai migliorare la tua scheda, non potrai farlo senza l'aiuto di un moderatore. Sarà comunque possibile in seguito farsi riassegnare una scheda con una richiesta sul forum, ma è più semplice essere connessi fin dall'inizio!"
+
+msgid "Ajouter un·e :"
+msgstr "Aggiungi:"
+
+msgid "Passer à l'étape suivante"
+msgstr "Passa al passo successivo"
+
+msgid "Licence des contenus"
+msgstr "Licenza dei contenuti"
+
+msgid "L'information que vous allez rentrer"
+msgstr "Le informazioni che stai per inserire"
+
+msgid "sera soumise à la licence creative commons by-sa."
+msgstr "saranno soggette alla licenza Creative Commons by-sa."
+
+#, php-format
+msgid "Ajouter un commentaire sur la fiche de %s :"
+msgstr "Aggiungi un commento alla scheda di %s:"
+
+msgid "Nous remarquons que <strong>vous n'êtes pas connecté</strong> sur le site ou le Forum. Bien que nous autorisions les contributions anonymes, nous vous recommandons de vous connecter sur le forum et/ou de créer un compte afin de pouvoir revenir faire des modifications ultérieures"
+msgstr "Notiamo che <strong>non sei connesso</strong> al sito o al forum. Anche se autorizziamo i contributi anonimi, ti consigliamo di accedere al forum e/o di creare un account per poter tornare in seguito a fare modifiche"
+
+msgid "<strong>Votre commentaire a bien été ajouté !</strong> (vous pouvez en ajouter d'autres)"
+msgstr "<strong>Il tuo commento è stato aggiunto!</strong> (puoi aggiungerne altri)"
+
+msgid "Syntaxe&nbsp;possible"
+msgstr "Sintassi&nbsp;possibile"
+
+msgid "Auteur :"
+msgstr "Autore:"
+
+msgid "facultatif"
+msgstr "facoltativo"
+
+msgid "Choisir ou déposer une photo"
+msgstr "Scegli o carica una foto"
+
+#, php-format
+msgid "facultatif, format %1$s de taille max=%2$s La photo doit soit être la votre soit être sous une %3$s (pensez alors à citer son auteur si cela est requis)."
+msgstr "facoltativo, formato %1$s, dimensione massima %2$s. La foto deve essere tua oppure avere una %3$s (ricorda allora di citare l'autore se richiesto)."
+
+msgid "licence compatible"
+msgstr "licenza compatibile"
+
+msgid "Prévenir les modérateurs globaux pour compléter la fiche."
+msgstr "Avvisa i moderatori globali di completare la scheda."
+
+msgid "Votre commentaire sera alors visible de tous immédiatement, mais par la suite un modérateur pourra compléter la fiche et le supprimer ou le garder."
+msgstr "Il tuo commento sarà subito visibile a tutti, ma in seguito un moderatore potrà completare la scheda e cancellarlo o conservarlo."
+
+msgid "<strong>Mauvaise lettre !</strong> Merci de recopier la lettre indiquée afin de lutter contre les message indésirables: Il y a eu ici beaucoup de messages laissés par des 'robots' faisant de la publicité pour des sites plus que douteux, du coup, cette manoeuvre a pour but de leur compliquer la tâche. Idéalement, seul un 'humain' saura comprendre ce qu'il faut faire. Nous sommes désolé de cette perte d'ergonomie; Un des objectifs principal du site a toujours été d'être simple et rapide d'utilisation."
+msgstr "<strong>Lettera sbagliata!</strong> Ricopia la lettera indicata per contrastare i messaggi indesiderati: qui sono stati lasciati molti messaggi da 'robot' che facevano pubblicità a siti più che dubbi, quindi questo passaggio serve a complicare loro il compito. Idealmente, solo un 'umano' saprà capire cosa fare. Ci dispiace per questa perdita di praticità; uno degli obiettivi principali del sito è sempre stato di essere semplice e rapido da usare."
+
+msgid "Ceci afin d'éviter les messages indésirables automatiques, désolé."
+msgstr "Questo serve a evitare i messaggi indesiderati automatici, scusaci."
+
+msgid "Envoyer"
+msgstr "Invia"
+
+msgid "Recommencer"
+msgstr "Ricomincia"
+
+msgid "Ce que vous pouvez ou non mettre sur le site"
+msgstr "Cosa puoi o non puoi inserire nel sito"
+
+msgid "Un commentaire sur une fiche a pour but d'être utile à tous et objectif."
+msgstr "Un commento su una scheda ha lo scopo di essere utile a tutti e oggettivo."
+
+#, php-format
+msgid "Si vous désirez poster une appréciation ou une question faites le plutôt sur le %s."
+msgstr "Se desideri pubblicare un apprezzamento o una domanda, fallo piuttosto sul %s."
+
+#, php-format
+msgid "forum attaché à %s"
+msgstr "forum collegato a %s"
+
+msgid "Il est <strong>interdit de faire une réservation ou de signaler aux autres que vous y serez</strong>"
+msgstr "È <strong>vietato effettuare una prenotazione o segnalare agli altri che ci sarai</strong>"
+
+#, php-format
+msgid "car cette pratique est contraire à l'esprit dans lequel %s a été créée."
+msgstr "perché questa pratica è contraria allo spirito con cui %s è stata creata."
+
+msgid "Tout commentaire dans ce sens sera supprimé par les modérateurs."
+msgstr "Qualsiasi commento in questo senso sarà cancellato dai moderatori."
+
+#, php-format
+msgid "Voir %s"
+msgstr "Vedi %s"
+
+msgid "la discussion à ce sujet sur le forum."
+msgstr "la discussione in proposito sul forum."
+
+#, php-format
+msgid "Voir %s."
+msgstr "Vedi %s."
+
+msgid "ce que nous souhaitons voir et ne pas voir dans les commentaires"
+msgstr "cosa vorremmo vedere e non vedere nei commenti"
+
+#, php-format
+msgid "Le site n'a aucun rapport avec les propriétaires ou gérants de %s (inutile de leur laisser un message ici)."
+msgstr "Il sito non ha alcun rapporto con i proprietari o i gestori di %s (inutile lasciare loro un messaggio qui)."
+
+#, php-format
+msgid "Le commentaire et la photo que vous ajoutez sera soumis à la %s et pourra être réutilisé dans ce cadre."
+msgstr "Il commento e la foto che aggiungi saranno soggetti alla %s e potranno essere riutilizzati in questo ambito."
+
+msgid "licence creative commons by-sa"
+msgstr "licenza Creative Commons by-sa"
+
+msgid "À noter :"
+msgstr "Da notare:"
+
+msgid "Cette fiche est un modèle, ne la supprimez ou changez son type que si vous savez vraiment ce que vous faites"
+msgstr "Questa scheda è un modello, non eliminarla né cambiarne il tipo se non sai davvero cosa stai facendo"
+
+msgid "Double cliquer sur un point de la carte pour y ramener le curseur."
+msgstr "Doppio clic su un punto della mappa per riportarvi il cursore."
+
+msgid "Coordonnées"
+msgstr "Coordinate"
+
+msgid "Longitude :"
+msgstr "Longitudine:"
+
+msgid "Latitude :"
+msgstr "Latitudine:"
+
+msgid "Provenance"
+msgstr "Provenienza"
+
+msgid "Altitude (mètre) :"
+msgstr "Altitudine (metri):"
+
+msgid "Informations de base"
+msgstr "Informazioni di base"
+
+msgid "Type de point"
+msgstr "Tipo di punto"
+
+msgid "Modérateur de cette fiche :"
+msgstr "Moderatore di questa scheda:"
+
+msgid "Anonyme/Aucun"
+msgstr "Anonimo/Nessuno"
+
+msgid "Mise en forme texte"
+msgstr "Formattazione del testo"
+
+msgid "oui"
+msgstr "sì"
+
+msgid "non"
+msgstr "no"
+
+msgid "État :"
+msgstr "Stato:"
+
+msgid "ne sait pas"
+msgstr "non so"
+
+msgid "nombre :"
+msgstr "numero:"
+
+msgid "Questions pour les contributeurs anonymes"
+msgstr "Domande per i contributori anonimi"
+
+msgid "Votre nom ou pseudo (facultatif) :"
+msgstr "Il tuo nome o pseudonimo (facoltativo):"
+
+msgid "Cette procédure permet de s'assurer que les 'robots' qui parcourent le Net ne viennent pas jusqu'ici"
+msgstr "Questa procedura serve ad assicurarsi che i 'robot' che girano per la Rete non arrivino fin qui"
+
+msgid "Aucun champ n'est obligatoire. Cependant, si la requête est trop large, cela peut prendre un certain temps"
+msgstr "Nessun campo è obbligatorio. Tuttavia, se la richiesta è troppo ampia, può richiedere un po' di tempo"
+
+msgid "tout ou partie du nom, par exemple 'jasse' ou 'la pra'"
+msgstr "tutto o parte del nome, per esempio 'jasse' o 'la pra'"
+
+msgid "Nom"
+msgstr "Nome"
+
+msgid "type d'hébergement, gîte, cabane ..."
+msgstr "tipo di alloggio, gîte, capanna ..."
+
+msgid "(tous)"
+msgstr "(tutti)"
+
+msgid "Polygones (départements, régions, massifs, réserves naturelles, tous les polygones dans notre base) contenant les points recherchés"
+msgstr "Poligoni (dipartimenti, regioni, massicci, riserve naturali, tutti i poligoni del nostro database) che contengono i punti cercati"
+
+msgid "Dans le massif/département/... :"
+msgstr "Nel massiccio/dipartimento/... :"
+
+msgid "commencez à écrire..."
+msgstr "inizia a scrivere..."
+
+msgid "exemple: scie, table ..."
+msgstr "esempio: sega, tavolo ..."
+
+msgid "Le champ remarques contient"
+msgstr "Il campo note contiene"
+
+msgid "coché : Avec, décoché: Peu importe"
+msgstr "spuntato: con, non spuntato: indifferente"
+
+msgid "Attributs divers"
+msgstr "Attributi vari"
+
+msgid "Couvertures"
+msgstr "Coperte"
+
+msgid "Eau à moins de 100m"
+msgstr "Acqua a meno di 100 m"
+
+msgid "Forêt à moins de 100m"
+msgstr "Bosco a meno di 100 m"
+
+msgid "Latrines"
+msgstr "Latrine"
+
+msgid "Ne manque pas de mur"
+msgstr "Non manca nessun muro"
+
+msgid "Concerne surtout les cabanes, Il n'y a pas de réservation et des groupes peuvent toujours venir à l'improviste"
+msgstr "Riguarda soprattutto le capanne. Non c'è prenotazione e dei gruppi possono sempre arrivare all'improvviso"
+
+msgid "Nombre de places"
+msgstr "Numero di posti"
+
+msgid "Sur matelas"
+msgstr "Su materasso"
+
+msgid "Restreindre à une altitude en mètres, par exemple 1500 à 2000"
+msgstr "Limita a un'altitudine in metri, per esempio da 1500 a 2000"
+
+msgid "Altitude"
+msgstr "Altitudine"
+
+msgid "Concerne surtout les cabanes"
+msgstr "Riguarda soprattutto le capanne"
+
+msgid "Moyen de chauffage"
+msgstr "Mezzo di riscaldamento"
+
+msgid "Poêle ou cheminée"
+msgstr "Stufa o camino"
+
+msgid "Cheminée"
+msgstr "Camino"
+
+msgid "Poêle"
+msgstr "Stufa"
+
+msgid "Non renseigné"
+msgstr "Non indicato"
+
+msgid "Critères uniquement pour les modérateurs"
+msgstr "Criteri solo per i moderatori"
+
+msgid "Méta-informations"
+msgstr "Meta-informazioni"
+
+msgid "Un positionnement précis est-il indispensable ?"
+msgstr "Un posizionamento preciso è indispensabile?"
+
+msgid "Provenance des coordonnées GPS :"
+msgstr "Provenienza delle coordinate GPS:"
+
+msgid "(Peu importe)"
+msgstr "(Indifferente)"
+
+msgid "Dont le modérateur est :"
+msgstr "Il cui moderatore è:"
+
+msgid "Tous"
+msgstr "Tutti"
+
+msgid "Le point est fermé/détruit/en ruine"
+msgstr "Il punto è chiuso/distrutto/in rovina"
+
+msgid "Que les non utilisables"
+msgstr "Solo quelli non utilizzabili"
+
+msgid "Sélectionner les champs avec valeur 'Inconnu', cocher les cases rouges"
+msgstr "Seleziona i campi con valore 'Sconosciuto', spunta le caselle rosse"
+
+msgid "Sélectionner champs Inconnus"
+msgstr "Seleziona i campi sconosciuti"
+
+msgid "Uniquement les points cachés"
+msgstr "Solo i punti nascosti"
+
+msgid "Abris dont il manque un mur"
+msgstr "Ripari a cui manca un muro"
+
+msgid "dont il faut récupérer les clés"
+msgstr "di cui bisogna ritirare le chiavi"
+
+msgid "Résultats"
+msgstr "Risultati"
+
+msgid "Si cette case est cochée, la recherche renvoie tous les résultats sans limite (attention, cela peut lancer une recherche parfois longue)"
+msgstr "Se questa casella è spuntata, la ricerca restituisce tutti i risultati senza limite (attenzione, può avviare una ricerca a volte lunga)"
+
+#, php-format
+msgid "Limiter aux %s premiers résultats."
+msgstr "Limita ai primi %s risultati."
+
+msgid "Tri montagne (Résultats triés par Zones->Massifs->Réserves)"
+msgstr "Ordinamento per montagna (risultati ordinati per Zone->Massicci->Riserve)"
+
+msgid "Tri administratif (Résultats triés par Pays->Région->Département)"
+msgstr "Ordinamento amministrativo (risultati ordinati per Paese->Regione->Dipartimento)"
+
+msgid "chercher !"
+msgstr "cerca!"
+
+msgid "Rechercher dans les Pyrénées ?"
+msgstr "Cercare nei Pirenei?"
+
+msgid "Compléter votre recherche avec l'excellent site"
+msgstr "Completa la tua ricerca con l'eccellente sito"
+
+msgid "Modification d'un point"
+msgstr "Modifica di un punto"
+
+msgid "(Vous pouvez retourner corriger le problème en utilisant le bouton retour de votre navigateur)"
+msgstr "(Puoi tornare a correggere il problema usando il pulsante indietro del tuo browser)"
+
+msgid "Merci de votre contribution"
+msgstr "Grazie per il tuo contributo"
+
+msgid "Cliquez ici pour voir ou retourner à la fiche"
+msgstr "Clicca qui per vedere la scheda o tornare ad essa"
+
+#, php-format
+msgid "Recherche sur refuges.info (%s points affichés et la limite du nombre de points a été atteinte)"
+msgstr "Ricerca su refuges.info (%s punti mostrati e il limite del numero di punti è stato raggiunto)"
+
+#, php-format
+msgid "Recherche sur refuges.info (%s points affichés)"
+msgstr "Ricerca su refuges.info (%s punti mostrati)"
+
+#, php-format
+msgid "Aucun point trouvé dans la base de %s"
+msgstr "Nessun punto trovato nel database di %s"
+
+msgid "Modifier cette page"
+msgstr "Modifica questa pagina"
+
+msgid "Suppression de cette page sans confirmation :"
+msgstr "Eliminazione di questa pagina senza conferma:"
+
+msgid "pouf !"
+msgstr "puf!"
+
+#, php-format
+msgid "Date de dernière modification de cette page : %s"
+msgstr "Data dell'ultima modifica di questa pagina: %s"
+
+msgid "Liste des commentaires en attente de modération :"
+msgstr "Elenco dei commenti in attesa di moderazione:"
+
+#, php-format
+msgid "Le commentaire du %s"
+msgstr "Il commento del %s"
+
+#, php-format
+msgid "par \"%s\" sur %s"
+msgstr "di \"%s\" su %s"
+
+#, php-format
+msgid ", raison=%s"
+msgstr ", motivo=%s"
+
+msgid "Retirer ceux que j'ai coché de la liste"
+msgstr "Rimuovi dall'elenco quelli che ho spuntato"
+
+msgid "Aucun commentaire en attente de modération"
+msgstr "Nessun commento in attesa di moderazione"
+
+msgid "Liste des 50 derniers emails envoyés depuis le forum qui sont revenus en erreur"
+msgstr "Elenco degli ultimi 50 e-mail inviati dal forum che sono tornati in errore"
+
+msgid "date"
+msgstr "data"
+
+msgid "contenu"
+msgstr "contenuto"
+
+msgid "Marquer comme traité"
+msgstr "Segna come gestito"
+
+msgid "Fiche n°"
+msgstr "Scheda n."
+
+msgid "Type de modification"
+msgstr "Tipo di modifica"
+
+msgid "Nombre maximum"
+msgstr "Numero massimo"
+
+msgid "Filtrer"
+msgstr "Filtra"
+
+msgid "du/de la"
+msgstr "del/della"
+
+#, php-format
+msgid "du %s"
+msgstr "del %s"
+
+#, php-format
+msgid "par %s"
+msgstr "da %s"
+
+msgid "Avant"
+msgstr "Prima"
+
+msgid "voir +"
+msgstr "vedi +"
+
+msgid "Après"
+msgstr "Dopo"
+
+msgid "Voici la liste de toutes les pages wiki du site, classées par ordre alphabétique :"
+msgstr "Ecco l'elenco di tutte le pagine wiki del sito, in ordine alfabetico:"
+
+msgid "Nom de la page wiki"
+msgstr "Nome della pagina wiki"
+
+msgid "dernière modification"
+msgstr "ultima modifica"
+
+msgid "Aucune page wiki sur ce site"
+msgstr "Nessuna pagina wiki su questo sito"
+
+msgid "Modification des \"modèles\" de fiche"
+msgstr "Modifica dei \"modelli\" di scheda"
+
+msgid "Voici la liste des modèles existants pour les différents points de la base, chacun pouvant être modifié, exactement comme une fiche normale, sauf qu'ici il s'agit d'un \"modèle\" sur un point fictif : Il est dans notre base, au même titre que toutes les autres fiches de points, mais ne sera affiché sur aucune carte, aucune recherche et rien du tout en fait sauf... comme \"pré-remplissage\" d'un nouveau point vierge."
+msgstr "Ecco l'elenco dei modelli esistenti per i diversi punti del database, ognuno dei quali può essere modificato esattamente come una scheda normale, tranne per il fatto che qui si tratta di un \"modello\" su un punto fittizio: è nel nostro database, come tutte le altre schede di punti, ma non sarà mostrato su nessuna mappa, in nessuna ricerca e in nessun altro posto, tranne... come \"precompilazione\" di un nuovo punto vuoto."
+
+msgid "En gros, c'est le contenu par défaut lorsque l'on crée une fiche, dont l'objectif est d'inciter à indiquer, qu'il y a un poêle, une table, des couvertures, etc."
+msgstr "In sostanza, è il contenuto predefinito quando si crea una scheda, il cui scopo è incoraggiare a indicare che c'è una stufa, un tavolo, delle coperte, ecc."
+
+msgid "On aurait pu faire autrement bien sûr en écrivant ça à côté de la fiche, mais j'ai (sly) trouvé l'idée intéressante, et comme avantage collatéral, quand une fiche apparaît avec toutes les valeurs par défaut, on détecte rapidement qu'il y a eu un problème et un modérateur peut alors intervenir."
+msgstr "Si sarebbe potuto fare diversamente, ovviamente, scrivendolo accanto alla scheda, ma io (sly) ho trovato l'idea interessante e, come vantaggio collaterale, quando una scheda compare con tutti i valori predefiniti, si capisce subito che c'è stato un problema e un moderatore può intervenire."
+
+msgid "Lien d'exportation copié dans le presse-papier :"
+msgstr "Link di esportazione copiato negli appunti:"
+
+msgid "Itinéraires"
+msgstr "Itinerari"
+
+msgid "Erreur 404 : commentaire introuvable"
+msgstr "Errore 404: commento non trovato"
+
+msgid "Merci pour votre aide au tri, "
+msgstr "Grazie per il tuo aiuto nello smistamento,"
+
+msgid "Oups ? la lettre anti_robot saisie n'est pas la bonne, utilisez le bouton \"Retour de votre navigateur pour reprendre la saisie\", ou "
+msgstr "Ops? La lettera anti-robot inserita non è corretta, usa il pulsante \"Indietro\" del tuo browser per riprendere l'inserimento, oppure"
+
+msgid "vous pouvez retourner sur : "
+msgstr "puoi tornare a:"
+
+#, php-format
+msgid "Classement commentaire sur %s"
+msgstr "Classificazione del commento su %s"
+
+msgid "Erreur 403 : droits insuffisants"
+msgstr "Errore 403: diritti insufficienti"
+
+#, php-format
+msgid "Pour modifier le commentaire d'id=%s, soit ça doit être le votre, soit vous devez être modérateur global, êtes vous bien connecté ?"
+msgstr "Per modificare il commento con id=%s, deve essere tuo oppure devi essere moderatore globale: sei connesso correttamente?"
+
+msgid "Aucune action demandée, utilisez le formulaire de modification du commentaire"
+msgstr "Nessuna azione richiesta, usa il modulo di modifica del commento"
+
+#, php-format
+msgid "Transfert du commentaire impossible, car le point de destination indique : %s"
+msgstr "Trasferimento del commento impossibile, perché il punto di destinazione indica: %s"
+
+#, php-format
+msgid "Action inconnue : %s"
+msgstr "Azione sconosciuta: %s"
+
+msgid "Permissions insuffisantes"
+msgstr "Permessi insufficienti"
+
+msgid "Désolé, mais pour cette opération vous devez être modérateur et être connecté au forum :"
+msgstr "Spiacenti, ma per questa operazione devi essere moderatore ed essere connesso al forum:"
+
+#, php-format
+msgid "Modification %s"
+msgstr "Modifica %s"
+
+msgid "Création d'un polygone"
+msgstr "Creazione di un poligono"
+
+msgid "Téléchargement et exportation de la base refuges.info"
+msgstr "Download ed esportazione del database di refuges.info"
+
+msgid "Paramétrez votre flux RSS"
+msgstr "Configura il tuo feed RSS"
+
+msgid "Obtenir le lien vers le flux RSS"
+msgstr "Ottieni il link al feed RSS"
+
+msgid "Choisissez ce que vous souhaitez afficher pour votre page des nouvelles"
+msgstr "Scegli cosa vuoi mostrare nella tua pagina delle novità"
+
+msgid "Obtenir un lien vers les nouvelles demandées"
+msgstr "Ottieni un link alle novità richieste"
+
+msgid "flux RSS ou de la page des nouvelles du site Refuges.info"
+msgstr "feed RSS o pagina delle novità del sito Refuges.info"
+
+msgid "Voici le lien vers le Flux RSS demandé, vous pouvez l'ajouter à votre agrégateur de flux RSS favoris (Clic-droit puis enregistrer sous)"
+msgstr "Ecco il link al feed RSS richiesto, puoi aggiungerlo al tuo aggregatore di feed RSS preferito (clic destro e poi salva con nome)"
+
+msgid "Lien vers les nouvelles personnalisées (vous pouvez la placer en marque page)"
+msgstr "Link alle novità personalizzate (puoi metterlo tra i preferiti)"
+
+msgid "Carte et informations sur les refuges, cabanes et abris de montagne"
+msgstr "Mappa e informazioni su rifugi, capanne e ripari di montagna"
+
+msgid "cabane non gardée"
+msgstr "capanna non custodita"
+
+msgid "refuge gardé"
+msgstr "rifugio custodito"
+
+msgid "gîte d'étape"
+msgstr "alloggio di tappa (gîte d'étape)"
+
+msgid "abri naturel"
+msgstr "riparo naturale"
+
+msgid "passage délicat"
+msgstr "passaggio delicato"
+
+msgid "bâtiment à investiguer"
+msgstr "edificio da verificare"
+
+msgid "Régions"
+msgstr "Regioni"
+
+msgid "cabanes, refuges et points d'eau"
+msgstr "capanne, rifugi e punti acqua"
+
+#, php-format
+msgid "%s sur une carte"
+msgstr "%s su una mappa"
+
+#, php-format
+msgid "Impossible d'afficher la carte sur ce polygone car : %s"
+msgstr "Impossibile mostrare la mappa su questo poligono perché: %s"
+
+msgid "Selecteur de refuges, point d'eau et cabane sur les cartes"
+msgstr "Selettore di rifugi, punti acqua e capanne sulle mappe"
+
+msgid "Dernières nouvelles du site et informations ajoutées sur les refuges"
+msgstr "Ultime novità del sito e informazioni aggiunte sui rifugi"
+
+#, php-format
+msgid "Erreur 403 - Vous n'avez pas les droits d'accès à la page %s"
+msgstr "Errore 403 - Non hai i diritti di accesso alla pagina %s"
+
+#, php-format
+msgid "Erreur 404 - La page demandée %s est introuvable sur refuges.info"
+msgstr "Errore 404 - La pagina richiesta %s non è stata trovata su refuges.info"
+
+msgid "Info périmée ?"
+msgstr "Info scaduta?"
+
+msgid "Ajouter un point dans refuges.info"
+msgstr "Aggiungi un punto su refuges.info"
+
+msgid "Il contient un ou des mots clés interdits. En cas de doute venez en parler sur le forum"
+msgstr "Contiene una o più parole chiave vietate. In caso di dubbio vieni a parlarne sul forum"
+
+msgid "Impossible d'ajouter ce commentaire car :"
+msgstr "Impossibile aggiungere questo commento perché:"
+
+#, php-format
+msgid "Ajouter une information ou une photo sur %s"
+msgstr "Aggiungi un'informazione o una foto su %s"
+
+#, php-format
+msgid "Impossible d'ajouter un commentaire car : %s"
+msgstr "Impossibile aggiungere un commento perché: %s"
+
+msgid "Point inexistant"
+msgstr "Punto inesistente"
+
+msgid "Suppression de la fiche"
+msgstr "Eliminazione della scheda"
+
+msgid "Modification d'un point dans refuges.info"
+msgstr "Modifica di un punto su refuges.info"
+
+msgid "Connexion forum"
+msgstr "Accesso al forum"
+
+#, php-format
+msgid "Le formulaire d'ajout n'a pas pu être pré-rempli : aucune fiche modèle n'existe pour le type de point n°%d dans la base (il en faut exactement une). Le formulaire est affiché avec des champs vides, vous pouvez le remplir normalement."
+msgstr "Il modulo di aggiunta non ha potuto essere precompilato: non esiste alcuna scheda modello per il tipo di punto n. %d nel database (ne serve esattamente una). Il modulo viene mostrato con i campi vuoti, puoi compilarlo normalmente."
+
+#, php-format
+msgid "Le formulaire d'ajout n'a pas pu être pré-rempli : plusieurs fiches modèles existent pour le type de point n°%d dans la base (il en faut exactement une). Le formulaire est affiché avec des champs vides, vous pouvez le remplir normalement."
+msgstr "Il modulo di aggiunta non ha potuto essere precompilato: esistono più schede modello per il tipo di punto n. %d nel database (ne serve esattamente una). Il modulo viene mostrato con i campi vuoti, puoi compilarlo normalmente."
+
+msgid "Ajout d'un point dans refuges.info"
+msgstr "Aggiunta di un punto su refuges.info"
+
+msgid "Formulaire d'ajout de point : information manquante"
+msgstr "Modulo di aggiunta di un punto: informazione mancante"
+
+msgid "Vous n'auriez pas dû arriver ici, le type de point à créer n'a pas été reçu (ni l'identifiant d'un point à modifier)."
+msgstr "Non avresti dovuto arrivare qui: il tipo di punto da creare non è stato ricevuto (né l'identificativo di un punto da modificare)."
+
+msgid "Choisir le type de point à ajouter"
+msgstr "Scegli il tipo di punto da aggiungere"
+
+msgid "Cacher cette fiche du public"
+msgstr "Nascondi questa scheda al pubblico"
+
+msgid "Cette action n'est accessible qu'aux modérateurs, cela cachera la fiche de la vue de tous sauf des modérateurs (demande du propriétaire, terrain privé, autre raison). Une autre possibilité, selon le cas, serait de noter comme fermé/détruite qui garde visible, mais indique le changement de statut"
+msgstr "Questa azione è accessibile solo ai moderatori, nasconderà la scheda alla vista di tutti tranne che dei moderatori (richiesta del proprietario, terreno privato, altro motivo). Un'altra possibilità, a seconda dei casi, sarebbe segnarla come chiusa/distrutta, il che la mantiene visibile ma indica il cambio di stato"
+
+msgid "Ne sait pas"
+msgstr "Non so"
+
+msgid "Coule"
+msgstr "Scorre"
+
+msgid "Débit intermittent"
+msgstr "Portata intermittente"
+
+msgid "Ouvert"
+msgstr "Aperto"
+
+msgid "Détruit(e)"
+msgstr "Distrutto/a"
+
+msgid "Recherche de points sur refuges.info"
+msgstr "Ricerca di punti su refuges.info"
+
+msgid "ERREUR: vous n'avez pas rentré la lettre demandée"
+msgstr "ERRORE: non hai inserito la lettera richiesta"
+
+msgid "Le point a bien été ajouté"
+msgstr "Il punto è stato aggiunto"
+
+msgid "Le point a bien été modifié"
+msgstr "Il punto è stato modificato"
+
+msgid "Vous n'êtes ni modérateur global, ni modérateur de cette fiche, vous n'avez pas l'autorisation de la modifier"
+msgstr "Non sei né moderatore globale né moderatore di questa scheda, non hai l'autorizzazione a modificarla"
+
+msgid "Vous n'êtes pas modérateur du site, vous n'avez pas l'autorisation de la supprimer"
+msgstr "Non sei moderatore del sito, non hai l'autorizzazione a eliminarla"
+
+msgid "(Vous pouvez revenir en arrière avec votre navigateur pour corriger le problème)"
+msgstr "(Puoi tornare indietro con il tuo browser per correggere il problema)"
+
+msgid "Recherche sur refuges.info en erreur"
+msgstr "Ricerca su refuges.info in errore"
+
+#, php-format
+msgid "(%s points affichés et la limite du nombre de points a été atteinte)"
+msgstr "(%s punti mostrati e il limite del numero di punti è stato raggiunto)"
+
+msgid "Votre recherche ne contient aucun critère, il devrait au moins y avoir le nom (même vide)"
+msgstr "La tua ricerca non contiene alcun criterio, dovrebbe esserci almeno il nome (anche vuoto)"
+
+msgid "Toutefois, vous pouvez la créer si besoin car vous êtes modérateur, en : "
+msgstr "Tuttavia, puoi crearla se serve perché sei moderatore,"
+
+msgid "cliquant ici"
+msgstr "cliccando qui"
+
+msgid "Erreur de modération"
+msgstr "Errore di moderazione"
+
+msgid "peut-être pouvez-vous essayer de ré-ouvrir ce formulaire : "
+msgstr "forse puoi provare a riaprire questo modulo:"
+
+msgid "Liste des commentaires en attente de correction"
+msgstr "Elenco dei commenti in attesa di correzione"
+
+msgid "nous signale une modification de fiche à faire"
+msgstr "ci segnala una modifica da fare alla scheda"
+
+msgid "n'a peut-être pas/plus d'intérêt selon un internaute"
+msgstr "forse non ha (più) interesse secondo un utente"
+
+msgid "apporte peut-être de l'information à la fiche selon un internaute"
+msgstr "forse apporta informazioni alla scheda secondo un utente"
+
+msgid "contient un mot pouvant faire penser à une réservation"
+msgstr "contiene una parola che fa pensare a una prenotazione"
+
+#, php-format
+msgid "concerne un %s et n'a pas été traitée par un modérateur"
+msgstr "riguarda (%s) e non è stata gestita da un moderatore"
+
+#, php-format
+msgid "Requête en erreur, impossible de marquer comme traité l'email de numéro %s"
+msgstr "Richiesta in errore, impossibile segnare come gestita l'e-mail numero %s"
+
+msgid "Requête en erreur, impossible d'afficher l'historique des emails en erreur"
+msgstr "Richiesta in errore, impossibile mostrare la cronologia delle e-mail in errore"
+
+msgid "L'historique n'est consultable que par les modérateurs, ou par le modérateur de la fiche pour l'historique de sa fiche, êtes vous bien connecté ?"
+msgstr "La cronologia è consultabile solo dai moderatori, o dal moderatore della scheda per la cronologia della sua scheda: sei connesso correttamente?"
+
+msgid "Requête en erreur, impossible d'afficher l'historique de modifications"
+msgstr "Richiesta in errore, impossibile mostrare la cronologia delle modifiche"
+
+msgid "anonyme ?"
+msgstr "anonimo?"
+
+#, php-format
+msgid "Fiche n°%s"
+msgstr "Scheda n. %s"
+
+msgid "Erreur : aucun nom ?"
+msgstr "Errore: nessun nome?"
+
+msgid "Erreur : paramètre bbox incorrect"
+msgstr "Errore: parametro bbox non corretto"
+
+msgid "Erreur : identifiant de massif incorrect"
+msgstr "Errore: identificativo del massiccio non corretto"
+
+msgid "Erreur : paramètre intersection incorrect"
+msgstr "Errore: parametro intersection non corretto"
+
+#, php-format
+msgid "Le paramètre donné pour les ids des points dont on veut les commentaires n'est pas valide. Reçu : %s"
+msgstr "Il parametro fornito per gli id dei punti di cui si vogliono i commenti non è valido. Ricevuto: %s"
+
+#, php-format
+msgid "Le paramètre donné pour les ids des commentaires n'est pas valide. Reçu : %s"
+msgstr "Il parametro fornito per gli id dei commenti non è valido. Ricevuto: %s"
+
+#, php-format
+msgid "Le paramètre donné pour les ids des utilisateurs dont on veut les commentaires n'est pas valide. Reçu : %s"
+msgstr "Il parametro fornito per gli id degli utenti di cui si vogliono i commenti non è valido. Ricevuto: %s"
+
+#, php-format
+msgid "Le paramètre donné pour les ids de polygones auxquels les points appartiennent dont on veut les commentaires n'est pas valide. Reçu : %s"
+msgstr "Il parametro fornito per gli id dei poligoni a cui appartengono i punti di cui si vogliono i commenti non è valido. Ricevuto: %s"
+
+msgid "Une erreur sur la requête est survenue"
+msgstr "Si è verificato un errore nella richiesta"
+
+#, php-format
+msgid "Le commentaire d'id=%s a été demandé mais il n'a pas été trouvé et ce n'est pas normal, je m'arrête là"
+msgstr "È stato richiesto il commento con id=%s ma non è stato trovato e questo non è normale, mi fermo qui"
+
+#, php-format
+msgid "Le commentaire ne peut être ajouté car : %s"
+msgstr "Il commento non può essere aggiunto perché: %s"
+
+msgid "La photo proposée ne semble pas exister ou ne nous est pas parvenue"
+msgstr "La foto proposta sembra non esistere o non ci è arrivata"
+
+#, php-format
+msgid "Le fichier proposé ne semble pas contenir une image au format %s, vous pouvez revenir en arrière et retirer la photo, la vérifier ou en fournir une autre."
+msgstr "Il file proposto sembra non contenere un'immagine in formato %s, puoi tornare indietro e togliere la foto, verificarla o fornirne un'altra."
+
+msgid "Le commentaire ne contient ni photo ni texte, il n'est pas traité"
+msgstr "Il commento non contiene né foto né testo, non viene elaborato"
+
+#, php-format
+msgid "Une modification d'un commentaire inexistant a été demandée : %s"
+msgstr "È stata richiesta la modifica di un commento inesistente: %s"
+
+msgid "Problème qui n'aurait pas dû arriver, le traitement du commentaire a foiré"
+msgstr "Problema che non sarebbe dovuto accadere, l'elaborazione del commento è andata storta"
+
+msgid "Le commentaire a été ajouté"
+msgstr "Il commento è stato aggiunto"
+
+msgid "Le commentaire a été modifié"
+msgstr "Il commento è stato modificato"
+
+#, php-format
+msgid " et a été transféré sur la fiche : %s"
+msgstr " ed è stato trasferito sulla scheda: %s"
+
+msgid "pas de photo dans ce commentaire"
+msgstr "nessuna foto in questo commento"
+
+msgid "photo supprimée"
+msgstr "foto eliminata"
+
+msgid "Suppression d'un commentaire inexistant"
+msgstr "Eliminazione di un commento inesistente"
+
+msgid "Commentaire supprimé"
+msgstr "Commento eliminato"
+
+#, php-format
+msgid "%s, mais la copie a réussie"
+msgstr "%s, ma la copia è riuscita"
+
+msgid "Message transféré sur le forum"
+msgstr "Messaggio trasferito sul forum"
+
+#, php-format
+msgid "Erreur de suppression sur le forum, le topic est inconnu : %s"
+msgstr "Errore di eliminazione sul forum, il topic è sconosciuto: %s"
+
+#, php-format
+msgid "Le paramètre donné pour les ids des forum dont on veut les messages n'est pas valide. Reçu : %s"
+msgstr "Il parametro fornito per gli id dei forum di cui si vogliono i messaggi non è valido. Ricevuto: %s"
+
+#, php-format
+msgid "Le paramètre de limite $conditions->limite est mal formé (devrait être un entier positif), reçu : %s"
+msgstr "Il parametro di limite $conditions->limite è malformato (dovrebbe essere un intero positivo), ricevuto: %s"
+
+msgid "Impossible d'obtenir les derniers messages du forum"
+msgstr "Impossibile ottenere gli ultimi messaggi del forum"
+
+msgid "Message forum"
+msgstr "Messaggio del forum"
+
+msgid "de"
+msgstr "di"
+
+#, php-format
+msgid "Le paramètre de limite $conditions->limite est mal formé, reçu : %s"
+msgstr "Il parametro di limite $conditions->limite è malformato, ricevuto: %s"
+
+#, php-format
+msgid "Le paramètre donnée pour les ids des points n'est pas valide, reçu : %s"
+msgstr "Il parametro fornito per gli id dei punti non è valido, ricevuto: %s"
+
+#, php-format
+msgid "Le paramètre donné pour les ids des polygones n'est pas valide, reçu : %s"
+msgstr "Il parametro fornito per gli id dei poligoni non è valido, ricevuto: %s"
+
+#, php-format
+msgid "Le paramètre donné pour les ids des types de points n'est pas valide, reçu : %s"
+msgstr "Il parametro fornito per gli id dei tipi di punti non è valido, ricevuto: %s"
+
+#, php-format
+msgid "Le nombre de place minimum doit être un nombre entier, reçu : %s"
+msgstr "Il numero minimo di posti deve essere un numero intero, ricevuto: %s"
+
+#, php-format
+msgid "Le nombre de place maximum doit être un nombre entier, reçu : %s"
+msgstr "Il numero massimo di posti deve essere un numero intero, ricevuto: %s"
+
+#, php-format
+msgid "Le nombre de place minimum sur matelas doit être un nombre entier supérieur à 0, reçu : '%s'"
+msgstr "Il numero minimo di posti su materasso deve essere un numero intero maggiore di 0, ricevuto: '%s'"
+
+#, php-format
+msgid "L'altitude minimum doit être un nombre entier positif, reçu : %s"
+msgstr "L'altitudine minima deve essere un numero intero positivo, ricevuto: %s"
+
+#, php-format
+msgid "L'altitude maximum doit être un nombre entier positif, reçu : %s"
+msgstr "L'altitudine massima deve essere un numero intero positivo, ricevuto: %s"
+
+#, php-format
+msgid "Vous avez demandé une précision pour les coordonnées gps, qui est invalide : %s"
+msgstr "Hai richiesto una precisione per le coordinate GPS che non è valida: %s"
+
+#, php-format
+msgid "Le paramètre donné pour les ids de modérateurs de fiche n'est pas valide, reçu : %s"
+msgstr "Il parametro fornito per gli id dei moderatori della scheda non è valido, ricevuto: %s"
+
+#, php-format
+msgid "La demande ne peut aboutir car la condition de %s=%s est incorrecte"
+msgstr "La richiesta non può andare a buon fine perché la condizione %s=%s non è corretta"
+
+#, php-format
+msgid "le format demandé '%s' pour la géométrie du point n'est pas dans la liste autorisée suivante : gml geojson ou kml"
+msgstr "il formato richiesto '%s' per la geometria del punto non è nella seguente lista autorizzata: gml geojson o kml"
+
+msgid "Le champ fourni pour le topic_id n'est pas un entier positif"
+msgstr "Il campo fornito per il topic_id non è un intero positivo"
+
+#, php-format
+msgid "On nous a demandé les points avec '%s' ce qui est inexistant ou signe d'un bug"
+msgstr "Ci sono stati richiesti i punti con '%s', che è inesistente o segno di un bug"
+
+#, php-format
+msgid "Ce point d'id %s a existé par le passé sur ce site, mais seul un modérateur peut retrouver son historique"
+msgstr "Questo punto con id %s è esistito in passato su questo sito, ma solo un moderatore può ritrovarne la cronologia"
+
+msgid "Identifiant de point invalide"
+msgstr "Identificativo di punto non valido"
+
+#, php-format
+msgid "Le numéro de point demandé %s est introuvable dans notre base"
+msgstr "Il numero di punto richiesto %s non è stato trovato nel nostro database"
+
+msgid "Ben ça alors ? on a récupéré plus que 1 point, pas prévu..."
+msgstr "Ma guarda un po'? Abbiamo recuperato più di 1 punto, non era previsto..."
+
+#, php-format
+msgid "ce %s"
+msgstr "questo %s"
+
+#, php-format
+msgid "Le point passé n'a pas d'id valide ou existant sur le forum, reçu : %s"
+msgstr "Il punto passato non ha un id valido o esistente sul forum, ricevuto: %s"
+
+msgid "Erreur sur la requête SQL"
+msgstr "Errore nella richiesta SQL"
+
+#, php-format
+msgid "Erreur de modification du point : %s"
+msgstr "Errore di modifica del punto: %s"
+
+msgid "Le nom ne peut être vide"
+msgstr "Il nome non può essere vuoto"
+
+msgid "Le nom contient un des caractères non autorisé suivant : [ ] < > ;"
+msgstr "Il nome contiene uno dei seguenti caratteri non autorizzati: [ ] < > ;"
+
+#, php-format
+msgid "L'emplacement de <a href='/point/%s'>\"%s\"</a> et ses alentours sont privés.<br/> On ne peut pas y référencer de cabane.<br/> Voir : <a href=\"%s\">Définition d'une cabane non gardée</a>.<br/> Laissez-nous un message sur le forum si vous souhaitez en discuter.<br/>"
+msgstr "La posizione di <a href='/point/%s'>\"%s\"</a> e dei suoi dintorni è privata.<br/> Non è possibile registrarvi una capanna.<br/> Vedi: <a href=\"%s\">Definizione di capanna non custodita</a>.<br/> Lasciaci un messaggio sul forum se desideri parlarne.<br/>"
+
+#, php-format
+msgid "La latitude du point doit être au format degré décimaux, par exemple : 45.789, la valeur reçue est : %s"
+msgstr "La latitudine del punto deve essere in formato gradi decimali, per esempio: 45.789, il valore ricevuto è: %s"
+
+#, php-format
+msgid "La longitude du point doit être au format degré décimaux, par exemple : 45.789, la valeur reçue est : %s"
+msgstr "La longitudine del punto deve essere in formato gradi decimali, per esempio: 45.789, il valore ricevuto è: %s"
+
+msgid "La latitude du point doit être comprise entre -90 et 90 (degrés)"
+msgstr "La latitudine del punto deve essere compresa tra -90 e 90 (gradi)"
+
+msgid "La longitude du point doit être comprise entre -180 et 180 (degrés)"
+msgstr "La longitudine del punto deve essere compresa tra -180 e 180 (gradi)"
+
+#, php-format
+msgid "L'altitude du point doit être un nombre entier positif ou nul, reçu : %s"
+msgstr "L'altitudine del punto deve essere un numero intero positivo o nullo, ricevuto: %s"
+
+#, php-format
+msgid "%sm comme altitude du point, c'est plus que l'Everest, vous avez dû vous tromper ?"
+msgstr "%s m di altitudine per il punto sono più dell'Everest, forse ti sei sbagliato?"
+
+#, php-format
+msgid "Le nombre de %s doit être un entier supérieur ou égal à 0, reçu : '%s'"
+msgstr "Il numero di %s deve essere un intero maggiore o uguale a 0, ricevuto: '%s'"
+
+msgid "La requête SQL est en erreur, mais nous ne savons pas pourquoi, prévenez nous sur le forum, vous avez trouvé un bug !"
+msgstr "La richiesta SQL è in errore, ma non sappiamo perché: avvisaci sul forum, hai trovato un bug!"
+
+msgid "Erreur création forum point"
+msgstr "Errore di creazione del forum del punto"
+
+msgid "Requête en erreur (développeurs: activer le mode debug pour comprendre pourquoi)"
+msgstr "Richiesta in errore (sviluppatori: attivare la modalità debug per capire perché)"
+
+msgid "La fiche du point, les commentaires, les photos et la zone forum ont bien été supprimés"
+msgstr "La scheda del punto, i commenti, le foto e la sezione del forum sono stati eliminati"
+
+#, php-format
+msgid "le paramètre donné pour les ids de polygone est/sont invalide.s : %s"
+msgstr "il parametro fornito per gli id di poligono non è valido/non sono validi: %s"
+
+#, php-format
+msgid "Le paramètre donnée pour les ids qui ne doivent pas y être n'est pas valide : %s"
+msgstr "Il parametro fornito per gli id che non devono esserci non è valido: %s"
+
+#, php-format
+msgid "Le paramètre donnée pour les type de polygones n'est pas valide : %s"
+msgstr "Il parametro fornito per i tipi di poligoni non è valido: %s"
+
+#, php-format
+msgid "Le paramètre donné pour intersection n'est pas valide : %s"
+msgstr "Il parametro fornito per intersection non è valido: %s"
+
+msgid "Requête SQL en erreur (vous pouvez nous signaler le problème sur le forum)"
+msgstr "Richiesta SQL in errore (puoi segnalarci il problema sul forum)"
+
+#, php-format
+msgid "le paramètre donné pour l' id unique de polygone est invalide : %s"
+msgstr "il parametro fornito per l'id univoco di poligono non è valido: %s"
+
+#, php-format
+msgid "Le polygone d'id %s n'existe pas dans notre base"
+msgstr "Il poligono con id %s non esiste nel nostro database"
+
+#, php-format
+msgid "Vous demandez un type de polygone avec un id incorrect : %s"
+msgstr "Hai richiesto un tipo di poligono con un id non corretto: %s"
+
+#, php-format
+msgid "Le type de polygone avec un id de %s est inexistant dans notre base"
+msgstr "Il tipo di poligono con id %s non esiste nel nostro database"
+
+msgid "Il y a un problème dans la base, il n'y a aucune catégorie de polygone : polygone_type vide !"
+msgstr "C'è un problema nel database, non esiste alcuna categoria di poligono: polygone_type vuoto!"
+
+msgid "NOM DE MASSIF VIDE"
+msgstr "NOME DEL MASSICCIO VUOTO"
+
+msgid "Revenez en arrière pour continuer l'édition"
+msgstr "Torna indietro per continuare la modifica"
+
+#, php-format
+msgid "Article partitif trop long (max = 20 caractères) : %s"
+msgstr "Articolo partitivo troppo lungo (max = 20 caratteri): %s"
+
+msgid "MASSIF OU ZONE NON MODIFIÉ(E) CAR NE COMPORTE PAS DE POLYGONE"
+msgstr "MASSICCIO O ZONA NON MODIFICATO/A PERCHÉ NON CONTIENE UN POLIGONO"
+
+msgid "Requête impossible"
+msgstr "Richiesta impossibile"
+
+msgid "MASSIF OU ZONE NON CRÉÉ(E) CAR NE COMPORTE PAS DE POLYGONE"
+msgstr "MASSICCIO O ZONA NON CREATO/A PERCHÉ NON CONTIENE UN POLIGONO"
+
+#, php-format
+msgid "L'id de l'utilisateur demandé : '%s' n'est pas un entier"
+msgstr "L'id dell'utente richiesto: '%s' non è un intero"
+
+msgid "Utilisateur inexistant"
+msgstr "Utente inesistente"
+
+msgid "Requête SQL impossible à executer"
+msgstr "Richiesta SQL impossibile da eseguire"
+
+msgid "Cette page du wiki n'existe pas"
+msgstr "Questa pagina del wiki non esiste"
+
+msgid "Il n'y a aucune page dans notre wiki, oulla, c'est louche, quelqu'un à tout purger, ou alors une nouvelle installation, ou alors un bug..."
+msgstr "Non c'è alcuna pagina nel nostro wiki, uh, è strano: qualcuno ha cancellato tutto, oppure è una nuova installazione, oppure è un bug..."
+
+#, php-format
+msgid "Trad. auto %s"
+msgstr "Trad. auto %s"
+
+msgid "Trad. auto"
+msgstr "Trad. auto"
+
+msgid "Traduit automatiquement ; cliquer pour voir le texte original"
+msgstr "Tradotto automaticamente; clicca per vedere il testo originale"
+
+msgid ", vous devez être un modérateur du site, pour accéder à cette page, êtes vous bien connecté ?"
+msgstr ", devi essere un moderatore del sito per accedere a questa pagina: sei connesso correttamente?"
+
+msgid "administrative"
+msgstr "amministrativa"
+
+msgid "Auprès de qui se renseigner / accessibilité"
+msgstr "A chi rivolgersi / accessibilità"
+
+msgid "Autre"
+msgstr "Altro"
+
+msgid "Capacité d'accueil"
+msgstr "Capacità ricettiva"
+
+msgid "Clés à récupérer"
+msgstr "Chiavi da ritirare"
+
+msgid "commune"
+msgstr "comune"
+
+msgid "Coordonnées approximatives"
+msgstr "Coordinate approssimative"
+
+msgid "Coordonnées cachées"
+msgstr "Coordinate nascoste"
+
+msgid "Coordonnées lues sur une des cartes proposées"
+msgstr "Coordinate lette su una delle mappe proposte"
+
+msgid "Coordonnées pointées sur photos aériennes"
+msgstr "Coordinate individuate su foto aeree"
+
+msgid "Coordonnées prises sur le terrain"
+msgstr "Coordinate rilevate sul campo"
+
+msgid "département"
+msgstr "dipartimento"
+
+msgid "Eau à proximité"
+msgstr "Acqua nelle vicinanze"
+
+msgid "Eau gratuite en libre accès"
+msgstr "Acqua gratuita ad accesso libero"
+
+msgid "Fermé"
+msgstr "Chiuso"
+
+msgid "Fermé au public"
+msgstr "Chiuso al pubblico"
+
+msgid "Fermée"
+msgstr "Chiusa"
+
+msgid "Forêt à proximité"
+msgstr "Bosco nelle vicinanze"
+
+msgid "Inutilisable"
+msgstr "Inutilizzabile"
+
+msgid "Manque un mur"
+msgstr "Manca un muro"
+
+msgid "massif"
+msgstr "massiccio"
+
+msgid "montagnarde"
+msgstr "di montagna"
+
+msgid "Ouverture sur contact préalable"
+msgstr "Apertura su contatto preventivo"
+
+msgid "pays"
+msgstr "paese"
+
+msgid "Places possibles pour dormir"
+msgstr "Posti possibili per dormire"
+
+msgid "Places prévues pour dormir"
+msgstr "Posti previsti per dormire"
+
+msgid "Places sur Matelas"
+msgstr "Posti su materasso"
+
+msgid "Propriétaire / accessibilité"
+msgstr "Proprietario / accessibilità"
+
+msgid "Propriétaires"
+msgstr "Proprietari"
+
+msgid "région"
+msgstr "regione"
+
+msgid "région naturelle"
+msgstr "regione naturale"
+
+msgid "Tari définitivement"
+msgstr "Prosciugata definitivamente"
+
+msgid "zone"
+msgstr "zona"
+
+msgid "zone réglementée"
+msgstr "zona regolamentata"
+
+msgid "Détruite"
+msgstr "Distrutta"
+
+msgid "Détruit"
+msgstr "Distrutto"
+
+msgid "Oui"
+msgstr "Sì"
+
+msgid "Non"
+msgstr "No"
+
+msgid "Inconnu"
+msgstr "Sconosciuto"
+
+msgid "<b>Inconnu</b>"
+msgstr "<b>Sconosciuto</b>"
+
+msgid "accès"
+msgstr "accesso"
+
+msgid "remarques"
+msgstr "note"
+
+msgid "Entrez la lettre <strong>g</strong>"
+msgstr "Inserisci la lettera <strong>g</strong>"
+
+msgid "jpeg, png, bmp ou webp"
+msgstr "jpeg, png, bmp o webp"
+
+msgid "kml (googlearth et plusieurs applications smartphone )"
+msgstr "kml (Google Earth e varie applicazioni per smartphone)"
+
+msgid "modification point"
+msgstr "modifica punto"
+
+msgid "creation point"
+msgstr "creazione punto"
+
+msgid "création point"
+msgstr "creazione punto"
+
+msgid "suppression point"
+msgstr "eliminazione punto"
+
+msgid "modification polygone"
+msgstr "modifica poligono"
+
+msgid "suppression polygone"
+msgstr "eliminazione poligono"
+

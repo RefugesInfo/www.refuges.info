@@ -226,15 +226,15 @@ $config_wri['langue']="fr_FR";
 
 // Multi-langue : la langue d'affichage est portée par l'url (voir routes/generales.routes.php), le français reste la langue par défaut
 // et c'est celle de toutes les urls historiques (liens externes) : /point/91/type/nom/ reste français, /point/91/type/nom/en/ est la version anglaise
-$config_wri['langues_url']=array('en');   // langues d'affichage autres que le français
-$config_wri['noms_langues']=array('fr'=>'Français', 'en'=>'English'); // dans leur propre langue, pour le sélecteur de langue
+$config_wri['langues_url']=array('en', 'it');   // langues d'affichage autres que le français
+$config_wri['noms_langues']=array('fr'=>'Français', 'en'=>'English', 'it'=>'Italiano'); // dans leur propre langue, pour le sélecteur de langue
 $config_wri['liens_langues']=array();     // langue => url de la page courante dans cette langue (rempli par le routeur)
 $config_wri['langue_courante']='fr';
 $config_wri['url_suffixe_langue']='';     // '' ou 'en/' : toujours en dernier dans l'url (/point/id/type/nom/en/, /nouvelles/en/)
 // Traductions de l'interface : gettext, le msgid est le texte français (donc le français n'a pas de catalogue et rien ne casse si
 // une traduction manque). Catalogues : ressources/locale/<locale>/LC_MESSAGES/refuges.po (sources) et .mo (compilés, pour PHP)
 $config_wri['chemin_locale']=$config_wri['racine_projet']."ressources/locale/";
-$config_wri['locales_systeme']=array('fr'=>'fr_FR.UTF-8', 'en'=>'en_GB.UTF-8'); // doivent exister sur le serveur (locale -a)
+$config_wri['locales_systeme']=array('fr'=>'fr_FR.UTF-8', 'en'=>'en_GB.UTF-8', 'it'=>'it_IT.UTF-8'); // doivent exister sur le serveur (locale -a)
 if (!function_exists('_')) { // extension gettext absente (certains conteneurs de dev) : on affiche le texte français
   function _($texte) { return $texte; }
   function ngettext($un, $plusieurs, $n) { return $n==1 ? $un : $plusieurs; }

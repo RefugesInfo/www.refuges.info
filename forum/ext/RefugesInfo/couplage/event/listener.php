@@ -49,8 +49,9 @@ class listener implements EventSubscriberInterface
   public function user_setup($event) {
     global $request, $phpbb_root_path, $phpEx;
 
+    // (config.php n'est chargé que dans page_footer : les langues possibles sont celles qui ont un dossier language/ dans l'extension)
     $choix = $request->variable('langue', '', false, \phpbb\request\request_interface::COOKIE);
-    if (in_array($choix, ['fr', 'en'], true) && file_exists($phpbb_root_path.'language/'.$choix."/common.$phpEx"))
+    if (preg_match('/^[a-z]{2}$/', $choix) && is_dir(__DIR__.'/../language/'.$choix) && file_exists($phpbb_root_path.'language/'.$choix."/common.$phpEx"))
       $event['user_lang_name'] = $choix;
 
     // Textes des templates de l'extension (language/<langue>/common.php)
@@ -88,17 +89,17 @@ class listener implements EventSubscriberInterface
     ]);
 
     // Le bandeau et le pied de page sont dans la langue du forum (le routeur du site n'est pas passé par là) :
-    // seules fr et en y ont un catalogue ; le sélecteur recharge la même page, le cookie "langue" (bandeau.js) fait le reste
-    $langue = $user->lang_name == 'en' ? 'en' : 'fr';
+    // seules les langues de $config_wri['langues_url'] y ont un catalogue ; le sélecteur recharge la même page, le cookie "langue" (bandeau.js) fait le reste
+    $langue = in_array($user->lang_name, $config_wri['langues_url'], true) ? $user->lang_name : 'fr';
     $config_wri['langue_courante'] = $langue;
     $config_wri['url_suffixe_langue'] = $langue == 'fr' ? '' : $langue.'/';
     if ($langue != 'fr')
-      $config_wri['langue'] = 'en_GB'; // IntlDateFormatter
+      $config_wri['langue'] = array('en'=>'en_GB', 'it'=>'it_IT')[$langue] ?? 'en_GB'; // IntlDateFormatter
     setlocale(LC_MESSAGES, $config_wri['locales_systeme'][$langue]);
     bindtextdomain('refuges', $config_wri['chemin_locale']);
     bind_textdomain_codeset('refuges', 'UTF-8');
     textdomain('refuges');
-    $config_wri['liens_langues'] = ['fr' => $_SERVER['REQUEST_URI'], 'en' => $_SERVER['REQUEST_URI']];
+    $config_wri['liens_langues'] = array_fill_keys(array_merge(['fr'], $config_wri['langues_url']), $_SERVER['REQUEST_URI']);
 
     // On recrée le contexte car on n'est pas dans le MVC de WRI
     $vue = new \stdClass;

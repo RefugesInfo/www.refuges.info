@@ -326,15 +326,21 @@
 
 <div id="scrolable">
   <?php // Suggestion / confirmation de langue : cachée par défaut, affichée par bandeau.js (côté navigateur : la page reste identique pour tous, robots compris) ?>
+  <?php // Suggestion de langue (bandeau.js) : chaque texte est écrit dans la langue proposée, donc pas de gettext ici ?>
   <div id="suggestion-langue" class="suggestion-langue noprint" hidden>
-    <span id="suggestion-langue-proposition" hidden>
-      This page is also available in English.
-      <a id="suggestion-langue-oui">View in English</a> ·
-      <a id="suggestion-langue-non">Not now</a>
-    </span>
-    <span id="suggestion-langue-bascule" hidden>
-      Switched to English. <a id="suggestion-langue-retour">Back to French (retour au français)</a>
-    </span>
+    <?php foreach ([
+      'en' => ['This page is also available in English.', 'View in English', 'Not now', 'Switched to English.', 'Go back'],
+      'it' => ['Questa pagina è disponibile anche in italiano.', 'Visualizza in italiano', 'Non ora', "Passato all'italiano.", 'Torna indietro'],
+    ] as $code => $textes) { ?>
+      <span class="suggestion-proposition" data-langue="<?=$code?>" lang="<?=$code?>" hidden>
+        <?=$textes[0]?>
+        <a class="oui"><?=$textes[1]?></a> ·
+        <a class="non"><?=$textes[2]?></a>
+      </span>
+      <span class="suggestion-bascule" data-langue="<?=$code?>" lang="<?=$code?>" hidden>
+        <?=$textes[3]?> <a class="retour"><?=$textes[4]?> (<span class="origine">FR</span>)</a>
+      </span>
+    <?php } ?>
   </div>
   <?php if (
       ($vue->bandeau_info->actif ?? false) and
