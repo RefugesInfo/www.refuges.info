@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Sitemap des pages principales. Chaque version de langue est listée avec toutes ses alternatives (hreflang) :
-     ajouter une langue = une ligne xhtml:link de plus par page, et une entrée url de plus par page (langues : fr, en, it). -->
+     ajouter une langue = une ligne xhtml:link de plus par page, et une entrée url de plus par page (langues : fr, en, it, es). -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://www.refuges.info/</loc>
     <xhtml:link rel="alternate" hreflang="fr" href="https://www.refuges.info/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://www.refuges.info/en/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://www.refuges.info/it/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.refuges.info/es/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.refuges.info/"/>
   </url>
   <url>
@@ -14,6 +15,7 @@
     <xhtml:link rel="alternate" hreflang="fr" href="https://www.refuges.info/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://www.refuges.info/en/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://www.refuges.info/it/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.refuges.info/es/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.refuges.info/"/>
   </url>
   <url>
@@ -21,6 +23,15 @@
     <xhtml:link rel="alternate" hreflang="fr" href="https://www.refuges.info/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://www.refuges.info/en/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://www.refuges.info/it/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.refuges.info/es/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.refuges.info/"/>
+  </url>
+  <url>
+    <loc>https://www.refuges.info/es/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.refuges.info/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.refuges.info/en/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://www.refuges.info/it/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.refuges.info/es/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.refuges.info/"/>
   </url>
   <url>
@@ -28,6 +39,7 @@
     <xhtml:link rel="alternate" hreflang="fr" href="https://www.refuges.info/nouvelles/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://www.refuges.info/nouvelles/en/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://www.refuges.info/nouvelles/it/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.refuges.info/nouvelles/es/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.refuges.info/nouvelles/"/>
   </url>
   <url>
@@ -35,6 +47,7 @@
     <xhtml:link rel="alternate" hreflang="fr" href="https://www.refuges.info/nouvelles/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://www.refuges.info/nouvelles/en/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://www.refuges.info/nouvelles/it/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.refuges.info/nouvelles/es/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.refuges.info/nouvelles/"/>
   </url>
   <url>
@@ -42,6 +55,15 @@
     <xhtml:link rel="alternate" hreflang="fr" href="https://www.refuges.info/nouvelles/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://www.refuges.info/nouvelles/en/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://www.refuges.info/nouvelles/it/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.refuges.info/nouvelles/es/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.refuges.info/nouvelles/"/>
+  </url>
+  <url>
+    <loc>https://www.refuges.info/nouvelles/es/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.refuges.info/nouvelles/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.refuges.info/nouvelles/en/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://www.refuges.info/nouvelles/it/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.refuges.info/nouvelles/es/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.refuges.info/nouvelles/"/>
   </url>
   <url>
@@ -49,6 +71,7 @@
     <xhtml:link rel="alternate" hreflang="fr" href="https://www.refuges.info/nav"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://www.refuges.info/nav/en/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://www.refuges.info/nav/it/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.refuges.info/nav/es/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.refuges.info/nav"/>
   </url>
   <url>
@@ -56,6 +79,7 @@
     <xhtml:link rel="alternate" hreflang="fr" href="https://www.refuges.info/nav"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://www.refuges.info/nav/en/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://www.refuges.info/nav/it/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.refuges.info/nav/es/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.refuges.info/nav"/>
   </url>
   <url>
@@ -63,6 +87,15 @@
     <xhtml:link rel="alternate" hreflang="fr" href="https://www.refuges.info/nav"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://www.refuges.info/nav/en/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://www.refuges.info/nav/it/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.refuges.info/nav/es/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.refuges.info/nav"/>
+  </url>
+  <url>
+    <loc>https://www.refuges.info/nav/es/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.refuges.info/nav"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.refuges.info/nav/en/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://www.refuges.info/nav/it/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.refuges.info/nav/es/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.refuges.info/nav"/>
   </url>
   <url>
@@ -70,6 +103,7 @@
     <xhtml:link rel="alternate" hreflang="fr" href="https://www.refuges.info/point_formulaire_recherche/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://www.refuges.info/point_formulaire_recherche/en/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://www.refuges.info/point_formulaire_recherche/it/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.refuges.info/point_formulaire_recherche/es/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.refuges.info/point_formulaire_recherche/"/>
   </url>
   <url>
@@ -77,6 +111,7 @@
     <xhtml:link rel="alternate" hreflang="fr" href="https://www.refuges.info/point_formulaire_recherche/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://www.refuges.info/point_formulaire_recherche/en/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://www.refuges.info/point_formulaire_recherche/it/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.refuges.info/point_formulaire_recherche/es/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.refuges.info/point_formulaire_recherche/"/>
   </url>
   <url>
@@ -84,6 +119,15 @@
     <xhtml:link rel="alternate" hreflang="fr" href="https://www.refuges.info/point_formulaire_recherche/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://www.refuges.info/point_formulaire_recherche/en/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://www.refuges.info/point_formulaire_recherche/it/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.refuges.info/point_formulaire_recherche/es/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.refuges.info/point_formulaire_recherche/"/>
+  </url>
+  <url>
+    <loc>https://www.refuges.info/point_formulaire_recherche/es/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.refuges.info/point_formulaire_recherche/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.refuges.info/point_formulaire_recherche/en/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://www.refuges.info/point_formulaire_recherche/it/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.refuges.info/point_formulaire_recherche/es/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.refuges.info/point_formulaire_recherche/"/>
   </url>
   <url>
@@ -91,6 +135,7 @@
     <xhtml:link rel="alternate" hreflang="fr" href="https://www.refuges.info/formulaire_exportations/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://www.refuges.info/formulaire_exportations/en/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://www.refuges.info/formulaire_exportations/it/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.refuges.info/formulaire_exportations/es/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.refuges.info/formulaire_exportations/"/>
   </url>
   <url>
@@ -98,6 +143,7 @@
     <xhtml:link rel="alternate" hreflang="fr" href="https://www.refuges.info/formulaire_exportations/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://www.refuges.info/formulaire_exportations/en/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://www.refuges.info/formulaire_exportations/it/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.refuges.info/formulaire_exportations/es/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.refuges.info/formulaire_exportations/"/>
   </url>
   <url>
@@ -105,6 +151,15 @@
     <xhtml:link rel="alternate" hreflang="fr" href="https://www.refuges.info/formulaire_exportations/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://www.refuges.info/formulaire_exportations/en/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://www.refuges.info/formulaire_exportations/it/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.refuges.info/formulaire_exportations/es/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.refuges.info/formulaire_exportations/"/>
+  </url>
+  <url>
+    <loc>https://www.refuges.info/formulaire_exportations/es/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.refuges.info/formulaire_exportations/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.refuges.info/formulaire_exportations/en/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://www.refuges.info/formulaire_exportations/it/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.refuges.info/formulaire_exportations/es/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.refuges.info/formulaire_exportations/"/>
   </url>
   <url>
@@ -112,6 +167,7 @@
     <xhtml:link rel="alternate" hreflang="fr" href="https://www.refuges.info/wiki/index"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://www.refuges.info/wiki/index/en/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://www.refuges.info/wiki/index/it/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.refuges.info/wiki/index/es/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.refuges.info/wiki/index"/>
   </url>
   <url>
@@ -119,6 +175,7 @@
     <xhtml:link rel="alternate" hreflang="fr" href="https://www.refuges.info/wiki/index"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://www.refuges.info/wiki/index/en/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://www.refuges.info/wiki/index/it/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.refuges.info/wiki/index/es/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.refuges.info/wiki/index"/>
   </url>
   <url>
@@ -126,6 +183,15 @@
     <xhtml:link rel="alternate" hreflang="fr" href="https://www.refuges.info/wiki/index"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://www.refuges.info/wiki/index/en/"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://www.refuges.info/wiki/index/it/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.refuges.info/wiki/index/es/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.refuges.info/wiki/index"/>
+  </url>
+  <url>
+    <loc>https://www.refuges.info/wiki/index/es/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.refuges.info/wiki/index"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.refuges.info/wiki/index/en/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://www.refuges.info/wiki/index/it/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.refuges.info/wiki/index/es/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.refuges.info/wiki/index"/>
   </url>
 </urlset>

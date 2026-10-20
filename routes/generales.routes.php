@@ -96,7 +96,7 @@ if ($langue_url)
 {
   $config_wri['langue_courante'] = $langue_url;
   $config_wri['url_suffixe_langue'] = $langue_url.'/';
-  $config_wri['langue'] = array('en'=>'en_GB', 'it'=>'it_IT')[$langue_url] ?? 'en_GB'; // IntlDateFormatter
+  $config_wri['langue'] = $config_wri['locales_intl'][$langue_url] ?? 'en_GB'; // IntlDateFormatter
   setlocale(LC_TIME, $config_wri['locales_systeme'][$langue_url] ?? 'fr_FR.UTF-8');
 }
 // gettext : à refaire à chaque requête car les processus PHP-FPM gardent leur locale d'une requête à l'autre.

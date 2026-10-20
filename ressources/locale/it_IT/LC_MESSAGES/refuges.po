@@ -2068,3 +2068,6 @@ msgstr "modifica poligono"
 msgid "suppression polygone"
 msgstr "eliminazione poligono"
 
+
+msgid "Enregistrer"
+msgstr "Salva"
