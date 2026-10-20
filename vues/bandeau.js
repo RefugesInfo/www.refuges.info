@@ -141,9 +141,11 @@ function masqueBandeauInfo() {
   }
   if (!suggeree || suggeree == languePage || suggeree == 'fr')
     return;
-  // Page en français et navigateur dans une autre langue gérée : bascule automatique (sans mémoriser de choix :
-  // "Back to French" mémorise le français), le message de 2 bis prévient et permet de revenir
+  // Page en français et navigateur dans une autre langue gérée : bascule automatique. On mémorise la langue (cookie)
+  // pour que le forum, géré côté serveur, la suive aussi ; "Back to French" mémorise le français, et le message
+  // de 2 bis prévient et permet de revenir
   if (languePage == 'fr' && alternates[suggeree]) {
+    memoriser(suggeree);
     try { sessionStorage.setItem('langue_bascule', languePage); } catch (e) { }
     location.replace(alternates[suggeree]);
     return;
