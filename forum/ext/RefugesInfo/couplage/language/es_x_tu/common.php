@@ -20,6 +20,4 @@ $lang = array_merge($lang, [
       No les dejes aquí ningún mensaje (información, reserva, ...):
       ¡no podrán leerlo!<br />
       Debes contactar con ellos directamente (los datos están en la ficha).',
-  'RI_AVOID_LAPOSTE' => 'Evita las direcciones de correo @laposte.net:
-tenemos problemas con ellas, que te impedirían registrarte.',
 ]);
