@@ -71,7 +71,8 @@ function masqueBandeauInfo() {
  - un clic sur une langue du sélecteur mémorise le choix (cookie "langue", 1 an)
  - choix = autre langue que celle de la page : bascule vers la même page dans cette langue (jamais vers le français :
    le français est la langue de repli, on ne renvoie pas un visiteur arrivé sur une page anglaise vers le français)
- - pas de choix et navigateur en anglais (avant le français) : proposition discrète, jamais de redirection */
+ - pas de choix, page en français et navigateur dans une autre langue gérée (avant le français) : bascule automatique
+   avec le message "Switched to ... / Back to French" ; sur une page non française : proposition discrète */
 (function () {
   const alternates = {};
   document.querySelectorAll('link[rel=alternate][hreflang]').forEach(function (l) {
@@ -140,6 +141,13 @@ function masqueBandeauInfo() {
   }
   if (!suggeree || suggeree == languePage || suggeree == 'fr')
     return;
+  // Page en français et navigateur dans une autre langue gérée : bascule automatique (sans mémoriser de choix :
+  // "Back to French" mémorise le français), le message de 2 bis prévient et permet de revenir
+  if (languePage == 'fr' && alternates[suggeree]) {
+    try { sessionStorage.setItem('langue_bascule', languePage); } catch (e) { }
+    location.replace(alternates[suggeree]);
+    return;
+  }
   const proposition = bloc.querySelector('.suggestion-proposition[data-langue="' + suggeree + '"]');
   if (!proposition)
     return;
