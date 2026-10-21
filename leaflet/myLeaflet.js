@@ -29,6 +29,7 @@ class WriPOILayer extends L.geoJson {
     const iconList = [],
       url = serveurAPI + '/api/bbox' +
       '?nb_points=all&type_points=' + type +
+      (document.documentElement.lang !== 'fr' ? '&langue=' + document.documentElement.lang : '') +
       '&version=' + versionFeatures +
       '&cache=' + (7 * 24 * 3600);
     //TODO Délai cache api / depuis
@@ -55,7 +56,7 @@ class WriPOILayer extends L.geoJson {
 
         layer.on({
           click: () => {
-            location.href = '/point/' + feature.id;
+            location.href = feature.properties.lien || '/point/' + feature.id;
           },
         });
 

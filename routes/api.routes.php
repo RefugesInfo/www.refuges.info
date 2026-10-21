@@ -12,6 +12,17 @@
  *
 **************************************************/
 
+// ?langue=en|it|es|de : liens (lien_point, lien_polygone) et messages dans cette langue, sans changer l'URL de l'API
+// (fr ou valeur inconnue = français). Les cartes le passent pour que les clics mènent à la bonne version.
+$langue_api = $_GET['langue'] ?? '';
+if (in_array($langue_api, $config_wri['langues_url'], true))
+{
+  $controlleur->langue = $langue_api;
+  $config_wri['langue_courante'] = $langue_api;
+  $config_wri['url_suffixe_langue'] = $langue_api.'/';
+  setlocale(LC_MESSAGES, $config_wri['locales_systeme'][$langue_api] ?? 'fr_FR.UTF-8');
+}
+
 // Cible sera le contenu de l'URL entre /api/ et ?argument=
 $cible = $controlleur->url_decoupee[1] ?? '';
 $cible = str_replace($_SERVER['QUERY_STRING'],'',$cible); // On enlève ce qu'il y a après le ?

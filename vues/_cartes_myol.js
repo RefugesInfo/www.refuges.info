@@ -132,6 +132,9 @@ function etiquetteComplette(properties) {
 /**
  * La couche des points avec icones
  */
+// Langue de la page, passée à l'API pour que les liens des points et polygones mènent à la bonne version (null = français)
+const langueAPI = document.documentElement.lang !== 'fr' ? document.documentElement.lang : null;
+
 function couchePointsWRI(options) {
   const layer = new myol.layer.MyVectorLayer({
     // Default options
@@ -156,6 +159,7 @@ function couchePointsWRI(options) {
         // eslint-disable-next-line camelcase
         nb_points: 'all',
         cluster: resolution > opt.serverClusterMinResolution ? 0.1 : null, // For server cluster layer
+        langue: langueAPI,
       };
     },
 
@@ -202,6 +206,7 @@ function couchePolygonesColores(options) {
       // eslint-disable-next-line camelcase
       type_polygon: options.idPolygoneType,
       intersection: options.intersection,
+      langue: langueAPI,
     }),
     ...options,
 
@@ -261,6 +266,7 @@ function coucheContoursPolygones(options) {
       // eslint-disable-next-line camelcase
       type_polygon: options.idPolygoneType,
       massif: opt.selector.getSelection(),
+      langue: langueAPI,
     }),
     strategy: ol.loadingstrategy.all, // Pas de bbox
 
