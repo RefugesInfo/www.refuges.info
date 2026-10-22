@@ -40,8 +40,8 @@ function externTilesLayers(mapKeys, restreint) {
       source: new ol.source.OSM({
         url: 'https://{a-c}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png?apikey=' + mapKeys.thunderforest,
         maxZoom: 22,
-        attributions: '©<a target="_blank" href="https://www.openstreetmap.org/copyright">OSM</a> | ' +
-          '<a target="_blank" href="https://www.thunderforest.com/">Thunderforest</a>',
+        attributions: '<a target="_blank" href="https://www.thunderforest.com/">Thunderforest</a> | ' +
+          '©<a target="_blank" href="https://www.openstreetmap.org/copyright">OSM</a>',
       }),
     }),
     'ISO-Maps Topo': new ol.layer.Tile({
