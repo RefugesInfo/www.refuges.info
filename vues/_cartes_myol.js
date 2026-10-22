@@ -21,11 +21,11 @@ function externTilesLayers(mapKeys, restreint) {
         attributions: '<a href="https://wiki.openstreetmap.org/wiki/OpenHikingMap">&copy; OpenHikingMap</a> <a href="https://openmaps.fr/donate">❤️ Donation</a> <a href="https://www.openstreetmap.org/copyright">&copy; OSM</a> <a target="_blank" href="https://openmaps.fr/map-legend/openhikingmap-legend.html">Légende</a>',
       }),
     }),
-    'OpenStreetMap': new ol.layer.Tile({
+    'AlpineQuest Topo': new ol.layer.Tile({
       source: new ol.source.OSM({
-        url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-        maxZoom: 19,
-        attributions: '©<a target="_blank" href="https://www.openstreetmap.org/copyright">OSM</a> | ' +
+        url: '/proxy/aq-topo/?x={x}&y={y}&z={z}',
+        maxZoom: 16,
+        attributions: '©<a target="_blank" href="https://alpinequest.net">AlpineQuest</a> | ©<a target="_blank" href="https://www.openstreetmap.org/copyright">OSM</a> | ' +
           '<a target="_blank" href="https://www.openstreetmap.org/panes/legend">Légende</a>',
       }),
     }),
