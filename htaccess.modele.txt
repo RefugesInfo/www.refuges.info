@@ -13,6 +13,9 @@
 #Notre code est public, c'est donc pas vraiment par sécurité mais parce que ça met dans lignes d'erreur dans nos logs (Et au cas où on commiterait par erreur un mot de passe). Ces pirates, ils tentent vraiment n'importe quoi...
 RedirectMatch 403 ^/.git/.*$
 
+#Dossier d installation phpBB desactive (install---) : ne pas le servir. Le renommer en install le temps d un upgrade du forum (voir forum/INSTALL.md)
+RedirectMatch 404 ^/forum/install---
+
 
 AddDefaultCharset UTF-8
 
