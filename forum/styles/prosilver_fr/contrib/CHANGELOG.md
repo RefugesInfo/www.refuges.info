@@ -26,3 +26,10 @@
 
 ## 1.0.7 - 2026-06-07
 - Update phpBB 3.3.17
+
+## 1.0.8 - 2026-09-25
+- Minor CSS adjustments
+- Update phpBB 3.3.18
+
+## 1.0.9 - 2026-09-26
+- Update phpBB 3.3.19

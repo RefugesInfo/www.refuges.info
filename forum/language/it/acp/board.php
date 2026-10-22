@@ -355,7 +355,6 @@ $lang = array_merge($lang, array(
 // Cookie Settings
 $lang = array_merge($lang, array(
 	'ACP_COOKIE_SETTINGS_EXPLAIN'		=> 'Questi dettagli definiscono i dati utilizzati per inviare i cookie ai browser dei tuoi utenti. In molti casi l’impostazione predefinita è sufficiente. Se devi cambiare queste impostazioni fallo con attenzione: impostazioni errate potrebbero impedire agli utenti di effettuare l’accesso. Se gli utenti hanno problemi ad accedere alla tua Board, visita la <strong><a href="https://www.phpbb.com/support/go/cookie-settings/">Knowledge Base di phpBB.com - Risoluzione Impostazioni dei cookie non corrette</a></strong>',
-
 	'COOKIE_DOMAIN'				=> 'Dominio cookie',
 	'COOKIE_DOMAIN_EXPLAIN'		=> 'Nella maggior parte dei casi il dominio dei cookie è facoltativo. Lascia il campo vuoto se non sei sicuro.<br /><br />Nel caso in cui tu abbia una Board integrata con altri software o con più domini, per determinare il dominio dei cookie, devi fare quanto segue: se hai un dominio come <i>esempio.it </i> e <i>forum.esempio.it</i>, o  <i>blog.esempio.it</i>, rimuovi i sottodomini fino a trovare il dominio comune, <i>esempio.it</i>. Ora aggiungi un punto davanti al dominio comune e entra in .esempio.it (nota il punto all’inizio).',
 	'COOKIE_NAME'				=> 'Nome cookie',
@@ -370,6 +369,12 @@ $lang = array_merge($lang, array(
 	'ONLINE_LENGTH_EXPLAIN'		=> 'Numero di minuti dopo i quali gli utenti inattivi non appariranno più nella lista “Chi c’è in linea”. Più alto è questo valore e più grande sarà il processo richiesto per generare la lista.',
 	'SESSION_LENGTH'			=> 'Durata sessione',
 	'SESSION_LENGTH_EXPLAIN'	=> 'La sessione scadrà dopo questo lasso di tempo, in secondi.',
+	'SESSION_GC'					=> 'Intervallo di pulizia delle sessioni',
+	'SESSION_GC_EXPLAIN'			=> 'Le sessioni verranno eliminate dopo questo intervallo di tempo, espresso in secondi).',
+	'SESSION_GUEST_LENGTH'			=> 'Durata della sessione ospite',
+	'SESSION_GUEST_LENGTH_EXPLAIN'	=> 'Le sessioni ospite scadranno dopo questo intervallo di tempo, espresso in secondi.',
+	'SESSION_GUEST_GC'				=> 'Intervallo di pulizia delle sessioni ospite',
+	'SESSION_GUEST_GC_EXPLAIN'		=> 'Le sessioni ospite verranno eliminate dopo questo intervallo di tempo, espresso in secondi.',
 ));
 
 // Contact Settings

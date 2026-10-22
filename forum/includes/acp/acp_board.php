@@ -333,11 +333,14 @@ class acp_board
 				$display_vars = array(
 					'title'	=> 'ACP_LOAD_SETTINGS',
 					'vars'	=> array(
-						'legend1'			=> 'GENERAL_SETTINGS',
-						'limit_load'		=> array('lang' => 'LIMIT_LOAD',		'validate' => 'int:0:9999',	'type' => 'number:0:9999', 'explain' => true),
-						'session_length'	=> array('lang' => 'SESSION_LENGTH',	'validate' => 'int:60:9999999999',	'type' => 'number:60:9999999999', 'explain' => true, 'append' => ' ' . $user->lang['SECONDS']),
-						'active_sessions'	=> array('lang' => 'LIMIT_SESSIONS',	'validate' => 'int:0:9999',	'type' => 'number:0:9999', 'explain' => true),
-						'load_online_time'	=> array('lang' => 'ONLINE_LENGTH',		'validate' => 'int:0:999',	'type' => 'number:0:999', 'explain' => true, 'append' => ' ' . $user->lang['MINUTES']),
+						'legend1'				=> 'GENERAL_SETTINGS',
+						'limit_load'			=> array('lang' => 'LIMIT_LOAD',			'validate' => 'int:0:9999',	'type' => 'number:0:9999', 'explain' => true),
+						'session_length'		=> array('lang' => 'SESSION_LENGTH',		'validate' => 'int:60:86400',	'type' => 'number:60:86400', 'explain' => true, 'append' => ' ' . $user->lang['SECONDS']),
+						'session_gc'			=> array('lang' => 'SESSION_GC',			'validate' => 'int:60:86400',	'type' => 'number:60:86400', 'explain' => true, 'append' => ' ' . $user->lang['SECONDS']),
+						'session_guest_length'	=> array('lang' => 'SESSION_GUEST_LENGTH',	'validate' => 'int:60:86400',	'type' => 'number:60:86400', 'explain' => true, 'append' => ' ' . $user->lang['SECONDS']),
+						'session_guest_gc'		=> array('lang' => 'SESSION_GUEST_GC',		'validate' => 'int:60:86400',	'type' => 'number:60:86400', 'explain' => true, 'append' => ' ' . $user->lang['SECONDS']),
+						'active_sessions'		=> array('lang' => 'LIMIT_SESSIONS',		'validate' => 'int:0:9999',	'type' => 'number:0:9999', 'explain' => true),
+						'load_online_time'		=> array('lang' => 'ONLINE_LENGTH',			'validate' => 'int:0:999',	'type' => 'number:0:999', 'explain' => true, 'append' => ' ' . $user->lang['MINUTES']),
 						'read_notification_expire_days'	=> array('lang' => 'READ_NOTIFICATION_EXPIRE_DAYS',	'validate' => 'int:0',	'type' => 'number:0', 'explain' => true, 'append' => ' ' . $user->lang['DAYS']),
 
 						'legend2'				=> 'GENERAL_OPTIONS',
@@ -670,6 +673,21 @@ class acp_board
 							// because that is the password replacement we use to not
 							// send the password to the output
 							continue;
+						}
+
+						if (substr($field, -7) === '_secret')
+						{
+							// Do not update secret fields if the content starts with ********
+							if ($submit && strpos($cfg_array[$field], '********') === 0)
+							{
+								continue;
+							}
+							else if (!$submit && !empty($cfg_array[$field]))
+							{
+								// For display purposes, replace the secret with ******** and show last 4 characters
+								// to give the admin a hint what secret is used
+								$cfg_array[$field] = '********' . substr($cfg_array[$field], -4);
+							}
 						}
 
 						$old_auth_config[$field] = $this->new_config[$field];

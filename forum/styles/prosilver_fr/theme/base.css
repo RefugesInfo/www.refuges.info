@@ -186,6 +186,9 @@ blockquote blockquote {
 	border: 0;
 	padding: 0;
 }
+.switch-item [class*="switch-"] {
+	outline:0;
+}
 li.switch-item {
 	align-items: center;
 	display: flex;

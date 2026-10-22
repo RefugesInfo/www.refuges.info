@@ -611,6 +611,7 @@ $lang = array_merge($lang, array(
 	'LOG_TOPIC_TYPE_CHANGED'	=> '<strong>Themen-Art geändert</strong><br />» %s',
 	'LOG_UNLOCK'				=> '<strong>Thema entsperrt</strong><br />» %s',
 	'LOG_UNLOCK_POST'			=> '<strong>Beitrag entsperrt</strong><br />» %s',
+	'LOG_VERSION_CHECK_FAIL'	=> '<strong>Versionsprüfung fehlgeschlagen</strong>',
 
 	'LOG_DISALLOW_ADD'		=> '<strong>Verbotenen Benutzernamen hinzugefügt</strong><br />» %s',
 	'LOG_DISALLOW_DELETE'	=> '<strong>Verbotenen Benutzernamen entfernt</strong>',

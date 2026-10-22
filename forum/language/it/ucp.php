@@ -77,8 +77,8 @@ $lang = array_merge($lang, array(
 	'ACCOUNT_EMAIL_CHANGED_ADMIN'	=> 'Il tuo account è stato aggiornato. Tuttavia, il sistema richiede la riattivazione dell’account da parte di un amministratore per il cambio di indirizzo email. Un’email è stata inviata agli amministratori e verrai informato quando il tuo account sarà riattivato.',
 	'ACCOUNT_INACTIVE'				=> 'Il tuo account è stato creato. Tuttavia, il sistema richiede l’attivazione dell’account. Una chiave di attivazione è stata inviata all’indirizzo email che hai fornito. Controlla la tua posta per maggiori informazioni, controllando anche la casella di posta indesiderata. A seconda del provider, potrebbe volerci più o meno tempo, per ricevere l’email.',
 	'ACCOUNT_INACTIVE_ADMIN'		=> 'Il tuo account è stato creato. Tuttavia, il sistema richiede l’attivazione dell’account da parte di un amministratore. Un’email è stata inviata agli amministratori; verrai informato quando il tuo account sarà attivato.',
-	'ACTIVATION_EMAIL_SENT'			=> 'L’email di attivazione è stata inviata al tuo indirizzo di posta elettronica.',
-	'ACTIVATION_EMAIL_SENT_ADMIN'	=> 'L’email di attivazione è stata inviata agli indirizzi di posta elettronica degli amministratori.',
+	'ACTIVATION_EMAIL_SENT'			=> 'È stata inviata un’email di attivazione all’indirizzo fornito, a condizione che il nome utente e l’email indicati siano corretti. È possibile inviare una sola email di attivazione ogni 24 ore. Se continui ad avere problemi nell’attivazione del tuo account, contatta un amministratore del forum.',
+	'ACTIVATION_EMAIL_SENT_ADMIN'	=> 'È stata inviata un’email di attivazione agli indirizzi email degli amministratori, a condizione che il nome utente e l’indirizzo email forniti siano corretti. È possibile inviare una sola email di attivazione ogni 24 ore. Se continui ad avere problemi nell’attivazione del tuo account, contatta un amministratore del forum.',
 	'ADD'							=> 'Aggiungi',
 	'ADD_BCC'						=> 'Aggiungi [CCN]',
 	'ADD_FOES'						=> 'Aggiungi nuovi ignorati',
@@ -358,7 +358,7 @@ $lang = array_merge($lang, array(
 
 	'NOTIFICATION_TYPE_TOPIC'							=> 'Un utente ha creato un argomento in un forum da te sottoscritto',
 	'NOTIFICATION_TYPE_ADMIN_ACTIVATE_USER'				=> 'Un utente richiede attivazione',
-
+	'NOTIFICATION_TYPE_UPDATE_MAINTENANCE'				=> 'Notifiche di aggiornamento phpBB',
 	'NOTIFY_METHOD'					=> 'Metodo di avviso',
 	'NOTIFY_METHOD_BOTH'			=> 'Entrambi',
 	'NOTIFY_METHOD_EMAIL'			=> 'Solo email',

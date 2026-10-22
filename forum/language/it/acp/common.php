@@ -613,6 +613,7 @@ $lang = array_merge($lang, array(
 	'LOG_TOPIC_TYPE_CHANGED'	=> '<strong>Genere argomento cambiato</strong><br />» %s',
 	'LOG_UNLOCK'				=> '<strong>Argomento sbloccato</strong><br />» %s',
 	'LOG_UNLOCK_POST'			=> '<strong>Messaggio sbloccato</strong><br />» %s',
+	'LOG_VERSION_CHECK_FAIL'	=> '<strong>Controllo della versione non riuscito</strong>',
 
 	'LOG_DISALLOW_ADD'		=> '<strong>Nomi utenti non permessi aggiunti</strong><br />» %s',
 	'LOG_DISALLOW_DELETE'	=> '<strong>Nomi utenti non permessi cancellati</strong>',

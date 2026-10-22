@@ -68,7 +68,6 @@ $lang = array_merge($lang, array(
 	'ACCOUNT_DEACTIVATED'			=> 'Il tuo account è stato disattivato e può essere riattivato solo da un amministratore.',
 	'ACP'							=> 'Pannello di Controllo Amministratore',
 	'ACP_SHORT'						=> 'PCA',
-	'ACTIVATION_ALREADY_SENT'		=> 'L’email di attivazione è già stata inviata al tuo indirizzo e-mail. Puoi riprovare dopo 24 ore. Se continui ad avere problemi nell’attivazione del tuo account, contatta un amministratore del forum.',
 	'ACTIVE'						=> 'Attivo',
 	'ACTIVE_ERROR'					=> 'Il nome utente inserito risulta ancora inattivo. Se riscontri problemi nell’attivazione dell’account contatta un amministratore.',
 	'ADMINISTRATOR'					=> 'Amministratore',
@@ -105,7 +104,7 @@ $lang = array_merge($lang, array(
 	'AUTH_PROVIDER_OAUTH_SERVICE_BITLY'						=> 'Bitly',
 	'AUTH_PROVIDER_OAUTH_SERVICE_FACEBOOK'					=> 'Facebook',
 	'AUTH_PROVIDER_OAUTH_SERVICE_GOOGLE'					=> 'Google',
-	'AUTH_PROVIDER_OAUTH_SERVICE_TWITTER'					=> 'Twitter',
+	'AUTH_PROVIDER_OAUTH_SERVICE_TWITTER'					=> 'X',
 	'AUTH_PROVIDER_OAUTH_TOKEN_ERROR_NOT_STORED'			=> 'Token di OAuth non memorizzato.',
 	'AUTH_PROVIDER_OAUTH_TOKEN_ERROR_INCORRECTLY_STORED'	=> 'OAuth token correttamente conservato.',
 	'AVATAR_DISALLOWED_CONTENT'		=> 'Il contenuto è stato respinto in quanto il file caricato è stato identificato come un possibile vettore di attacco.',
@@ -342,6 +341,7 @@ $lang = array_merge($lang, array(
 		2	=> '%d ospiti',
 	),
 	'G_ADMINISTRATORS'			=> 'Amministratori',
+	'G_AI_CRAWLERS'				=> 'Crawlers IA',
 	'G_BOTS'					=> 'Bot',
 	'G_GUESTS'					=> 'Ospiti',
 	'G_REGISTERED'				=> 'Utenti registrati',
@@ -514,6 +514,9 @@ $lang = array_merge($lang, array(
 	'NOTIFICATION_TOPIC_IN_QUEUE'		=> '<strong>Approvazione argomento</strong> richiesta da %1$s:',
 	'NOTIFICATION_TYPE_NOT_EXIST'		=> 'Il tipo di notifica "%s" manca dal file system.',
 	'NOTIFICATION_ADMIN_ACTIVATE_USER'	=> '<strong>Richiesta di attivazione</strong> per l’utente disattivato o per il nuovo utente registrato: “%1$s”',
+	'NOTIFICATION_UPDATE_CRITICAL'		=> '<strong>phpBB %2$s aggiornamento disponibile - È richiesto un aggiornamento critico</strong>: Il tuo forum utilizza la versione %1$s e una nuova versione che include correzioni di sicurezza critiche deve essere installata immediatamente.',
+	'NOTIFICATION_UPDATE_MAINTENANCE'	=> '<strong>phpBB %2$s aggiornamento disponibile</strong>: Il tuo forum utilizza la versione %1$s ed è disponibile una nuova versione.',
+	'NOTIFICATION_UPDATE_SECURITY'		=> '<strong>phpBB %2$s aggiornamento disponibile - Security update</strong>: Il tuo forum utilizza la versione %1$s ed è disponibile una nuova versione che include correzioni di sicurezza. Consigliamo di aggiornare la scheda per mantenerla sicura e protetta.',
 	// Used in conjunction with NOTIFICATION_BOOKMARK and NOTIFICATION_POST.
 	'NOTIFICATION_MANY_OTHERS'			=> 'altri',
 	'NOTIFICATION_X_OTHERS'				=> array(
@@ -846,7 +849,7 @@ $lang = array_merge($lang, array(
 		2	=> 'Totale iscritti <strong>%d</strong>',
 	),
 	'TRACKED_PHP_ERROR'	=> 'Errori PHP registrati: %s',
-	'TWITTER'			=> 'Twitter',
+	'TWITTER'			=> 'X',
 
 	'UNABLE_GET_IMAGE_SIZE'	=> 'Impossibile determinare le dimensioni dell’immagine. Verifica che l’URL inserito sia corretto.',
 	'UNABLE_TO_DELIVER_FILE'=> 'Impossibile trasportare il file.',

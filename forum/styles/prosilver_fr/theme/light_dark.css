@@ -458,9 +458,11 @@ dd.profile-warnings {
 }
 .row-item[class*=_read]:before, .forum_link:before, .topic_moved:before {
 	background-color: var(--color05);
+	color: var(--color13);
 }
 .row-item[class*=_unread]:before {
 	background-color: var(--color01);
+	color: var(--color04);
 }
 .pagination li a {
 	background-color: var(--color04);

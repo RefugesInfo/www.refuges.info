@@ -1,0 +1,14 @@
+Subject: phpBB {NEW_VERSION} – Update für „{SITENAME}“ verfügbar
+
+Hallo {USERNAME},
+
+mit dieser Benachrichtigung möchten wir dich darüber informieren, dass ein neues Update für deine phpBB-Installation verfügbar ist.
+
+Deine aktuelle Version ist {CURRENT_VERSION}, und die neueste verfügbare Version ist {NEW_VERSION}. Es wird dringend empfohlen, dein Forum auf dem neuesten Stand zu halten, um seine Stabilität, Sicherheit und Leistung zu gewährleisten.
+
+Die Details zur neuen Version können im Administrations-Bereich deiner phpBB-Installation eingesehen werden.
+{U_BOARD}
+
+Wenn du Hilfe bei der Aktualisierung benötigst, lese bitte die Dokumentation oder besuche ein phpBB-Supportforum.
+
+{EMAIL_SIG}

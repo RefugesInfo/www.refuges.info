@@ -52,6 +52,8 @@ $lang = array_merge($lang, array(
 	'BOT_DELETED'		=> 'Robot supprimé.',
 	'BOT_EDIT'			=> 'Modifier le robot',
 	'BOT_EDIT_EXPLAIN'	=> 'Cette page vous permet d’ajouter ou de modifier un robot. Vous pouvez définir une chaîne de caractères pour l’agent et/ou une ou plusieurs adresses IP (ou une plage d’adresses) correspondantes. Faites attention en définissant la chaîne de caractères correspondant à l’agent ou aux adresses. Vous pouvez également indiquer le style et la langue que le robot utilisera pour consulter le forum. Cela peut vous permettre de réduire la bande passante utilisée en configurant un style simple pour les robots. N’oubliez pas de mettre les permissions appropriées au groupe prédéfini « Robots ».',
+	'BOT_GROUP'			=> 'Groupe du robot',
+	'BOT_GROUP_EXPLAIN'	=> 'Sélectionnez le groupe auquel appartient ce robot.',
 	'BOT_LANG'			=> 'Langue du robot',
 	'BOT_LANG_EXPLAIN'	=> 'Langue présentée au robot lors de son passage.',
 	'BOT_LAST_VISIT'	=> 'Dernière visite',
@@ -68,6 +70,7 @@ $lang = array_merge($lang, array(
 	'ERR_BOT_AGENT_MATCHES_UA'	=> 'L’agent du robot que vous avez fourni correspond à un que vous utilisez actuellement. Veuillez fournir un autre agent pour ce robot.',
 	'ERR_BOT_NO_IP'				=> 'Les adresses IP que vous avez fournies ne sont pas valides ou le nom de domaine n’a pas pu être résolu.',
 	'ERR_BOT_NO_MATCHES'		=> 'Vous devez fournir au moins un agent ou une IP pour correspondre à ce robot.',
+	'ERR_BOT_NO_NAME'			=> 'Vous devez fournir un nom pour ce robot.',
 
 	'NO_BOT'		=> 'Il n’y a pas de robot avec cet ID.',
 	'NO_BOT_GROUP'	=> 'Le groupe prédéfini « Robots » n’a pas été trouvé.',

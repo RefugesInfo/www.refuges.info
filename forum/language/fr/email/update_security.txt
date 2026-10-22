@@ -1,0 +1,14 @@
+Subject: phpBB {NEW_VERSION} disponible - Mise à jour de sécurité pour « {SITENAME} »
+
+Bonjour {USERNAME},
+
+Ceci est une notification pour vous informer qu’une mise à jour de sécurité a été publiée pour votre installation de phpBB.
+
+Votre version actuelle est la {CURRENT_VERSION} et une nouvelle version comportant des correctifs de sécurité est disponible. Nous vous recommandons de mettre à jour votre forum vers la dernière version disponible, la {NEW_VERSION}, afin que votre installation reste sécurisée et protégée.
+
+Vous pouvez consulter les détails de cette version dans le panneau d’administration de votre installation de phpBB.
+{U_BOARD}
+
+Pour obtenir de l’aide sur la procédure de mise à jour, consultez la documentation ou rendez-vous sur les forums de support de phpBB.
+
+{EMAIL_SIG}

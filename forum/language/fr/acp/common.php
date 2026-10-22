@@ -611,6 +611,7 @@ $lang = array_merge($lang, array(
 	'LOG_TOPIC_TYPE_CHANGED'	=> '<strong>Modification du type de sujet</strong><br>» %s',
 	'LOG_UNLOCK'				=> '<strong>Déverrouillage du sujet</strong><br>» %s',
 	'LOG_UNLOCK_POST'			=> '<strong>Déverrouillage du message</strong><br>» %s',
+	'LOG_VERSION_CHECK_FAIL'	=> '<strong>Échec de la vérification de la version</strong>',
 
 	'LOG_DISALLOW_ADD'		=> '<strong>Ajout du nom d’utilisateur interdit</strong><br>» %s',
 	'LOG_DISALLOW_DELETE'	=> '<strong>Suppression d’un nom d’utilisateur interdit</strong>',

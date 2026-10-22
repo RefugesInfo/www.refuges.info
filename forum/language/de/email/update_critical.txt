@@ -1,0 +1,14 @@
+Subject: phpBB {NEW_VERSION} Update verfügbar – Kritisches Update für „{SITENAME}“ erforderlich
+
+Hallo {USERNAME},
+
+mit dieser Benachrichtigung möchten wir dich darüber informieren, dass ein kritisches Sicherheitsupdate für deine phpBB-Installation veröffentlicht wurde, das umgehend installiert werden sollte.
+
+Deine aktuelle Version ist {CURRENT_VERSION} und es ist eine neue Version verfügbar, die kritische Sicherheitsupdates enthält. Wir empfehlen dir, dein Forum umgehend auf die neueste verfügbare Version {NEW_VERSION} zu aktualisieren, um die Sicherheit zu gewährleisten.
+
+Die Details zur Veröffentlichung können im Administrations-Bereich deiner phpBB-Installation eingesehen werden.
+{U_BOARD}
+
+Wenn du Hilfe bei der Aktualisierung benötigst, lese bitte die Dokumentation oder besuche ein phpBB-Supportforum.
+
+{EMAIL_SIG}
