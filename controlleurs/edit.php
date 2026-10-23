@@ -33,4 +33,8 @@ if(!empty($controlleur->url_decoupee[1])) {
   }
 }
 
+// Récupère les soumissions du formulaire de modification de paramètres de massifs
+if (est_moderateur() and !empty($_POST))
+  edit_info_polygone();
+
 $vue->liste_type_polygone = liste_type_polygone();
