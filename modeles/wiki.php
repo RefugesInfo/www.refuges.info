@@ -32,11 +32,8 @@ function wiki_page_html($page)
     // actuelle de la page, sinon on garde le français plutôt que d'afficher une information périmée
     if (($config_wri['langue_courante'] ?? 'fr') != 'fr')
     {
-      $res_traduction = $pdo->query("SELECT texte,hash_source FROM traductions
-        WHERE type_objet='wiki' AND id_objet=0 AND champ='contenu'
-          AND cle_objet=".$pdo->quote($page)." AND langue=".$pdo->quote($config_wri['langue_courante']));
-      $traduction = $res_traduction ? $res_traduction->fetch() : false;
-      if ($traduction && $traduction->texte !== null && $traduction->hash_source === md5($contenu_page->contenu))
+      $traduction = traduction_a_jour_wiki($page, $contenu_page->contenu);
+      if ($traduction)
         $contenu_page->contenu = $traduction->texte;
     }
 

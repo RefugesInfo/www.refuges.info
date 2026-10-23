@@ -5,6 +5,7 @@ add_lib('style_formulaire.css');
 
 require_once ("bdd.php");
 require_once ("point.php");
+require_once ("traduction.php");
 require_once ("polygone.php");
 require_once ("meta_donnee.php");
 require_once ("mise_en_forme_texte.php");
@@ -102,12 +103,9 @@ elseif ( !empty($_REQUEST["id_point_type"]))
     // Textes d'aide du modèle dans la langue de la page (table traductions), seulement s'ils correspondent au texte français actuel
     if ($config_wri['langue_courante']!='fr')
     {
-      $res = $pdo->query("SELECT champ,texte,hash_source FROM traductions
-        WHERE type_objet='point' AND id_objet=".(int)$point->id_point." AND langue=".$pdo->quote($config_wri['langue_courante'])."
-        AND champ IN ('remarques','acces','proprietaires') AND texte IS NOT NULL");
-      foreach ($res as $t)
-        if ($t->hash_source === md5($point->{$t->champ} ?? ''))
-          $point->{$t->champ} = $t->texte;
+      foreach (array('remarques','acces','proprietaires') as $champ)
+        if ($traduction = traduction_a_jour_point($point, $champ))
+          $point->$champ = $traduction->texte;
     }
   }
 
