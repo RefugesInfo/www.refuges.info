@@ -2076,3 +2076,63 @@ msgstr "Diese Seite löschen"
 
 msgid "Suppression de cette page sans confirmation"
 msgstr "Löschen dieser Seite ohne Bestätigung"
+
+msgid "Historique des pages wiki"
+msgstr "Verlauf der Wiki-Seiten"
+
+msgid "Toutes les pages du wiki, y compris celles qui ont été supprimées. Chaque modification et chaque suppression ajoute une version : rien n'est effacé."
+msgstr "Alle Wiki-Seiten, auch die gelöschten. Jede Änderung und jedes Löschen fügt eine Version hinzu: Nichts wird gelöscht."
+
+msgid "Versions"
+msgstr "Versionen"
+
+msgid "État"
+msgstr "Status"
+
+msgid "supprimée"
+msgstr "gelöscht"
+
+msgid "en ligne"
+msgstr "online"
+
+msgid "Versions de la page « %s » :"
+msgstr "Versionen der Seite «%s»:"
+
+msgid "Toutes les pages"
+msgstr "Alle Seiten"
+
+msgid "Aucune version pour cette page"
+msgstr "Keine Version für diese Seite"
+
+msgid "Date"
+msgstr "Datum"
+
+msgid "Version"
+msgstr "Version"
+
+msgid "Suppression de la page"
+msgstr "Seite gelöscht"
+
+msgid "Version actuelle"
+msgstr "Aktuelle Version"
+
+msgid "%d caractères"
+msgstr "%d Zeichen"
+
+msgid "Voir le texte"
+msgstr "Text anzeigen"
+
+msgid "Restaurer cette version"
+msgstr "Diese Version wiederherstellen"
+
+msgid "Historique de cette page"
+msgstr "Verlauf dieser Seite"
+
+msgid "Historique et restauration des pages wiki"
+msgstr "Verlauf und Wiederherstellung der Wiki-Seiten"
+
+msgid "Cette version n'existe pas ou correspond à une suppression"
+msgstr "Diese Version existiert nicht oder ist ein Löschvorgang"
+
+msgid "Version restaurée, la page est en ligne avec ce contenu"
+msgstr "Version wiederhergestellt, die Seite ist mit diesem Inhalt online"

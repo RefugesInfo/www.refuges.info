@@ -2447,3 +2447,63 @@ msgstr "Delete this page"
 
 msgid "Suppression de cette page sans confirmation"
 msgstr "Deletion of this page without confirmation"
+
+msgid "Historique des pages wiki"
+msgstr "Wiki page history"
+
+msgid "Toutes les pages du wiki, y compris celles qui ont été supprimées. Chaque modification et chaque suppression ajoute une version : rien n'est effacé."
+msgstr "All the wiki pages, including deleted ones. Every edit and every deletion adds a version: nothing is erased."
+
+msgid "Versions"
+msgstr "Versions"
+
+msgid "État"
+msgstr "Status"
+
+msgid "supprimée"
+msgstr "deleted"
+
+msgid "en ligne"
+msgstr "online"
+
+msgid "Versions de la page « %s » :"
+msgstr "Versions of the page “%s”:"
+
+msgid "Toutes les pages"
+msgstr "All pages"
+
+msgid "Aucune version pour cette page"
+msgstr "No version for this page"
+
+msgid "Date"
+msgstr "Date"
+
+msgid "Version"
+msgstr "Version"
+
+msgid "Suppression de la page"
+msgstr "Page deleted"
+
+msgid "Version actuelle"
+msgstr "Current version"
+
+msgid "%d caractères"
+msgstr "%d characters"
+
+msgid "Voir le texte"
+msgstr "Show the text"
+
+msgid "Restaurer cette version"
+msgstr "Restore this version"
+
+msgid "Historique de cette page"
+msgstr "History of this page"
+
+msgid "Historique et restauration des pages wiki"
+msgstr "Wiki page history and restoration"
+
+msgid "Cette version n'existe pas ou correspond à une suppression"
+msgstr "This version does not exist or is a deletion"
+
+msgid "Version restaurée, la page est en ligne avec ce contenu"
+msgstr "Version restored, the page is online with this content"

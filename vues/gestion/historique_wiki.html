@@ -1,0 +1,89 @@
+<style>
+table, td, th {
+  border: 1px solid black;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th {
+  height: 30px;
+}
+
+pre.texte_version {
+  white-space: pre-wrap;
+  max-height: 20em;
+  overflow: auto;
+}
+</style>
+<div class="contenu">
+  <h3><?=_("Historique des pages wiki")?></h3>
+  <?php if (!empty($vue->resultat)) { ?>
+    <p><strong><?=protege($vue->resultat->message)?></strong></p>
+  <?php } ?>
+
+<?php if ($vue->page === '') { ?>
+  <p><?=_("Toutes les pages du wiki, y compris celles qui ont été supprimées. Chaque modification et chaque suppression ajoute une version : rien n'est effacé.")?></p>
+  <table>
+    <tr>
+      <th><?=_("Nom de la page wiki")?></th>
+      <th><?=_("dernière modification")?></th>
+      <th><?=_("Versions")?></th>
+      <th><?=_("État")?></th>
+    </tr>
+    <?php foreach ($vue->pages_wiki as $page_wiki) { ?>
+      <tr>
+        <td><a href="?page=<?=urlencode($page_wiki->nom_page)?>"><?=protege($page_wiki->nom_page)?></a></td>
+        <td><?=date_format_francais($page_wiki->ts_date_derniere_modification)?></td>
+        <td><?=$page_wiki->nb_versions?></td>
+        <td><?=$page_wiki->supprimee ? _("supprimée") : _("en ligne")?></td>
+      </tr>
+    <?php } ?>
+  </table>
+<?php } else { ?>
+  <p>
+    <?=sprintf(_("Versions de la page « %s » :"), protege($vue->page))?>
+    <a href="?"><?=_("Toutes les pages")?></a>
+  </p>
+  <?php if (empty($vue->versions) or !empty($vue->versions->erreur)) { ?>
+    <p><?=_("Aucune version pour cette page")?></p>
+  <?php } else { ?>
+    <table>
+      <tr>
+        <th><?=_("Date")?></th>
+        <th><?=_("Version")?></th>
+        <th></th>
+      </tr>
+      <?php foreach ($vue->versions as $rang => $version) { ?>
+        <tr>
+          <td><?=date_format_francais($version->ts_date)?></td>
+          <?php if ($version->contenu === null) { ?>
+            <td><em><?=_("Suppression de la page")?></em></td>
+            <td></td>
+          <?php } else { ?>
+            <td>
+              <?=$rang==0 ? '<strong>'._("Version actuelle").'</strong> — ' : ''?>
+              <?=sprintf(_("%d caractères"), mb_strlen($version->contenu))?>
+              <details>
+                <summary><?=_("Voir le texte")?></summary>
+                <pre class="texte_version"><?=protege($version->contenu)?></pre>
+              </details>
+            </td>
+            <td>
+              <?php if ($rang > 0) { ?>
+                <form method="post" action="">
+                  <input type="hidden" name="page" value="<?=protege($vue->page)?>" />
+                  <input type="hidden" name="version" value="<?=protege($version->version)?>" />
+                  <button class="bouton_wiki" type="submit" name="restaurer" value="1"><?=_("Restaurer cette version")?></button>
+                </form>
+              <?php } ?>
+            </td>
+          <?php } ?>
+        </tr>
+      <?php } ?>
+    </table>
+  <?php } ?>
+<?php } ?>
+</div>

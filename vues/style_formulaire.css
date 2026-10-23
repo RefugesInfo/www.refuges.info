@@ -825,7 +825,8 @@ form#comment.modification_commentaire .rotation .fleche_rotation {
 
 .boutons_wiki { margin: 0 0 1em; }
 
-a.bouton_wiki {
+a.bouton_wiki,
+button.bouton_wiki {
   display: inline-block;
   border-radius: 7px;
   padding: 0.5em 1.6em;
@@ -841,12 +842,14 @@ a.bouton_wiki {
   transition: opacity 0.18s, transform 0.1s;
 }
 
-a.bouton_wiki:hover {
+a.bouton_wiki:hover,
+button.bouton_wiki:hover {
   opacity: 0.82;
   transform: translateY(-1px);
 }
 
-a.bouton_wiki:active { transform: translateY(0); }
+a.bouton_wiki:active,
+button.bouton_wiki:active { transform: translateY(0); }
 
 a.bouton_wiki_supprimer {
   background: #c0392b;

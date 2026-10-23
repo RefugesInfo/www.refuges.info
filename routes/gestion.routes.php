@@ -19,6 +19,7 @@ $controlleur->type = 'page_simple';
 
 switch ($controlleur->url_decoupee[1]) {
   case 'liste_pages_wiki':
+  case 'historique_wiki':
   case 'modifier_modeles':
   case 'commentaires_attente_correction':
   case 'historique_modifications':

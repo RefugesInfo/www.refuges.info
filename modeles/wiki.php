@@ -150,3 +150,48 @@ function liste_pages_wiki($conditions = Null)
     return erreur(_("Il n'y a aucune page dans notre wiki, oulla, c'est louche, quelqu'un à tout purger, ou alors une nouvelle installation, ou alors un bug..."));
   return $pages_wiki;
 }
+
+// Toutes les pages du wiki, supprimées comprises (dernière version à contenu NULL), avec leur nombre de versions
+function liste_pages_wiki_avec_supprimees()
+{
+  global $config_wri,$pdo;
+  $query="SELECT nom_page, count(*) AS nb_versions,
+            extract('epoch' from max(date)) AS ts_date_derniere_modification,
+            (array_agg(contenu IS NULL ORDER BY date DESC))[1]::int AS supprimee
+          FROM pages_wiki
+          GROUP BY nom_page
+          ORDER BY nom_page ASC;";
+  $res=$pdo->query($query);
+  if (!$res)
+    return erreur(_("Requête SQL impossible à executer"),$query);
+  return $res->fetchAll();
+}
+
+// Toutes les versions d'une page, de la plus récente à la plus ancienne ; ->version identifie la ligne (date au microseconde près)
+function versions_page_wiki($page)
+{
+  global $config_wri,$pdo;
+  $query="SELECT date::text AS version, extract('epoch' from date) AS ts_date, contenu
+          FROM pages_wiki
+          WHERE nom_page=".$pdo->quote($page)."
+          ORDER BY date DESC";
+  $res=$pdo->query($query);
+  if (!$res)
+    return erreur(_("Requête SQL impossible à executer"),$query);
+  return $res->fetchAll();
+}
+
+// Restaure une version : on en ajoute une copie en tête de l'historique (rien n'est écrasé), ce qui remet aussi en ligne une page supprimée
+function restaurer_version_wiki($page,$version)
+{
+  global $config_wri,$pdo;
+  $query="insert into pages_wiki (nom_page,contenu)
+          select nom_page,contenu from pages_wiki
+          where nom_page=".$pdo->quote($page)." and date::text=".$pdo->quote($version)." and contenu is not null";
+  $nb=$pdo->exec($query);
+  if ($nb===false)
+    return erreur(_("Requête SQL impossible à executer"),$query);
+  if (!$nb)
+    return erreur(_("Cette version n'existe pas ou correspond à une suppression"));
+  return ok(_("Version restaurée, la page est en ligne avec ce contenu"));
+}
