@@ -2071,3 +2071,9 @@ msgstr "eliminazione poligono"
 
 msgid "Enregistrer"
 msgstr "Salva"
+
+msgid "Supprimer cette page"
+msgstr "Elimina questa pagina"
+
+msgid "Suppression de cette page sans confirmation"
+msgstr "Eliminazione di questa pagina senza conferma"

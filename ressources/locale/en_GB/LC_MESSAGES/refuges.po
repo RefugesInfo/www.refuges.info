@@ -2441,3 +2441,9 @@ msgstr "polygon modification"
 
 msgid "suppression polygone"
 msgstr "polygon deletion"
+
+msgid "Supprimer cette page"
+msgstr "Delete this page"
+
+msgid "Suppression de cette page sans confirmation"
+msgstr "Deletion of this page without confirmation"
