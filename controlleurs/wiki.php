@@ -8,6 +8,9 @@ Finalement on passe à un quasi-vrai wiki avec historique (approximatif) que pou
 require_once ("mise_en_forme_texte.php");
 require_once ("wiki.php");
 
+add_lib('style_formulaire.css');
+add_lib('textarea_auto.js');
+
 
 // Si aucune page n'est précisée dans l'url (/wiki ou /wiki/) on affiche la page d'accueil du wiki, nommée "index" dans la base
 $page = urldecode($controlleur->url_decoupee[1] ?? '');

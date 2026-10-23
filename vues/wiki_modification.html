@@ -1,11 +1,12 @@
 <div class="contenu">
-  <p>
-    <form method="post" action="<?=$vue->lien_validation?>">
-      <textarea cols="150" rows="20" name="texte"><?=$vue->contenu_a_modifier?></textarea>
-      <br/>
+  <form id="comment" method="post" action="<?=$vue->lien_validation?>">
+    <textarea class="textarea_large" rows="20" name="texte"><?=$vue->contenu_a_modifier?></textarea>
+    <a class="lien-mise-en-forme" href="<?=lien_wiki("syntaxe_wiki")?>"><?=_("Syntaxe&nbsp;possible")?></a>
+    <p>
       <input name="modification" type="submit" value="<?=_("Enregistrer")?>"/>
-    </form>
-  </p>
+      <a class="bouton_wiki bouton_wiki_secondaire" href="<?=lien_wiki($vue->nom_page)?>"><?=_("Annuler")?></a>
+    </p>
+  </form>
   <p>
     <?=wiki_page_html("syntaxe_wiki")?>
   </p>

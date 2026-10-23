@@ -817,3 +817,43 @@ form#comment.modification_commentaire .rotation .fleche_rotation {
   font-size: 1.3em;
   line-height: 1;
 }
+
+/* ================================================================
+   6. Wiki : boutons modifier / supprimer / annuler (liens en forme de bouton)
+   Même rendu que les boutons de form#comment
+   ================================================================ */
+
+.boutons_wiki { margin: 0 0 1em; }
+
+a.bouton_wiki {
+  display: inline-block;
+  border-radius: 7px;
+  padding: 0.5em 1.6em;
+  font-size: 1em;
+  font-family: inherit;
+  cursor: pointer;
+  border: 1.5px solid var(--couleur_lien);
+  background: var(--couleur_lien);
+  color: white;
+  font-weight: bold;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  transition: opacity 0.18s, transform 0.1s;
+}
+
+a.bouton_wiki:hover {
+  opacity: 0.82;
+  transform: translateY(-1px);
+}
+
+a.bouton_wiki:active { transform: translateY(0); }
+
+a.bouton_wiki_supprimer {
+  background: #c0392b;
+  border-color: #c0392b;
+}
+
+a.bouton_wiki_secondaire {
+  background: transparent;
+  color: var(--couleur_lien);
+}
