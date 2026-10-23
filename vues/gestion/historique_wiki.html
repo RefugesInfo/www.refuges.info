@@ -85,5 +85,13 @@ pre.texte_version {
       <?php } ?>
     </table>
   <?php } ?>
+  <?php if (est_administrateur() and !empty($vue->versions) and empty($vue->versions->erreur)) { ?>
+    <form method="post" action="" class="purge_page">
+      <h4><?=_("Purger définitivement cette page")?></h4>
+      <p><?=_("Supprime la page, toutes ses versions et ses traductions. Irréversible.")?></p>
+      <input type="hidden" name="page" value="<?=protege($vue->page)?>" />
+      <button class="bouton_wiki bouton_wiki_supprimer" type="submit" name="purger" value="1"><?=_("Purger définitivement")?></button>
+    </form>
+  <?php } ?>
 <?php } ?>
 </div>

@@ -195,3 +195,15 @@ function restaurer_version_wiki($page,$version)
     return erreur(_("Cette version n'existe pas ou correspond à une suppression"));
   return ok(_("Version restaurée, la page est en ligne avec ce contenu"));
 }
+
+// Purge définitive : la page, toutes ses versions et ses traductions (irréversible, réservé aux administrateurs, voir le contrôleur)
+function purger_page_wiki($page)
+{
+  global $config_wri,$pdo;
+  $query="delete from pages_wiki where nom_page=".$pdo->quote($page);
+  $res=$pdo->query($query);
+  if (!$res)
+    return erreur(_("Requête SQL impossible à executer"),$query);
+  supprime_traductions_wiki($page);
+  return ok(_("Page, versions et traductions purgées définitivement"));
+}

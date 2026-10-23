@@ -2137,3 +2137,19 @@ msgstr "Esta versión no existe o corresponde a una eliminación"
 
 msgid "Version restaurée, la page est en ligne avec ce contenu"
 msgstr "Versión restaurada, la página está en línea con este contenido"
+
+msgid "Purger définitivement cette page"
+msgstr "Purgar definitivamente esta página"
+
+msgid "Supprime la page, toutes ses versions et ses traductions. Irréversible."
+msgstr "Elimina la página, todas sus versiones y sus traducciones. Irreversible."
+
+msgid "Purger définitivement"
+msgstr "Purgar definitivamente"
+
+msgid "Réservé aux administrateurs"
+msgstr "Reservado a los administradores"
+
+
+msgid "Page, versions et traductions purgées définitivement"
+msgstr "Página, versiones y traducciones purgadas definitivamente"

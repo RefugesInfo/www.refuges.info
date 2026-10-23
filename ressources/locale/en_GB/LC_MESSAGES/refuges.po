@@ -2507,3 +2507,19 @@ msgstr "This version does not exist or is a deletion"
 
 msgid "Version restaurée, la page est en ligne avec ce contenu"
 msgstr "Version restored, the page is online with this content"
+
+msgid "Purger définitivement cette page"
+msgstr "Permanently purge this page"
+
+msgid "Supprime la page, toutes ses versions et ses traductions. Irréversible."
+msgstr "Deletes the page, all its versions and its translations. Irreversible."
+
+msgid "Purger définitivement"
+msgstr "Purge permanently"
+
+msgid "Réservé aux administrateurs"
+msgstr "Administrators only"
+
+
+msgid "Page, versions et traductions purgées définitivement"
+msgstr "Page, versions and translations permanently purged"
