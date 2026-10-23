@@ -22,7 +22,7 @@ th {
   <?php if (!empty($vue->pages_wiki)) foreach ($vue->pages_wiki as $page_wiki) { ?>
   <tr>
     <td>
-        <a href="<?=lien_wiki($page_wiki->nom_page)?>"><?='->'.$page_wiki->nom_page?></a>
+        <a href="<?=lien_wiki($page_wiki->nom_page)?>"><?=$page_wiki->nom_page?></a>
     </td>
     <td><?=date_format_francais($page_wiki->ts_date_derniere_modification)?></td>
   </tr>
