@@ -94,7 +94,8 @@ function wiki_page_brut($page)
     return erreur(_("Requête SQL impossible à executer"),$query);
 
   $page=$res->fetch();
-  if (!$page)
+  // Une page supprimée = sa dernière version a un contenu NULL (voir supprimer_page), les versions antérieures restent en base
+  if (!$page or $page->contenu === null)
     return erreur(_("Cette page du wiki n'existe pas"));
   return $page;
 }
@@ -113,26 +114,32 @@ function ecrire_contenu($page,$contenu)
   return ok("Page mise à jour, et ancienne verson conservée");
 }
 
-// Supprime la page et toute ses anciennes versions
+// Supprime la page : on ajoute une version au contenu NULL, les anciennes versions et les traductions sont conservées
+// (restauration à la main : réinsérer une copie de la dernière version non NULL de la page)
 function supprimer_page($page)
 {
   global $config_wri,$pdo;
-  $query="delete from pages_wiki where nom_page=".$pdo->quote($page);
+  $existante=wiki_page_brut($page);
+  if (!empty($existante->erreur))
+    return $existante; // inexistante ou déjà supprimée : rien à faire
+  $query="insert into pages_wiki (nom_page,contenu) VALUES (".$pdo->quote($page).",NULL)";
   $res=$pdo->query($query);
   if (!$res)
     return erreur(_("Requête SQL impossible à executer"),$query);
-  supprime_traductions_wiki($page); // ses traductions aussi
 
-  return ok("Page supprimée et tout ses anciennes versions");
+  return ok("Page supprimée, ses anciennes versions sont conservées");
 }
 
 // Récupération en format brut
 function liste_pages_wiki($conditions = Null)
 {
   global $config_wri,$pdo;
-  $query="SELECT nom_page, MAX(extract('epoch' from date)) as ts_date_derniere_modification
-          FROM pages_wiki
-          GROUP BY nom_page
+  // Dernière version de chaque page, sans les pages supprimées (contenu NULL)
+  $query="SELECT nom_page, extract('epoch' from date) as ts_date_derniere_modification
+          FROM (SELECT DISTINCT ON (nom_page) nom_page, date, contenu
+                FROM pages_wiki
+                ORDER BY nom_page, date DESC) AS dernieres_versions
+          WHERE contenu IS NOT NULL
           ORDER BY nom_page ASC;";
   $res=$pdo->query($query);
   if (!$res)
