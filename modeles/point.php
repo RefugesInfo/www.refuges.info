@@ -15,6 +15,7 @@ require_once ("bdd.php");
 require_once ("commentaire.php");
 require_once ("polygone.php");
 require_once ("historique.php");
+require_once ("traduction.php");
 require_once ("mise_en_forme_texte.php");
 require_once ("gestion_erreur.php");
 
@@ -970,7 +971,7 @@ function suppression_point($point,$id_utilisateur_qui_supprime=0)
   // supp le point de toute façon, même si le forum n'avait pas de topic par exemple
   $pdo->exec("DELETE FROM points WHERE id_point=$point->id_point");
   // Les traductions automatiques des champs de la fiche n'ont plus de source
-  $pdo->exec("DELETE FROM traductions WHERE type_objet='point' AND id_objet=$point->id_point");
+  supprime_traductions_point($point);
 
   historisation_modification($point_test,null,'suppression point',$id_utilisateur_qui_supprime);
 

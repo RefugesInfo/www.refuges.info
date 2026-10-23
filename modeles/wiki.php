@@ -7,6 +7,7 @@ Accés aux données : entrées / sorties / modifications des textes / formatage 
 
 require_once ("mise_en_forme_texte.php");
 require_once ("bdd.php");
+require_once ("traduction.php");
 
 // Fonction pour réaliser un lien vers une page du wiki dont le nom est passé en paramètre
 function lien_wiki($page="/",$langue=null)
@@ -119,12 +120,11 @@ function ecrire_contenu($page,$contenu)
 function supprimer_page($page)
 {
   global $config_wri,$pdo;
-  $page=$pdo->quote($page);
-  $query="delete from pages_wiki where nom_page=$page";
+  $query="delete from pages_wiki where nom_page=".$pdo->quote($page);
   $res=$pdo->query($query);
   if (!$res)
     return erreur(_("Requête SQL impossible à executer"),$query);
-  $pdo->query("delete from traductions where type_objet='wiki' and cle_objet=$page"); // ses traductions aussi
+  supprime_traductions_wiki($page); // ses traductions aussi
 
   return ok("Page supprimée et tout ses anciennes versions");
 }

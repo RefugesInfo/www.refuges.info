@@ -10,6 +10,7 @@ require_once ('point.php');
 require_once ('mise_en_forme_texte.php');
 require_once ('utilisateur.php');
 require_once ('identification.php');
+require_once ('traduction.php');
 
 
 /**********************************************************************************************
@@ -525,7 +526,7 @@ function suppression_commentaire($commentaire)
     return erreur(_("Suppression d'un commentaire inexistant"),$query_delete);
   else {
     // Les traductions automatiques de ce commentaire n'ont plus de source (pas de ON DELETE CASCADE : on le fait explicitement)
-    $pdo->exec("DELETE FROM traductions WHERE type_objet='commentaire' AND id_objet=$commentaire->id_commentaire");
+    supprime_traductions_commentaire($commentaire);
     touch_fiches($commentaire);
     return ok(_("Commentaire supprimé"));
   }
