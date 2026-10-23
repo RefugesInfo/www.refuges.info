@@ -1,6 +1,6 @@
 <div class="contenu noprint">
   <h3 id="titrepage">
-    <?=$vue->titre?>
+    <?=_($vue->titre??'Créer un polygone')?>
   </h3>
 </div>
 
@@ -12,29 +12,34 @@
     <form method="post" action="<?=url_langue('/edit/'.($vue->polygone->id_polygone??0))?>" >
       <!-- Edition du polygone -->
       <label>
-        <input type="hidden" name="id_polygone" value="<?=$vue->polygone->id_polygone??0?>" />
         <p><?=_("Type :")?>
-        <select name="id_polygone_type">
-          <?php foreach ($vue->liste_type_polygone as $type_polygone) { ?>
-            <option value="<?=$type_polygone->id_polygone_type??''?>"
-              <?=isset($vue->polygone->id_polygone_type) && isset($type_polygone->id_polygone_type) &&
-                $vue->polygone->id_polygone_type === $type_polygone->id_polygone_type ?
-                'selected="selected"' : ''?>>
-              <?=_($type_polygone->type_polygone??'')?>
-            </option>
-          <?php } ?>
-        </select>
+          <select name="id_polygone_type">
+            <?php foreach ($vue->liste_type_polygone as $type_polygone) { ?>
+              <option value="<?=$type_polygone->id_polygone_type??''?>"
+                <?=isset($vue->polygone->id_polygone_type) && isset($type_polygone->id_polygone_type) &&
+                  $vue->polygone->id_polygone_type === $type_polygone->id_polygone_type ?
+                  'selected="selected"' : ''?>>
+                <?=_($type_polygone->type_polygone??'')?>
+              </option>
+            <?php } ?>
+          </select>
         </p>
-        <input size="400" type="hidden" name="json_polygones" id="edit-json" value='<?=$vue->json_polygones??''?>' />
+
         <p>
           <?=_("Nom :")?>
-          <input type="text" name="nom_polygone" size="20" value="<?=$vue->polygone->nom_polygone??''?>" />
+          <input type="text" name="nom_polygone" size="20" value="<?=$vue->polygone->nom_polygone??_('Nom')?>" />
         </p>
+
         <p>
           <?=_("Article partitif (max 20 car)")?>
           <input type="text" name="article_partitif" size="9" value="<?=$vue->polygone->article_partitif??''?>" />
         </p>
         <br/>
+
+        <input type="hidden" name="id_polygone" value="<?=$vue->polygone->id_polygone??0?>" />
+        <input size="400" type="hidden" name="json_polygones" id="edit-json"
+          value='<?=$vue->polygone->geometrie_geojson??''?>'
+        />
         <p>
           <input type="submit" name="enregistrer" value="<?=_("Enregistrer et rester")?>" />
         </p>
@@ -47,11 +52,12 @@
     <?php if (isset($vue->polygone->id_polygone)) { ?>
       <br/>
       <p id="export-polygon">
-        <a href="" target="_BLANCK">Exporter la dernière version enregistrée au format</a>
+        <?=_("Exporter la dernière version enregistrée au format")?>
         <select name="format" onchange="formatChange()">
           <option value="geojson">GeoJson</option>
           <option value="gml">GML</option>
         </select>
+        <a href="" target="_BLANCK"><?=_("Télécharger")?></a>
       </p>
     <?php } ?>
   </fieldset>
@@ -95,6 +101,4 @@
       </label>
     </fieldset>
   <?php } ?>
-
-  <div id="myol-help-edit"></div>
 </div>
