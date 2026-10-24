@@ -19,21 +19,21 @@ if(!empty($controlleur->url_decoupee[1])) {
   $params->ids_polygones = $controlleur->url_decoupee[1];
   $params->avec_geometrie = 'geojson';
   $polygones_bruts = infos_polygones($params);
-  
+
   if(count($polygones_bruts)) {
     $vue->polygone = $polygones_bruts[0];
     $vue->titre = implode(' ', [
-      'Modifier',
-      $vue->polygone->art_def_poly,
-      $vue->polygone->type_polygone,
-      $vue->polygone->article_partitif,
+      _('Modifier'),
+      _($vue->polygone->art_def_poly),
+      _($vue->polygone->type_polygone),
+      _($vue->polygone->article_partitif),
       $vue->polygone->nom_polygone,
     ]);
-    // Le défaut et la traduction seront faites dans edit.html
   }
 }
 
 // Récupère les soumissions du formulaire de modification de paramètres de massifs
+//TODO BUG ne réaffiche pas quand les champs sont modifiés
 if (est_moderateur() and !empty($_POST))
   edit_info_polygone();
 
