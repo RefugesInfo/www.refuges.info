@@ -8,6 +8,20 @@ function afficheEtSet(el, affiche, valeur) {
   return false;
 }
 
+// TEMPORAIRE — compatibilité anciens navigateurs : Firefox < 121 (ESR 115, Windows 7/8) ne gère pas :has(),
+// d'où ce repli qui marque la pilule cochée (voir label.coche dans style_formulaire.css).
+// À supprimer avec la règle CSS quand ces navigateurs auront disparu (~2031).
+function marquePilulesCochees() {
+  document.querySelectorAll('form#form_point .booleen input[type=radio]').forEach((radio) => {
+    if (radio.closest('label'))
+      radio.closest('label').classList.toggle('coche', radio.checked);
+  });
+}
+marquePilulesCochees();
+document.querySelectorAll('form#form_point .booleen input[type=radio]').forEach((radio) => {
+  radio.addEventListener('change', marquePilulesCochees);
+});
+
 // Positionne la carte à l'emplacement du point à modifier
 <?php if(!empty($vue->point->id_point)) { ?>
   sessionStorage.positionMemory =

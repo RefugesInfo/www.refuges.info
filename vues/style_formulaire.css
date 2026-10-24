@@ -309,6 +309,20 @@ form#form_point .booleen label:has(input[type=radio]:checked):hover {
   opacity: 0.88;
 }
 
+/* TEMPORAIRE — compatibilité anciens navigateurs : Firefox < 121 (dont l'ESR 115, Windows 7/8) ne gère pas :has(),
+   les pilules cochées restaient blanches. Classe posée par point_formulaire_modification.js.
+   À supprimer (cette règle + la fonction JS marquePilulesCochees) quand ces navigateurs auront disparu (~2031). */
+form#form_point .booleen label.coche {
+  background: var(--couleur_lien);
+  border-color: var(--couleur_lien);
+  color: white;
+}
+
+form#form_point .booleen label.coche:hover {
+  background: var(--couleur_lien);
+  opacity: 0.88;
+}
+
 /* Champ nombre inline dans sa pilule */
 form#form_point .booleen input[type=text] {
   width: 4em;
