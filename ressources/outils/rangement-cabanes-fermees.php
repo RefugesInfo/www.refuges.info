@@ -11,7 +11,8 @@ Archivé ici (ressources/outils/), il ne s'active QUE si on le copie sur le cont
   Ne JAMAIS commiter la copie active de controlleurs/maintenance.php.
 
 Principe : chaque modérateur se réserve des lots de 10 fiches (filtrables par région, années, mot), puis pour chaque fiche :
-  - « Laisser la fiche comme ça »    : la fiche reste telle quelle et sort de la liste ;
+  - « Ne rien décider et laisser aux autres » : la fiche est rendue à la liste commune, un autre modérateur la verra ;
+  - « Retirer de la liste globale »  : la fiche reste telle quelle (cabane non gardée, fermée) et sort de la liste de tout le monde ;
   - « Convertir en bâtiment inutilisable » : bâtiment à investiguer (id 28) + conditions_utilisation='fermeture' (libellé « Inutilisable »).
 Pas de suppression ici : on supprime avec le formulaire habituel, la fiche sort alors toute seule de la liste.
 
@@ -32,7 +33,7 @@ require_once ("forum.php");
 require_once ("utilisateur.php");
 require_once ("leaflet_libs.php"); // Les mêmes librairies leaflet que la fiche d'un point (ajoutées dans $vue->css_lib_head et $vue->java_lib_foot)
 
-$DELAI_RESERVATION_JOURS = 7;
+$DELAI_RESERVATION = '1 hour'; // Sans action pendant ce délai, le lot est rendu aux autres (chaque clic de traitement remet le compteur à zéro)
 $TAILLE_LOT = 10;
 $TYPE_CABANE = $config_wri['id_cabane_non_gardee'];
 $TYPE_BATIMENT = $config_wri['id_batiment_a_investiguer'];
@@ -63,7 +64,7 @@ $pdo->exec("CREATE TABLE IF NOT EXISTS rangement_fiches (
   traite_le timestamptz)");
 
 /******* Entretien : réservations périmées libérées, fiches traitées à la main (supprimées, converties, rouvertes...) soldées *******/
-$pdo->exec("DELETE FROM rangement_fiches WHERE decision IS NULL AND reserve_le < now() - interval '$DELAI_RESERVATION_JOURS days'");
+$pdo->exec("DELETE FROM rangement_fiches WHERE decision IS NULL AND reserve_le < now() - interval '$DELAI_RESERVATION'");
 $pdo->exec("UPDATE rangement_fiches r SET decision='hors_outil', traite_le=now()
   WHERE decision IS NULL AND NOT EXISTS (
     SELECT 1 FROM points p WHERE p.id_point=r.id_point AND p.id_point_type=$TYPE_CABANE AND p.conditions_utilisation='fermeture')");
@@ -137,13 +138,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
     $deja = (int)$pdo->query("SELECT count(*) FROM rangement_fiches WHERE id_moderateur=$moi AND decision IS NULL")->fetchColumn();
     $a_prendre = $TAILLE_LOT - $deja;
     if ($a_prendre <= 0)
-      $reponse(false, "Ton lot de $TAILLE_LOT fiches n'est pas terminé.");
+      $reponse(false, "Votre lot de $TAILLE_LOT fiches n'est pas terminé.");
     $ordre = ($f['tri'] == 'recentes') ? 'DESC' : 'ASC';
     $pris = $pdo->exec("INSERT INTO rangement_fiches (id_point, id_moderateur)
       SELECT p.id_point, $moi FROM points p WHERE ".sql_candidates($f)."
       ORDER BY p.date_creation $ordre, p.id_point LIMIT $a_prendre
       ON CONFLICT (id_point) DO NOTHING");
     $reponse(true, $pris ? "$pris fiche(s) réservée(s)." : "Aucune fiche disponible avec ce filtre.");
+  }
+
+  if ($action == 'liberer')
+  {
+    $id = (int)($_POST['id_point'] ?? 0);
+    $pris = $pdo->exec("DELETE FROM rangement_fiches WHERE id_point=$id AND id_moderateur=$moi AND decision IS NULL");
+    if (!$pris)
+      $reponse(false, "Cette fiche n'est pas dans votre lot (déjà traitée, ou réservation expirée). Rechargez la page.");
+    $pdo->exec("UPDATE rangement_fiches SET reserve_le=now() WHERE id_moderateur=$moi AND decision IS NULL");
+    $reponse(true, "Fiche $id rendue aux autres.");
   }
 
   if ($action == 'rien' or $action == 'convertir')
@@ -153,7 +164,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
     // On ne traite que sa propre réservation, encore ouverte
     $reservation = $pdo->query("SELECT 1 FROM rangement_fiches WHERE id_point=$id AND id_moderateur=$moi AND decision IS NULL")->fetchColumn();
     if (!$reservation)
-      $reponse(false, "Cette fiche n'est pas dans ton lot (déjà traitée, ou réservation expirée). Recharge la page.");
+      $reponse(false, "Cette fiche n'est pas dans votre lot (déjà traitée, ou réservation expirée). Rechargez la page.");
 
     if ($action == 'convertir')
     {
@@ -162,7 +173,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
       $fiche = $pdo->query("SELECT id_point, nom, altitude, id_type_precision_gps, topic_id, ST_AsGeoJSON(geom,15) AS geojson
         FROM points WHERE id_point=$id AND id_point_type=$TYPE_CABANE AND conditions_utilisation='fermeture'", PDO::FETCH_OBJ)->fetch();
       if (!$fiche)
-        $reponse(false, "La fiche a changé entre-temps, recharge la page.");
+        $reponse(false, "La fiche a changé entre-temps, rechargez la page.");
       $fiche->id_point_type = $TYPE_BATIMENT;
       $fiche->conditions_utilisation = 'fermeture';
       $retour = modification_ajout_point($fiche, $moi);
@@ -172,7 +183,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 
     $pdo->exec("UPDATE rangement_fiches SET decision=".$pdo->quote($action == 'rien' ? 'rien' : 'converti').", traite_le=now()
       WHERE id_point=$id AND id_moderateur=$moi AND decision IS NULL");
-    $reponse(true, $action == 'rien' ? "Fiche $id laissée telle quelle." : "Fiche $id convertie en bâtiment inutilisable.");
+    // Activité : le reste du lot reste à moi encore le délai complet
+    $pdo->exec("UPDATE rangement_fiches SET reserve_le=now() WHERE id_moderateur=$moi AND decision IS NULL");
+    $reponse(true, $action == 'rien' ? "Fiche $id retirée de la liste globale." : "Fiche $id convertie en bâtiment inutilisable.");
   }
 
   $reponse(false, "Action inconnue.");
@@ -230,7 +243,7 @@ button{padding:.4em .8em;margin-right:.5em;cursor:pointer} button.danger{backgro
 <div id="message"><?php if (!empty($_GET['message'])) { ?><div class="message"><?=h($_GET['message'])?></div><?php } ?></div>
 
 <h3>Avancement</h3>
-<table><tr><th>À ranger (disponibles)</th><th>Réservées</th><th>Laissées telles quelles</th><th>Converties</th><th>Traitées hors outil</th></tr>
+<table><tr><th>À ranger (disponibles)</th><th>Réservées</th><th>Retirées de la liste (inchangées)</th><th>Converties</th><th>Traitées hors outil</th></tr>
 <tr><td><?=$stats->disponibles?></td><td><?=$stats->reservees?></td><td><?=$stats->rien?></td><td><?=$stats->converties?></td><td><?=$stats->hors_outil?></td></tr></table>
 <?php if ($par_moderateur) { ?><p class="petit">Par modérateur (en cours / traitées) :
 <?php foreach ($par_moderateur as $m) echo h($m->nom).' '.$m->en_cours.' / '.$m->traitees.' — '; ?>
@@ -253,7 +266,7 @@ button{padding:.4em .8em;margin-right:.5em;cursor:pointer} button.danger{backgro
   <span class="petit"><?=$disponibles_filtre?> disponible(s) avec ce filtre (le compte se met à jour après chaque réservation).</span>
 </form>
 
-<h3>Mon lot (<?=count($lot)?> fiche(s), libérées après <?=$DELAI_RESERVATION_JOURS?> jours sans action)</h3>
+<h3>Mon lot (<?=count($lot)?> fiche(s), rendu aux autres après 1 heure sans action)</h3>
 <?php if (!$lot) echo '<p>Aucune fiche réservée.</p>'; ?>
 <?php foreach ($lot as $p) {
   $alertes = preg_match_all($motif_alerte, $p->nom.' '.$p->remarques.' '.$p->acces.' '.$p->proprietaires, $trouves) ? array_unique(array_map('mb_strtolower', $trouves[0])) : array();
@@ -275,7 +288,8 @@ button{padding:.4em .8em;margin-right:.5em;cursor:pointer} button.danger{backgro
   <?php } ?>
   <form method="post" action="<?=h(strtok($_SERVER['REQUEST_URI'], '?'))?>" class="actions" style="margin-top:.5em">
     <input type="hidden" name="jeton" value="<?=h($jeton)?>"><input type="hidden" name="id_point" value="<?=$p->id_point?>">
-    <button type="submit" name="action" value="rien">Laisser la fiche comme ça</button>
+    <button type="submit" name="action" value="liberer">Ne rien décider et laisser aux autres</button>
+    <button type="submit" name="action" value="rien">Retirer de la liste globale</button>
     <button type="submit" name="action" value="convertir" class="danger">Convertir en bâtiment inutilisable</button>
   </form>
  </div>
@@ -356,7 +370,7 @@ document.querySelectorAll('form.actions').forEach(function (form) {
       if (rep.ok) form.closest('.fiche').remove();
       else form.querySelectorAll('button').forEach(function (b) { b.disabled = false; });
     }).catch(function () {
-      alert('Erreur réseau, recharge la page.');
+      alert('Erreur réseau, rechargez la page.');
       form.querySelectorAll('button').forEach(function (b) { b.disabled = false; });
     });
   });
