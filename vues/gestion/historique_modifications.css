@@ -60,3 +60,13 @@ form.filtres_historique button {
   color: #c0392b;
   font-weight: bold;
 }
+
+/* « voir + » : même aspect que les liens habituels du site */
+.modification_historique details summary {
+  color: var(--couleur_lien);
+  cursor: pointer;
+}
+
+.modification_historique details summary:hover {
+  background-color: var(--couleur_hover);
+}

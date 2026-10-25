@@ -12,6 +12,16 @@ th {
   height: 30px;
 }
 
+details summary {
+  /* même aspect que les liens habituels du site */
+  color: var(--couleur_lien);
+  cursor: pointer;
+}
+
+details summary:hover {
+  background-color: var(--couleur_hover);
+}
+
 pre.texte_version {
   white-space: pre-wrap;
   max-height: 20em;
