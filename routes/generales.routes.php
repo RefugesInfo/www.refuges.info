@@ -143,6 +143,7 @@ switch ($controlleur->url_decoupee[0])
   case "point_formulaire_modification" :
   case "point_modification" :
   case "test" :
+  case "maintenance" : // route générique, controlleurs/maintenance.php est vide (404) sauf pendant une opération de maintenance
   case "point_ajout" :
     $controlleur->type=$controlleur->url_decoupee[0];
     break;
