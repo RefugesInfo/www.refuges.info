@@ -19,6 +19,13 @@
 User-agent: *
 Disallow: /photos_points/*
 Disallow: /forum/photos-points/*
+# Formulaires de commentaire : aucun intérêt à les indexer, et leurs versions par langue multiplient les URLs à explorer
+Disallow: /avis_internaute_commentaire/
+Disallow: /point_ajout_commentaire/
+
+# Baidu : son rendu de page appelle /api/bbox (requête lourde) pour chaque page, dans chaque langue
+User-agent: Baiduspider
+Disallow: /
 
 # Cette liste est construite de manière empirique et personnelle, j'ai pris les robots qui visitent le plus notre site et dont je ne parviens pas à me convaincre qu'ils nous sont bénéfiques. 
 # Cette liste pourra être augmentée de manière régulière, voir recopiée d'autres qui font déjà le même boulot.
