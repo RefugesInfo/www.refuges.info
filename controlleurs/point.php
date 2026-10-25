@@ -58,13 +58,17 @@ else // le point est valide
   $trad = array();
   $trad_langue_source = array();
   $id = (int)$point->id_point;
+  // Deux requêtes ciblées sur l'id de la fiche (UNION ALL) : un OR entre les deux types d'objet interdit l'usage de l'index
+  // et lisait toute la table traductions + points à chaque affichage de fiche
+  $langue_sql = $pdo->quote($config_wri['langue_courante']);
   $res = $pdo->query("SELECT t.type_objet,t.id_objet,t.champ,t.texte,t.langue_source FROM traductions t
-    LEFT JOIN points p ON t.type_objet='point' AND p.id_point=t.id_objet
-    LEFT JOIN commentaires c ON t.type_objet='commentaire' AND c.id_commentaire=t.id_objet AND c.id_point=$id
-    WHERE t.langue=".$pdo->quote($config_wri['langue_courante'])." AND t.texte IS NOT NULL AND (
-      (t.type_objet='point' AND t.id_objet=$id AND t.hash_source=md5(CASE t.champ
-        WHEN 'remarques' THEN p.remarques WHEN 'acces' THEN p.acces WHEN 'proprietaires' THEN p.proprietaires END)) OR
-      (t.type_objet='commentaire' AND c.id_commentaire IS NOT NULL AND t.hash_source=md5(c.texte)))");
+    JOIN points p ON p.id_point=t.id_objet
+    WHERE t.type_objet='point' AND t.id_objet=$id AND t.langue=$langue_sql AND t.texte IS NOT NULL
+      AND t.hash_source=md5(CASE t.champ WHEN 'remarques' THEN p.remarques WHEN 'acces' THEN p.acces WHEN 'proprietaires' THEN p.proprietaires END)
+    UNION ALL
+    SELECT t.type_objet,t.id_objet,t.champ,t.texte,t.langue_source FROM commentaires c
+    JOIN traductions t ON t.type_objet='commentaire' AND t.id_objet=c.id_commentaire
+    WHERE c.id_point=$id AND t.langue=$langue_sql AND t.texte IS NOT NULL AND t.hash_source=md5(c.texte)");
   foreach ($res as $r)
   {
     $trad[$r->type_objet][$r->id_objet][$r->champ] = $r->texte;
