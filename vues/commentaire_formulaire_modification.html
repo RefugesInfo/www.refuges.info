@@ -83,8 +83,11 @@
       <button name="type" value="transfert_forum" type="submit"><?=_("Transférer vers le forum")?></button>
       <span class="groupe_transfert">
         <button name="type" value="transfert_autre_point" type="submit"><?=_("Transférer vers la fiche n°")?></button>
-        <button name="type" value="duplication_autre_point" type="submit"><?=_("Dupliquer vers la fiche n°")?></button>
         <input type="text" name="id_autre_point" value="" size="8" aria-label="<?=_("Numéro de la fiche de destination")?>" />
+      </span>
+      <span class="groupe_transfert">
+        <button name="type" value="duplication_autre_point" type="submit"><?=_("Dupliquer vers la fiche n°")?></button>
+        <input type="text" name="id_autre_point_duplication" value="" size="8" aria-label="<?=_("Numéro de la fiche de destination")?>" />
       </span>
       <button name="type" value="suppression" type="submit" class="danger"><?=_("Supprimer le commentaire")?></button>
     </div>

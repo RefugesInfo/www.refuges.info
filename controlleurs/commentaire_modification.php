@@ -80,7 +80,7 @@ else
 
       case 'duplication_autre_point':
         // Le commentaire d'origine reste intact : on crée une copie (texte, auteur, date, photo) sur l'autre fiche
-        $autre_point=infos_point($_REQUEST['id_autre_point'] ?? Null);
+        $autre_point=infos_point($_REQUEST['id_autre_point_duplication'] ?? Null);
         if (!empty($autre_point->erreur))
         {
           $vue->retour=erreur(sprintf(_("Duplication du commentaire impossible, car le point de destination indique : %s"), $autre_point->message));
