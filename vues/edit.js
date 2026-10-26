@@ -32,7 +32,7 @@ positionMemoryControl(map);
   Object.values(tileLayers)[0] // La première par défaut
 ).addTo(map);
 
-// Affiche le polygone courant
+// Sélecteur de polygone à éditer
 if (editJsonEl.value) {
   const polygonesAEditer = L.geoJson(JSON.parse(editJsonEl.value)); //.addTo(map);
 
@@ -44,7 +44,6 @@ if (editJsonEl.value) {
   // Ou positionne la carte par défaut sur la dernière position utilisée
   map.setView([positionMemoryArray[1], positionMemoryArray[2]], positionMemoryArray[0]);
 }
-
 
 // Editeur
 map.pm.addControls({
@@ -103,9 +102,9 @@ map.on('pm:remove', layerChanged); // A la suppression du polygone
 
 // Changement de format d'export
 function formatChange() { // Réponse au changement d'état de l'input select
-  exportPolygonEl.firstElementChild.href = '/api/polygones' +
+  exportPolygonEl.lastElementChild.href = '/api/polygones' +
     '?massif=' + polygoneId +
-    '&format=' + exportPolygonEl.lastElementChild.value;
+    '&format=' + exportPolygonEl.firstElementChild.value;
 }
 
 if (exportPolygonEl)
