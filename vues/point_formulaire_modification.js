@@ -22,12 +22,6 @@ document.querySelectorAll('form#form_point .booleen input[type=radio]').forEach(
   radio.addEventListener('change', marquePilulesCochees);
 });
 
-// Positionne la carte à l'emplacement du point à modifier
-<?php if(!empty($vue->point->id_point)) { ?>
-  sessionStorage.positionMemory =
-    '15/<?=$vue->point->latitude?>/<?=$vue->point->longitude?>/' + sessionStorage.positionMemory.split('/')[3];
-<?php } ?>
-
 // Initialisation de la carte
 const map = L.map('carte-saisie');
 
@@ -35,7 +29,6 @@ const map = L.map('carte-saisie');
 const tileLayers = couchesDeFond(<?=json_encode($config_wri["mapKeys"])?>);
 
 // Chargement du fond de carte actif
-positionMemoryControl(map);
 (tileLayers[decodeURI(positionMemoryArray[3])] || Object.values(tileLayers)[0]).addTo(map);
 
 // Points refuges.info
@@ -45,8 +38,15 @@ clusterPOI('https://<?=$_SERVER["SERVER_NAME"]?>', '<?=$vue->version_features?>'
 controlesComuns(map).forEach((control) => control.addTo(map));
 L.control.layers(tileLayers).addTo(map);
 
-// Lance le chargement de la carte
-map.setView([positionMemoryArray[1], positionMemoryArray[2]], 15);
+// Initialisation de la position de la carte
+<?php if(empty($vue->point->id_point)) { ?>
+  map.setView([positionMemoryArray[1], positionMemoryArray[2]], 15);
+<?php } else { ?>
+  map.setView([<?=$vue->point->latitude?>,<?=$vue->point->longitude?>], 12);
+<?php } ?>
+
+// Mémorisation des glissements de la carte
+positionMemoryControl(map);
 
 // Marqueur déplaçable d'édition de position de cabane
 const champsPositionEls = document.querySelectorAll('#champs-position input'),
