@@ -333,6 +333,9 @@ msgstr ""
 msgid "Transférer vers la fiche n°"
 msgstr ""
 
+msgid "Dupliquer vers la fiche n°"
+msgstr ""
+
 msgid "Numéro de la fiche de destination"
 msgstr ""
 
@@ -1459,6 +1462,10 @@ msgid ""
 msgstr ""
 
 #, php-format
+msgid "Duplication du commentaire impossible, car le point de destination indique : %s"
+msgstr ""
+
+#, php-format
 msgid "Action inconnue : %s"
 msgstr ""
 
@@ -1814,6 +1821,10 @@ msgstr ""
 
 #, php-format
 msgid " et a été transféré sur la fiche : %s"
+msgstr ""
+
+#, php-format
+msgid "Le commentaire a été dupliqué sur la fiche : %s"
 msgstr ""
 
 msgid "pas de photo dans ce commentaire"

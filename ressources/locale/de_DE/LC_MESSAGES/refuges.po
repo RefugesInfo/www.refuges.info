@@ -319,6 +319,9 @@ msgstr "Ins Forum verschieben"
 msgid "Transférer vers la fiche n°"
 msgstr "Auf Seite Nr. verschieben"
 
+msgid "Dupliquer vers la fiche n°"
+msgstr "Auf Seite Nr. duplizieren"
+
 msgid "Numéro de la fiche de destination"
 msgstr "Nummer der Zielseite"
 
@@ -1343,6 +1346,10 @@ msgid "Transfert du commentaire impossible, car le point de destination indique 
 msgstr "Verschieben des Kommentars nicht möglich, da der Zielpunkt angibt: %s"
 
 #, php-format
+msgid "Duplication du commentaire impossible, car le point de destination indique : %s"
+msgstr "Duplizieren des Kommentars nicht möglich, da der Zielpunkt angibt: %s"
+
+#, php-format
 msgid "Action inconnue : %s"
 msgstr "Unbekannte Aktion: %s"
 
@@ -1655,6 +1662,10 @@ msgstr "Der Kommentar wurde geändert"
 #, php-format
 msgid " et a été transféré sur la fiche : %s"
 msgstr " und wurde auf die Seite verschoben: %s"
+
+#, php-format
+msgid "Le commentaire a été dupliqué sur la fiche : %s"
+msgstr "Der Kommentar wurde auf die Seite dupliziert: %s"
 
 msgid "pas de photo dans ce commentaire"
 msgstr "kein Foto in diesem Kommentar"

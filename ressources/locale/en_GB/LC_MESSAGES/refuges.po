@@ -335,6 +335,9 @@ msgstr "Transfer to the forum"
 msgid "Transférer vers la fiche n°"
 msgstr "Transfer to sheet no."
 
+msgid "Dupliquer vers la fiche n°"
+msgstr "Duplicate to sheet no."
+
 msgid "Numéro de la fiche de destination"
 msgstr "Number of the destination sheet"
 
@@ -1551,6 +1554,10 @@ msgstr ""
 "The comment cannot be transferred, because the destination point says: %s"
 
 #, php-format
+msgid "Duplication du commentaire impossible, car le point de destination indique : %s"
+msgstr "The comment cannot be duplicated, because the destination point says: %s"
+
+#, php-format
 msgid "Action inconnue : %s"
 msgstr "Unknown action: %s"
 
@@ -1944,6 +1951,10 @@ msgstr "The comment has been modified"
 #, php-format
 msgid " et a été transféré sur la fiche : %s"
 msgstr " and has been transferred to the sheet: %s"
+
+#, php-format
+msgid "Le commentaire a été dupliqué sur la fiche : %s"
+msgstr "The comment has been duplicated to the sheet: %s"
 
 msgid "pas de photo dans ce commentaire"
 msgstr "no photo in this comment"

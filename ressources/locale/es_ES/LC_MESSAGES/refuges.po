@@ -319,6 +319,9 @@ msgstr "Transferir al foro"
 msgid "Transférer vers la fiche n°"
 msgstr "Transferir a la ficha n.º"
 
+msgid "Dupliquer vers la fiche n°"
+msgstr "Duplicar en la ficha n.º"
+
 msgid "Numéro de la fiche de destination"
 msgstr "Número de la ficha de destino"
 
@@ -1343,6 +1346,10 @@ msgid "Transfert du commentaire impossible, car le point de destination indique 
 msgstr "Transferencia del comentario imposible, porque el punto de destino indica: %s"
 
 #, php-format
+msgid "Duplication du commentaire impossible, car le point de destination indique : %s"
+msgstr "Duplicación del comentario imposible, porque el punto de destino indica: %s"
+
+#, php-format
 msgid "Action inconnue : %s"
 msgstr "Acción desconocida: %s"
 
@@ -1655,6 +1662,10 @@ msgstr "El comentario se ha modificado"
 #, php-format
 msgid " et a été transféré sur la fiche : %s"
 msgstr " y se ha transferido a la ficha: %s"
+
+#, php-format
+msgid "Le commentaire a été dupliqué sur la fiche : %s"
+msgstr "El comentario se ha duplicado en la ficha: %s"
 
 msgid "pas de photo dans ce commentaire"
 msgstr "ninguna foto en este comentario"

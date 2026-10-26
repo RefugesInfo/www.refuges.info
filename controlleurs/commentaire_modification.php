@@ -2,7 +2,7 @@
 /***
 Contrôleur de l'action de modification d'un commentaire (par un modérateur ou par son auteur)
 On arrive ici depuis commentaire_formulaire_modification, comme point_formulaire_modification -> point_modification
-Actions possibles : modification, suppression_photo, transfert_forum, transfert_autre_point, suppression
+Actions possibles : modification, suppression_photo, transfert_forum, transfert_autre_point, duplication_autre_point, suppression
 ***/
 
 require_once ('forum.php');
@@ -76,6 +76,36 @@ else
 
         if ($_REQUEST['type'] == 'suppression_photo') // et on supprime la photo
           $vue->retour=suppression_photos($commentaire);
+        break;
+
+      case 'duplication_autre_point':
+        // Le commentaire d'origine reste intact : on crée une copie (texte, auteur, date, photo) sur l'autre fiche
+        $autre_point=infos_point($_REQUEST['id_autre_point'] ?? Null);
+        if (!empty($autre_point->erreur))
+        {
+          $vue->retour=erreur(sprintf(_("Duplication du commentaire impossible, car le point de destination indique : %s"), $autre_point->message));
+          break;
+        }
+        $copie = new stdClass;
+        $copie->id_point=$autre_point->id_point;
+        $copie->texte=stripslashes($_REQUEST['texte'] ?? "");
+        $copie->auteur_commentaire=stripslashes($_REQUEST['auteur_commentaire'] ?? $commentaire->auteur_commentaire ?? "");
+        $copie->id_createur_commentaire=$commentaire->id_createur_commentaire;
+        $copie->date=$commentaire->date ?? Null;
+        if (est_moderateur()) // Seuls les modérateurs peuvent changer la date et le user
+        {
+          $copie->date = str_replace('T', ' ', $_REQUEST['date'] ?? '') ?: Null;
+          $copie->id_createur_commentaire=$_REQUEST['id_createur_commentaire'] ?? $commentaire->id_createur_commentaire;
+        }
+        $copie->demande_correction=0;
+        // La photo : celle téléversée dans le formulaire, sinon l'originale du commentaire (la fonction en fait des fichiers propres à la copie)
+        if (is_uploaded_file($_FILES['comment_photo']['tmp_name'] ?? ''))
+          $copie->photo['originale']=$_FILES['comment_photo']['tmp_name'];
+        elseif (!empty($commentaire->photo['originale']))
+          $copie->photo['originale']=$commentaire->photo['originale'];
+        $vue->retour=modification_ajout_commentaire($copie);
+        if (empty($vue->retour->erreur))
+          $vue->retour->message=sprintf(_("Le commentaire a été dupliqué sur la fiche : %s"), "<a href=\"".lien_point($autre_point)."\">".$autre_point->nom."</a>");
         break;
 
       case 'suppression':
