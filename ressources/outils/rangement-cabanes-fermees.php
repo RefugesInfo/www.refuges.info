@@ -201,10 +201,6 @@ $stats = $pdo->query("SELECT
   FROM rangement_fiches", PDO::FETCH_OBJ)->fetch();
 $disponibles_filtre = (int)$pdo->query("SELECT count(*) FROM points p WHERE ".sql_candidates($f))->fetchColumn();
 
-$par_moderateur = $pdo->query("SELECT COALESCE(u.username,'#'||r.id_moderateur) AS nom,
-    count(*) FILTER (WHERE decision IS NULL) AS en_cours, count(*) FILTER (WHERE decision IN ('rien','converti')) AS traitees
-  FROM rangement_fiches r LEFT JOIN phpbb3_users u ON u.user_id=r.id_moderateur GROUP BY 1 ORDER BY 3 DESC", PDO::FETCH_OBJ)->fetchAll();
-
 $regions = $pdo->query("SELECT id_polygone, nom_polygone, id_polygone_type FROM polygones
   WHERE id_polygone_type IN (1,10,11) ORDER BY CASE id_polygone_type WHEN 10 THEN 1 WHEN 1 THEN 2 ELSE 3 END, nom_polygone", PDO::FETCH_OBJ)->fetchAll();
 $types_region = array(10 => 'Départements', 1 => 'Massifs', 11 => 'Zones');
@@ -245,9 +241,7 @@ button{padding:.4em .8em;margin-right:.5em;cursor:pointer} button.danger{backgro
 <h3>Avancement</h3>
 <table><tr><th>À ranger (disponibles)</th><th>Réservées</th><th>Retirées de la liste (inchangées)</th><th>Converties</th><th>Traitées hors outil</th></tr>
 <tr><td><?=$stats->disponibles?></td><td><?=$stats->reservees?></td><td><?=$stats->rien?></td><td><?=$stats->converties?></td><td><?=$stats->hors_outil?></td></tr></table>
-<?php if ($par_moderateur) { ?><p class="petit">Par modérateur (en cours / traitées) :
-<?php foreach ($par_moderateur as $m) echo h($m->nom).' '.$m->en_cours.' / '.$m->traitees.' — '; ?>
-<a href="?export=csv">export CSV</a></p><?php } ?>
+<p class="petit"><a href="?export=csv">export CSV</a></p>
 
 <h3>Me réserver un lot de <?=$TAILLE_LOT?> fiches</h3>
 <form class="filtres" method="post" action="<?=h(strtok($_SERVER['REQUEST_URI'], '?'))?>">
