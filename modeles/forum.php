@@ -83,6 +83,18 @@ function forum_submit_post ($args) {
       $data = array_merge ($data, $row, $args);
   }
 
+  // En édition, submit_post() écrit $username dans topic_first_poster_name : s'il est vide, l'auteur du topic devient "Invité" à chaque renommage. On lui redonne le nom de l'auteur du premier post.
+  if ($data['action'] == 'edit' and $data['username'] === '' and isset($data['poster_id']))
+  {
+    if ($data['poster_id'] > ANONYMOUS)
+    {
+      $utilisateur = infos_utilisateur($data['poster_id']);
+      $data['username'] = $utilisateur->username ?? '';
+    }
+    else
+      $data['username'] = $data['post_username'] ?? '';
+  }
+
   // Traduit bbcodes & md5
   $message_parser = new parse_message();
   $message_parser->message = $data['message'];
