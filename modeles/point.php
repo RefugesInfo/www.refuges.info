@@ -559,7 +559,7 @@ function infos_points($conditions)
             {
               case 'places_matelas' : case 'places' :
                 if($point->$champ === NULL )
-                  $val['valeur'] = '[b]Inconnu[/b]';
+                  $val['valeur'] = 'Inconnu';
                 else
                   $val['valeur'] = $val['nb'] = $point->$champ;
                 break;
@@ -570,7 +570,7 @@ function infos_points($conditions)
                 if($point->$champ === FALSE)
                   $val['valeur'] = 'Non';
                 if($point->$champ === NULL)
-                  $val['valeur'] = '[b]Inconnu[/b]';
+                  $val['valeur'] = 'Inconnu';
                 break;
             }
             if(count($val) > 1)

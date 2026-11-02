@@ -56,7 +56,6 @@ _("Détruit");
 _("Oui");
 _("Non");
 _("Inconnu");
-_("<b>Inconnu</b>");
 _("accès");
 _("remarques");
 _("Entrez la lettre <strong>g</strong>");
