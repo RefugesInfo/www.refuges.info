@@ -1,0 +1,26 @@
+{
+  "name": "RefugesInfo/traduction",
+  "type": "phpbb-extension",
+  "description": "Display of automatic translations of forum messages and topic titles (table traductions)",
+  "homepage": "https://github.com/RefugesInfo/www.refuges.info",
+  "version": "0.1.0",
+  "time": "2026-11-02",
+  "license": "GPL-2.0",
+  "require": {
+    "php": ">=7.2.0",
+    "composer/installers": "~1.0"
+  },
+  "extra": {
+    "display-name": "Traduction du forum",
+    "soft-require": {
+      "phpbb/phpbb": ">=3.3.0"
+    }
+  },
+  "authors": [
+    {
+      "name": "refuges.info",
+      "homepage": "https://www.refuges.info",
+      "role": "Developer"
+    }
+  ]
+}

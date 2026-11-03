@@ -1,0 +1,8 @@
+services:
+  RefugesInfo.traduction.listener:
+    class: RefugesInfo\traduction\event\listener
+    arguments:
+      - '@dbal.conn'
+      - '@user'
+    tags:
+      - { name: event.listener }
