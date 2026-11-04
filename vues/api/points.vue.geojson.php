@@ -3,7 +3,7 @@ if (empty($filename))
   $filename="points-refuges-info";
 
 header("Content-disposition: filename=$filename.json");
-header("Content-Type: application/json; UTF-8"); // rajout du charset
+header("Content-Type: application/json; charset=UTF-8");
 header("Content-Transfer-Encoding: binary");
 headers_cors_par_default();
 headers_cache_api();
