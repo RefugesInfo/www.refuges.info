@@ -8,4 +8,4 @@ headers_cache_api();
 
 
 $news['copyright'] = $config_wri['copyright_API'];
-echo json_encode($news);
+echo json_encode($news, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);

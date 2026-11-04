@@ -24,4 +24,4 @@ echo json_encode([
   "timestamp" => date(DATE_ATOM),
   "size" => count((array)$points),
   "features" => $features, 
-]);
+], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);

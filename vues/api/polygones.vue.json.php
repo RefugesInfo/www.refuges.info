@@ -25,7 +25,7 @@ foreach ($polygones as $polygone)
       "geometry": <?=$polygone->geometrie?>,
       "properties":
       <?php unset ($polygone->geometrie); ?>
-      <?=json_encode($polygone)?>
+      <?=json_encode($polygone, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)?>
       
     }
 <?php
