@@ -14,17 +14,17 @@
       <legend><?=_("Ajouter un·e :")?></legend>
       <fieldset class="booleen">
       <?php
-        $first = true;
-        foreach ($vue->types_point_affichables AS $pa) {
-          $cle = replace_url($pa->nom_type);
-          $icone = isset($vue->icones[$cle]) ? $vue->icones[$cle] : null;
-          $checked = $first ? 'checked' : '';
-          $first = false;
+        $premier = true;
+        foreach ($vue->types_point_affichables AS $type_point_affichable) {
+          $cle_type = replace_url($type_point_affichable->nom_type);
+          $icone_type = isset($vue->icones[$cle_type]) ? $vue->icones[$cle_type] : null;
+          $coche = $premier ? 'checked' : '';
+          $premier = false;
       ?>
-        <input type="radio" name="id_point_type" id="type_<?=$pa->id_point_type?>" value="<?=$pa->id_point_type?>" <?=$checked?>>
-        <label for="type_<?=$pa->id_point_type?>">
-          <?php if ($icone) { ?><img src="/images/icones/svg.php?nom=<?=htmlspecialchars($icone)?>" alt="" width="20" height="20"><?php } ?>
-          <?=htmlspecialchars(_($pa->nom_type))?>
+        <input type="radio" name="id_point_type" id="type_<?=$type_point_affichable->id_point_type?>" value="<?=$type_point_affichable->id_point_type?>" <?=$coche?>>
+        <label for="type_<?=$type_point_affichable->id_point_type?>">
+          <?php if ($icone_type) { ?><img src="/images/icones/svg.php?nom=<?=htmlspecialchars($icone_type)?>" alt="" width="20" height="20"><?php } ?>
+          <?=htmlspecialchars(_($type_point_affichable->nom_type))?>
         </label>
       <?php } ?>
       </fieldset>
