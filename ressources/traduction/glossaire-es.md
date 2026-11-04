@@ -28,7 +28,7 @@ Estados: ✅ confirmado · ⏳ elección provisional, por confirmar · ❌ por e
 |---|---|---|---|---|
 | cabane non gardée | cabaña no guardada | refugio libre sin guarda; alternativa muy usada en España: *refugio libre* | ⏳ | |
 | refuge gardé | refugio guardado | refugio con guarda | ⏳ | |
-| gîte d'étape | albergue de etapa (gîte d'étape) | no hay equivalente exacto; *albergue* es lo más cercano | ⏳ | |
+| gîte d'étape | albergue de montaña | no hay equivalente exacto; *albergue* es lo más cercano | ⏳ | |
 | point d'eau | punto de agua | | ⏳ | |
 | abri naturel | abrigo natural | cueva, abrigo bajo roca | ⏳ | |
 | passage délicat | paso delicado | | ⏳ | |

@@ -1400,7 +1400,7 @@ msgid "refuge gardé"
 msgstr "refugio guardado"
 
 msgid "gîte d'étape"
-msgstr "albergue de etapa (gîte d'étape)"
+msgstr "albergue de montaña"
 
 msgid "abri naturel"
 msgstr "abrigo natural"
