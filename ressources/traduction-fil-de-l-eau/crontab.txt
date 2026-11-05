@@ -1,0 +1,2 @@
+# traduction refuges.info au fil de l eau (prototype, voir ~/.claude/traduction-fil-eau/) : stdout au journal, stderr (alertes) par mail
+7 * * * * /usr/bin/python3 -I /home/users/sly/.claude/traduction-fil-eau/fil-eau.py >> /home/users/sly/.claude/traduction-fil-eau/cron.log
