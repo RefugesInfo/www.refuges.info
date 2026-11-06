@@ -27,6 +27,7 @@ class listener implements EventSubscriberInterface
   protected $user;
   protected $cache_texte = [];  // post_id  => ['texte'=>, 'hash'=>, 'src'=>] | null
   protected $cache_titre = [];  // topic_id => ['texte'=>, 'hash'=>] | null
+  protected $cache_forum = [];  // forum_id => ['nom'=>, 'description'=>] (texte traduit ou null)
 
   public function __construct(\phpbb\db\driver\driver_interface $db, \phpbb\user $user)
   {
@@ -43,6 +44,10 @@ class listener implements EventSubscriberInterface
       'core.viewforum_modify_topicrow'             => 'viewforum_topic',
       'core.display_forums_modify_template_vars'   => 'index_forum',
       'core.search_modify_tpl_ary'                 => 'search_ligne',
+      'core.generate_forum_nav'                    => 'forum_nav',
+      'core.make_jumpbox_modify_forum_list'        => 'jumpbox',
+      'core.viewforum_modify_page_title'           => 'viewforum_titre',
+      'core.viewtopic_assign_template_vars_before' => 'viewtopic_forum',
     ];
   }
 
@@ -95,6 +100,91 @@ class listener implements EventSubscriberInterface
     return '<details class="traduction_auto" style="margin-top:1em;font-size:.9em"><summary title="'.htmlspecialchars($info).'" style="cursor:pointer;opacity:.7">'
       .htmlspecialchars($libelle).(ctype_alpha((string)$src) ? ' '.strtoupper($src) : '').'</summary>'
       .'<div class="traduction_auto_original"'.(ctype_alpha((string)$src) ? ' lang="'.$src.'"' : '').'>'.$original_html.'</div></details>';
+  }
+
+
+  // --- noms et descriptions de forum ------------------------------------------------------------------------------
+  //  - champ 'nom_forum'         : id_objet = forum_id ; texte échappé HTML comme phpbb3_forums.forum_name
+  //  - champ 'description_forum' : id_objet = forum_id ; même format que phpbb3_forums.forum_desc
+  // Retourne ['nom'=>texte|null, 'description'=>texte|null] ; null si pas de traduction ou source modifiée (hash)
+  protected function forum_traduit($forum_id, $nom_source, $description_source)
+  {
+    $langue = $this->langue();
+    $forum_id = (int)$forum_id;
+    if (!$langue || !$forum_id) return ['nom' => null, 'description' => null];
+    if (!array_key_exists($forum_id, $this->cache_forum))
+    {
+      $this->cache_forum[$forum_id] = [
+        'nom' => $this->charge('nom_forum', [$forum_id], $langue)[$forum_id],
+        'description' => $this->charge('description_forum', [$forum_id], $langue)[$forum_id],
+      ];
+    }
+    $c = $this->cache_forum[$forum_id];
+    return [
+      'nom' => ($c['nom'] && $c['nom']['hash'] === md5($nom_source)) ? $c['nom']['texte'] : null,
+      'description' => ($c['description'] && $c['description']['hash'] === md5($description_source)) ? $c['description']['texte'] : null,
+    ];
+  }
+
+  // Description rendue (HTML) à partir de la description traduite ; $d = données du forum (uid/bitfield/options de la source)
+  protected function description_html($texte, array $d)
+  {
+    return generate_text_for_display($texte, $d['forum_desc_uid'] ?? '', $d['forum_desc_bitfield'] ?? '', $d['forum_desc_options'] ?? 7);
+  }
+
+  // Fil d'Ariane et variables de l'en-tête de forum (viewforum, viewtopic)
+  public function forum_nav($event)
+  {
+    if (!$this->langue()) return;
+    $d = $event['forum_data'];
+    $t = $this->forum_traduit($d['forum_id'], $d['forum_name'], $d['forum_desc']);
+    if ($t['nom'] === null && $t['description'] === null) return;
+    $tpl = $event['forum_template_data'];
+    $navlinks = $event['navlinks'];
+    if ($t['nom'] !== null) { $tpl['FORUM_NAME'] = $t['nom']; $navlinks['BREADCRUMB_NAME'] = $t['nom']; }
+    if ($t['description'] !== null) $tpl['FORUM_DESC'] = $this->description_html($t['description'], $d);
+    $event['forum_template_data'] = $tpl;
+    $event['navlinks'] = $navlinks;
+  }
+
+  // Liste déroulante de navigation entre forums : noms seulement (une requête pour tous les forums)
+  public function jumpbox($event)
+  {
+    $langue = $this->langue();
+    if (!$langue) return;
+    $rowset = $event['rowset'];
+    $traductions = $this->charge('nom_forum', array_keys($rowset), $langue);
+    foreach ($rowset as $id => $row)
+    {
+      $t = $traductions[(int)$id] ?? null;
+      if ($t && $t['hash'] === md5($row['forum_name'])) $rowset[$id]['forum_name'] = $t['texte'];
+    }
+    $event['rowset'] = $rowset;
+  }
+
+  public function viewforum_titre($event)
+  {
+    if (!$this->langue()) return;
+    $d = $event['forum_data'];
+    $t = $this->forum_traduit($d['forum_id'], $d['forum_name'], $d['forum_desc']);
+    if ($t['nom'] === null) return;
+    $titre = $event['page_title'];
+    if (strpos($titre, $d['forum_name']) === 0) $event['page_title'] = $t['nom'].substr($titre, strlen($d['forum_name']));
+  }
+
+  // viewtopic : le nom et la description du forum sont assignés depuis topic_data juste après cet événement
+  public function viewtopic_forum($event)
+  {
+    if (!$this->langue()) return;
+    $d = $event['topic_data'];
+    $t = $this->forum_traduit($d['forum_id'], $d['forum_name'], $d['forum_desc']);
+    if ($t['nom'] === null && $t['description'] === null) return;
+    if ($t['nom'] !== null) $d['forum_name'] = $t['nom'];
+    if ($t['description'] !== null)
+    {
+      $d['forum_desc'] = $t['description'];
+    }
+    $event['topic_data'] = $d;
   }
 
   // --- viewtopic -----------------------------------------------------------------------------------------------
@@ -160,7 +250,16 @@ class listener implements EventSubscriberInterface
   {
     $langue = $this->langue();
     $row = $event['row'];
-    if (!$langue || empty($row['forum_last_post_id'])) return;
+    if (!$langue) return;
+    $t = $this->forum_traduit($row['forum_id'], $row['forum_name'], $row['forum_desc']);
+    if ($t['nom'] !== null || $t['description'] !== null)
+    {
+      $fr = $event['forum_row'];
+      if ($t['nom'] !== null) $fr['FORUM_NAME'] = $t['nom'];
+      if ($t['description'] !== null) $fr['FORUM_DESC'] = $this->description_html($t['description'], $row);
+      $event['forum_row'] = $fr;
+    }
+    if (empty($row['forum_last_post_id'])) return;
     $r = $this->db->sql_query('SELECT t.topic_id, t.topic_title FROM '.POSTS_TABLE.' p JOIN '.TOPICS_TABLE.' t ON t.topic_id = p.topic_id WHERE p.post_id = '.(int)$row['forum_last_post_id']);
     $l = $this->db->sql_fetchrow($r);
     $this->db->sql_freeresult($r);
