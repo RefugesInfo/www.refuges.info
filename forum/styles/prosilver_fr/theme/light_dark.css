@@ -8,7 +8,7 @@ html {
 	--dark-offline: url("./en/icon_user_offline_dark.svg");
 	--dark-contact-icon: url("./images/icons_contact_dark.svg");
 }
-html, [data-theme=light] {
+html {
 	--color01: #1e90ff;
 	--color02: #fff;
 	--color03: #eee;
@@ -24,7 +24,6 @@ html, [data-theme=light] {
 	--color13: #444;
 	--color14: #fff;
 	--color15: #fff;
-	--switch-light-dark: "\f186";
 	--contact-icon: var(--light-contact-icon);
 	--online:	var(--light-online);
 	--offline:	var(--light-offline);
@@ -48,36 +47,12 @@ html, [data-theme=light] {
 		--color13: #ddd;
 		--color14: #000;
 		--color15: #fff;
-		--switch-light-dark: "\f185";
 		--contact-icon: var(--dark-contact-icon);
 		--online:	var(--dark-online);
 		--offline:	var(--dark-offline);
 		--codebox-color: #45db45;
 		color-scheme: dark;
 	}
-}
-[data-theme=dark] {
-	--color01: #1e90ff;
-	--color02: #222;
-	--color03: #333;
-	--color04: #444;
-	--color05: #555;
-	--color06: #666;
-	--color07: #6b6b6b;
-	--color08: #7b7b7b;
-	--color09: #d31141;
-	--color10: #6a1b2e;
-	--color11: #fff;
-	--color12: #ccc;
-	--color13: #ddd;
-	--color14: #000;
-	--color15: #fff;
-	--switch-light-dark: "\f185";
-	--contact-icon: var(--dark-contact-icon);
-	--online:	var(--dark-online);
-	--offline:	var(--dark-offline);
-	--codebox-color: #45db45;
-	color-scheme: dark;
 }
 html, body {
 	background-color: var(--color02);
@@ -796,9 +771,6 @@ li.notification-disapproved strong, li.notification-reported strong {
 .badge {
 	background-color: var(--color09);
 	color: var(--color15);
-}
-.switch-theme i:before {
-	content: var(--switch-light-dark);
 }
 #phpbb .cc-btn {
 	background-color: var(--color09);

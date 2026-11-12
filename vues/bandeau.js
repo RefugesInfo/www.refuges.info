@@ -8,10 +8,6 @@ for (let el of menuEls) {
 // Ferme les boutons quand on clique sur la page
 document.body.addEventListener('click', menuClean);
 
-// Commutateur de thème jour / nuit de prosilver_fr
-if (localStorage.darksideofthemoon)
-  document.body.classList.add(localStorage.darksideofthemoon);
-
 function menuAction(evt) {
   // Passage de la souris sur tout l'élement de classe 'menu-bouton'
   // ajoute la classe 'menu-hover' à cet élément

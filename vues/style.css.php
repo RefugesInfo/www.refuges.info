@@ -70,9 +70,9 @@ if ($date_maintenant > $debut_automne and $date_maintenant < $debut_hiver) {
   --image_bandeau: url(../images/bandeau-haut/titrehorizontal_<?=date('m')?>.png);
 }
 
-/* Surcharge pour les pages du site en style sombre */
+/* Surcharge pour les pages du site en style sombre (suit le réglage du navigateur / système) */
 @media (prefers-color-scheme: dark) {
-  body:not(.light) {
+  :root {
     --couleur_texte: white;
     --couleur_titre: black;
     --couleur_lien: #<?=$couleur_lien_clair?>;
@@ -80,16 +80,6 @@ if ($date_maintenant > $debut_automne and $date_maintenant < $debut_hiver) {
     --couleur_fond_amplifiee: #333;
     --couleur_hover: rgba(255, 255, 255, 0.12);
   }
-}
-
-/* Surcharge quand le commutateur dark est activé dans prosilver_fr */
-body.dark {
-  --couleur_texte: white;
-  --couleur_titre: black;
-  --couleur_lien: #<?=$couleur_lien_clair?>;
-  --couleur_fond: #161210;
-  --couleur_fond_amplifiee: #333;
-  --couleur_hover: rgba(255, 255, 255, 0.12);
 }
 
 /*==================================================================*/
