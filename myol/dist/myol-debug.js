@@ -92995,7 +92995,7 @@
         .forEach(sel => args.push('nwr' + sel + bboxParameter)); // Ask for node, way & relation in the bbox
 
       return {
-        _path: '/api/interpreter',
+        _path: this.options.interpreterPath || '/api/interpreter',
         data: '[timeout:5];(' + args.join('') + ');out center;',
       };
     }

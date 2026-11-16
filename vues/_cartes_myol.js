@@ -99,6 +99,11 @@ function externPointsLayers(options) {
       hostIcons: options.host + 'images/icones/',
     }),
     new myol.layer.vector.Overpass({
+      // Serveur Overpass : $config_wri['mapKeys']['overpass'] (config_privee.php), sinon overpass-api.de
+      ...(options.mapKeys && options.mapKeys.overpass ? {
+        host: options.mapKeys.overpass,
+        interpreterPath: 'interpreter',
+      } : {}),
       selectName: 'select-osm',
       initSelect: '',
       hostIcons: options.host + 'images/icones/',

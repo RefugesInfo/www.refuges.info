@@ -69,6 +69,7 @@ for (const [affiche, layer] of Object.entries(overlays))
 // Couches OSM OverPass
 for (const [nom, query] of Object.entries(couchesOverpass))
   overlays['OSM ' + nom] = new L.OverPassLayer({
+    endPoint: <?=json_encode($config_wri['mapKeys']['overpass'] ?? 'https://overpass-api.de/api/')?>,
     query: '(nwr' + query + '({{bbox}}););out center;',
     markerIcon: L.icon({
       iconUrl: 'https://<?=$_SERVER["SERVER_NAME"]?>/images/icones/' + nom.replaceAll('ô', 'o').replaceAll(/[^a-z]/gu, '') + '.svg',
